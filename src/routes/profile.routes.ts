@@ -1,0 +1,39 @@
+import { Router } from "express";
+import { ProfileController } from "../controller/profile.controller";
+
+const router = Router();
+
+router.post("/get-userdata", (req, res) => {
+  /*
+    #swagger.tags = ['3.Profile']
+    #swagger.summary = 'get user data'
+    #swagger.description = 'fetch user's data'
+
+    
+    #swagger.parameters['body'] = {
+      in: 'body',
+      required: true,
+      schema: {  
+        user_id : 'USER_7wbjv2wt'
+      }
+    }
+
+
+    #swagger.responses[200] = {
+      description: "fetch user data successfully"
+    }
+
+    #swagger.responses[500] = {
+      description: "Internal Server Error"
+    }
+  */
+  return ProfileController.getUserData(req, res);
+});
+router.post("/add-update-userdata", ProfileController.addUpdateUserData);
+router.post("/change-primary", ProfileController.changePrimary);
+router.post(
+  "/add-update-additional-number",
+  ProfileController.addUpdateAdditionalNumber,
+);
+
+export default router;

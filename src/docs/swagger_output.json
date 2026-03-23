@@ -1,0 +1,1570 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "Online Tutor",
+    "description": "Api Docs",
+    "version": "1.0.0"
+  },
+  "host": "localhost:5012",
+  "basePath": "/",
+  "schemes": [
+    "http"
+  ],
+  "paths": {
+    "/check": {
+      "get": {
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/upload": {
+      "post": {
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/upload-multiple": {
+      "post": {
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/auth/request-otp": {
+      "post": {
+        "tags": [
+          "1.Auth"
+        ],
+        "summary": "Request OTP",
+        "description": "Send OTP to mobile",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "mobile": {
+                  "type": "string",
+                  "example": "9876543210"
+                },
+                "country_code": {
+                  "type": "string",
+                  "example": "+91"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OTP sent successfully"
+          },
+          "400": {
+            "description": "Invalid mobile number"
+          }
+        }
+      }
+    },
+    "/api/auth/verify-otp": {
+      "post": {
+        "tags": [
+          "1.Auth"
+        ],
+        "summary": "Verify OTP",
+        "description": "Verify OTP to mobile",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "mobile": {
+                  "type": "string",
+                  "example": "9876543210"
+                },
+                "country_code": {
+                  "type": "string",
+                  "example": "+91"
+                },
+                "otp": {
+                  "type": "string",
+                  "example": "1234"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OTP verify successfully"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/auth/signup": {
+      "post": {
+        "tags": [
+          "1.Auth"
+        ],
+        "summary": "Signup",
+        "description": "Signup",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "mobile": {
+                  "type": "string",
+                  "example": "9876543210"
+                },
+                "country_code": {
+                  "type": "string",
+                  "example": "+91"
+                },
+                "otp": {
+                  "type": "string",
+                  "example": "12345678"
+                },
+                "user_name": {
+                  "type": "string",
+                  "example": "kamalesh"
+                },
+                "password": {
+                  "type": "string",
+                  "example": "12345678"
+                },
+                "device_id": {
+                  "type": "string",
+                  "example": "abc_123"
+                },
+                "device_type": {
+                  "type": "string",
+                  "example": "ios"
+                },
+                "device_token": {
+                  "type": "string",
+                  "example": "xyz123"
+                },
+                "email": {
+                  "type": "string",
+                  "example": "abc@gmail.com"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OTP verify successfully"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/auth/login": {
+      "post": {
+        "tags": [
+          "1.Auth"
+        ],
+        "summary": "Login",
+        "description": "Login with mobile number and password",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "mobile": {
+                  "type": "string",
+                  "example": "9876543210"
+                },
+                "country_code": {
+                  "type": "string",
+                  "example": "+91"
+                },
+                "password": {
+                  "type": "string",
+                  "example": "12345678"
+                },
+                "device_id": {
+                  "type": "string",
+                  "example": "abc_123"
+                },
+                "device_type": {
+                  "type": "string",
+                  "example": "ios"
+                },
+                "device_token": {
+                  "type": "string",
+                  "example": "xyz123"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Login successfull"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/auth/reset-password": {
+      "post": {
+        "tags": [
+          "1.Auth"
+        ],
+        "summary": "reset password",
+        "description": "Reset Pawword with user ID",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "country_code": {
+                  "type": "string",
+                  "example": "+91"
+                },
+                "mobile": {
+                  "type": "string",
+                  "example": "9876543210"
+                },
+                "new_password": {
+                  "type": "string",
+                  "example": "123456789"
+                },
+                "confirm_password": {
+                  "type": "string",
+                  "example": "123456789"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Password updated successfully"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/auth/logout": {
+      "post": {
+        "tags": [
+          "1.Auth"
+        ],
+        "summary": "Logout",
+        "description": "Logout with user ID",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "user_id": {
+                  "type": "string",
+                  "example": "USER_7wbjv2wt"
+                },
+                "device_id": {
+                  "type": "string",
+                  "example": "abc123"
+                },
+                "device_token": {
+                  "type": "string",
+                  "example": "abc123"
+                },
+                "device_type": {
+                  "type": "string",
+                  "example": "ios"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Password updated successfully"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/user/add-update-tutor": {
+      "post": {
+        "tags": [
+          "2.User"
+        ],
+        "summary": "add-update tutor",
+        "description": "add and update tutor",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "user_role": {
+                  "type": "string",
+                  "example": "tutor"
+                },
+                "user_id": {
+                  "type": "string",
+                  "example": "USER_7wbjv2wt"
+                },
+                "represent": {
+                  "type": "string",
+                  "example": "1"
+                },
+                "gender": {
+                  "type": "string",
+                  "example": "male"
+                },
+                "is_show_num": {
+                  "type": "boolean",
+                  "example": true
+                },
+                "about_myself": {
+                  "type": "string",
+                  "example": "abcd efg hijk"
+                },
+                "country": {
+                  "type": "string",
+                  "example": "india"
+                },
+                "pincode": {
+                  "type": "string",
+                  "example": "624601"
+                },
+                "lat": {
+                  "type": "string",
+                  "example": "123.45"
+                },
+                "lng": {
+                  "type": "string",
+                  "example": "123.455"
+                },
+                "state": {
+                  "type": "string",
+                  "example": "tamilnadu"
+                },
+                "district": {
+                  "type": "string",
+                  "example": "dindigul"
+                },
+                "address": {
+                  "type": "string",
+                  "example": "abcd street, palani"
+                },
+                "area": {
+                  "type": "string",
+                  "example": "abcd"
+                },
+                "stream": {
+                  "type": "number",
+                  "example": 1
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "add or update tutor successfully"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/user/add-update-student": {
+      "post": {
+        "tags": [
+          "2.User"
+        ],
+        "summary": "add or update student data",
+        "description": "Add Or Update Student Data",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "user_role": {
+                  "type": "string",
+                  "example": "student"
+                },
+                "dob": {
+                  "type": "string",
+                  "example": "2002-03-15"
+                },
+                "gender": {
+                  "type": "string",
+                  "example": "male"
+                },
+                "country": {
+                  "type": "string",
+                  "example": "india"
+                },
+                "pincode": {
+                  "type": "string",
+                  "example": "624601"
+                },
+                "state": {
+                  "type": "string",
+                  "example": "tamilnadu"
+                },
+                "district": {
+                  "type": "string",
+                  "example": "CBE"
+                },
+                "area": {
+                  "type": "string",
+                  "example": "RSpuram"
+                },
+                "is_show_num": {
+                  "type": "boolean",
+                  "example": true
+                },
+                "address": {
+                  "type": "string",
+                  "example": "abcde fghij klmnop"
+                },
+                "user_id": {
+                  "type": "string",
+                  "example": "USER_LDsMp-Dsm"
+                },
+                "stream_id": {
+                  "type": "string",
+                  "example": "1"
+                },
+                "learn_course": {
+                  "type": "string",
+                  "example": "Full Stack Development"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Add Or Update Student data successfully"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/user/get-user-data": {
+      "post": {
+        "tags": [
+          "2.User"
+        ],
+        "summary": "get user data",
+        "description": "fetch user",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "user_id": {
+                  "type": "string",
+                  "example": "USER_7wbjv2wt"
+                },
+                "mobile": {
+                  "type": "string",
+                  "example": "986543210"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "fetch user data successfully"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/profile/get-userdata": {
+      "post": {
+        "tags": [
+          "3.Profile"
+        ],
+        "summary": "get user data",
+        "description": "fetch user",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "user_id": {
+                  "type": "string",
+                  "example": "USER_7wbjv2wt"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "fetch user data successfully"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/profile/add-update-userdata": {
+      "post": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "user_id": {
+                  "example": "any"
+                },
+                "payload": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/api/profile/change-primary": {
+      "post": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "new_primary_number": {
+                  "example": "any"
+                },
+                "country_code": {
+                  "example": "any"
+                },
+                "user_id": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/api/profile/add-update-additional-number": {
+      "post": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "add_mobile": {
+                  "example": "any"
+                },
+                "user_id": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/api/edu/get-edu-level": {
+      "post": {
+        "tags": [
+          "4.Education"
+        ],
+        "summary": "Get education level",
+        "description": "Get Education level",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "number",
+                  "example": 1
+                },
+                "name": {
+                  "type": "string",
+                  "example": "school level"
+                },
+                "status": {
+                  "type": "string",
+                  "example": "active"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Education Level fetched successfully"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/edu/get-streams": {
+      "post": {
+        "tags": [
+          "4.Education"
+        ],
+        "summary": "Get education",
+        "description": "Get streams",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "example": "1"
+                },
+                "name": {
+                  "type": "string",
+                  "example": "B.E(CSE)"
+                },
+                "status": {
+                  "type": "string",
+                  "example": "active"
+                },
+                "edu_id": {
+                  "type": "number",
+                  "example": 1
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "stream fetched successfully"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/subject/add-subject": {
+      "post": {
+        "description": "",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/api/subject/get-subjects": {
+      "post": {
+        "tags": [
+          "5.Subject"
+        ],
+        "summary": "Get subjects",
+        "description": "Get subject all or ID or active subjects",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "number",
+                  "example": 1
+                },
+                "subject_name": {
+                  "type": "string",
+                  "example": "java"
+                },
+                "status": {
+                  "type": "string",
+                  "example": "active"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Subject fetched successfully"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/subject/update-tutor-subjects": {
+      "post": {
+        "description": "",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/api/help/add-update-help-support": {
+      "post": {
+        "description": "",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/api/help/get-help-support": {
+      "post": {
+        "tags": [
+          "6.Help & Support"
+        ],
+        "summary": "Get Help and Support List",
+        "description": "Fetch paginated help and support tickets based on search, status and user role.",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": false,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "search": {
+                  "type": "string",
+                  "example": "what to do"
+                },
+                "status": {
+                  "type": "string",
+                  "example": "active"
+                },
+                "page": {
+                  "type": "number",
+                  "example": 1
+                },
+                "user_id": {
+                  "type": "string",
+                  "example": "user_123"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Help and Support list fetched successfully"
+          },
+          "400": {
+            "description": "Search term must be at least 3 characters"
+          },
+          "500": {
+            "description": "Something went wrong"
+          }
+        }
+      }
+    },
+    "/api/source/get-address-by-pincode": {
+      "post": {
+        "tags": [
+          "7.Source"
+        ],
+        "summary": "Get Address By Pincode",
+        "description": "Get address by pincode",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "pincode": {
+                  "type": "string",
+                  "example": "624601"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Address fetched successfully"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/source/add-or-update-education": {
+      "post": {
+        "description": "",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/api/source/add-or-update-stream": {
+      "post": {
+        "description": "",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/api/source/get-streams": {
+      "post": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "edu_id": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/api/source/get-country": {
+      "post": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "search": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/api/source/add-update-language": {
+      "post": {
+        "tags": [
+          "7.Source"
+        ],
+        "summary": "Add Update Language",
+        "description": "Add Language and Update language",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "number",
+                  "example": 1
+                },
+                "lang_name": {
+                  "type": "string",
+                  "example": "Tamil"
+                },
+                "status": {
+                  "type": "string",
+                  "example": "active"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Add or Update language successfully"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/source/get-languages": {
+      "post": {
+        "tags": [
+          "7.Source"
+        ],
+        "summary": "Get Language",
+        "description": "Get Language all or ID or active languages",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "number",
+                  "example": 1
+                },
+                "lang_name": {
+                  "type": "string",
+                  "example": "Tamil"
+                },
+                "status": {
+                  "type": "string",
+                  "example": "active"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Language fetched successfully"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/student/nearby-tutors": {
+      "post": {
+        "description": "",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/api/review/add-update-review": {
+      "post": {
+        "tags": [
+          "9.review"
+        ],
+        "summary": "Add Update Review",
+        "description": "Add Review and Update Review",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "number",
+                  "example": 1
+                },
+                "tutor_id": {
+                  "type": "string",
+                  "example": "TUTOR_4w4lwlu0"
+                },
+                "student_id": {
+                  "type": "string",
+                  "example": "STUDENT_UOFswA1y"
+                },
+                "rating": {
+                  "type": "string",
+                  "example": "5"
+                },
+                "review_text": {
+                  "type": "string",
+                  "example": "abcd efgh ijklmn opqrst"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Add or Update Review successfully"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/review/get-reviews": {
+      "post": {
+        "tags": [
+          "9.review"
+        ],
+        "summary": "Add Update Review",
+        "description": "Add Review and Update Review",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "number",
+                  "example": 1
+                },
+                "tutor_id": {
+                  "type": "string",
+                  "example": "TUTOR_4w4lwlu0"
+                },
+                "student_id": {
+                  "type": "string",
+                  "example": "STUDENT_UOFswA1y"
+                },
+                "rating": {
+                  "type": "string",
+                  "example": "5"
+                },
+                "from_date": {
+                  "type": "string",
+                  "example": "2026-03-04"
+                },
+                "to_date": {
+                  "type": "string",
+                  "example": "2026-03-05"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Review Fetched successfully"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/review/reply-review": {
+      "post": {
+        "tags": [
+          "9.review"
+        ],
+        "summary": "Add Update Review Reply",
+        "description": "Add Review and Update Review Reply",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "number",
+                  "example": 1
+                },
+                "tutor_id": {
+                  "type": "string",
+                  "example": "TUTOR_4w4lwlu0"
+                },
+                "student_id": {
+                  "type": "string",
+                  "example": "STUDENT_UOFswA1y"
+                },
+                "reply_text": {
+                  "type": "string",
+                  "example": "abcd efgh ijklmn opqrst"
+                },
+                "review_id": {
+                  "type": "string",
+                  "example": "3"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Add or Update Review Reply successfully"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/review/add-review-like": {
+      "post": {
+        "tags": [
+          "9.review"
+        ],
+        "summary": "Add Update Review Like",
+        "description": "Add Review Like and Update Review Like",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "number",
+                  "example": 1
+                },
+                "review_id": {
+                  "type": "string",
+                  "example": "1"
+                },
+                "tutor_id": {
+                  "type": "string",
+                  "example": "TUTOR_4w4lwlu0"
+                },
+                "student_id": {
+                  "type": "string",
+                  "example": "STUDENT_UOFswA1y"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Review Liked successfully"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/review/remove-review": {
+      "post": {
+        "tags": [
+          "9.review"
+        ],
+        "summary": "Delete Review",
+        "description": "Remove Review based on student",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "number",
+                  "example": 1
+                },
+                "student_id": {
+                  "type": "string",
+                  "example": "STUDENT_UOFswA1y"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Review Deleted successfully"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/review/get-report-reasons": {
+      "get": {
+        "tags": [
+          "9.review"
+        ],
+        "summary": "Get Report Reasons",
+        "description": "Fetch Report Reasons From country.json",
+        "responses": {
+          "200": {
+            "description": "Report Reasons fetched successfully"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/review/report-review": {
+      "post": {
+        "tags": [
+          "9.review"
+        ],
+        "summary": "Report a Review",
+        "description": "Report a Review ",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "review_id": {
+                  "type": "string",
+                  "example": "1"
+                },
+                "student_id": {
+                  "type": "string",
+                  "example": "STUDENT_UOFswA1y"
+                },
+                "tutor_id": {
+                  "type": "string",
+                  "example": "TUTOR_4w4lwlu0"
+                },
+                "reason_id": {
+                  "type": "string",
+                  "example": "-1"
+                },
+                "other_reason": {
+                  "type": "string",
+                  "example": "abcdefgh ijkl"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Review Reported successfully"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/cmn/get-country-data": {
+      "get": {
+        "tags": [
+          "10.Common"
+        ],
+        "summary": "Get Country Data",
+        "description": "Fetch Country Data From country.json",
+        "responses": {
+          "200": {
+            "description": "Country data list fetched successfully"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/cmn/upload": {
+      "post": {
+        "tags": [
+          "10.Common"
+        ],
+        "summary": "Upload Image | Video | PDF",
+        "description": "Upload files to S3 bucket and return file details",
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "parameters": [
+          {
+            "name": "file",
+            "in": "formData",
+            "type": "file",
+            "required": true,
+            "description": "File to upload (image, video, pdf)"
+          },
+          {
+            "name": "category",
+            "in": "formData",
+            "type": "string",
+            "required": true,
+            "description": "File category",
+            "enum": [
+              "image",
+              "video",
+              "pdf"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "File uploaded successfully"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/cmn/get-uploads": {
+      "post": {
+        "tags": [
+          "10.Common"
+        ],
+        "summary": "Get uploaded files fetched sucessfully",
+        "description": "Get files fetched succesfully",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "ids": {
+                  "type": "string",
+                  "example": "1,2"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Files fetched successfully"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/tutor/add-update-demos": {
+      "post": {
+        "tags": [
+          "8.Tutor"
+        ],
+        "summary": "Add Update Demo videos or Images",
+        "description": "Add image and videos",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": false,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "number",
+                  "example": 1
+                },
+                "tutor_id": {
+                  "type": "string",
+                  "example": "TUTOR_onDXQ037"
+                },
+                "media_type": {
+                  "type": "string",
+                  "example": "image or video"
+                },
+                "media_id": {
+                  "type": "string",
+                  "example": "1"
+                },
+                "title": {
+                  "type": "string",
+                  "example": "Intro Video"
+                },
+                "thumbnail": {
+                  "type": "string",
+                  "example": "2"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Upload successfully"
+          },
+          "500": {
+            "description": "Something went wrong"
+          }
+        }
+      }
+    },
+    "/api/tutor/remove-demos": {
+      "post": {
+        "tags": [
+          "8.Tutor"
+        ],
+        "summary": "Remove Demo videos or Images",
+        "description": "Delete image and videos",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": false,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "number",
+                  "example": 1
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Demos deleted successfully"
+          },
+          "500": {
+            "description": "Something went wrong"
+          }
+        }
+      }
+    },
+    "/api/tutor/get-demos": {
+      "post": {
+        "tags": [
+          "8.Tutor"
+        ],
+        "summary": "get Demo videos or Images",
+        "description": "Get image and videos",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": false,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "number",
+                  "example": 1
+                },
+                "tutor_id": {
+                  "type": "string",
+                  "example": "TUTOR_onDXQ037"
+                },
+                "media_type": {
+                  "type": "string",
+                  "example": "video or image"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Demos fetched successfully"
+          },
+          "500": {
+            "description": "Something went wrong"
+          }
+        }
+      }
+    }
+  }
+}

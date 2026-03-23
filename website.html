@@ -1,0 +1,586 @@
+<!doctype html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>Truck Ledger App</title>
+    <!-- Required meta tags -->
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <link rel="icon" href="./static/logo.png" type="image/png" />
+
+    <title>Home</title>
+    <!-- <meta name="title" content="@php echo htmlspecialchars($set_meta_title);@endphp"> <meta name="description" content="@php echo htmlspecialchars($set_description); @endphp" /> -->
+    <!-- Page Bootstrap CSS -->
+    <!--<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">-->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65"
+      crossorigin="anonymous"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/owl-carousel/1.3.3/owl.carousel.min.css"
+    />
+    <link rel="stylesheet" href="css/style.css" />
+    <style>
+      body {
+        background-color: #c4c4cd54;
+      }
+      #news-slider {
+        margin-top: 20px;
+      }
+      .post-slide {
+        background: #fff;
+        margin: 20px 15px 20px;
+        border-radius: 15px;
+        padding-top: 1px;
+        box-shadow: 0px 14px 22px -9px #bbcbd8; /*border: 1px solid rgb(184, 184, 184);*/
+      }
+      .post-slide .post-img {
+        position: relative;
+        overflow: hidden;
+        border-radius: 10px;
+        margin: 12px 15px 8px 15px;
+        margin-left: 10px;
+      }
+      .post-slide .over-layer i {
+        position: relative;
+        top: 45%;
+        text-align: center;
+        display: block;
+        color: #fff;
+        font-size: 25px;
+      }
+      .post-slide .post-content {
+        background: #fff;
+        padding: 2px 20px 40px;
+        border-radius: 15px;
+      }
+      .post-slide .post-title {
+        font-weight: bold;
+        color: #333;
+        display: inline-block;
+      }
+      .post-slide a {
+        text-decoration: none;
+        color: #3498db;
+      }
+      .post-slide .post-description {
+        /*line-height:24px;*/
+        color: black; /*margin-bottom:25px;*/
+      }
+      .post-slide .post-date {
+        color: #a9a9a9;
+        font-size: 14px;
+      }
+      .post-slide .post-date i {
+        font-size: 20px;
+        margin-right: 8px;
+        color: #cfdace;
+      }
+      .post-slide .read-more {
+        padding: 7px 20px;
+        float: right;
+        font-size: 12px;
+        background: #2196f3;
+        color: #ffffff;
+        box-shadow: 0px 10px 20px -10px #1376c5;
+        border-radius: 25px;
+        text-transform: uppercase;
+      }
+      .post-slide .read-more:hover {
+        background: #3498db;
+        text-decoration: none;
+        color: #fff;
+      }
+      .owl-controls .owl-buttons {
+        text-align: center;
+        margin-top: 20px;
+      }
+      .owl-controls .owl-buttons .owl-prev {
+        background: #fff;
+        position: absolute;
+        top: -13%;
+        left: 15px;
+        padding: 0 18px 0 15px;
+        border-radius: 50px;
+        box-shadow: 3px 14px 25px -10px #92b4d0;
+        transition: background 0.5s ease 0s;
+      }
+      .owl-controls .owl-buttons .owl-next {
+        background: #fff;
+        position: absolute;
+        top: -13%;
+        right: 15px;
+        padding: 0 15px 0 18px;
+        border-radius: 50px;
+        box-shadow: -3px 14px 25px -10px #92b4d0;
+        transition: background 0.5s ease 0s;
+      }
+      .owl-controls .owl-buttons .owl-prev:after,
+      .owl-controls .owl-buttons .owl-next:after {
+        content: "\f104";
+        font-family: FontAwesome;
+        color: #333;
+        font-size: 30px;
+      }
+      .owl-controls .owl-buttons .owl-next:after {
+        content: "\f105";
+      }
+      @media only screen and (max-width: 1280px) {
+        .post-slide .post-content {
+          padding: 0px 15px 15px 15px;
+        }
+      }
+      .borderradius {
+        border-radius: 8px 10px 12px 14px;
+      }
+      .blog-bg,
+      .feature-bg {
+        background: #2a2a2b26 0% 0% no-repeat padding-box;
+      }
+      .bg-img {
+        background-image: url("image/site/Background.png");
+        background-repeat: no-repeat;
+      }
+      .feature-img-size {
+        margin: 22px auto 7px auto;
+        width: 50%;
+      }
+      .footer-color {
+        background: #2a2a2b;
+      }
+      .h16 {
+        height: 16px;
+      }
+      .set-height-comm {
+        min-height: 274px;
+        max-height: 279px;
+      }
+      .footer a {
+        text-decoration: none !important;
+        color: white !important;
+      }
+      .screenshot {
+        width: 50%;
+        margin: auto;
+      }
+      .apptitle {
+        margin-top: 30px;
+      }
+    </style>
+  </head>
+  <body>
+    <header class="bg-img">
+      <div class="col-md-12 container">
+        <div class="row ">
+          <div class="col-md-6">
+            <div
+              id="carouselExampleIndicators"
+              class="carousel"
+              data-bs-ride="carousel"
+            >
+              <ol class="carousel-indicators">
+                <li
+                  data-bs-target="#carouselExampleIndicators"
+                  data-bs-slide-to="0"
+                  class="active"
+                ></li>
+                <li
+                  data-bs-target="#carouselExampleIndicators"
+                  data-bs-slide-to="1"
+                ></li>
+                <li
+                  data-bs-target="#carouselExampleIndicators"
+                  data-bs-slide-to="2"
+                ></li>
+              </ol>
+              <div class="carousel-inner">
+                <div class="carousel-item active">
+                  <img
+                    src="./static/frontscreen.png"
+                    class="d-block img-size img-fluid"
+                    alt="..."
+                  />
+                </div>
+                <div class="carousel-item">
+                  <img
+                    src="./static/frontscreen.png"
+                    class="d-block img-size img-fluid"
+                    alt="..."
+                  />
+                </div>
+                <div class="carousel-item">
+                  <img
+                    src="image/site/main.png"
+                    class="d-block img-size img-fluid"
+                    alt="..."
+                  />
+                </div>
+                <!--<div class="carousel-item">-->
+                <!-- <img src="image/screenshots/Screenshot_20221101_174450.png" class="d-block img-size" alt="...">-->
+                <!--</div>-->
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6 ">
+            <div class="logo" style="margin-top: 10px;">
+              <img
+                src="./static/logo.png"
+                alt="logo"
+                style="width: 150px; height: 120px"
+              />
+            </div>
+
+            <div class="apptitle">
+              <p>
+                Welcome to our <b>Truck Ledger App</b>, a smart digital solution
+                created to make lorry trip and expense management easy,
+                accurate, and stress-free. The app allows lorry owners and
+                drivers to record every trip, fuel cost, repair expense,
+                advance, payment, and vehicle details in one secure place,
+                removing the need for notebooks and loose papers.
+              </p>
+
+              <p>
+                Users can track trip history, mileage, earnings, and expenses in
+                real time, helping you clearly understand profit and performance
+                for each vehicle. Driver and owner details are neatly stored,
+                making coordination smooth and transparent. With simple screens
+                and organized reports, the app helps you avoid errors, save
+                time, and make better business decisions. Overall, the
+                <b>Truck Ledger App</b> turns daily lorry operations into a
+                clean, reliable, and fully digital system that keeps your
+                transport business running smarter and more efficiently.
+              </p>
+              <h4>By Skyraan Technologies</h4>
+              <div class="download text-center">
+                <!-- <a href="https://apps.apple.com/in/app/id6744746746" ><img src="image/store/appstore.png" alt="app_store" class="img-fluid btn ml-4 mb-3" /></a> -->
+                <a
+                  href="https://play.google.com/store/apps/details?id=truckledger.lorryexpense.driver.tracking"
+                  ><img
+                    src="./static/googleplay.png"
+                    alt="play_store"
+                    class="img-fluid btn ml-4 mb-3"
+                    style="width: 200px; height: 80px"
+                /></a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+    <!--header-->
+    <section class="my-5">
+      <!--1 menu-->
+      <div class="col-md-12 container my-4">
+        <div class="text-center">
+          <h2 class="mt-3 fw-bold" style="text-align: center">Features</h2>
+        </div>
+      </div>
+      <div class="container text-center feature-bg p-4">
+        <div class="row justify-content-center">
+          <div class="col-md-4 py-3">
+            <div class="card mx-2 p-2 text-center">
+              <img
+                src="./static/assignicon.png"
+                class="img-fluid feature-img-size mb-2"
+              />
+              <h5 class="fw-bold text-truncate">Assign Trips</h5>
+            </div>
+          </div>
+
+          <div class="col-md-4 py-3">
+            <div class="card mx-2 p-2 text-center">
+              <img
+                src="./static/completeicon.png"
+                class="img-fluid feature-img-size mb-2"
+              />
+              <h5 class="fw-bold text-truncate">Completed Trips</h5>
+            </div>
+          </div>
+
+          <div class="col-md-4 py-3">
+            <div class="card mx-2 p-2 text-center">
+              <img
+                src="./static/reporticon.png"
+                class="img-fluid feature-img-size mb-2"
+              />
+              <h5 class="fw-bold text-truncate">Report</h5>
+            </div>
+          </div>
+
+          <div class="col-md-4 py-3">
+            <div class="card mx-2 p-2 text-center">
+              <img
+                src="./static/findownericon.png"
+                class="img-fluid feature-img-size mb-2"
+              />
+              <h5 class="fw-bold text-truncate">Find Owners</h5>
+            </div>
+          </div>
+
+          <div class="col-md-4 py-3">
+            <div class="card mx-2 p-2 text-center">
+              <img
+                src="./static/expenseicon.png"
+                class="img-fluid feature-img-size mb-2"
+              />
+              <h5 class="fw-bold text-truncate">Overall Expenses</h5>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-12 container mt-5" id="1">
+        <div class="row">
+          <div class="col-md-6">
+            <div class="screenshot image1">
+              <img src="./static/assigntrips.png" alt="img" class="img-fluid" />
+            </div>
+          </div>
+          <div class="col-md-6 screenshottext_2 align-self-center">
+            <div class="col-md-9">
+              <h3><b>Assign Trips</b></h3>
+            </div>
+            <div class="col-md-9">
+              <p>
+                Trips assigned to you will appear here with all the important
+                details in one place. You can view and manage trip information
+                such as starting point, destination, driver, vehicle, load, and
+                expected earnings. This section helps you track each journey
+                easily, monitor progress, expenses, and payments, and stay
+                updated without any confusion. With assigned trips clearly
+                listed, both lorry owners and drivers can stay organized and
+                focused on every trip.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-12 container mt-5" id="1">
+        <div class="row">
+          <div class="col-md-6 screenshottext_2 align-self-center">
+            <div class="col-md-9">
+              <h3><b>Completed Trips </b></h3>
+            </div>
+            <div class="col-md-9">
+              <p>
+                View a full history of all completed trips with clear details
+                like route, driver, vehicle, expenses, and earnings, helping you
+                easily track performance, verify records, and understand your
+                lorry’s actual income from every journey.
+              </p>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="screenshot image1">
+              <img
+                src="./static/completedtrips.png"
+                alt="img"
+                class="img-fluid"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-12 container mt-5" id="1">
+        <div class="row">
+          <div class="col-md-6">
+            <div class="screenshot image1">
+              <img src="./static/report.png" alt="img" class="img-fluid" />
+            </div>
+          </div>
+          <div class="col-md-6 screenshottext_2 align-self-center">
+            <div class="col-md-9">
+              <h3><b>Report</b></h3>
+            </div>
+            <div class="col-md-9">
+              <p>
+                Add all your expenses as a record to clearly see what was spent
+                during each trip, helping you track fuel, repairs, tolls, and
+                other costs in an organized way. This makes it easy to analyze
+                where most money is going. It also supports better budgeting and
+                cost control for future trips.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-12 container mt-5" id="2">
+        <div class="row">
+          <div class="col-md-6 screenshottext_2 align-self-center">
+            <div class="col-md-9">
+              <h3><b>Find Owners</b></h3>
+            </div>
+            <div class="col-md-9">
+              <p>
+                Locate nearby lorry owners and view their details. This feature
+                helps you quickly connect with owners for trip planning, vehicle
+                hiring, or support. It also makes coordination easier by
+                providing clear and reliable contact information.
+              </p>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="screenshot image2">
+              <img src="./static/findowners.png" alt="img" class="img-fluid" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-12 container mt-5" id="3">
+        <div class="row">
+          <div class="col-md-6">
+            <div class="screenshot image3">
+              <img
+                src="./static/overallexpense.png"
+                alt="img"
+                class="img-fluid"
+              />
+            </div>
+          </div>
+          <div class="col-md-6 screenshottext_2 align-self-center">
+            <div class="col-md-9">
+              <h3><b>Overall Expenses</b></h3>
+            </div>
+            <div class="col-md-9">
+              <p>
+                Keep a complete log of all expenses occurring during a trip.
+                This gives owners a clear view of total spending, including
+                fuel, repairs, and other charges. It helps in tracking
+                profitability and ensuring accurate settlement for every trip.
+                With this, financial control becomes more transparent and
+                reliable.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!--screenshot-->
+    </section>
+    <!--blogs-->
+    <section class="mt-5 footer-color text-white p-4">
+      <div class="row">
+        <div class="col-md-7" style="border-right: 1px solid white">
+          <div class="row">
+            <div class="col-md-3 col-sm-12 col-xs-12 mt-3">
+              <img src="./static/logo.png" class="img-fluid" />
+            </div>
+            <div class="col-md-9 col-sm-12 col-xs-12">
+              <div class="mt-3 me-5">
+                <p>
+                  Running a lorry business isn’t just about moving goods from
+                  one place to another. It’s about managing drivers, tracking
+                  vehicles, handling trip details, watching fuel and toll
+                  expenses, and keeping an eye on earnings, all at the same
+                  time. Our app brings every moving part together in one
+                  organized space, giving you a clear view of lorry owners,
+                  drivers, vehicle models, trips, and expenses without the usual
+                  hassle.
+                </p>
+                <p>
+                  No paperwork, no confusion, no guesswork. Track every trip,
+                  manage costs, and stay in control with organized records that
+                  actually make sense. Whether you’re on the road or off it,
+                  this is where your lorry business stays sorted.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-5 p-4">
+          <div class="mb-4 footer">
+            <h5>Quick Links</h5>
+            <div class="row">
+              <!--<div class="col-md-3 col-sm-6 col-xs-12">-->
+              <!-- <small class="d-flex"><img src="image/allicons/Arrow.png" class="img-fluid me-2 h16"> <a href="help_page.php">Help</a> </small>-->
+              <!--</div>-->
+              <div class="col-md-4 col-sm-6 col-xs-12">
+                <small class="d-flex"
+                  ><img src="./static/Arrow.png" class="img-fluid me-2 h16" />
+                  <a
+                    href="https://truckledger.skyraanapps.com/server/privacyandpolicy.html"
+                    >Privacy Policy</a
+                  ></small
+                >
+              </div>
+              <div class="col-md-5 col-sm-6 col-xs-12">
+                <small class="d-flex"
+                  ><img src="./static/Arrow.png" class="img-fluid me-2 h16" />
+                  <a
+                    href="https://truckledger.skyraanapps.com/server/termsandcondition.html"
+                    >Terms & Conditions</a
+                  ></small
+                >
+              </div>
+            </div>
+          </div>
+          <div class="mb-4">
+            <h5>Contact Us</h5>
+            <div class="row">
+              <div class="col-md-12 mb-3">
+                <div class="d-flex">
+                  <a href="mailto:support@skyraanapps.com" class="text-white"
+                    ><img src="./static/Message.png" class="img-fluid me-3" />
+                    support@skyraanapps.com</a
+                  >
+                </div>
+              </div>
+              <div class="col-md-12">
+                <div class="d-flex align-items-start justify-content-center">
+                  <img
+                    src="./static/Location.png"
+                    class="img-fluid h-25 me-3"
+                  />
+                  Skyraan Technologies, No.17, Sri Venkateshwara
+                  Towers,Gandhimaa Nagar Peelamedu, Coimbatore, Tamil Nadu - 641
+                  004, India
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="">
+            <h5>Download Truck Ledger App now</h5>
+            <div class="row">
+              <!-- <div class="col-md-6"> <div class=""> <a href="https://apps.apple.com/in/app/id6744746746" ><img src="image/store/appstore.png" alt="app_store" class="btn ml-4 img-fluid w-75" /></a> </div> </div> -->
+              <div class="col-md-6">
+                <div class="">
+                  <a
+                    href="https://play.google.com/store/apps/details?id=truckledger.lorryexpense.driver.tracking"
+                    ><img
+                      src="./static/googleplay.png"
+                      alt="play_store"
+                      class="btn ml-4 img-fluid w-75"
+                  /></a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <script src="js/script.js"></script>
+    <script src="js/jquery-3.6.1.min.js"></script>
+    <script src="bootstrap/js/popper.min.js"></script>
+    <script src="bootstrap/js/bootstrap.min.js"></script>
+    <!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script> -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/owl-carousel/1.3.3/owl.carousel.min.js"></script>
+    <script>
+      $(document).ready(function () {
+        $("#news-slider").owlCarousel({
+          items: 3,
+          itemsDesktop: [1199, 3],
+          itemsDesktopSmall: [980, 2],
+          itemsMobile: [600, 1],
+          navigation: false,
+          navigationText: ["", ""],
+          pagination: true,
+          autoPlay: true,
+        });
+      });
+    </script>
+  </body>
+</html>

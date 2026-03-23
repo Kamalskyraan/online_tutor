@@ -1,0 +1,207 @@
+import { Router } from "express";
+import { ReviewController } from "../controller/review.controller";
+
+const router = Router();
+
+router.post("/add-update-review", (req, res) => {
+  /*
+    #swagger.tags = ['9.review']
+    #swagger.summary = 'Add Update Review'
+    #swagger.description = 'Add Review and Update Review'
+
+    
+    #swagger.parameters['body'] = {
+      in: 'body',
+      required: true,
+      schema: {
+        id: 1,
+        tutor_id : "TUTOR_4w4lwlu0",
+        student_id : "STUDENT_UOFswA1y",
+        rating: "5",
+        review_text: "abcd efgh ijklmn opqrst"
+      }
+    }
+
+
+    #swagger.responses[200] = {
+      description: "Add or Update Review successfully"
+    }
+
+    #swagger.responses[500] = {
+      description: "Internal Server Error"
+    }
+  */
+  ReviewController.addUpdateReview(req, res);
+});
+router.post("/get-reviews", (req, res) => {
+  /*
+    #swagger.tags = ['9.review']
+    #swagger.summary = 'Add Update Review'
+    #swagger.description = 'Add Review and Update Review'
+
+    
+    #swagger.parameters['body'] = {
+      in: 'body',
+      required: true,
+      schema: {
+        id: 1,
+        tutor_id : "TUTOR_4w4lwlu0",
+        student_id : "STUDENT_UOFswA1y",
+        rating: "5",
+        from_date : "2026-03-04",
+        to_date : "2026-03-05"
+      }
+    }
+
+
+    #swagger.responses[200] = {
+      description: "Review Fetched successfully"
+    }
+
+    #swagger.responses[500] = {
+      description: "Internal Server Error"
+    }
+  */
+  ReviewController.getUpdateReview(req, res);
+});
+router.post("/reply-review", (req, res) => {
+  /*
+    #swagger.tags = ['9.review']
+    #swagger.summary = 'Add Update Review Reply'
+    #swagger.description = 'Add Review and Update Review Reply'
+
+    
+    #swagger.parameters['body'] = {
+      in: 'body',
+      required: true,
+      schema: {
+        id: 1,
+        tutor_id : "TUTOR_4w4lwlu0",
+        student_id : "STUDENT_UOFswA1y",
+        reply_text: "abcd efgh ijklmn opqrst",
+        review_id : "3"
+      }
+    }
+
+
+    #swagger.responses[200] = {
+      description: "Add or Update Review Reply successfully"
+    }
+
+    #swagger.responses[500] = {
+      description: "Internal Server Error"
+    }
+  */
+  ReviewController.replyReview(req, res);
+});
+
+router.post("/add-review-like", (req, res) => {
+  /*
+    #swagger.tags = ['9.review']
+    #swagger.summary = 'Add Update Review Like'
+    #swagger.description = 'Add Review  Like and Update Review Like'
+
+    
+    #swagger.parameters['body'] = {
+      in: 'body',
+      required: true,
+      schema: {
+        id: 1,
+        review_id: "1",
+        tutor_id : "TUTOR_4w4lwlu0",
+        student_id : "STUDENT_UOFswA1y"
+      }
+    }
+
+
+    #swagger.responses[200] = {
+      description: "Review Liked successfully"
+    }
+
+    #swagger.responses[500] = {
+      description: "Internal Server Error"
+    }
+  */
+  ReviewController.reviewLike(req, res);
+});
+
+router.post("/remove-review", (req, res) => {
+  /*
+    #swagger.tags = ['9.review']
+    #swagger.summary = 'Delete Review'
+    #swagger.description = 'Remove Review based on student'
+
+    
+    #swagger.parameters['body'] = {
+      in: 'body',
+      required: true,
+      schema: {
+        id: 1,
+        student_id : "STUDENT_UOFswA1y"
+      }
+    }
+
+
+    #swagger.responses[200] = {
+      description: "Review Deleted successfully"
+    }
+
+    #swagger.responses[500] = {
+      description: "Internal Server Error"
+    }
+  */
+
+  ReviewController.deleteReview(req, res);
+});
+
+router.get("/get-report-reasons", (req, res) => {
+  /*
+    #swagger.tags = ['9.review']
+    #swagger.summary = 'Get Report Reasons'
+    #swagger.description = 'Fetch Report Reasons From country.json'
+
+
+    #swagger.responses[200] = {
+      description: "Report Reasons fetched successfully",
+     
+    }
+    #swagger.responses[500] = {
+      description: "Internal Server Error"
+    }
+  */
+  ReviewController.fetchReportReasons(req, res);
+});
+
+router.post("/report-review", (req, res) => {
+  /*
+    #swagger.tags = ['9.review']
+    #swagger.summary = 'Report a  Review'
+    #swagger.description = 'Report a  Review '
+
+    
+    #swagger.parameters['body'] = {
+      in: 'body',
+      required: true,
+      schema: {
+        review_id: "1",
+        student_id : "STUDENT_UOFswA1y",
+        tutor_id : "TUTOR_4w4lwlu0",
+        reason_id :"-1",
+        other_reason : "abcdefgh ijkl"
+
+      }
+    }
+
+
+    #swagger.responses[200] = {
+      description: "Review Reported successfully"
+    }
+
+    #swagger.responses[500] = {
+      description: "Internal Server Error"
+    }
+  */
+
+  return ReviewController.reportReview(req, res);
+});
+export default router;
