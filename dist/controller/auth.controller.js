@@ -25,6 +25,11 @@ AuthController.RequestOtp = async (req, res) => {
             if (user) {
                 return (0, helper_1.sendResponse)(res, 200, 0, [], "User already exists", []);
             }
+            if (type === "2") {
+                if (!user) {
+                    return (0, helper_1.sendResponse)(res, 200, 0, {}, "User not found", []);
+                }
+            }
         }
         const otp = (0, helper_1.generateOTP)();
         const expires_at = (0, helper_1.getOTPExpiry)();
@@ -44,7 +49,7 @@ AuthController.RequestOtp = async (req, res) => {
         return (0, helper_1.sendResponse)(res, 200, 1, [responseData], "OTP sent successfully");
     }
     catch (err) {
-        return (0, helper_1.sendResponse)(res, err.status || 500, 0, [], "Something went wrong", [err.errors || err.message || err]);
+        return (0, helper_1.sendResponse)(res, err.status || 500, 0, [], "Something went wrong", err.errors || err.message || err);
     }
 };
 AuthController.VerifyOtp = async (req, res) => {

@@ -66,7 +66,7 @@
                 },
                 "type": {
                   "type": "string",
-                  "example": "0 or 1"
+                  "example": "0 or 1 or 2"
                 }
               }
             }
@@ -413,87 +413,6 @@
         "responses": {
           "200": {
             "description": "add or update tutor successfully"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
-        }
-      }
-    },
-    "/api/user/add-update-student": {
-      "post": {
-        "tags": [
-          "2.User"
-        ],
-        "summary": "add or update student data",
-        "description": "Add Or Update Student Data",
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "type": "object",
-              "properties": {
-                "user_role": {
-                  "type": "string",
-                  "example": "student"
-                },
-                "dob": {
-                  "type": "string",
-                  "example": "2002-03-15"
-                },
-                "gender": {
-                  "type": "string",
-                  "example": "male"
-                },
-                "country": {
-                  "type": "string",
-                  "example": "india"
-                },
-                "pincode": {
-                  "type": "string",
-                  "example": "624601"
-                },
-                "state": {
-                  "type": "string",
-                  "example": "tamilnadu"
-                },
-                "district": {
-                  "type": "string",
-                  "example": "CBE"
-                },
-                "area": {
-                  "type": "string",
-                  "example": "RSpuram"
-                },
-                "is_show_num": {
-                  "type": "boolean",
-                  "example": true
-                },
-                "address": {
-                  "type": "string",
-                  "example": "abcde fghij klmnop"
-                },
-                "user_id": {
-                  "type": "string",
-                  "example": "USER_LDsMp-Dsm"
-                },
-                "stream_id": {
-                  "type": "string",
-                  "example": "1"
-                },
-                "learn_course": {
-                  "type": "string",
-                  "example": "Full Stack Development"
-                }
-              }
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Add Or Update Student data successfully"
           },
           "500": {
             "description": "Internal Server Error"

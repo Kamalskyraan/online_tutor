@@ -16,7 +16,7 @@ router.post("/request-otp", (req, res) => {
         schema: {
           mobile: '9876543210',
           country_code : '+91',
-          type : "0 or 1"
+          type : "0 or 1 or 2"
         }
       }
   

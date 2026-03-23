@@ -53,7 +53,7 @@ class UserModel {
         return rows.user_role;
     }
     async updateUserBasicForStudent(user) {
-        const { gender, dob, country, pincode, area, district, state, is_show_num, address, user_id, } = user;
+        const { gender, dob, country, pincode, area, district, state, is_show_num, address, user_id, user_role, } = user;
         let query = `UPDATE users SET `;
         const fields = [];
         const values = [];
@@ -92,6 +92,10 @@ class UserModel {
         if (address !== undefined) {
             fields.push(`address = ?`);
             values.push(address);
+        }
+        if (user_role !== undefined) {
+            fields.push(`user_role = ?`);
+            values.push(user_role);
         }
         if (fields.length === 0)
             return 0;
@@ -152,14 +156,6 @@ class UserModel {
             return;
         await (0, helper_1.executeQuery)(`INSERT INTO learn_course_request (course_name, user_id)
      VALUES (?, ?)`, [subject_name, user_id]);
-    }
-    async updateStudentDatas(data) {
-        const { user_id, user_role, gender, dob, country, pincode, state, district, area, is_show_num, stream_id, learn_course, } = data;
-        const query = `
-      UPDATE users SET
-        
-      WHERE user_id = ?
-    `;
     }
 }
 exports.UserModel = UserModel;

@@ -40,6 +40,11 @@ export class AuthController {
         if (user) {
           return sendResponse(res, 200, 0, [], "User already exists", []);
         }
+        if (type === "2") {
+          if (!user) {
+            return sendResponse(res, 200, 0, {}, "User not found", []);
+          }
+        }
       }
 
       const otp = generateOTP();
@@ -68,7 +73,7 @@ export class AuthController {
         0,
         [],
         "Something went wrong",
-        [err.errors || err.message || err],
+        err.errors || err.message || err,
       );
     }
   };

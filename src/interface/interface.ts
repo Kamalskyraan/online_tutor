@@ -68,7 +68,6 @@ export interface UserAddressBody {
 export interface UserEducationBody {
   user_id: string;
   user_name: string;
-  education: string;
   learn_course?: string;
   stream_id?: string;
   student_id?: string;
@@ -178,6 +177,7 @@ export interface studentPersonalBody {
   area: string;
   is_show_num: string;
   address: string;
+  user_role: string;
 }
 
 //user

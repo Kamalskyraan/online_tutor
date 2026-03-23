@@ -38,8 +38,8 @@ export const requestOtSchema = Joi.object({
   }),
   mobile: Joi.string().pattern(/^[0-9]{7,15}$/),
   email: Joi.string(),
-  type: Joi.string().valid("0", "1").required().messages({
-    "any.only": "Type must be either 0 or 1",
+  type: Joi.string().valid("0", "1" , "2").required().messages({
+    "any.only": "Type must be either 0 or 1 or 2",
     "number.base": "Type must be a number",
     "any.required": "Type is required",
   }),

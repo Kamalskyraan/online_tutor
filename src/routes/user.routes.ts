@@ -43,45 +43,44 @@ router.post("/add-update-tutor", (req, res) => {
   userController.updateTutor(req, res);
 });
 
-router.post("/add-update-student", (req, res) => {
-  /*
-    #swagger.tags = ['2.User']
-    #swagger.summary = 'add or update student data'
-    #swagger.description = 'Add Or Update Student Data'
+// router.post("/add-update-student", (req, res) => {
+//   /*
+//     #swagger.tags = ['2.User']
+//     #swagger.summary = 'add or update student data'
+//     #swagger.description = 'Add Or Update Student Data'
 
-    #swagger.parameters['body'] = {
-      in: 'body',
-      required: true,
-      schema: {  
-        user_role : "student",
-        dob : "2002-03-15",
-        gender : "male",
-        country : "india",
-        pincode : "624601",
-        state : "tamilnadu",
-        district : "CBE",
-        area : "RSpuram",
-        is_show_num : true,
-        address : "abcde fghij klmnop",
-        user_id : "USER_LDsMp-Dsm",
+//     #swagger.parameters['body'] = {
+//       in: 'body',
+//       required: true,
+//       schema: {
+//         user_role : "student",
+//         dob : "2002-03-15",
+//         gender : "male",
+//         country : "india",
+//         pincode : "624601",
+//         state : "tamilnadu",
+//         district : "CBE",
+//         area : "RSpuram",
+//         is_show_num : true,
+//         address : "abcde fghij klmnop",
+//         user_id : "USER_LDsMp-Dsm",
 
-        stream_id : "1",
+//         stream_id : "1",
 
-        
-        learn_course : "Full Stack Development"
-      }
-    }
+//         learn_course : "Full Stack Development"
+//       }
+//     }
 
-    #swagger.responses[200] = {
-      description: "Add Or Update Student data successfully"
-    }
+//     #swagger.responses[200] = {
+//       description: "Add Or Update Student data successfully"
+//     }
 
-    #swagger.responses[500] = {
-      description: "Internal Server Error"
-    }
-  */
-  userController.updateStudent(req, res);
-});
+//     #swagger.responses[500] = {
+//       description: "Internal Server Error"
+//     }
+//   */
+//   userController.updateStudent(req, res);
+// });
 
 router.post("/get-user-data", (req, res) => {
   /*

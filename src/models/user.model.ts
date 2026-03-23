@@ -134,6 +134,7 @@ export class UserModel {
       is_show_num,
       address,
       user_id,
+      user_role,
     } = user;
 
     let query = `UPDATE users SET `;
@@ -175,6 +176,10 @@ export class UserModel {
     if (address !== undefined) {
       fields.push(`address = ?`);
       values.push(address);
+    }
+    if (user_role !== undefined) {
+      fields.push(`user_role = ?`);
+      values.push(user_role);
     }
 
     if (fields.length === 0) return 0;
@@ -285,28 +290,5 @@ export class UserModel {
      VALUES (?, ?)`,
       [subject_name, user_id],
     );
-  }
-
-  async updateStudentDatas(data: any) {
-    const {
-      user_id,
-      user_role,
-      gender,
-      dob,
-      country,
-      pincode,
-      state,
-      district,
-      area,
-      is_show_num,
-      stream_id,
-      learn_course,
-    } = data;
-
-    const query = `
-      UPDATE users SET
-        
-      WHERE user_id = ?
-    `;
   }
 }

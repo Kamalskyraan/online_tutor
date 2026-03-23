@@ -146,49 +146,57 @@ export class userController {
   //   }
   // };
 
-  static updateStudent = async (req: Request, res: Response) => {
-    try {
-      const {
-        id,
-        user_id,
-        user_role,
-        gender,
-        dob,
-        country,
-        pincode,
-        state,
-        district,
-        area,
-        is_show_num,
-        stream_id,
-        learn_course,
-      } = await validateRequest(req.body, updateStudentSchema);
+  // static updateStudent = async (req: Request, res: Response) => {
+  //   try {
+  //     const {
+  //       user_id,
+  //       user_role,
+  //       gender,
+  //       dob,
+  //       country,
+  //       pincode,
+  //       state,
+  //       district,
+  //       area,
+  //       is_show_num,
+  //       stream_id,
+  //       learn_course,
+  //     } = await validateRequest(req.body, updateStudentSchema);
 
-      const result = await userModel.updateStudentDatas({
-        user_id,
-        user_role,
-        gender,
-        dob,
-        country,
-        pincode,
-        state,
-        district,
-        area,
-        is_show_num,
-        stream_id,
-        learn_course,
-      });
-    } catch (err: any) {
-      return sendResponse(
-        res,
-        500,
-        0,
-        [],
-        "Internal Server Error",
-        err.errors || err.message || err,
-      );
-    }
-  };
+  //      await userModel.updateUserBasicForStudent(
+  //       gender,
+  //       dob,
+  //       country,
+  //       pincode,
+  //       state,
+  //       district,
+  //       area,
+  //       is_show_num,
+  //       user_id,
+  //       user_role,
+  //     );
+
+  //     const user_name = await userModel.fetchUserName(user_id);
+  //     const student_id = await generateStudentId();
+
+  //     await userModel.updateStudentEducation({
+  //       user_id,
+  //       user_name,
+  //       student_id,
+  //       learn_course,
+  //       stream_id,
+  //     });
+  //   } catch (err: any) {
+  //     return sendResponse(
+  //       res,
+  //       500,
+  //       0,
+  //       [],
+  //       "Internal Server Error",
+  //       err.errors || err.message || err,
+  //     );
+  //   }
+  // };
 
   static userDetails = async (req: Request, res: Response) => {
     try {
