@@ -1,14 +1,11 @@
 import dotenv from "dotenv";
 import express, { Request, Response } from "express";
-import { connectDB } from "./config/db";
 dotenv.config();
 import fs from "fs";
 import swaggerUi from "swagger-ui-express";
 import swaggerFile from "./docs/swagger_output.json";
-
 import router from "./routes";
-import { upload } from "./config/multer";
-import path from "path";
+
 const app = express();
 
 const PORT = process.env.PORT || 5000;
