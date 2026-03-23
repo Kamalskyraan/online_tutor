@@ -148,11 +148,7 @@ exports.resetPasswordSchema = joi_1.default.object({
         "string.max": "New password must be less than 32 characters",
         "any.required": "New password is required",
     }),
-    confirm_password: joi_1.default.string()
-        .required()
-        .valid(joi_1.default.ref("new_password"))
-        .messages({
-        "any.only": "Confirm password must match new password",
+    confirm_password: joi_1.default.string().required().messages({
         "string.empty": "Confirm password is required",
         "any.required": "Confirm password is required",
     }),

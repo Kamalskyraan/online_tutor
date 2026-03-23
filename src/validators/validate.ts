@@ -166,14 +166,10 @@ export const resetPasswordSchema = Joi.object({
     "any.required": "New password is required",
   }),
 
-  confirm_password: Joi.string()
-    .required()
-    .valid(Joi.ref("new_password"))
-    .messages({
-      "any.only": "Confirm password must match new password",
-      "string.empty": "Confirm password is required",
-      "any.required": "Confirm password is required",
-    }),
+  confirm_password: Joi.string().required().messages({
+    "string.empty": "Confirm password is required",
+    "any.required": "Confirm password is required",
+  }),
 });
 
 // source
