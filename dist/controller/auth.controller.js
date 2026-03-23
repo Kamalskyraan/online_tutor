@@ -41,11 +41,10 @@ AuthController.RequestOtp = async (req, res) => {
         if (process.env.NODE_ENV === "development") {
             responseData.otp = otp;
         }
-        return (0, helper_1.sendResponse)(res, 200, 1, responseData, "OTP sent successfully");
+        return (0, helper_1.sendResponse)(res, 200, 1, [responseData], "OTP sent successfully");
     }
     catch (err) {
-        console.log(err);
-        return (0, helper_1.sendResponse)(res, err.status || 500, 0, [], "Something went wrong", err.errors || err.message || err);
+        return (0, helper_1.sendResponse)(res, err.status || 500, 0, [], "Something went wrong", [err.errors || err.message || err]);
     }
 };
 AuthController.VerifyOtp = async (req, res) => {
@@ -66,10 +65,10 @@ AuthController.VerifyOtp = async (req, res) => {
             return (0, helper_1.sendResponse)(res, 200, 0, [], "OTP already used");
         }
         await (0, auth_model_1.markOTPUsed)(otpRecord.id);
-        return (0, helper_1.sendResponse)(res, 200, 1, [], "OTP verified successfully");
+        return (0, helper_1.sendResponse)(res, 200, 1, [], "OTP verified successfully", []);
     }
     catch (err) {
-        return (0, helper_1.sendResponse)(res, err.status || 500, 0, [], "Something went wrong", err.errors || err.message || err);
+        return (0, helper_1.sendResponse)(res, err.status || 500, 0, [], "Something went wrong", [err.errors || err.message || err]);
     }
 };
 AuthController.signup = async (req, res) => {
@@ -77,7 +76,7 @@ AuthController.signup = async (req, res) => {
         const { user_name, country_code, mobile, otp, email, password, device_id, device_type, device_token, } = await (0, helper_1.validateRequest)(req.body, validate_1.signupSchema);
         const existingUser = await authModel.findUser(country_code, mobile);
         if (existingUser) {
-            return (0, helper_1.sendResponse)(res, 200, 0, [], "User already exists");
+            return (0, helper_1.sendResponse)(res, 200, 0, [], "User already exists", []);
         }
         const otpRecord = await (0, auth_model_1.getValiOTP)({
             country_code,
@@ -85,13 +84,13 @@ AuthController.signup = async (req, res) => {
             otp,
         });
         if (otpRecord.message === "invalid") {
-            return (0, helper_1.sendResponse)(res, 200, 0, [], "Invalid OTP");
+            return (0, helper_1.sendResponse)(res, 200, 0, [], "Invalid OTP", []);
         }
         if (otpRecord.message === "expired") {
-            return (0, helper_1.sendResponse)(res, 200, 0, [], "OTP expired");
+            return (0, helper_1.sendResponse)(res, 200, 0, [], "OTP expired", []);
         }
         if (otpRecord.message === "used") {
-            return (0, helper_1.sendResponse)(res, 200, 0, [], "OTP already used");
+            return (0, helper_1.sendResponse)(res, 200, 0, [], "OTP already used", []);
         }
         await (0, auth_model_1.markOTPUsed)(otpRecord.id);
         const password_hash = await bcryptjs_1.default.hash(password, 10);
@@ -120,13 +119,12 @@ AuthController.signup = async (req, res) => {
                 // sameSite: "Strict",
                 maxAge: 90 * 24 * 60 * 60 * 1000,
             });
-            return (0, helper_1.sendResponse)(res, 200, 1, { user_id }, "Signup successful");
+            return (0, helper_1.sendResponse)(res, 200, 1, [{ user_id }], "Signup successful", []);
         }
-        return (0, helper_1.sendResponse)(res, 200, 1, { user_id, token }, "Signup successful");
+        return (0, helper_1.sendResponse)(res, 200, 1, [{ user_id, token }], "Signup successful", []);
     }
     catch (err) {
-        console.log(err);
-        return (0, helper_1.sendResponse)(res, err.status || 500, 0, [], "Something went wrong", err.errors || err.message || err);
+        return (0, helper_1.sendResponse)(res, err.status || 500, 0, [], "Something went wrong", [err.errors || err.message || err]);
     }
 };
 AuthController.login = async (req, res) => {
@@ -134,11 +132,11 @@ AuthController.login = async (req, res) => {
         const { country_code, mobile, password, device_id, device_type, device_token, } = await (0, helper_1.validateRequest)(req.body, validate_1.loginSchema);
         const user = await authModel.findUser(country_code, mobile);
         if (!user) {
-            return (0, helper_1.sendResponse)(res, 200, 0, [], "User not found");
+            return (0, helper_1.sendResponse)(res, 200, 0, [], "User not found", []);
         }
         const isPasswordValid = await bcryptjs_1.default.compare(password, user.password);
         if (!isPasswordValid)
-            return (0, helper_1.sendResponse)(res, 200, 0, [], "Invalid password");
+            return (0, helper_1.sendResponse)(res, 200, 0, [], "Invalid password", []);
         await authModel.clearExistUserDevice(user.user_id);
         await authModel.addUserDevice({
             user_id: user.user_id,
@@ -153,44 +151,44 @@ AuthController.login = async (req, res) => {
                 secure: process.env.NODE_ENV === "production",
                 maxAge: 90 * 24 * 60 * 60 * 1000,
             });
-            return (0, helper_1.sendResponse)(res, 200, 1, { user_id: user.user_id }, "Login successful");
+            return (0, helper_1.sendResponse)(res, 200, 1, [{ user_id: user.user_id }], "Login successful", []);
         }
-        return (0, helper_1.sendResponse)(res, 200, 1, { user_id: user.user_id, token }, "Login successful");
+        return (0, helper_1.sendResponse)(res, 200, 1, [{ user_id: user.user_id, token }], "Login successful", []);
     }
     catch (err) {
         console.log(err);
-        return (0, helper_1.sendResponse)(res, err.status || 500, 0, [], "Something went wrong", err.errors || err.message || err);
+        return (0, helper_1.sendResponse)(res, err.status || 500, 0, [], "Something went wrong", [err.errors || err.message || err]);
     }
 };
 AuthController.resetPassword = async (req, res) => {
     try {
         const { mobile, country_code, new_password, confirm_password } = await (0, helper_1.validateRequest)(req.body, validate_1.resetPasswordSchema);
         if (new_password !== confirm_password) {
-            return (0, helper_1.sendResponse)(res, 200, 0, [], "Passwords do not match");
+            return (0, helper_1.sendResponse)(res, 200, 0, [], "Passwords do not match", []);
         }
         const hashedPassword = await bcryptjs_1.default.hash(new_password, 10);
         await authModel.updatePassword(country_code, mobile, hashedPassword);
-        return (0, helper_1.sendResponse)(res, 200, 1, [], "Password updated successfully");
+        return (0, helper_1.sendResponse)(res, 200, 1, [], "Password updated successfully", []);
     }
     catch (err) {
-        return (0, helper_1.sendResponse)(res, err.status || 500, 0, [], "Something went wrong", err.errors || err.message || err);
+        return (0, helper_1.sendResponse)(res, err.status || 500, 0, [], "Something went wrong", [err.errors || err.message || err]);
     }
 };
 AuthController.logout = async (req, res) => {
     try {
         const { user_id } = req.body;
         if (!user_id) {
-            return (0, helper_1.sendResponse)(res, 400, 0, [], "User Id is required");
+            return (0, helper_1.sendResponse)(res, 400, 0, [], "User Id is required", []);
         }
         await authModel.clearExistUserDevice(user_id);
         res.clearCookie("token", {
             httpOnly: true,
             secure: process.env.NODE_ENV === "production",
         });
-        return (0, helper_1.sendResponse)(res, 200, 1, [], "Logout successful");
+        return (0, helper_1.sendResponse)(res, 200, 1, [], "Logout successful", []);
     }
     catch (err) {
-        return (0, helper_1.sendResponse)(res, err.status || 500, 0, [], "Something went wrong", err.errors || err.message || err);
+        return (0, helper_1.sendResponse)(res, err.status || 500, 0, [], "Something went wrong", [err.errors || err.message || err]);
     }
 };
 //# sourceMappingURL=auth.controller.js.map

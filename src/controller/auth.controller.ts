@@ -41,6 +41,7 @@ export class AuthController {
           return sendResponse(res, 200, 0, [], "User already exists", []);
         }
       }
+
       const otp = generateOTP();
       const expires_at = getOTPExpiry();
       await createOTP({ mobile, email, country_code, otp, expires_at });
@@ -59,16 +60,15 @@ export class AuthController {
         responseData.otp = otp;
       }
 
-      return sendResponse(res, 200, 1, responseData, "OTP sent successfully");
+      return sendResponse(res, 200, 1, [responseData], "OTP sent successfully");
     } catch (err: any) {
-      console.log(err);
       return sendResponse(
         res,
         err.status || 500,
         0,
         [],
         "Something went wrong",
-        err.errors || err.message || err,
+        [err.errors || err.message || err],
       );
     }
   };
@@ -96,7 +96,7 @@ export class AuthController {
 
       await markOTPUsed(otpRecord.id);
 
-      return sendResponse(res, 200, 1, [], "OTP verified successfully");
+      return sendResponse(res, 200, 1, [], "OTP verified successfully", []);
     } catch (err: any) {
       return sendResponse(
         res,
@@ -104,7 +104,7 @@ export class AuthController {
         0,
         [],
         "Something went wrong",
-        err.errors || err.message || err,
+        [err.errors || err.message || err],
       );
     }
   };
@@ -124,7 +124,7 @@ export class AuthController {
       } = await validateRequest(req.body, signupSchema);
       const existingUser = await authModel.findUser(country_code, mobile);
       if (existingUser) {
-        return sendResponse(res, 200, 0, [], "User already exists");
+        return sendResponse(res, 200, 0, [], "User already exists", []);
       }
 
       const otpRecord = await getValiOTP({
@@ -134,13 +134,13 @@ export class AuthController {
       });
 
       if (otpRecord.message === "invalid") {
-        return sendResponse(res, 200, 0, [], "Invalid OTP");
+        return sendResponse(res, 200, 0, [], "Invalid OTP", []);
       }
       if (otpRecord.message === "expired") {
-        return sendResponse(res, 200, 0, [], "OTP expired");
+        return sendResponse(res, 200, 0, [], "OTP expired", []);
       }
       if (otpRecord.message === "used") {
-        return sendResponse(res, 200, 0, [], "OTP already used");
+        return sendResponse(res, 200, 0, [], "OTP already used", []);
       }
 
       await markOTPUsed(otpRecord.id);
@@ -177,18 +177,31 @@ export class AuthController {
           maxAge: 90 * 24 * 60 * 60 * 1000,
         });
 
-        return sendResponse(res, 200, 1, { user_id }, "Signup successful");
+        return sendResponse(
+          res,
+          200,
+          1,
+          [{ user_id }],
+          "Signup successful",
+          [],
+        );
       }
-      return sendResponse(res, 200, 1, { user_id, token }, "Signup successful");
+      return sendResponse(
+        res,
+        200,
+        1,
+        [{ user_id, token }],
+        "Signup successful",
+        [],
+      );
     } catch (err: any) {
-      console.log(err);
       return sendResponse(
         res,
         err.status || 500,
         0,
         [],
         "Something went wrong",
-        err.errors || err.message || err,
+        [err.errors || err.message || err],
       );
     }
   };
@@ -206,12 +219,12 @@ export class AuthController {
       const user = await authModel.findUser(country_code, mobile);
 
       if (!user) {
-        return sendResponse(res, 200, 0, [], "User not found");
+        return sendResponse(res, 200, 0, [], "User not found", []);
       }
 
       const isPasswordValid = await bcrypt.compare(password, user.password);
       if (!isPasswordValid)
-        return sendResponse(res, 200, 0, [], "Invalid password");
+        return sendResponse(res, 200, 0, [], "Invalid password", []);
 
       await authModel.clearExistUserDevice(user.user_id);
       await authModel.addUserDevice({
@@ -235,16 +248,18 @@ export class AuthController {
           res,
           200,
           1,
-          { user_id: user.user_id },
+          [{ user_id: user.user_id }],
           "Login successful",
+          [],
         );
       }
       return sendResponse(
         res,
         200,
         1,
-        { user_id: user.user_id, token },
+        [{ user_id: user.user_id, token }],
         "Login successful",
+        [],
       );
     } catch (err: any) {
       console.log(err);
@@ -254,7 +269,7 @@ export class AuthController {
         0,
         [],
         "Something went wrong",
-        err.errors || err.message || err,
+        [err.errors || err.message || err],
       );
     }
   };
@@ -263,11 +278,11 @@ export class AuthController {
       const { mobile, country_code, new_password, confirm_password } =
         await validateRequest(req.body, resetPasswordSchema);
       if (new_password !== confirm_password) {
-        return sendResponse(res, 200, 0, [], "Passwords do not match");
+        return sendResponse(res, 200, 0, [], "Passwords do not match", []);
       }
       const hashedPassword = await bcrypt.hash(new_password, 10);
       await authModel.updatePassword(country_code, mobile, hashedPassword);
-      return sendResponse(res, 200, 1, [], "Password updated successfully");
+      return sendResponse(res, 200, 1, [], "Password updated successfully", []);
     } catch (err: any) {
       return sendResponse(
         res,
@@ -275,7 +290,7 @@ export class AuthController {
         0,
         [],
         "Something went wrong",
-        err.errors || err.message || err,
+        [err.errors || err.message || err],
       );
     }
   };
@@ -285,7 +300,7 @@ export class AuthController {
       const { user_id } = req.body;
 
       if (!user_id) {
-        return sendResponse(res, 400, 0, [], "User Id is required");
+        return sendResponse(res, 400, 0, [], "User Id is required", []);
       }
 
       await authModel.clearExistUserDevice(user_id);
@@ -294,7 +309,7 @@ export class AuthController {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
       });
-      return sendResponse(res, 200, 1, [], "Logout successful");
+      return sendResponse(res, 200, 1, [], "Logout successful", []);
     } catch (err: any) {
       return sendResponse(
         res,
@@ -302,7 +317,7 @@ export class AuthController {
         0,
         [],
         "Something went wrong",
-        err.errors || err.message || err,
+        [err.errors || err.message || err],
       );
     }
   };
