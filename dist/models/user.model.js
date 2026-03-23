@@ -153,6 +153,14 @@ class UserModel {
         await (0, helper_1.executeQuery)(`INSERT INTO learn_course_request (course_name, user_id)
      VALUES (?, ?)`, [subject_name, user_id]);
     }
+    async updateStudentDatas(data) {
+        const { user_id, user_role, gender, dob, country, pincode, state, district, area, is_show_num, stream_id, learn_course, } = data;
+        const query = `
+      UPDATE users SET
+        
+      WHERE user_id = ?
+    `;
+    }
 }
 exports.UserModel = UserModel;
 //# sourceMappingURL=user.model.js.map

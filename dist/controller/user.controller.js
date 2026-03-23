@@ -55,57 +55,87 @@ userController.updateTutor = async (req, res) => {
         return (0, helper_1.sendResponse)(res, 500, 0, [], "something went wrong", err.errors || err.message || err);
     }
 };
+// static updateStudent = async (req: Request, res: Response) => {
+//   try {
+//     const { user_id, ...payload } = req.body;
+//     await validateRequest(req.body, updateStudentSchema);
+//     if (!user_id) {
+//       return sendResponse(res, 200, 0, [], "User Id is required", []);
+//     }
+//     if (
+//       payload.user_role ||
+//       payload.dob ||
+//       payload.gender ||
+//       payload.is_show_num !== undefined ||
+//       payload.pincode ||
+//       payload.area ||
+//       payload.district ||
+//       payload.state ||
+//       payload.country ||
+//       payload.address
+//     ) {
+//       await userModel.updateUserBasicForStudent({ user_id, ...payload });
+//       const filled = await userModel.fetchUserFormFilled(user_id);
+//       if (filled < 1) await userModel.formFilledUpdate(user_id, 1);
+//     }
+//     if (payload.stream_id || payload.learn_course) {
+//       let finalCourse = payload.learn_course ?? null;
+//       if (payload.learn_course) {
+//         const exists = await userModel.checkCourseExists(
+//           payload.learn_course,
+//         );
+//         if (!exists) {
+//           await userModel.createCourseRequestIfNotExists({
+//             course_name: payload.learn_course,
+//             user_id,
+//           });
+//           finalCourse = null;
+//         }
+//       }
+//       const user_name = await userModel.fetchUserName(user_id);
+//       const student_id = await generateStudentId();
+//       await userModel.updateStudentEducation({
+//         user_id,
+//         user_name,
+//         student_id,
+//         ...payload,
+//         learn_course: finalCourse,
+//       });
+//       const filled = await userModel.fetchUserFormFilled(user_id);
+//       if (filled < 2) await userModel.formFilledUpdate(user_id, 2);
+//     }
+//     return sendResponse(res, 200, 1, [], "Details updated successfully");
+//   } catch (err: any) {
+//     console.log(err);
+//     return sendResponse(
+//       res,
+//       500,
+//       0,
+//       [],
+//       "Internal Server Error",
+//       err.errors || err.message || err,
+//     );
+//   }
+// };
 userController.updateStudent = async (req, res) => {
     try {
-        const { user_id, ...payload } = req.body;
-        await (0, helper_1.validateRequest)(req.body, validate_1.updateStudentSchema);
-        if (!user_id) {
-            return (0, helper_1.sendResponse)(res, 200, 0, [], "User Id is required", []);
-        }
-        if (payload.user_role ||
-            payload.dob ||
-            payload.gender ||
-            payload.is_show_num !== undefined ||
-            payload.pincode ||
-            payload.area ||
-            payload.district ||
-            payload.state ||
-            payload.country ||
-            payload.address) {
-            await userModel.updateUserBasicForStudent({ user_id, ...payload });
-            const filled = await userModel.fetchUserFormFilled(user_id);
-            if (filled < 1)
-                await userModel.formFilledUpdate(user_id, 1);
-        }
-        if (payload.stream_id || payload.learn_course) {
-            let finalCourse = payload.learn_course ?? null;
-            if (payload.learn_course) {
-                const exists = await userModel.checkCourseExists(payload.learn_course);
-                if (!exists) {
-                    await userModel.createCourseRequestIfNotExists({
-                        course_name: payload.learn_course,
-                        user_id,
-                    });
-                    finalCourse = null;
-                }
-            }
-            const user_name = await userModel.fetchUserName(user_id);
-            const student_id = await (0, helper_1.generateStudentId)();
-            await userModel.updateStudentEducation({
-                user_id,
-                user_name,
-                student_id,
-                ...payload,
-                learn_course: finalCourse,
-            });
-            const filled = await userModel.fetchUserFormFilled(user_id);
-            if (filled < 2)
-                await userModel.formFilledUpdate(user_id, 2);
-        }
-        return (0, helper_1.sendResponse)(res, 200, 1, [], "Details updated successfully");
+        const { id, user_id, user_role, gender, dob, country, pincode, state, district, area, is_show_num, stream_id, learn_course, } = await (0, helper_1.validateRequest)(req.body, validate_1.updateStudentSchema);
+        const result = await userModel.updateStudentDatas({
+            user_id,
+            user_role,
+            gender,
+            dob,
+            country,
+            pincode,
+            state,
+            district,
+            area,
+            is_show_num,
+            stream_id,
+            learn_course,
+        });
     }
     catch (err) {
-        console.log(err);
         return (0, helper_1.sendResponse)(res, 500, 0, [], "Internal Server Error", err.errors || err.message || err);
     }
 };

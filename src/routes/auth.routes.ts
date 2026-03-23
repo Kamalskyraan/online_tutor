@@ -7,7 +7,7 @@ router.post("/request-otp", (req, res) => {
   /*
     #swagger.tags = ['1.Auth']
     #swagger.summary = 'Request OTP'
-    #swagger.description = 'Send OTP to mobile'
+    #swagger.description = 'Send OTP to mobile(0->no check in DB || 1-> check DB)'
 
     
     #swagger.parameters['body'] = {
@@ -15,7 +15,8 @@ router.post("/request-otp", (req, res) => {
       required: true,
       schema: {
         mobile: '9876543210',
-        country_code : '+91'
+        country_code : '+91',
+        type : "0 or 1"
       }
     }
 

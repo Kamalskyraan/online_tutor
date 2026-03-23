@@ -30,11 +30,17 @@ const authModel = new AuthModel();
 export class AuthController {
   static RequestOtp = async (req: Request, res: Response) => {
     try {
-      const { country_code, mobile, email } = validateRequest(
+      const { country_code, mobile, email, type } = validateRequest(
         req.body,
         requestOtSchema,
       );
+      if (type === "1") {
+        const user = await authModel.findUser(country_code, mobile);
 
+        if (user) {
+          return sendResponse(res, 200, 0, [], "User already exists", []);
+        }
+      }
       const otp = generateOTP();
       const expires_at = getOTPExpiry();
       await createOTP({ mobile, email, country_code, otp, expires_at });

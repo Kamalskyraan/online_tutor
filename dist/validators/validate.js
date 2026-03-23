@@ -38,6 +38,11 @@ exports.requestOtSchema = joi_1.default.object({
     }),
     mobile: joi_1.default.string().pattern(/^[0-9]{7,15}$/),
     email: joi_1.default.string(),
+    type: joi_1.default.string().valid("0", "1").required().messages({
+        "any.only": "Type must be either 0 or 1",
+        "number.base": "Type must be a number",
+        "any.required": "Type is required",
+    }),
 });
 exports.verifyOtpSchema = joi_1.default.object({
     country_code: joi_1.default.string().required().messages({
@@ -265,6 +270,7 @@ exports.updateTutorSubjectsSchema = joi_1.default.object({
 });
 // student
 exports.updateStudentSchema = joi_1.default.object({
+    id: joi_1.default.number().optional(),
     user_id: joi_1.default.string().required().messages({
         "any.required": "User Id is required",
     }),

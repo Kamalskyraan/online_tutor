@@ -38,6 +38,11 @@ export const requestOtSchema = Joi.object({
   }),
   mobile: Joi.string().pattern(/^[0-9]{7,15}$/),
   email: Joi.string(),
+  type: Joi.string().valid("0", "1").required().messages({
+    "any.only": "Type must be either 0 or 1",
+    "number.base": "Type must be a number",
+    "any.required": "Type is required",
+  }),
 });
 
 export const verifyOtpSchema = Joi.object({
@@ -298,6 +303,7 @@ export const updateTutorSubjectsSchema = Joi.object({
 
 // student
 export const updateStudentSchema = Joi.object({
+  id: Joi.number().optional(),
   user_id: Joi.string().required().messages({
     "any.required": "User Id is required",
   }),
@@ -432,4 +438,3 @@ export const reportSchema = Joi.object({
   reason_id: Joi.number().required(),
   other_reason: Joi.string().allow(null, ""),
 }).or("student_id", "tutor_id");
-

@@ -47,7 +47,7 @@
           "1.Auth"
         ],
         "summary": "Request OTP",
-        "description": "Send OTP to mobile",
+        "description": "Send OTP to mobile(0->no check in DB || 1-> check DB)",
         "parameters": [
           {
             "name": "body",
@@ -63,6 +63,10 @@
                 "country_code": {
                   "type": "string",
                   "example": "+91"
+                },
+                "type": {
+                  "type": "string",
+                  "example": "0 or 1"
                 }
               }
             }
