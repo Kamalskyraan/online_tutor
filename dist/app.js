@@ -10,6 +10,7 @@ const fs_1 = __importDefault(require("fs"));
 const swagger_ui_express_1 = __importDefault(require("swagger-ui-express"));
 const swagger_output_json_1 = __importDefault(require("./docs/swagger_output.json"));
 const routes_1 = __importDefault(require("./routes"));
+const db_1 = require("./config/db");
 const app = (0, express_1.default)();
 const PORT = process.env.PORT || 5000;
 app.use(express_1.default.json());
@@ -21,6 +22,7 @@ app.get("/check", (req, res) => {
     res.send("hiii");
 });
 const data = JSON.parse(fs_1.default.readFileSync("./public/country.json", "utf8"));
+(0, db_1.connectDB)();
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
 });
