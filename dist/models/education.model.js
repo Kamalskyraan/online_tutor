@@ -4,7 +4,7 @@ exports.EduModel = void 0;
 const helper_1 = require("../utils/helper");
 class EduModel {
     async fetchEducationLvl(filter) {
-        let query = `SELECT id as edu_id, name, board FROM education_level WHERE 1=1`;
+        let query = `SELECT id , name, board FROM education_level WHERE 1=1`;
         const params = [];
         if (filter?.id) {
             query += ` AND id = ?`;

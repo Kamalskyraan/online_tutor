@@ -23,7 +23,7 @@ export class EducationController {
         }
 
         groupedData[key].push({
-          id: item.id,
+          edu_id: item.id,
           name: item.name,
           board: item.board ?? "",
         });
