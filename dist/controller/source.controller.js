@@ -12,11 +12,14 @@ exports.SourceController = SourceController;
 _a = SourceController;
 SourceController.getAdressDetailsFromPincode = async (req, res) => {
     try {
-        const { pincode } = req.body;
+        const { pincode, icountry } = req.body;
         if (!pincode) {
             return (0, helper_1.sendResponse)(res, 200, 0, [], "Pincode is required");
         }
-        const data = await sourceModel.getLatLngFromPincode(pincode);
+        if (!icountry) {
+            return (0, helper_1.sendResponse)(res, 200, 0, [], "Country is required");
+        }
+        const data = await sourceModel.getLatLngFromPincode(pincode, icountry);
         if (!data) {
             return (0, helper_1.sendResponse)(res, 200, 0, [], "Pincode not found");
         }

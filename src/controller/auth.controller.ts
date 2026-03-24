@@ -23,10 +23,11 @@ import {
   verifyOtpSchema,
 } from "../validators/validate";
 import { sendMail } from "../service/mail.service";
+import { UserModel } from "../models/user.model";
 
 //
 const authModel = new AuthModel();
-
+const userMdl = new UserModel();
 export class AuthController {
   static RequestOtp = async (req: Request, res: Response) => {
     try {
@@ -119,6 +120,7 @@ export class AuthController {
       const {
         user_name,
         country_code,
+
         mobile,
         otp,
         email,
@@ -243,6 +245,14 @@ export class AuthController {
         process.env.JWT_SECRET!,
         { expiresIn: "90d" },
       );
+      const users = await userMdl.fetchUserData(mobile);
+      const country = users[0].country;
+      const personal_form = users[0].is_form_filled;
+
+      const subForm = await userMdl.fetchSubFormData(user.user_id);
+
+      const sub_form = subForm?.sub_form;
+
       if (device_type === "web") {
         res.cookie("token", token, {
           httpOnly: true,
@@ -258,24 +268,20 @@ export class AuthController {
           [],
         );
       }
+
       return sendResponse(
         res,
         200,
         1,
-        [{ user_id: user.user_id, token }],
+        [{ user_id: user.user_id, token, country, personal_form, sub_form }],
         "Login successful",
         [],
       );
     } catch (err: any) {
       console.log(err);
-      return sendResponse(
-        res,
-        err.status || 500,
-        0,
-        [],
-        "Something went wrong",
-        [err.errors || err.message || err],
-      );
+      return sendResponse(res, 500, 0, [], "Internal Server Error", [
+        err.errors || err.message || err,
+      ]);
     }
   };
   static resetPassword = async (req: Request, res: Response) => {

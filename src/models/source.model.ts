@@ -9,8 +9,12 @@ import {
 import { executeQuery, safeJSONParse } from "../utils/helper";
 
 export class SourceModel {
-  async getLatLngFromPincode(pincode: string): Promise<PincodeResult | null> {
+  async getLatLngFromPincode(
+    pincode: string,
+    icountry: string,
+  ): Promise<PincodeResult | null> {
     try {
+      const normalize = (val: string) => val?.trim().toLowerCase();
       const rows: PincodeDB[] = await executeQuery(
         `SELECT * FROM pincode_details_from_pincode WHERE pincode = ?`,
         [pincode],
@@ -18,11 +22,15 @@ export class SourceModel {
 
       if (rows.length > 0) {
         const r = rows[0];
+
+        if (r.country?.trim().toLowerCase() !== normalize(icountry)) {
+          return null;
+        }
         return {
           pincode: r.pincode,
           postcode_localities: safeJSONParse(r.postcode_localities),
-          city: r.city ?? "",
-          district: r.district ?? "",
+          city: r.city ? r.city : r.state ? r.state : "",
+          district: r.district ? r.district : r.state ? r.state : "",
           state: r.state ?? "",
           country: r.country ?? "",
           lat: r.lat ?? 0,
@@ -35,7 +43,7 @@ export class SourceModel {
         "https://maps.googleapis.com/maps/api/geocode/json",
         {
           params: {
-            address: `${pincode}, India`,
+            address: `${pincode}`,
             key: process.env.GOOGLE_MAPS_API_KEY,
           },
         },
@@ -64,7 +72,16 @@ export class SourceModel {
         if (c.types.includes("country")) country = c.long_name;
       });
 
-      if (country.toLowerCase() !== "india") return null;
+      if (country.trim().toLowerCase() !== icountry.trim().toLowerCase())
+        return null;
+
+      if (!city) {
+        city = state;
+      }
+
+      if (!district) {
+        district = state;
+      }
 
       const postcode_localities: string[] = result.postcode_localities || [];
       const formattedAddress = result.formatted_address || "";
@@ -76,8 +93,8 @@ export class SourceModel {
         [
           pincode,
           JSON.stringify(postcode_localities),
-          city,
-          district,
+          city ? city : state,
+          district ? district : state,
           state,
           country,
           geometry.lat,

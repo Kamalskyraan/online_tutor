@@ -11,8 +11,10 @@ const auth_model_1 = require("../models/auth.model");
 const helper_1 = require("../utils/helper");
 const validate_1 = require("../validators/validate");
 const mail_service_1 = require("../service/mail.service");
+const user_model_1 = require("../models/user.model");
 //
 const authModel = new auth_model_1.AuthModel();
+const userMdl = new user_model_1.UserModel();
 class AuthController {
 }
 exports.AuthController = AuthController;
@@ -150,6 +152,11 @@ AuthController.login = async (req, res) => {
             device_type: device_type,
         });
         const token = jsonwebtoken_1.default.sign({ user_id: user.user_id, device_id, device_token }, process.env.JWT_SECRET, { expiresIn: "90d" });
+        const users = await userMdl.fetchUserData(mobile);
+        const country = users[0].country;
+        const personal_form = users[0].is_form_filled;
+        const subForm = await userMdl.fetchSubFormData(user.user_id);
+        const sub_form = subForm?.sub_form;
         if (device_type === "web") {
             res.cookie("token", token, {
                 httpOnly: true,
@@ -158,11 +165,13 @@ AuthController.login = async (req, res) => {
             });
             return (0, helper_1.sendResponse)(res, 200, 1, [{ user_id: user.user_id }], "Login successful", []);
         }
-        return (0, helper_1.sendResponse)(res, 200, 1, [{ user_id: user.user_id, token }], "Login successful", []);
+        return (0, helper_1.sendResponse)(res, 200, 1, [{ user_id: user.user_id, token, country, personal_form, sub_form }], "Login successful", []);
     }
     catch (err) {
         console.log(err);
-        return (0, helper_1.sendResponse)(res, err.status || 500, 0, [], "Something went wrong", [err.errors || err.message || err]);
+        return (0, helper_1.sendResponse)(res, 500, 0, [], "Internal Server Error", [
+            err.errors || err.message || err,
+        ]);
     }
 };
 AuthController.resetPassword = async (req, res) => {

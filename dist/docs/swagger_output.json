@@ -660,7 +660,7 @@
                 }
             }
         },
-        "/api/subject/add-subject": {
+        "/api/subject/add-update-subject": {
             "post": {
                 "description": "",
                 "responses": {
@@ -713,10 +713,168 @@
         },
         "/api/subject/update-tutor-subjects": {
             "post": {
-                "description": "",
+                "tags": [
+                    "5.Subject"
+                ],
+                "summary": "Add Update subjects to Tutor",
+                "description": "Add and Update Subject to Tutor",
+                "parameters": [
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "id": {
+                                    "type": "number",
+                                    "example": 1
+                                },
+                                "tutor_id": {
+                                    "type": "string",
+                                    "example": "TUTOR_A2u50js3"
+                                },
+                                "subject_name": {
+                                    "type": "string",
+                                    "example": "java etc."
+                                },
+                                "subject_id": {
+                                    "type": "string",
+                                    "example": "1"
+                                },
+                                "covered_topics": {
+                                    "type": "array",
+                                    "example": [
+                                        "abcd , efgh "
+                                    ],
+                                    "items": {
+                                        "type": "string"
+                                    }
+                                },
+                                "sylabus": {
+                                    "type": "string",
+                                    "example": "1"
+                                },
+                                "prior_exp": {
+                                    "type": "string",
+                                    "example": "0 or 1"
+                                },
+                                "exp_year": {
+                                    "type": "string",
+                                    "example": "1"
+                                },
+                                "exp_month": {
+                                    "type": "string",
+                                    "example": "11"
+                                },
+                                "teach_language": {
+                                    "type": "string",
+                                    "example": "1,2,3,4"
+                                },
+                                "class_mode": {
+                                    "type": "string",
+                                    "example": "0"
+                                },
+                                "class_type": {
+                                    "type": "string",
+                                    "example": "0"
+                                },
+                                "stream_ids": {
+                                    "type": "string",
+                                    "example": "1,2,3"
+                                },
+                                "min_fee": {
+                                    "type": "string",
+                                    "example": "120"
+                                },
+                                "max_fee": {
+                                    "type": "string",
+                                    "example": "1200"
+                                },
+                                "tenure_type": {
+                                    "type": "string",
+                                    "example": "hour"
+                                }
+                            }
+                        }
+                    }
+                ],
                 "responses": {
-                    "default": {
-                        "description": ""
+                    "200": {
+                        "description": "Subject added to tutor successfully"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/api/subject/get-tutor-subjetcs": {
+            "post": {
+                "tags": [
+                    "5.Subject"
+                ],
+                "summary": "Get subjects belongs to tutor",
+                "description": "Get subject all or based on ID",
+                "parameters": [
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "id": {
+                                    "type": "number",
+                                    "example": 1
+                                },
+                                "tutor_id": {
+                                    "type": "string",
+                                    "example": "TUTOR_A2u50js3"
+                                }
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Subjects fetched successfully"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/api/subject/delete-tutor-subject": {
+            "post": {
+                "tags": [
+                    "5.Subject"
+                ],
+                "summary": "Remove subjects belongs to tutor",
+                "description": "Remove subject based on ID (soft delete only)",
+                "parameters": [
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "id": {
+                                    "type": "number",
+                                    "example": 1
+                                }
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Subjects removed successfully"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
                     }
                 }
             }

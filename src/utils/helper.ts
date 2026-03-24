@@ -92,9 +92,9 @@ export const fetchCountryName = async (country_code: string) => {
   const file = await fs.readFile("./public/country.json", "utf8");
   const countries = JSON.parse(file);
 
-  const country = countries.find((item: any) => {
-    item.dial_code == country_code;
-  });
+  const country = countries.find(
+    (item: any) => item.dial_code.toString() === country_code.toString(),
+  );
 
   return country ? country.name : null;
 };

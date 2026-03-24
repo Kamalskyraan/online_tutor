@@ -46,83 +46,145 @@ export class SubjectModel {
   }
 
   async addTutorSubjects(data: any) {
-    const { tutor_id } = data;
+    const {
+      tutor_id,
+      id,
+      subject_id,
+      subject_name,
+      covered_topics,
+      sylabus,
+      prior_exp,
+      exp_year,
+      exp_month,
+    } = data;
 
-    const subjects = Array.isArray(data.subjects) ? data.subjects : [];
+    const topics = Array.isArray(covered_topics)
+      ? [...new Set(covered_topics)]
+      : covered_topics
+        ? [covered_topics]
+        : [];
 
-    if (subjects.length === 0) return;
+    const checkQuery = `
+    SELECT id FROM tutor_subjects 
+    WHERE tutor_id = ? 
+    AND (
+      (subject_id IS NOT NULL AND subject_id = ?) OR
+      (subject_id IS NULL AND LOWER(subject_name) = LOWER(?))
+    )
+  `;
 
-    for (const subject of subjects) {
-      const checkQuery = `
-      SELECT id FROM tutor_subjects 
-      WHERE tutor_id = ? 
-      AND (
-        subject_id = ? OR subject_name = ?
-      )
-    `;
+    const existing: any = await executeQuery(checkQuery, [
+      tutor_id,
+      subject_id || null,
+      subject_name || null,
+    ]);
 
-      const existing: any = await executeQuery(checkQuery, [
-        tutor_id,
-        subject.subject_id || null,
-        subject.subject_name || null,
-      ]);
+    let message = "";
+    let success = 1;
+    let subjectId: any = id || null;
 
-      if (existing.length > 0) {
-        const updateQuery = `
-        UPDATE tutor_subjects
-        SET sylabus = ?, covered_topics = ?, prior_exp = ?, exp_year = ?, exp_month = ?
-        WHERE id = ?
-      `;
+    if (id) {
+      // if (existing.length > 0 && existing[0].id !== id) {
+      //   return {
+      //     success: 0,
+      //     message: "Tutor already has this subject",
+      //   };
+      // }
 
-        await executeQuery(updateQuery, [
-          subject.sylabus,
-          JSON.stringify(subject.covered_topics),
-          subject.prior_exp,
-          subject.exp_year,
-          subject.exp_month,
-          existing[0].id,
-        ]);
-      } else {
-        const query = `
-      INSERT INTO tutor_subjects
-      (tutor_id,subject_id , subject_name, sylabus, covered_topics,
-       prior_exp, exp_year, exp_month )
-      VALUES (?, ?, ?, ?, ?, ?, ? , ? )
-    `;
-
-        await executeQuery(query, [
+      await executeQuery(
+        `UPDATE tutor_subjects
+       SET 
+         subject_id = ?,
+         subject_name = ?,
+         sylabus = ?,
+         covered_topics = ?,
+         prior_exp = ?,
+         exp_year = ?,
+         exp_month = ?
+       WHERE id = ? AND tutor_id = ?`,
+        [
+          subject_id || null,
+          subject_id ? null : subject_name,
+          sylabus || null,
+          JSON.stringify(topics),
+          prior_exp || null,
+          exp_year || 0,
+          exp_month || 0,
+          id,
           tutor_id,
-          subject.subject_id || null,
-          subject.subject_id ? null : subject.subject_name,
-          subject.sylabus || null,
-          JSON.stringify(subject.covered_topics),
-          subject.prior_exp,
-          subject.exp_year,
-          subject.exp_month,
-        ]);
+        ],
+      );
+
+      message = "Subject Updated Successfully";
+    } else {
+      if (existing.length > 0) {
+        return {
+          success: 0,
+          message: "Tutor already has this subject",
+        };
       }
+
+      const countResult: any = await executeQuery(
+        `SELECT COUNT(*) as total FROM tutor_subjects WHERE tutor_id = ? AND status ='active'`,
+        [tutor_id],
+      );
+
+      const total = countResult[0]?.total || 0;
+
+      if (total >= 4) {
+        return {
+          success: 0,
+          message: "Maximum 4 subjects allowed",
+        };
+      }
+
+      const result: any = await executeQuery(
+        `INSERT INTO tutor_subjects
+       (tutor_id, subject_id, subject_name, sylabus, covered_topics,
+        prior_exp, exp_year, exp_month)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+        [
+          tutor_id,
+          subject_id || null,
+          subject_id ? null : subject_name,
+          sylabus || null,
+          JSON.stringify(topics),
+          prior_exp || null,
+          exp_year || 0,
+          exp_month || 0,
+        ],
+      );
+
+      message = "Subject Added Successfully";
+      subjectId = result.insertId;
     }
 
     await executeQuery(
       `UPDATE tutor_subjects
-   SET sub_form = GREATEST(COALESCE(sub_form,0), 1)
-   WHERE tutor_id = ?`,
+     SET sub_form = GREATEST(COALESCE(sub_form,0), 1)
+     WHERE tutor_id = ?`,
       [tutor_id],
     );
+
+    return {
+      success,
+      message,
+      id: subjectId,
+    };
   }
 
   async addTeachingLanguages(data: any) {
     const { tutor_id, teach_language } = data;
 
-    const query = `
-UPDATE tutor_subjects
-SET 
-  teach_language = ?,
-  sub_form = GREATEST(COALESCE(sub_form,0), 2)
-WHERE tutor_id = ?
-`;
+    if (!teach_language) return;
 
-    await executeQuery(query, [teach_language, tutor_id]);
+    await executeQuery(
+      `UPDATE tutor_subjects
+     SET teach_language = ?,
+         sub_form = GREATEST(COALESCE(sub_form,0), 2)
+     WHERE tutor_id = ?`,
+      [teach_language, tutor_id],
+    );
   }
 
   async addClassDetails(data: any) {
@@ -136,29 +198,93 @@ WHERE tutor_id = ?
       tenure_type,
     } = data;
 
-    const query = `
-    UPDATE tutor_subjects
-    SET 
-      class_mode = ?,
-      class_type = ?,
-      stream_ids = ?,
-      min_fee = ?,
-      max_fee = ?,
-      tenure_type = ?,
-      sub_form = GREATEST(sub_form, 3)
-    WHERE tutor_id = ?
-  `;
+    if (
+      !class_mode &&
+      !class_type &&
+      !stream_ids &&
+      !min_fee &&
+      !max_fee &&
+      !tenure_type
+    )
+      return;
 
-    await executeQuery(query, [
+    await executeQuery(
+      `UPDATE tutor_subjects
+     SET 
+       class_mode = ?,
+       class_type = ?,
+       stream_ids = ?,
+       min_fee = ?,
+       max_fee = ?,
+       tenure_type = ?,
+       sub_form = GREATEST(COALESCE(sub_form,0), 3)
+     WHERE tutor_id = ?`,
+      [
+        class_mode,
+        class_type,
+        stream_ids,
+        min_fee,
+        max_fee,
+        tenure_type,
+        tutor_id,
+      ],
+    );
+  }
+
+  async getTutorSubjectById(tutor_id?: string, id?: number) {
+    let query = `
+    SELECT 
+      id,
+      tutor_id,
+      subject_id,
+      subject_name,
+      sylabus,
+      covered_topics,
+      prior_exp,
+      exp_year,
+      exp_month,
+      teach_language,
       class_mode,
       class_type,
       stream_ids,
       min_fee,
       max_fee,
-      tenure_type,
-      tutor_id,
-    ]);
+      tenure_type
+    FROM tutor_subjects
+    WHERE tutor_id = ?
+    AND status = 'active'
+  `;
+    const params: any[] = [tutor_id];
+    if (id) {
+      query += ` AND id = ?`;
+      params.push(id);
+    }
+    const result: any = await executeQuery(query, params);
+
+    if (!result.length) return [];
+    return result;
   }
 
-  
+  async removeTutorSubject(id: number) {
+    const existing: any = await executeQuery(
+      `SELECT id FROM tutor_subjects WHERE id = ? `,
+      [id],
+    );
+
+    if (!existing.length) {
+      return {
+        success: 0,
+        message: "Subject not found",
+      };
+    }
+
+    await executeQuery(
+      `UPDATE tutor_subjects SET status = 'deleted' WHERE id = ? `,
+      [id],
+    );
+    return {
+      success: 1,
+      message: "Subject deleted successfully",
+    };
+  }
 }

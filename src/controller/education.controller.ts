@@ -14,39 +14,32 @@ export class EducationController {
         status,
       });
 
-      const formatResult = result?.map((item: any) => ({
-        ...item,
-        board: item.board ?? "",
-      }));
-
       const groupedData: any = {};
-
-      formatResult.forEach((item: any) => {
-        const key = item.name?.toLowerCase();
+      result.forEach((item: any) => {
+        const key = item.name?.toLowerCase().replace(/\s+/g, " ");
 
         if (!groupedData[key]) {
           groupedData[key] = [];
         }
 
-        groupedData[key].push(item);
+        groupedData[key].push({
+          id: item.id,
+          name: item.name,
+          board: item.board ?? "",
+        });
       });
       return sendResponse(
         res,
         200,
-        0,
-        groupedData,
+        1,
+        [groupedData],
         "Education Levl Fetched Succesfully",
         [],
       );
     } catch (err: any) {
-      return sendResponse(
-        res,
-        1,
-        500,
-        [],
-        "something went wrong",
+      return sendResponse(res, 0, 500, [], "something went wrong", [
         err.errors || err.message || err,
-      );
+      ]);
     }
   };
   static getStreams = async (req: Request, res: Response) => {

@@ -39,18 +39,26 @@ SubjectController.getSubjects = async (req, res) => {
 //
 SubjectController.addUpdateSubjectsToTutor = async (req, res) => {
     try {
-        const { tutor_id, ...payload } = await (0, helper_1.validateRequest)(req.body, validate_1.updateTutorSubjectsSchema);
+        const payload = await (0, helper_1.validateRequest)(req.body, validate_1.updateTutorSubjectsSchema);
+        let result = {
+            success: 1,
+            message: "Updated successfully",
+        };
         if (payload.subject_id ||
             payload.subject_name ||
             payload.covered_topics ||
             payload.sylabus ||
             payload.prior_exp ||
             payload.exp_year ||
-            payload.exp_month) {
-            await subMdl.addTutorSubjects({ tutor_id, subjects: [payload] });
+            payload.exp_month ||
+            payload.id) {
+            result = await subMdl.addTutorSubjects(payload);
+            if (result.success === 0) {
+                return (0, helper_1.sendResponse)(res, 200, 0, [], result.message, []);
+            }
         }
         if (payload.teach_language) {
-            await subMdl.addTeachingLanguages({ tutor_id, ...payload });
+            await subMdl.addTeachingLanguages(payload);
         }
         if (payload.class_mode ||
             payload.class_type ||
@@ -58,14 +66,47 @@ SubjectController.addUpdateSubjectsToTutor = async (req, res) => {
             payload.min_fee ||
             payload.max_fee ||
             payload.tenure_type) {
-            await subMdl.addClassDetails({ tutor_id, ...payload });
+            await subMdl.addClassDetails(payload);
         }
-        return (0, helper_1.sendResponse)(res, 200, 1, [], "Tutor subjects updated successfully", []);
+        return (0, helper_1.sendResponse)(res, 200, 1, [result.id ? { id: result.id } : []], result.message, []);
     }
     catch (err) {
-        console.log(err);
-        return (0, helper_1.sendResponse)(res, 500, 0, [], "something went wrong", err.errors || err.message || err);
+        return (0, helper_1.sendResponse)(res, 500, 0, [], "Internal Server Error", [
+            err.errors || err.message || err,
+        ]);
     }
 };
-SubjectController.getTutorSubjects = async (req, res) => { };
+SubjectController.getTutorSubjects = async (req, res) => {
+    try {
+        const { tutor_id, id } = req.body;
+        const result = await subMdl.getTutorSubjectById(tutor_id, id);
+        if (!result) {
+            return (0, helper_1.sendResponse)(res, 200, 0, [], "Subject not found", []);
+        }
+        return (0, helper_1.sendResponse)(res, 200, 1, [result], "Subject fetched successfully", []);
+    }
+    catch (err) {
+        return (0, helper_1.sendResponse)(res, 500, 0, [], "Internal Server Error", [
+            err.errors || err.message || err,
+        ]);
+    }
+};
+SubjectController.deleteTutorSubject = async (req, res) => {
+    try {
+        const { id } = req.body;
+        if (!id) {
+            return (0, helper_1.sendResponse)(res, 200, 0, [], "Id is required", []);
+        }
+        const result = await subMdl.removeTutorSubject(id);
+        if (result.success === 0) {
+            return (0, helper_1.sendResponse)(res, 200, 0, [], result.message, []);
+        }
+        return (0, helper_1.sendResponse)(res, 200, 1, [], result.message, []);
+    }
+    catch (err) {
+        return (0, helper_1.sendResponse)(res, 500, 0, [], "Internal Server Error", [
+            err.errors || err.message || err,
+        ]);
+    }
+};
 //# sourceMappingURL=subject.controller.js.map

@@ -109,4 +109,6 @@ export class AuthModel {
     const sql = `DELETE FROM user_devices WHERE user_id = ?`;
     await executeQuery(sql, [user_id]);
   }
+
+  
 }

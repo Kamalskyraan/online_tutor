@@ -247,9 +247,12 @@ exports.subjectSchema = joi_1.default.object({
 exports.updateTutorSubjectsSchema = joi_1.default.object({
     tutor_id: joi_1.default.string().required(),
     // 1
-    subject_id: joi_1.default.string(),
+    subject_id: joi_1.default.string().allow(null, ""),
     subject_name: joi_1.default.string(),
-    covered_topics: joi_1.default.string(),
+    covered_topics: joi_1.default.array()
+        .items(joi_1.default.string().trim().min(1))
+        .min(1)
+        .optional(),
     sylabus: joi_1.default.string(),
     prior_exp: joi_1.default.string(),
     exp_year: joi_1.default.string(),

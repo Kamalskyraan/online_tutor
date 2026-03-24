@@ -77,9 +77,7 @@ exports.safeJSONParse = safeJSONParse;
 const fetchCountryName = async (country_code) => {
     const file = await promises_1.default.readFile("./public/country.json", "utf8");
     const countries = JSON.parse(file);
-    const country = countries.find((item) => {
-        item.dial_code == country_code;
-    });
+    const country = countries.find((item) => item.dial_code.toString() === country_code.toString());
     return country ? country.name : null;
 };
 exports.fetchCountryName = fetchCountryName;

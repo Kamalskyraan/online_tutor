@@ -6,10 +6,8 @@ export class EduModel {
     id: number;
     name: string;
     status: string;
-  }): Promise<EducationLevel[]>
-  
-  {
-    let query = `SELECT id, name, board, status FROM education_level WHERE 1=1`;
+  }): Promise<EducationLevel[]> {
+    let query = `SELECT id, name, board FROM education_level WHERE 1=1`;
     const params: any[] = [];
 
     if (filter?.id) {
@@ -35,8 +33,8 @@ export class EduModel {
     edu_id: string;
   }) {
     let query = ` SELECT 
-    el.name AS education_level,
-     el.id AS edu_id,
+    
+     
       es.id,
       es.name,
       es.status,

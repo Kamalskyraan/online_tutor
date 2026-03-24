@@ -17,22 +17,24 @@ EducationController.getEducationLevel = async (req, res) => {
             name,
             status,
         });
-        const formatResult = result?.map((item) => ({
-            ...item,
-            board: item.board ?? "",
-        }));
         const groupedData = {};
-        formatResult.forEach((item) => {
-            const key = item.name?.toLowerCase();
+        result.forEach((item) => {
+            const key = item.name?.toLowerCase().replace(/\s+/g, " ");
             if (!groupedData[key]) {
                 groupedData[key] = [];
             }
-            groupedData[key].push(item);
+            groupedData[key].push({
+                id: item.id,
+                name: item.name,
+                board: item.board ?? "",
+            });
         });
-        return (0, helper_1.sendResponse)(res, 200, 0, groupedData, "Education Levl Fetched Succesfully", []);
+        return (0, helper_1.sendResponse)(res, 200, 1, [groupedData], "Education Levl Fetched Succesfully", []);
     }
     catch (err) {
-        return (0, helper_1.sendResponse)(res, 1, 500, [], "something went wrong", err.errors || err.message || err);
+        return (0, helper_1.sendResponse)(res, 0, 500, [], "something went wrong", [
+            err.errors || err.message || err,
+        ]);
     }
 };
 EducationController.getStreams = async (req, res) => {

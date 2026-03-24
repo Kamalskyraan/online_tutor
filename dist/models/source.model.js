@@ -7,16 +7,20 @@ exports.SourceModel = void 0;
 const axios_1 = __importDefault(require("axios"));
 const helper_1 = require("../utils/helper");
 class SourceModel {
-    async getLatLngFromPincode(pincode) {
+    async getLatLngFromPincode(pincode, icountry) {
         try {
+            const normalize = (val) => val?.trim().toLowerCase();
             const rows = await (0, helper_1.executeQuery)(`SELECT * FROM pincode_details_from_pincode WHERE pincode = ?`, [pincode]);
             if (rows.length > 0) {
                 const r = rows[0];
+                if (r.country?.trim().toLowerCase() !== normalize(icountry)) {
+                    return null;
+                }
                 return {
                     pincode: r.pincode,
                     postcode_localities: (0, helper_1.safeJSONParse)(r.postcode_localities),
-                    city: r.city ?? "",
-                    district: r.district ?? "",
+                    city: r.city ? r.city : r.state ? r.state : "",
+                    district: r.district ? r.district : r.state ? r.state : "",
                     state: r.state ?? "",
                     country: r.country ?? "",
                     lat: r.lat ?? 0,
@@ -26,7 +30,7 @@ class SourceModel {
             }
             const resp = await axios_1.default.get("https://maps.googleapis.com/maps/api/geocode/json", {
                 params: {
-                    address: `${pincode}, India`,
+                    address: `${pincode}`,
                     key: process.env.GOOGLE_MAPS_API_KEY,
                 },
             });
@@ -51,8 +55,14 @@ class SourceModel {
                 if (c.types.includes("country"))
                     country = c.long_name;
             });
-            if (country.toLowerCase() !== "india")
+            if (country.trim().toLowerCase() !== icountry.trim().toLowerCase())
                 return null;
+            if (!city) {
+                city = state;
+            }
+            if (!district) {
+                district = state;
+            }
             const postcode_localities = result.postcode_localities || [];
             const formattedAddress = result.formatted_address || "";
             await (0, helper_1.executeQuery)(`INSERT INTO pincode_details_from_pincode
@@ -60,8 +70,8 @@ class SourceModel {
          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`, [
                 pincode,
                 JSON.stringify(postcode_localities),
-                city,
-                district,
+                city ? city : state,
+                district ? district : state,
                 state,
                 country,
                 geometry.lat,

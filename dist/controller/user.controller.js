@@ -49,10 +49,12 @@ userController.updateTutor = async (req, res) => {
             if (filled < 3)
                 await userModel.formFilledUpdate(user_id, 3);
         }
-        return (0, helper_1.sendResponse)(res, 200, 1, [], "Details updated successfully");
+        return (0, helper_1.sendResponse)(res, 200, 1, [], "Details updated successfully", []);
     }
     catch (err) {
-        return (0, helper_1.sendResponse)(res, 500, 0, [], "something went wrong", err.errors || err.message || err);
+        return (0, helper_1.sendResponse)(res, 500, 0, [], "something went wrong", [
+            err.errors || err.message || err,
+        ]);
     }
 };
 // static updateStudent = async (req: Request, res: Response) => {
@@ -117,54 +119,48 @@ userController.updateTutor = async (req, res) => {
 //     );
 //   }
 // };
-// static updateStudent = async (req: Request, res: Response) => {
-//   try {
-//     const {
-//       user_id,
-//       user_role,
-//       gender,
-//       dob,
-//       country,
-//       pincode,
-//       state,
-//       district,
-//       area,
-//       is_show_num,
-//       stream_id,
-//       learn_course,
-//     } = await validateRequest(req.body, updateStudentSchema);
-//      await userModel.updateUserBasicForStudent(
-//       gender,
-//       dob,
-//       country,
-//       pincode,
-//       state,
-//       district,
-//       area,
-//       is_show_num,
-//       user_id,
-//       user_role,
-//     );
-//     const user_name = await userModel.fetchUserName(user_id);
-//     const student_id = await generateStudentId();
-//     await userModel.updateStudentEducation({
-//       user_id,
-//       user_name,
-//       student_id,
-//       learn_course,
-//       stream_id,
-//     });
-//   } catch (err: any) {
-//     return sendResponse(
-//       res,
-//       500,
-//       0,
-//       [],
-//       "Internal Server Error",
-//       err.errors || err.message || err,
-//     );
-//   }
-// };
+userController.updateStudent = async (req, res) => {
+    try {
+        const payload = await (0, helper_1.validateRequest)(req.body, validate_1.updateStudentSchema);
+        const { user_id } = payload;
+        if (!user_id) {
+            return (0, helper_1.sendResponse)(res, 200, 0, [], "User Id is required", []);
+        }
+        await userModel.updateUserBasicForStudent(payload);
+        let finalCourse = payload.learn_course ?? null;
+        if (payload.learn_course) {
+            const exists = await userModel.checkCourseExists(payload.learn_course);
+            if (!exists) {
+                await userModel.createCourseRequestIfNotExists({
+                    course_name: payload.learn_course,
+                    user_id,
+                });
+                finalCourse = null;
+            }
+        }
+        const user_name = await userModel.fetchUserName(user_id);
+        const existingStudent = await userModel.getStudentByUserId(user_id);
+        let student_id = existingStudent?.student_id;
+        if (!existingStudent) {
+            student_id = await (0, helper_1.generateStudentId)();
+        }
+        await userModel.updateStudentEducation({
+            user_id,
+            user_name,
+            student_id,
+            ...payload,
+            learn_course: finalCourse,
+        });
+        const filled = await userModel.fetchUserFormFilled(user_id);
+        if (filled < 2) {
+            await userModel.formFilledUpdate(user_id, 2);
+        }
+        return (0, helper_1.sendResponse)(res, 200, 1, [{ student_id }], "Student details saved successfully", []);
+    }
+    catch (err) {
+        return (0, helper_1.sendResponse)(res, 500, 0, [], "Internal Server Error", err.errors || err.message || err);
+    }
+};
 userController.userDetails = async (req, res) => {
     try {
         const { user_id, mobile } = req.body;

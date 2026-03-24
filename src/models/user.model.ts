@@ -219,19 +219,18 @@ export class UserModel {
 
     return result.affectedRows;
   }
-
   //
   async fetchUserData(data: userDetailsRequest): Promise<any> {
     const { user_id, mobile } = data;
 
-    let query = `SELECT id , user_name , user_id , user_role , country_code , mobile , add_mobile as additional_mobile,  primary_num , email ,is_show_num , profile_img , gender , dob, country , state , area ,pincode ,self_about , address , lat , lng , is_form_filled  FROM users WHERE `;
+    let query = `SELECT id , user_name , user_id , user_role , country_code , mobile , add_mobile as additional_mobile,  primary_num , email ,is_show_num , profile_img , gender , dob, country , state , area ,pincode ,self_about , address , lat , lng , is_form_filled  FROM users WHERE 1 = 1 `;
     const values: any[] = [];
     if (user_id) {
-      query += `user_id = ?`;
+      query += `AND user_id = ?`;
       values.push(user_id);
     }
     if (mobile) {
-      query += `mobile = ?`;
+      query += `AND mobile = ?`;
       values.push(mobile);
     }
 
@@ -290,5 +289,45 @@ export class UserModel {
      VALUES (?, ?)`,
       [subject_name, user_id],
     );
+  }
+
+  async getStudentByUserId(user_id: string) {
+    const result: any = await executeQuery(
+      `SELECT id, student_id FROM student WHERE user_id = ? LIMIT 1`,
+      [user_id],
+    );
+
+    return result.length ? result[0] : null;
+  }
+
+  async fetchSubFormData(user_id: string) {
+    const tutorData: any = await executeQuery(
+      `SELECT tutor_id FROM tutor WHERE user_id = ? LIMIT 1`,
+      [user_id],
+    );
+
+    if (!tutorData.length) {
+      return { sub_form: "0" };
+    }
+
+    const tutor_id = tutorData[0].tutor_id;
+
+    if (!tutor_id) {
+      return {
+        sub_form: "0",
+      };
+    }
+
+    const subFormData: any = await executeQuery(
+      `SELECT sub_form FROM tutor_subjects 
+     WHERE tutor_id = ? 
+     LIMIT 1`,
+      [tutor_id],
+    );
+
+    return {
+      tutor_id,
+      sub_form: subFormData[0].sub_form || 0,
+    };
   }
 }
