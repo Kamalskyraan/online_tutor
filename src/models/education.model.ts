@@ -33,11 +33,11 @@ export class EduModel {
     edu_id: string;
   }) {
     let query = ` SELECT 
-    
-     
       es.id as stream_id,
       es.name,
       es.status,
+      el.name as edu_name,
+      el.id as edu_id,
       el.board
     FROM education_level el
     LEFT JOIN  

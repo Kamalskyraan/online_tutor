@@ -26,7 +26,8 @@ export class userController {
         payload.represent ||
         payload.gender ||
         payload.is_show_num !== undefined ||
-        payload.about_myself
+        payload.about_myself 
+       
       ) {
         await userModel.updateUserBasic({ user_id, ...payload });
         const user_name = await userModel.fetchUserName(user_id);
@@ -52,7 +53,7 @@ export class userController {
       }
 
       // 3
-      if (payload.education || payload.stream) {
+      if (payload.education || payload.stream_id) {
         const user_name = await userModel.fetchUserName(user_id);
         await userModel.updateUserEducation({ user_id, user_name, ...payload });
         const filled = await userModel.fetchUserFormFilled(user_id);

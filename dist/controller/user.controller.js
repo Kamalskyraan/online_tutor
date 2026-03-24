@@ -42,7 +42,7 @@ userController.updateTutor = async (req, res) => {
                 await userModel.formFilledUpdate(user_id, 2);
         }
         // 3
-        if (payload.education || payload.stream) {
+        if (payload.education || payload.stream_id) {
             const user_name = await userModel.fetchUserName(user_id);
             await userModel.updateUserEducation({ user_id, user_name, ...payload });
             const filled = await userModel.fetchUserFormFilled(user_id);
