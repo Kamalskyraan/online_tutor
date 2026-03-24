@@ -34,7 +34,7 @@ export interface users {
   country_code: string;
   mobile: string;
   password_hash: string;
-  country: string;
+  countryy: string;
   email: string;
 }
 

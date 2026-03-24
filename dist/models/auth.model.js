@@ -36,7 +36,7 @@ exports.markOTPUsed = markOTPUsed;
 // signup
 class AuthModel {
     async createUser(user) {
-        const { user_name, user_id, country_code, mobile, password_hash, country, email, } = user;
+        const { user_name, user_id, country_code, mobile, password_hash, countryy, email, } = user;
         const result = await (0, helper_1.executeQuery)(`INSERT INTO users (user_name , user_id , country_code , mobile , password  , primary_num , country , email) VALUES (?,?,?,?,? , ? , ? , ?)`, [
             user_name,
             user_id,
@@ -44,7 +44,7 @@ class AuthModel {
             mobile,
             password_hash,
             mobile,
-            country,
+            countryy,
             email,
         ]);
         return result.insertId;

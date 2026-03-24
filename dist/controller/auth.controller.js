@@ -102,14 +102,14 @@ AuthController.signup = async (req, res) => {
         await (0, auth_model_1.markOTPUsed)(otpRecord.id);
         const password_hash = await bcryptjs_1.default.hash(password, 10);
         const user_id = await (0, helper_1.generateUserId)();
-        const country = await (0, helper_1.fetchCountryName)(country_code);
+        const countryy = await (0, helper_1.fetchCountryName)(country_code);
         const userId = await authModel.createUser({
             user_name,
             user_id,
             country_code,
             mobile,
             password_hash,
-            country,
+            countryy,
             email,
         });
         await authModel.addUserDevice({
@@ -119,6 +119,11 @@ AuthController.signup = async (req, res) => {
             device_type,
         });
         const token = jsonwebtoken_1.default.sign({ user_id, device_id, device_token }, process.env.JWT_SECRET, { expiresIn: "90d" });
+        const users = await userMdl.fetchUserData(mobile);
+        const country = users[0].country;
+        const personal_form = users[0].is_form_filled;
+        const subForm = await userMdl.fetchSubFormData(user_id);
+        const sub_form = subForm?.sub_form;
         if (device_type === "web") {
             res.cookie("token", token, {
                 httpOnly: true,
@@ -128,7 +133,7 @@ AuthController.signup = async (req, res) => {
             });
             return (0, helper_1.sendResponse)(res, 200, 1, [{ user_id }], "Signup successful", []);
         }
-        return (0, helper_1.sendResponse)(res, 200, 1, [{ user_id, token }], "Signup successful", []);
+        return (0, helper_1.sendResponse)(res, 200, 1, [{ user_id, token, country, personal_form, sub_form }], "Signup successful", []);
     }
     catch (err) {
         return (0, helper_1.sendResponse)(res, err.status || 500, 0, [], "Something went wrong", [err.errors || err.message || err]);

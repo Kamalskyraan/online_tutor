@@ -7,7 +7,7 @@ export class EduModel {
     name: string;
     status: string;
   }): Promise<EducationLevel[]> {
-    let query = `SELECT id, name, board FROM education_level WHERE 1=1`;
+    let query = `SELECT id as edu_id, name, board FROM education_level WHERE 1=1`;
     const params: any[] = [];
 
     if (filter?.id) {
@@ -35,7 +35,7 @@ export class EduModel {
     let query = ` SELECT 
     
      
-      es.id,
+      es.id as stream_id,
       es.name,
       es.status,
       el.board

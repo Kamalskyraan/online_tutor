@@ -54,7 +54,7 @@ export class AuthModel {
       country_code,
       mobile,
       password_hash,
-      country,
+      countryy,
       email,
     } = user;
     const result: any = await executeQuery(
@@ -66,7 +66,7 @@ export class AuthModel {
         mobile,
         password_hash,
         mobile,
-        country,
+        countryy,
         email,
       ],
     );
