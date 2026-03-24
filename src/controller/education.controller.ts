@@ -32,7 +32,7 @@ export class EducationController {
         res,
         200,
         1,
-        [groupedData],
+        groupedData,
         "Education Levl Fetched Succesfully",
         [],
       );

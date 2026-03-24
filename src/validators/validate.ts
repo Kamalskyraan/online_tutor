@@ -221,7 +221,7 @@ export const updateTutorSchema = Joi.object({
 
   // 3
   education: Joi.string(),
-  stream: Joi.number(),
+  stream_id: Joi.number(),
 });
 
 export const updateUserProfileSchema = Joi.object({

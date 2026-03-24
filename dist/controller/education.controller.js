@@ -29,7 +29,7 @@ EducationController.getEducationLevel = async (req, res) => {
                 board: item.board ?? "",
             });
         });
-        return (0, helper_1.sendResponse)(res, 200, 1, [groupedData], "Education Levl Fetched Succesfully", []);
+        return (0, helper_1.sendResponse)(res, 200, 1, groupedData, "Education Levl Fetched Succesfully", []);
     }
     catch (err) {
         return (0, helper_1.sendResponse)(res, 0, 500, [], "something went wrong", [

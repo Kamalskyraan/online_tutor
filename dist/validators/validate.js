@@ -196,7 +196,7 @@ exports.updateTutorSchema = joi_1.default.object({
     area: joi_1.default.string(),
     // 3
     education: joi_1.default.string(),
-    stream: joi_1.default.number(),
+    stream_id: joi_1.default.number(),
 });
 exports.updateUserProfileSchema = joi_1.default.object({
     user_id: joi_1.default.string().required(),
