@@ -34,16 +34,16 @@ export class AuthController {
         req.body,
         requestOtSchema,
       );
+      const user = await authModel.findUser(country_code, mobile);
       if (type === "1") {
-        const user = await authModel.findUser(country_code, mobile);
-
         if (user) {
           return sendResponse(res, 200, 0, [], "User already exists", []);
         }
-        if (type === "2") {
-          if (!user) {
-            return sendResponse(res, 200, 0, {}, "User not found", []);
-          }
+      }
+
+      if (type === "2") {
+        if (!user) {
+          return sendResponse(res, 200, 0, [], "User not found", []);
         }
       }
 

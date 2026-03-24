@@ -20,15 +20,15 @@ _a = AuthController;
 AuthController.RequestOtp = async (req, res) => {
     try {
         const { country_code, mobile, email, type } = (0, helper_1.validateRequest)(req.body, validate_1.requestOtSchema);
+        const user = await authModel.findUser(country_code, mobile);
         if (type === "1") {
-            const user = await authModel.findUser(country_code, mobile);
             if (user) {
                 return (0, helper_1.sendResponse)(res, 200, 0, [], "User already exists", []);
             }
-            if (type === "2") {
-                if (!user) {
-                    return (0, helper_1.sendResponse)(res, 200, 0, {}, "User not found", []);
-                }
+        }
+        if (type === "2") {
+            if (!user) {
+                return (0, helper_1.sendResponse)(res, 200, 0, [], "User not found", []);
             }
         }
         const otp = (0, helper_1.generateOTP)();

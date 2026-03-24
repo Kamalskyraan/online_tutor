@@ -18,11 +18,23 @@ export class EducationController {
         ...item,
         board: item.board ?? "",
       }));
+
+      const groupedData: any = {};
+
+      formatResult.forEach((item: any) => {
+        const key = item.name?.toLowerCase();
+
+        if (!groupedData[key]) {
+          groupedData[key] = [];
+        }
+
+        groupedData[key].push(item);
+      });
       return sendResponse(
         res,
         200,
         0,
-        formatResult,
+        groupedData,
         "Education Levl Fetched Succesfully",
         [],
       );

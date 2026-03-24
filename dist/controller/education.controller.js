@@ -21,7 +21,15 @@ EducationController.getEducationLevel = async (req, res) => {
             ...item,
             board: item.board ?? "",
         }));
-        return (0, helper_1.sendResponse)(res, 200, 0, formatResult, "Education Levl Fetched Succesfully", []);
+        const groupedData = {};
+        formatResult.forEach((item) => {
+            const key = item.name?.toLowerCase();
+            if (!groupedData[key]) {
+                groupedData[key] = [];
+            }
+            groupedData[key].push(item);
+        });
+        return (0, helper_1.sendResponse)(res, 200, 0, groupedData, "Education Levl Fetched Succesfully", []);
     }
     catch (err) {
         return (0, helper_1.sendResponse)(res, 1, 500, [], "something went wrong", err.errors || err.message || err);
