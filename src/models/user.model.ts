@@ -275,7 +275,7 @@ export class UserModel {
     }
 
     const result = await executeQuery(query, values);
-    console.log(result)
+    console.log(result);
 
     return convertNullToString(result);
   }
@@ -344,9 +344,7 @@ export class UserModel {
     const tutor_id = tutorData[0].tutor_id;
 
     if (!tutor_id) {
-      return {
-        sub_form: "0",
-      };
+      return { sub_form: "0" };
     }
 
     const subFormData: any = await executeQuery(
@@ -358,7 +356,10 @@ export class UserModel {
 
     return {
       tutor_id,
-      sub_form: subFormData[0].sub_form ? subFormData[0].sub_form : "0",
+      sub_form:
+        subFormData.length && subFormData[0].sub_form
+          ? subFormData[0].sub_form
+          : "0",
     };
   }
 

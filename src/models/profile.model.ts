@@ -12,6 +12,8 @@ export class ProfileModel {
 
     return data;
   }
+
+
   async fetchUserProfileData(user_id: string, user_role?: string) {
     if (!user_role) {
       const [rows]: any = await executeQuery(
@@ -66,7 +68,7 @@ export class ProfileModel {
       };
     }
 
-    // ✅ 3. STUDENT FLOW
+   
     if (user_role === "student") {
       const [rows]: any = await executeQuery(
         `SELECT 
@@ -123,6 +125,9 @@ export class ProfileModel {
 
     return null;
   }
+
+
+
   async addUpdateProfileData(
     user_id: string,
     payload: UpdateUserProfilePayload,

@@ -55,7 +55,6 @@ class ProfileModel {
                 data: rows[0] || null,
             };
         }
-        // ✅ 3. STUDENT FLOW
         if (user_role === "student") {
             const [rows] = await (0, helper_1.executeQuery)(`SELECT 
         u.user_id, u.user_name, u.profile_img, u.gender,

@@ -19,6 +19,7 @@ ProfileController.getUserData = async (req, res) => {
             return (0, helper_1.sendResponse)(res, 200, 0, [], "User_id is required", []);
         }
         const result = await profileMdl.fetchUserProfileData(user_id, user_role);
+        console.log(result);
         if (!result) {
             return (0, helper_1.sendResponse)(res, 200, 0, [], "User not found", []);
         }

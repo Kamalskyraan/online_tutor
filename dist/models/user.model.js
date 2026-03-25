@@ -193,16 +193,16 @@ class UserModel {
         }
         const tutor_id = tutorData[0].tutor_id;
         if (!tutor_id) {
-            return {
-                sub_form: "0",
-            };
+            return { sub_form: "0" };
         }
         const subFormData = await (0, helper_1.executeQuery)(`SELECT sub_form FROM tutor_subjects 
      WHERE tutor_id = ? 
      LIMIT 1`, [tutor_id]);
         return {
             tutor_id,
-            sub_form: subFormData[0].sub_form ? subFormData[0].sub_form : "0",
+            sub_form: subFormData.length && subFormData[0].sub_form
+                ? subFormData[0].sub_form
+                : "0",
         };
     }
     //

@@ -15,6 +15,8 @@ export class ProfileController {
       }
       const result = await profileMdl.fetchUserProfileData(user_id, user_role);
 
+      console.log(result);
+
       if (!result) {
         return sendResponse(res, 200, 0, [], "User not found", []);
       }
