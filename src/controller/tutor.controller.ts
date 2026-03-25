@@ -81,4 +81,32 @@ export class TutorController {
       );
     }
   };
+
+  static getTutorData = async (req: Request, res: Response) => {
+    try {
+      const { tutor_id } = req.body;
+      if (!tutor_id) {
+        return sendResponse(res, 200, 0, [], "Tutor Id is required", []);
+      }
+      const tutorData = await tutModel.fetchTutorData(tutor_id);
+
+      return sendResponse(
+        res,
+        200,
+        1,
+        tutorData,
+        "Tutor Data fetched successfully",
+        [],
+      );
+    } catch (err: any) {
+      return sendResponse(
+        res,
+        500,
+        0,
+        [],
+        "Internal Server Error",
+        err.errors || err.message || err,
+      );
+    }
+  };
 }

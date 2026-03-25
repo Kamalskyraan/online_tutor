@@ -88,4 +88,33 @@ router.post("/get-demos", (req, res) => {
 
   TutorController.getDemos(req, res);
 });
+
+router.post("/get-tutor-data", (req, res) => {
+  /*
+    #swagger.tags = ['8.Tutor']
+    #swagger.summary = 'get Tutor Data'
+    #swagger.description = 'Get Tutor's Data using tutor_id'
+
+    #swagger.parameters['body'] = {
+      in: 'body',
+      required: false,
+      schema: {
+       
+        tutor_id : "TUTOR_onDXQ037" 
+        
+          }
+    }
+
+    #swagger.responses[200] = {
+      description: "Data fetched successfully",
+     
+    }
+
+    #swagger.responses[500] = {
+      description: "Internal Server Error"
+    }
+  */
+
+  TutorController.getTutorData(req, res);
+});
 export default router;

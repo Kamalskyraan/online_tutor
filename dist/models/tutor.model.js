@@ -2,6 +2,8 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.TutorModel = void 0;
 const helper_1 = require("../utils/helper");
+const education_model_1 = require("./education.model");
+const eduMdl = new education_model_1.EduModel();
 class TutorModel {
     async insertUpdateDemos(data) {
         const { id, tutor_id, media_type, media_id, title, thumbnail } = data;
@@ -89,6 +91,24 @@ class TutorModel {
         return {
             videos,
             images,
+        };
+    }
+    async fetchTutorData(tutor_id) {
+        const tutor = await (0, helper_1.executeQuery)(`SELECT tutor_id ,user_id ,  user_name , represent , stream_id  FROM tutor WHERE tutor_id = ? LIMIT 1`, [tutor_id]);
+        if (!tutor.length)
+            return null;
+        const tutorData = tutor[0];
+        const { user_id, stream_id } = tutorData;
+        const user = await (0, helper_1.executeQuery)(`SELECT user_id , user_name , gender , pincode , area , district , state , self_about , address , lat , lng , is_form_filled as personal_form FROM users WHERE user_id = ? LIMIT 1`, [user_id]);
+        const userData = user.length ? user[0] : {};
+        let streams = {};
+        if (stream_id) {
+            streams = await eduMdl.fetchStreamsForAll(stream_id);
+        }
+        return {
+            ...tutorData,
+            ...userData,
+            streams,
         };
     }
 }

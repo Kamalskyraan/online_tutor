@@ -55,4 +55,17 @@ TutorController.getDemos = async (req, res) => {
         return (0, helper_1.sendResponse)(res, 500, 0, [], "Internal Server Error", err.errors || err.message || err);
     }
 };
+TutorController.getTutorData = async (req, res) => {
+    try {
+        const { tutor_id } = req.body;
+        if (!tutor_id) {
+            return (0, helper_1.sendResponse)(res, 200, 0, [], "Tutor Id is required", []);
+        }
+        const tutorData = await tutModel.fetchTutorData(tutor_id);
+        return (0, helper_1.sendResponse)(res, 200, 1, tutorData, "Tutor Data fetched successfully", []);
+    }
+    catch (err) {
+        return (0, helper_1.sendResponse)(res, 500, 0, [], "Internal Server Error", err.errors || err.message || err);
+    }
+};
 //# sourceMappingURL=tutor.controller.js.map

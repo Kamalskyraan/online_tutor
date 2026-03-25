@@ -1757,6 +1757,39 @@
           }
         }
       }
+    },
+    "/api/tutor/get-tutor-data": {
+      "post": {
+        "tags": [
+          "8.Tutor"
+        ],
+        "summary": "get Tutor Data",
+        "description": "Get Tutor",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": false,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "tutor_id": {
+                  "type": "string",
+                  "example": "TUTOR_onDXQ037"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Data fetched successfully"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
     }
   }
 }

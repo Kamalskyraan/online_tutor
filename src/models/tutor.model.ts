@@ -1,6 +1,7 @@
 import { getDemosBody } from "../interface/interface";
 import { executeQuery } from "../utils/helper";
-
+import { EduModel } from "./education.model";
+const eduMdl = new EduModel();
 export class TutorModel {
   async insertUpdateDemos(data: any) {
     const { id, tutor_id, media_type, media_id, title, thumbnail } = data;
@@ -120,6 +121,36 @@ export class TutorModel {
     return {
       videos,
       images,
+    };
+  }
+  async fetchTutorData(tutor_id: string) {
+    const tutor: any = await executeQuery(
+      `SELECT tutor_id ,user_id ,  user_name , represent , stream_id  FROM tutor WHERE tutor_id = ? LIMIT 1`,
+      [tutor_id],
+    );
+
+    if (!tutor.length) return null;
+
+    const tutorData = tutor[0];
+
+    const { user_id, stream_id } = tutorData;
+
+    const user: any = await executeQuery(
+      `SELECT user_id , user_name , gender , pincode , area , district , state , self_about , address , lat , lng , is_form_filled as personal_form FROM users WHERE user_id = ? LIMIT 1`,
+      [user_id],
+    );
+
+    const userData = user.length ? user[0] : {};
+
+    let streams = {};
+    if (stream_id) {
+      streams = await eduMdl.fetchStreamsForAll(stream_id);
+    }
+
+    return {
+      ...tutorData,
+      ...userData,
+      streams,
     };
   }
 }

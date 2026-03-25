@@ -65,4 +65,36 @@ export class EduModel {
 
     return result;
   }
+
+  async fetchStreamsForAll(stream_id: string) {
+    if (!stream_id) return [];
+
+    const ids = stream_id
+      .split(",")
+      .map((id) => Number(id.trim()))
+      .filter((id) => !isNaN(id));
+
+    if (!ids.length) return [];
+
+    const placeholders = ids.map(() => "?").join(",");
+
+    const result: any = await executeQuery(
+      `SELECT 
+        es.id as stream_id,
+        es.name,
+        es.status,
+        el.name as edu_name,
+        el.id as edu_id,
+        el.board
+     FROM education_level el
+     LEFT JOIN education_stream es
+       ON el.id = es.edu_id
+     WHERE es.id IN (${placeholders})`,
+      ids,
+    );
+
+    
+
+    return result;
+  }
 }
