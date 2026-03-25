@@ -247,20 +247,35 @@ export class UserModel {
   }
   //
   async fetchUserData(data: userDetailsRequest): Promise<any> {
-    const { user_id, mobile  } = data;
+    const { user_id, mobile } = data;
 
-    let query = `SELECT id , user_name , user_id , user_role , country_code , mobile , add_mobile as additional_mobile,  primary_num , email ,is_show_num , profile_img , gender , dob, country , state , area ,pincode ,self_about , address , lat , lng , is_form_filled  FROM users WHERE 1 = 1 `;
+    let query = `
+    SELECT id, user_name, user_id, user_role, country_code, mobile,
+           add_mobile as additional_mobile, primary_num, email, is_show_num,
+           profile_img, gender, dob, country, state, area, pincode,
+           self_about, address, lat, lng, is_form_filled
+    FROM users
+  `;
+
+    const conditions: string[] = [];
     const values: any[] = [];
+
     if (user_id) {
-      query += `AND user_id = ?`;
+      conditions.push(`user_id = ?`);
       values.push(user_id);
     }
+
     if (mobile) {
-      query += `AND mobile = ?`;
+      conditions.push(`mobile = ?`);
       values.push(mobile);
     }
 
+    if (conditions.length) {
+      query += ` WHERE ` + conditions.join(" AND ");
+    }
+
     const result = await executeQuery(query, values);
+    console.log(result)
 
     return convertNullToString(result);
   }
