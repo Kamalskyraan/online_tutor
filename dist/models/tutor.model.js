@@ -96,7 +96,7 @@ class TutorModel {
     async fetchTutorData(tutor_id) {
         const tutor = await (0, helper_1.executeQuery)(`SELECT tutor_id ,user_id ,  user_name , represent , stream_id  FROM tutor WHERE tutor_id = ? LIMIT 1`, [tutor_id]);
         if (!tutor.length)
-            return null;
+            return [];
         const tutorData = tutor[0];
         const { user_id, stream_id } = tutorData;
         const user = await (0, helper_1.executeQuery)(`SELECT user_id , user_name , gender , pincode , area , district , state , self_about , address , lat , lng , is_form_filled as personal_form FROM users WHERE user_id = ? LIMIT 1`, [user_id]);

@@ -32,21 +32,53 @@ class UserModel {
      LIMIT 1`, [user_id]);
         return rows.length ? rows[0].user_name : "";
     }
+    // async updateTutorInfo(tutor: tutorData): Promise<number> {
+    //   const { tutor_id, user_id, user_name, represent } = tutor;
+    //   if (tutor_id) {
+    //     const result: any = await executeQuery(
+    //       `UPDATE tutor SET represent = ? WHERE tutor_id = ?`,
+    //       [represent, tutor_id],
+    //     );
+    //     return result.affectedRows;
+    //   }
+    //   const rows: any[] = await executeQuery(
+    //     `SELECT tutor_id FROM tutor WHERE user_id = ? LIMIT 1`,
+    //     [user_id],
+    //   );
+    //   if (rows.length) {
+    //     const tutor_id = rows[0].tutor_id;
+    //     const result: any = await executeQuery(
+    //       `UPDATE tutor SET represent = ?, user_name = ? WHERE tutor_id = ?`,
+    //       [represent, user_name, tutor_id],
+    //     );
+    //     return result.affectedRows;
+    //   }
+    //   const tutorId = await generateTutorId();
+    //   const result = await executeQuery(
+    //     `INSERT INTO tutor (tutor_id , user_id , user_name , represent) VALUES (?,?,?,?)`,
+    //     [tutorId, user_id, user_name, represent],
+    //   );
+    //   return result.affectedRows;
+    // }
     async updateTutorInfo(tutor) {
         const { tutor_id, user_id, user_name, represent } = tutor;
         if (tutor_id) {
-            const result = await (0, helper_1.executeQuery)(`UPDATE tutor SET represent = ? WHERE tutor_id = ?`, [represent, tutor_id]);
-            return result.affectedRows;
+            await (0, helper_1.executeQuery)(`UPDATE tutor SET represent = ? WHERE tutor_id = ?`, [
+                represent,
+                tutor_id,
+            ]);
+            return { tutor_id };
         }
         const rows = await (0, helper_1.executeQuery)(`SELECT tutor_id FROM tutor WHERE user_id = ? LIMIT 1`, [user_id]);
         if (rows.length) {
-            const tutor_id = rows[0].tutor_id;
-            const result = await (0, helper_1.executeQuery)(`UPDATE tutor SET represent = ?, user_name = ? WHERE tutor_id = ?`, [represent, user_name, tutor_id]);
-            return result.affectedRows;
+            const existingTutorId = rows[0].tutor_id;
+            await (0, helper_1.executeQuery)(`UPDATE tutor SET represent = ?, user_name = ? WHERE tutor_id = ?`, [represent, user_name, existingTutorId]);
+            return { tutor_id: existingTutorId };
         }
-        const tutorId = await (0, helper_1.generateTutorId)();
-        const result = await (0, helper_1.executeQuery)(`INSERT INTO tutor (tutor_id , user_id , user_name , represent) VALUES (?,?,?,?)`, [tutorId, user_id, user_name, represent]);
-        return result.affectedRows;
+        const newTutorId = await (0, helper_1.generateTutorId)();
+        await (0, helper_1.executeQuery)(`INSERT INTO tutor (tutor_id, user_id, user_name, represent) 
+     VALUES (?, ?, ?, ?)`, [newTutorId, user_id, user_name, represent]);
+        return { tutor_id: newTutorId };
     }
     async fetchUserRole(user_id) {
         const [rows] = await (0, helper_1.executeQuery)(`SELECT user_role FROM users WHERE user_id = ?`, [user_id]);
@@ -247,6 +279,10 @@ class UserModel {
             ]);
         }
         await (0, helper_1.executeQuery)(`UPDATE learn_course_request SET status = 'approved' WHERE id = ?`, [request_id]);
+    }
+    async geTutorByUserId(user_id) {
+        const result = await (0, helper_1.executeQuery)(`SELECT id, tutor_id FROM tutor WHERE user_id = ? LIMIT 1`, [user_id]);
+        return result.length ? result[0] : null;
     }
 }
 exports.UserModel = UserModel;

@@ -129,7 +129,7 @@ export class TutorModel {
       [tutor_id],
     );
 
-    if (!tutor.length) return null;
+    if (!tutor.length) return [];
 
     const tutorData = tutor[0];
 

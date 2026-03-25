@@ -49,7 +49,8 @@ userController.updateTutor = async (req, res) => {
             if (filled < 3)
                 await userModel.formFilledUpdate(user_id, 3);
         }
-        return (0, helper_1.sendResponse)(res, 200, 1, [], "Details updated successfully", []);
+        const existingTutor = await userModel.geTutorByUserId(user_id);
+        return (0, helper_1.sendResponse)(res, 200, 1, [existingTutor], "Details updated successfully", []);
     }
     catch (err) {
         return (0, helper_1.sendResponse)(res, 500, 0, [], "something went wrong", [

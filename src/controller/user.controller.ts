@@ -58,8 +58,16 @@ export class userController {
         const filled = await userModel.fetchUserFormFilled(user_id);
         if (filled < 3) await userModel.formFilledUpdate(user_id, 3);
       }
+      const existingTutor = await userModel.geTutorByUserId(user_id);
 
-      return sendResponse(res, 200, 1, [], "Details updated successfully", []);
+      return sendResponse(
+        res,
+        200,
+        1,
+        [existingTutor],
+        "Details updated successfully",
+        [],
+      );
     } catch (err: any) {
       return sendResponse(res, 500, 0, [], "something went wrong", [
         err.errors || err.message || err,

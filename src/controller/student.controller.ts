@@ -27,4 +27,31 @@ export class StudentController {
       );
     }
   };
+
+  static getStudentData = async (req: Request, res: Response) => {
+    try {
+      const { student_id } = req.body;
+      if (!student_id) {
+        return sendResponse(res, 200, 0, [], "Student Id is required", []);
+      }
+
+      const studentData = await this.studentModel.fetchStudentData(student_id);
+      return sendResponse(
+        res,
+        200,
+        1,
+        studentData,
+        "Student Data Fetched Successfully",
+        [],
+      );
+    } catch (err: any) {
+      return sendResponse(
+        res,
+        500,
+        0,
+        "Internal Server Error",
+        err.errors || err.message || err,
+      );
+    }
+  };
 }
