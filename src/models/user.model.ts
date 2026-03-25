@@ -135,6 +135,8 @@ export class UserModel {
       address,
       user_id,
       user_role,
+      lat,
+      lng,
     } = user;
 
     let query = `UPDATE users SET `;
@@ -181,10 +183,18 @@ export class UserModel {
       fields.push(`user_role = ?`);
       values.push(user_role);
     }
+    if (lat !== undefined) {
+      fields.push(`lat = ?`);
+      values.push(lat);
+    }
+    if (lng !== undefined) {
+      fields.push(`lng = ?`);
+      values.push(lng);
+    }
 
     if (fields.length === 0) return 0;
 
-    query += fields.join(", ") + ` WHERE id = ?`;
+    query += fields.join(", ") + ` WHERE user_id = ?`;
     values.push(user_id);
 
     const result: any = await executeQuery(query, values);
@@ -192,36 +202,52 @@ export class UserModel {
   }
 
   async updateStudentEducation(student: UserEducationBody): Promise<number> {
-    const { user_id, stream_id, user_name, learn_course, student_id } = student;
+    const {
+      user_id,
+      stream_id,
+      user_name,
+      learn_course,
+      student_id,
+      req_course,
+    } = student;
 
     const existing: any = await executeQuery(
-      `SELECT id FROM students WHERE user_id = ? LIMIT 1`,
+      `SELECT id FROM student WHERE user_id = ? LIMIT 1`,
       [user_id],
     );
+    let updatedReqCourse = req_course || null;
 
     if (existing.length > 0) {
+      if (req_course) {
+        const oldReq = existing[0].req_course
+          ? existing[0].req_course.split(",")
+          : [];
+
+        const newReq = [...new Set([...oldReq, ...req_course])];
+        updatedReqCourse = newReq.join(",");
+      }
       const result: any = await executeQuery(
-        `UPDATE students 
-       SET stream_id = ?, learn_course = ?, user_name = ?
+        `UPDATE student
+       SET stream_id = ?, learn_course = ?, user_name = ? , req_course = ?
        WHERE user_id = ?`,
-        [stream_id, learn_course, user_name, user_id],
+        [stream_id, learn_course, user_name, req_course, user_id],
       );
 
       return result.affectedRows;
     }
 
     const result: any = await executeQuery(
-      `INSERT INTO students 
-     (user_id, stream_id, user_name, learn_course, student_id) 
-     VALUES (?, ?, ?, ?, ?)`,
-      [user_id, stream_id, user_name, learn_course, student_id],
+      `INSERT INTO student
+     (user_id, stream_id, user_name, learn_course, req_course , student_id) 
+     VALUES (?, ?, ?, ?, ? , ?)`,
+      [user_id, stream_id, user_name, learn_course, req_course, student_id],
     );
 
     return result.affectedRows;
   }
   //
   async fetchUserData(data: userDetailsRequest): Promise<any> {
-    const { user_id, mobile } = data;
+    const { user_id, mobile  } = data;
 
     let query = `SELECT id , user_name , user_id , user_role , country_code , mobile , add_mobile as additional_mobile,  primary_num , email ,is_show_num , profile_img , gender , dob, country , state , area ,pincode ,self_about , address , lat , lng , is_form_filled  FROM users WHERE 1 = 1 `;
     const values: any[] = [];
@@ -239,18 +265,7 @@ export class UserModel {
     return convertNullToString(result);
   }
 
-  async createSubject(data: any) {
-    const {
-      subject_id,
-      subject_name,
-      covered_topics,
-      syllabus_id,
-      prior_exp,
-      exp_months,
-      exp_years,
-    } = data;
-    // const result = await executeQuery()
-  }
+  async createSubject(data: any) {}
 
   //
 
@@ -282,13 +297,14 @@ export class UserModel {
       [subject_name, user_id],
     );
 
-    if (existing.length > 0) return;
+    if (existing.length > 0) return existing[0].id;
 
-    await executeQuery(
-      `INSERT INTO learn_course_request (course_name, user_id)
+    const result: any = await executeQuery(
+      `INSERT INTO learn_course_request (subject_name, user_id)
      VALUES (?, ?)`,
       [subject_name, user_id],
     );
+    return result.insertId;
   }
 
   async getStudentByUserId(user_id: string) {
@@ -327,7 +343,83 @@ export class UserModel {
 
     return {
       tutor_id,
-      sub_form: subFormData[0].sub_form || 0,
+      sub_form: subFormData[0].sub_form ? subFormData[0].sub_form : "0",
     };
+  }
+
+  //
+  async getCourseByName(subject_name: string) {
+    const result: any = await executeQuery(
+      `SELECT id FROM subjects WHERE subject_name = ? LIMIT 1`,
+      [subject_name],
+    );
+
+    return result.length ? result[0] : null;
+  }
+
+  async approveCourseRequest(request_id: number) {
+    const request: any = await executeQuery(
+      `SELECT * FROM learn_course_request WHERE id = ?`,
+      [request_id],
+    );
+
+    if (!request.length) return;
+
+    const { subject_name } = request[0];
+
+    let subject: any = await executeQuery(
+      `SELECT id FROM subjects WHERE subject_name = ? LIMIT 1`,
+      [subject_name],
+    );
+
+    let subject_id: number;
+
+    if (subject.length > 0) {
+      subject_id = subject[0].id;
+    } else {
+      const subjectResult: any = await executeQuery(
+        `INSERT INTO subjects (subject_name) VALUES (?)`,
+        [subject_name],
+      );
+      subject_id = subjectResult.insertId;
+    }
+
+    const students: any = await executeQuery(
+      `SELECT user_id, req_course, learn_course FROM student
+     WHERE FIND_IN_SET(?, req_course)`,
+      [request_id],
+    );
+
+    for (const student of students) {
+      const reqList = student.req_course
+        ? student.req_course
+            .split(",")
+            .filter((id: string) => Number(id) !== request_id)
+        : [];
+
+      const learnList = student.learn_course
+        ? student.learn_course.split(",").map(Number)
+        : [];
+
+      if (!learnList.includes(subject_id)) {
+        learnList.push(subject_id);
+      }
+
+      await executeQuery(
+        `UPDATE student
+       SET req_course = ?, learn_course = ?
+       WHERE user_id = ?`,
+        [
+          reqList.length ? reqList.join(",") : null,
+          learnList.length ? learnList.join(",") : null,
+          student.user_id,
+        ],
+      );
+    }
+
+    await executeQuery(
+      `UPDATE learn_course_request SET status = 'approved' WHERE id = ?`,
+      [request_id],
+    );
   }
 }

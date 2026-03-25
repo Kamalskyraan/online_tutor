@@ -32,8 +32,8 @@ export class SubjectModel {
     }
 
     if (subject_name) {
-      query += ` AND subject_name = ?`;
-      values.push(subject_name);
+      query += ` AND subject_name LIKE ?`;
+      values.push(`%${subject_name}%`);
     }
 
     if (status !== undefined && status !== null) {
@@ -192,7 +192,7 @@ export class SubjectModel {
       tutor_id,
       class_mode,
       class_type,
-      stream_ids,
+      stream_id,
       min_fee,
       max_fee,
       tenure_type,
@@ -201,7 +201,7 @@ export class SubjectModel {
     if (
       !class_mode &&
       !class_type &&
-      !stream_ids &&
+      !stream_id &&
       !min_fee &&
       !max_fee &&
       !tenure_type
@@ -222,7 +222,7 @@ export class SubjectModel {
       [
         class_mode,
         class_type,
-        stream_ids,
+        stream_id,
         min_fee,
         max_fee,
         tenure_type,

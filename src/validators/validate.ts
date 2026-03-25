@@ -293,7 +293,7 @@ export const updateTutorSubjectsSchema = Joi.object({
   teach_language: Joi.string(),
   // 3
   class_mode: Joi.string(),
-  stream_ids: Joi.string(),
+  stream_id: Joi.string(),
   class_type: Joi.string(),
   min_fee: Joi.string(),
   max_fee: Joi.string(),
@@ -306,8 +306,11 @@ export const updateStudentSchema = Joi.object({
   user_id: Joi.string().required().messages({
     "any.required": "User Id is required",
   }),
+  user_name: Joi.string().required().messages({
+    "any.required": "User Name is required",
+  }),
   // 1
-  gender: Joi.string().valid("male", "female", "others"),
+  gender: Joi.string().valid("male", "female", "other"),
   dob: Joi.string(),
   country: Joi.string(),
   pincode: Joi.string(),
@@ -315,12 +318,15 @@ export const updateStudentSchema = Joi.object({
   district: Joi.string(),
   area: Joi.string(),
   address: Joi.string(),
+  lat: Joi.string(),
+  lng: Joi.string(),
   is_show_num: Joi.boolean().messages({}),
 
   // 2
-  education: Joi.string(),
-  stream: Joi.string(),
-  learn_course: Joi.string(),
+
+  stream_id: Joi.string(),
+  learn_course_id: Joi.string(),
+  learn_course: Joi.array().items(Joi.string().trim().min(1)).min(1).optional(),
 });
 
 //review

@@ -62,7 +62,7 @@ SubjectController.addUpdateSubjectsToTutor = async (req, res) => {
         }
         if (payload.class_mode ||
             payload.class_type ||
-            payload.stream_ids ||
+            payload.stream_id ||
             payload.min_fee ||
             payload.max_fee ||
             payload.tenure_type) {

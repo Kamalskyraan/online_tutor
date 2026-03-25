@@ -57,9 +57,9 @@ router.post("/update-tutor-subjects", (req, res) => {
         exp_year : "1",
         exp_month : "11",
         teach_language : "1,2,3,4",
-        class_mode : "0",
-        class_type : "0",
-        stream_ids : "1,2,3",
+        class_mode : "1 or 2 or 3",
+        class_type : "1 or 2 or 3",
+        stream_id : "1,2,3",
         min_fee : "120",
         max_fee : "1200",
         tenure_type : "hour"

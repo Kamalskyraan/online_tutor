@@ -127,15 +127,25 @@ userController.updateStudent = async (req, res) => {
             return (0, helper_1.sendResponse)(res, 200, 0, [], "User Id is required", []);
         }
         await userModel.updateUserBasicForStudent(payload);
-        let finalCourse = payload.learn_course ?? null;
-        if (payload.learn_course) {
-            const exists = await userModel.checkCourseExists(payload.learn_course);
-            if (!exists) {
-                await userModel.createCourseRequestIfNotExists({
-                    course_name: payload.learn_course,
-                    user_id,
-                });
-                finalCourse = null;
+        let finalCourse = payload.learn_course_id
+            ? Array.isArray(payload.learn_course_id)
+                ? payload.learn_course_id
+                : [payload.learn_course_id]
+            : [];
+        let requestIds = [];
+        if (payload.learn_course && Array.isArray(payload.learn_course)) {
+            for (const course of payload.learn_course) {
+                const exists = await userModel.getCourseByName(course);
+                if (exists) {
+                    finalCourse.push(exists.id);
+                }
+                else {
+                    const requestId = await userModel.createCourseRequestIfNotExists({
+                        subject_name: course,
+                        user_id,
+                    });
+                    requestIds.push(requestId);
+                }
             }
         }
         const user_name = await userModel.fetchUserName(user_id);
@@ -150,6 +160,7 @@ userController.updateStudent = async (req, res) => {
             student_id,
             ...payload,
             learn_course: finalCourse,
+            req_course: requestIds.length ? requestIds.join(",") : null,
         });
         const filled = await userModel.fetchUserFormFilled(user_id);
         if (filled < 2) {
@@ -158,6 +169,7 @@ userController.updateStudent = async (req, res) => {
         return (0, helper_1.sendResponse)(res, 200, 1, [{ student_id }], "Student details saved successfully", []);
     }
     catch (err) {
+        console.log(err);
         return (0, helper_1.sendResponse)(res, 500, 0, [], "Internal Server Error", err.errors || err.message || err);
     }
 };
@@ -233,6 +245,13 @@ userController.updateTutorSubject = async (req, res) => {
     }
     catch (err) {
         return (0, helper_1.sendResponse)(res, 500, 0, [], "something went wrong", err.errors || err.message || err);
+    }
+};
+userController.approveCourseRequest = async (req, res) => {
+    try {
+    }
+    catch (err) {
+        return (0, helper_1.sendResponse)(res, 500, 0, [], "Internal Server Error", err.errors || err.message || err);
     }
 };
 //# sourceMappingURL=user.controller.js.map

@@ -122,6 +122,7 @@ AuthController.signup = async (req, res) => {
         const users = await userMdl.fetchUserData(mobile);
         const country = users[0].country;
         const personal_form = users[0].is_form_filled;
+        const user_role = users[0].user_role;
         const subForm = await userMdl.fetchSubFormData(user_id);
         const sub_form = subForm?.sub_form;
         if (device_type === "web") {
@@ -133,7 +134,7 @@ AuthController.signup = async (req, res) => {
             });
             return (0, helper_1.sendResponse)(res, 200, 1, [{ user_id }], "Signup successful", []);
         }
-        return (0, helper_1.sendResponse)(res, 200, 1, [{ user_id, token, country, personal_form, sub_form }], "Signup successful", []);
+        return (0, helper_1.sendResponse)(res, 200, 1, [{ user_id, token, country, personal_form, sub_form, user_role }], "Signup successful", []);
     }
     catch (err) {
         return (0, helper_1.sendResponse)(res, err.status || 500, 0, [], "Something went wrong", [err.errors || err.message || err]);
@@ -158,6 +159,7 @@ AuthController.login = async (req, res) => {
         });
         const token = jsonwebtoken_1.default.sign({ user_id: user.user_id, device_id, device_token }, process.env.JWT_SECRET, { expiresIn: "90d" });
         const users = await userMdl.fetchUserData(mobile);
+        const user_role = users[0].user_role;
         const country = users[0].country;
         const personal_form = users[0].is_form_filled;
         const subForm = await userMdl.fetchSubFormData(user.user_id);
@@ -170,7 +172,16 @@ AuthController.login = async (req, res) => {
             });
             return (0, helper_1.sendResponse)(res, 200, 1, [{ user_id: user.user_id }], "Login successful", []);
         }
-        return (0, helper_1.sendResponse)(res, 200, 1, [{ user_id: user.user_id, token, country, personal_form, sub_form }], "Login successful", []);
+        return (0, helper_1.sendResponse)(res, 200, 1, [
+            {
+                user_id: user.user_id,
+                token,
+                country,
+                personal_form,
+                sub_form,
+                user_role,
+            },
+        ], "Login successful", []);
     }
     catch (err) {
         console.log(err);

@@ -372,7 +372,7 @@
                 },
                 "country": {
                   "type": "string",
-                  "example": "india"
+                  "example": "India"
                 },
                 "pincode": {
                   "type": "string",
@@ -402,7 +402,7 @@
                   "type": "string",
                   "example": "abcd"
                 },
-                "stream": {
+                "stream_id": {
                   "type": "number",
                   "example": 1
                 }
@@ -413,6 +413,109 @@
         "responses": {
           "200": {
             "description": "add or update tutor successfully"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/user/add-update-student": {
+      "post": {
+        "tags": [
+          "2.User"
+        ],
+        "summary": "add or update student data",
+        "description": "Add Or Update Student Data",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "user_role": {
+                  "type": "string",
+                  "example": "student"
+                },
+                "user_id": {
+                  "type": "string",
+                  "example": "USER_LDsMp-Dsm"
+                },
+                "user_name": {
+                  "type": "string",
+                  "example": "kamaleh"
+                },
+                "dob": {
+                  "type": "string",
+                  "example": "2002-03-15"
+                },
+                "gender": {
+                  "type": "string",
+                  "example": "male"
+                },
+                "country": {
+                  "type": "string",
+                  "example": "India"
+                },
+                "pincode": {
+                  "type": "string",
+                  "example": "624601"
+                },
+                "state": {
+                  "type": "string",
+                  "example": "Tamilnadu"
+                },
+                "lat": {
+                  "type": "string",
+                  "example": "12.4566"
+                },
+                "lng": {
+                  "type": "string",
+                  "example": "10.56"
+                },
+                "district": {
+                  "type": "string",
+                  "example": "CBE"
+                },
+                "area": {
+                  "type": "string",
+                  "example": "RSpuram"
+                },
+                "is_show_num": {
+                  "type": "boolean",
+                  "example": true
+                },
+                "address": {
+                  "type": "string",
+                  "example": "abcde fghij klmnop"
+                },
+                "stream_id": {
+                  "type": "string",
+                  "example": "1"
+                },
+                "learn_course_id": {
+                  "type": "string",
+                  "example": "1,2,3"
+                },
+                "learn_course": {
+                  "type": "array",
+                  "example": [
+                    "Full Stack Development",
+                    "java"
+                  ],
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Add Or Update Student data successfully"
           },
           "500": {
             "description": "Internal Server Error"
@@ -442,6 +545,10 @@
                 "mobile": {
                   "type": "string",
                   "example": "986543210"
+                },
+                "user_role": {
+                  "type": "string",
+                  "example": "student or tutor"
                 }
               }
             }
@@ -475,6 +582,10 @@
                 "user_id": {
                   "type": "string",
                   "example": "USER_7wbjv2wt"
+                },
+                "user_role": {
+                  "type": "string",
+                  "example": "student or tutor"
                 }
               }
             }
@@ -773,13 +884,13 @@
                 },
                 "class_mode": {
                   "type": "string",
-                  "example": "0"
+                  "example": "1 or 2 or 3"
                 },
                 "class_type": {
                   "type": "string",
-                  "example": "0"
+                  "example": "1 or 2 or 3"
                 },
-                "stream_ids": {
+                "stream_id": {
                   "type": "string",
                   "example": "1,2,3"
                 },

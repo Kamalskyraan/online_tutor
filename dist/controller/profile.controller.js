@@ -14,16 +14,16 @@ exports.ProfileController = ProfileController;
 _a = ProfileController;
 ProfileController.getUserData = async (req, res) => {
     try {
-        const { user_id } = req.body;
+        const { user_id, user_role } = req.body;
         if (!user_id) {
             return (0, helper_1.sendResponse)(res, 200, 0, [], "User_id is required", []);
         }
-        const result = await profileMdl.fetchUserProfileData(user_id);
+        const result = await profileMdl.fetchUserProfileData(user_id, user_role);
         if (!result) {
             return (0, helper_1.sendResponse)(res, 200, 0, [], "User not found", []);
         }
-        const converted = await profileMdl.convertRepresentData(result?.represent);
-        const stringData = await cmnModel.convertNullObjectToString(result);
+        const converted = await profileMdl.convertRepresentData(result?.data?.represent);
+        const stringData = await cmnModel.convertNullObjectToString(result?.data);
         return (0, helper_1.sendResponse)(res, 200, 1, {
             ...stringData,
             represent_name: converted,

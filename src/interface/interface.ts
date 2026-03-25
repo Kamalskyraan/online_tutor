@@ -71,6 +71,7 @@ export interface UserEducationBody {
   learn_course?: string;
   stream_id?: string;
   student_id?: string;
+  req_course?: string;
 }
 
 // src
@@ -178,6 +179,8 @@ export interface studentPersonalBody {
   is_show_num: string;
   address: string;
   user_role: string;
+  lat: string;
+  lng: string;
 }
 
 //user

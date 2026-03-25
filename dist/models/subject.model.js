@@ -26,8 +26,8 @@ class SubjectModel {
             values.push(id);
         }
         if (subject_name) {
-            query += ` AND subject_name = ?`;
-            values.push(subject_name);
+            query += ` AND subject_name LIKE ?`;
+            values.push(`%${subject_name}%`);
         }
         if (status !== undefined && status !== null) {
             query += ` AND status = ?`;
@@ -138,10 +138,10 @@ class SubjectModel {
      WHERE tutor_id = ?`, [teach_language, tutor_id]);
     }
     async addClassDetails(data) {
-        const { tutor_id, class_mode, class_type, stream_ids, min_fee, max_fee, tenure_type, } = data;
+        const { tutor_id, class_mode, class_type, stream_id, min_fee, max_fee, tenure_type, } = data;
         if (!class_mode &&
             !class_type &&
-            !stream_ids &&
+            !stream_id &&
             !min_fee &&
             !max_fee &&
             !tenure_type)
@@ -158,7 +158,7 @@ class SubjectModel {
      WHERE tutor_id = ?`, [
             class_mode,
             class_type,
-            stream_ids,
+            stream_id,
             min_fee,
             max_fee,
             tenure_type,

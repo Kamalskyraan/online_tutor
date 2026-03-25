@@ -178,7 +178,7 @@ export class AuthController {
       const users = await userMdl.fetchUserData(mobile);
       const country = users[0].country;
       const personal_form = users[0].is_form_filled;
-
+      const user_role = users[0].user_role;
       const subForm = await userMdl.fetchSubFormData(user_id);
 
       const sub_form = subForm?.sub_form;
@@ -205,7 +205,7 @@ export class AuthController {
         res,
         200,
         1,
-        [{ user_id, token, country, personal_form, sub_form }],
+        [{ user_id, token, country, personal_form, sub_form, user_role }],
         "Signup successful",
         [],
       );
@@ -254,7 +254,7 @@ export class AuthController {
         { expiresIn: "90d" },
       );
       const users = await userMdl.fetchUserData(mobile);
-      
+      const user_role = users[0].user_role;
       const country = users[0].country;
       const personal_form = users[0].is_form_filled;
 
@@ -282,7 +282,16 @@ export class AuthController {
         res,
         200,
         1,
-        [{ user_id: user.user_id, token, country, personal_form, sub_form }],
+        [
+          {
+            user_id: user.user_id,
+            token,
+            country,
+            personal_form,
+            sub_form,
+            user_role,
+          },
+        ],
         "Login successful",
         [],
       );

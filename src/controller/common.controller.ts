@@ -71,9 +71,9 @@ export class CommonController {
         {
           id: uploadId,
           pathname: file.key,
-          url: `${process.env.CLOUDFRONT_URL}/${file.key}`,
+          url: `https://${process.env.CLOUDFRONT_URL}/${file.key}`,
           org_name: file.originalname,
-          file_size: `${(file.size / (1024 * 1024)).toFixed(2)}MB`,
+          file_size: `${(file.size / (1024 * 1024)).toFixed(4)}MB`,
         },
         "Upload successfully",
         [],

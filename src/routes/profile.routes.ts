@@ -14,7 +14,8 @@ router.post("/get-userdata", (req, res) => {
       in: 'body',
       required: true,
       schema: {  
-        user_id : 'USER_7wbjv2wt'
+        user_id : "USER_7wbjv2wt",
+        user_role : "student or tutor"
       }
     }
 

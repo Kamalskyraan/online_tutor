@@ -26,8 +26,7 @@ export class userController {
         payload.represent ||
         payload.gender ||
         payload.is_show_num !== undefined ||
-        payload.about_myself 
-       
+        payload.about_myself
       ) {
         await userModel.updateUserBasic({ user_id, ...payload });
         const user_name = await userModel.fetchUserName(user_id);
@@ -153,18 +152,27 @@ export class userController {
 
       await userModel.updateUserBasicForStudent(payload);
 
-      let finalCourse = payload.learn_course ?? null;
+      let finalCourse: string[] = payload.learn_course_id
+        ? Array.isArray(payload.learn_course_id)
+          ? payload.learn_course_id
+          : [payload.learn_course_id]
+        : [];
 
-      if (payload.learn_course) {
-        const exists = await userModel.checkCourseExists(payload.learn_course);
+      let requestIds: string[] = [];
 
-        if (!exists) {
-          await userModel.createCourseRequestIfNotExists({
-            course_name: payload.learn_course,
-            user_id,
-          });
+      if (payload.learn_course && Array.isArray(payload.learn_course)) {
+        for (const course of payload.learn_course) {
+          const exists = await userModel.getCourseByName(course);
+          if (exists) {
+            finalCourse.push(exists.id);
+          } else {
+            const requestId = await userModel.createCourseRequestIfNotExists({
+              subject_name: course,
+              user_id,
+            });
 
-          finalCourse = null;
+            requestIds.push(requestId);
+          }
         }
       }
 
@@ -184,6 +192,7 @@ export class userController {
         student_id,
         ...payload,
         learn_course: finalCourse,
+        req_course: requestIds.length ? requestIds.join(",") : null,
       });
 
       const filled = await userModel.fetchUserFormFilled(user_id);
@@ -201,6 +210,7 @@ export class userController {
         [],
       );
     } catch (err: any) {
+      console.log(err);
       return sendResponse(
         res,
         500,
@@ -337,6 +347,20 @@ export class userController {
         0,
         [],
         "something went wrong",
+        err.errors || err.message || err,
+      );
+    }
+  };
+
+  static approveCourseRequest = async (req: Request, res: Response) => {
+    try {
+    } catch (err: any) {
+      return sendResponse(
+        res,
+        500,
+        0,
+        [],
+        "Internal Server Error",
         err.errors || err.message || err,
       );
     }

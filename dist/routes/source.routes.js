@@ -14,7 +14,8 @@ router.post("/get-address-by-pincode", (req, res) => {
         in: 'body',
         required: true,
         schema: {
-          pincode: '624601'
+          pincode: '624601',
+          
         }
       }
   

@@ -19,7 +19,7 @@ router.post("/add-update-tutor", (req, res) => {
         gender : "male",
         is_show_num : true,
         about_myself : "abcd efg hijk",
-        country : "india",
+        country : "India",
         pincode : "624601",
         lat : "123.45",
         lng : "123.455",
@@ -27,7 +27,7 @@ router.post("/add-update-tutor", (req, res) => {
         district : "dindigul",
         address : "abcd street, palani",
         area : "abcd",
-        stream : 1
+        stream_id : 1
       }
     }
 
@@ -43,44 +43,47 @@ router.post("/add-update-tutor", (req, res) => {
   userController.updateTutor(req, res);
 });
 
-// router.post("/add-update-student", (req, res) => {
-//   /*
-//     #swagger.tags = ['2.User']
-//     #swagger.summary = 'add or update student data'
-//     #swagger.description = 'Add Or Update Student Data'
+router.post("/add-update-student", (req, res) => {
+  /*
+    #swagger.tags = ['2.User']
+    #swagger.summary = 'add or update student data'
+    #swagger.description = 'Add Or Update Student Data'
 
-//     #swagger.parameters['body'] = {
-//       in: 'body',
-//       required: true,
-//       schema: {
-//         user_role : "student",
-//         dob : "2002-03-15",
-//         gender : "male",
-//         country : "india",
-//         pincode : "624601",
-//         state : "tamilnadu",
-//         district : "CBE",
-//         area : "RSpuram",
-//         is_show_num : true,
-//         address : "abcde fghij klmnop",
-//         user_id : "USER_LDsMp-Dsm",
+    #swagger.parameters['body'] = {
+      in: 'body',
+      required: true,
+      schema: {
+        user_role : "student",
+        user_id : "USER_LDsMp-Dsm",
+        user_name : "kamaleh",
+        dob : "2002-03-15",
+        gender : "male",
+        country : "India",
+        pincode : "624601",
+        state : "Tamilnadu",
+        lat : "12.4566",
+        lng : "10.56",
+        district : "CBE",
+        area : "RSpuram",
+        is_show_num : true,
+        address : "abcde fghij klmnop",      
+        stream_id : "1",
+        learn_course_id : "1,2,3",
+        learn_course : ["Full Stack Development","java"]
 
-//         stream_id : "1",
+      }
+    }
 
-//         learn_course : "Full Stack Development"
-//       }
-//     }
+    #swagger.responses[200] = {
+      description: "Add Or Update Student data successfully"
+    }
 
-//     #swagger.responses[200] = {
-//       description: "Add Or Update Student data successfully"
-//     }
-
-//     #swagger.responses[500] = {
-//       description: "Internal Server Error"
-//     }
-//   */
-//   userController.updateStudent(req, res);
-// });
+    #swagger.responses[500] = {
+      description: "Internal Server Error"
+    }
+  */
+  userController.updateStudent(req, res);
+});
 
 router.post("/get-user-data", (req, res) => {
   /*
@@ -94,7 +97,8 @@ router.post("/get-user-data", (req, res) => {
       required: true,
       schema: {  
         user_id : 'USER_7wbjv2wt',
-        mobile : "986543210"
+        mobile : "986543210",
+        user_role: "student or tutor"
       }
     }
 

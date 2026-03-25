@@ -9,21 +9,21 @@ const cmnModel = new commonModel();
 export class ProfileController {
   static getUserData = async (req: Request, res: Response) => {
     try {
-      const { user_id } = req.body;
+      const { user_id, user_role } = req.body;
       if (!user_id) {
         return sendResponse(res, 200, 0, [], "User_id is required", []);
       }
-      const result = await profileMdl.fetchUserProfileData(user_id);
+      const result = await profileMdl.fetchUserProfileData(user_id, user_role);
 
       if (!result) {
         return sendResponse(res, 200, 0, [], "User not found", []);
       }
 
       const converted = await profileMdl.convertRepresentData(
-        result?.represent,
+        result?.data?.represent,
       );
 
-      const stringData = await cmnModel.convertNullObjectToString(result);
+      const stringData = await cmnModel.convertNullObjectToString(result?.data);
 
       return sendResponse(
         res,
@@ -149,5 +149,4 @@ export class ProfileController {
       );
     }
   };
-  
 }

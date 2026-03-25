@@ -261,7 +261,7 @@ exports.updateTutorSubjectsSchema = joi_1.default.object({
     teach_language: joi_1.default.string(),
     // 3
     class_mode: joi_1.default.string(),
-    stream_ids: joi_1.default.string(),
+    stream_id: joi_1.default.string(),
     class_type: joi_1.default.string(),
     min_fee: joi_1.default.string(),
     max_fee: joi_1.default.string(),
@@ -273,8 +273,11 @@ exports.updateStudentSchema = joi_1.default.object({
     user_id: joi_1.default.string().required().messages({
         "any.required": "User Id is required",
     }),
+    user_name: joi_1.default.string().required().messages({
+        "any.required": "User Name is required",
+    }),
     // 1
-    gender: joi_1.default.string().valid("male", "female", "others"),
+    gender: joi_1.default.string().valid("male", "female", "other"),
     dob: joi_1.default.string(),
     country: joi_1.default.string(),
     pincode: joi_1.default.string(),
@@ -282,11 +285,13 @@ exports.updateStudentSchema = joi_1.default.object({
     district: joi_1.default.string(),
     area: joi_1.default.string(),
     address: joi_1.default.string(),
+    lat: joi_1.default.string(),
+    lng: joi_1.default.string(),
     is_show_num: joi_1.default.boolean().messages({}),
     // 2
-    education: joi_1.default.string(),
-    stream: joi_1.default.string(),
-    learn_course: joi_1.default.string(),
+    stream_id: joi_1.default.string(),
+    learn_course_id: joi_1.default.string(),
+    learn_course: joi_1.default.array().items(joi_1.default.string().trim().min(1)).min(1).optional(),
 });
 //review
 exports.reviewSchema = joi_1.default.object({
