@@ -17,7 +17,8 @@ export class StudentModel {
         u.state,
         u.district,
         u.area,
-        u.pincode,
+        u.pincode t.tutor_id
+        
         (
           6371 * acos(
             cos(radians(?)) *
@@ -26,7 +27,11 @@ export class StudentModel {
             sin(radians(?)) *
             sin(radians(u.lat))
           )
-        ) AS distance
+        ) AS distance,
+         
+        t.tutor_id,
+        t.represent,
+        t.stream_id
       FROM users u
       INNER JOIN tutor t ON t.user_id = u.user_id
       WHERE u.lat IS NOT NULL AND u.lng IS NOT NULL

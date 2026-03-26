@@ -143,5 +143,4 @@ router.post("/approve-course-req", (req, res) => {
   userController.approveCourseRequest(req, res);
 });
 
-
 export default router;

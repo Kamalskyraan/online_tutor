@@ -15,20 +15,35 @@ export const upload = multer({
       file: Express.Multer.File,
       cb: (error: any, key?: string) => void,
     ) => {
-      let folder = "";
+      const ext = path.extname(file.originalname).toLowerCase();
+      let folder = "others";
 
-      if (file.mimetype.startsWith("image/")) {
+      // if (file.mimetype.startsWith("image/")) {
+      //   folder = "image";
+      // } else if (file.mimetype.startsWith("video/")) {
+      //   folder = "video";
+      // } else if (file.mimetype === "application/pdf") {
+      //   folder = "pdf";
+      // } else if (
+      //   file.mimetype === "application/msword" ||
+      //   file.mimetype ===
+      //     "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+      // ) {
+      //   folder = "docs";
+      // } else {
+      //   return cb(new Error("Invalid file type"));
+      // }
+
+      if ([".jpg", ".jpeg", ".png", ".gif", ".webp"].includes(ext)) {
         folder = "image";
-      } else if (file.mimetype.startsWith("video/")) {
+      } else if ([".mp4", ".mov", ".avi", ".mkv"].includes(ext)) {
         folder = "video";
-      } else if (file.mimetype === "application/pdf") {
+      } else if ([".pdf"].includes(ext)) {
         folder = "pdf";
-      } else if (
-        file.mimetype === "application/msword" ||
-        file.mimetype ===
-          "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-      ) {
+      } else if ([".doc", ".docx"].includes(ext)) {
         folder = "docs";
+      } else if ([".xls", ".xlsx", ".csv"].includes(ext)) {
+        folder = "excel";
       } else {
         return cb(new Error("Invalid file type"));
       }
@@ -46,6 +61,6 @@ export const upload = multer({
   }),
 
   limits: {
-    fileSize: 100 * 1024 * 1024,
+    fileSize: 50 * 1024 * 1024,
   },
 });
