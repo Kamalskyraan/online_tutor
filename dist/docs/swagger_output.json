@@ -1584,8 +1584,21 @@
                         "enum": [
                             "image",
                             "video",
-                            "pdf"
+                            "pdf",
+                            "docx"
                         ]
+                    },
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "category": {
+                                    "example": "any"
+                                }
+                            }
+                        }
                     }
                 ],
                 "responses": {

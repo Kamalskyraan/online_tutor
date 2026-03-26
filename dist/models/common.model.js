@@ -10,7 +10,7 @@ class commonModel {
         }
         return newObj;
     }
-    async saveUpload(file) {
+    async saveUpload(file, category) {
         const query = `
     INSERT INTO media (pathname, org_name , file_url , file_type, file_size, mime_type)
     VALUES (?, ? , ?, ?, ? , ?)
@@ -19,7 +19,7 @@ class commonModel {
             file.key,
             file.originalname,
             `${process.env.CLOUDFRONT_URL}/${file.key}`,
-            file.mimetype.split("/")[0],
+            category,
             file.size,
             file.mimetype,
         ]);

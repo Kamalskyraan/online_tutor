@@ -47,12 +47,17 @@ CommonController.changeNumber = async (req, res) => {
 CommonController.uploadFile = async (req, res) => {
     try {
         const file = req.file;
+        const { category } = req.body;
         if (!file) {
             return (0, helper_1.sendResponse)(res, 200, 0, [], "file is required", []);
         }
-        const uploadId = await cmnModel.saveUpload(file);
+        if (!category) {
+            return (0, helper_1.sendResponse)(res, 200, 0, [], "Category is required", []);
+        }
+        const uploadId = await cmnModel.saveUpload(file, category);
         return (0, helper_1.sendResponse)(res, 200, 1, {
             id: uploadId,
+            category,
             pathname: file.key,
             url: `https://${process.env.CLOUDFRONT_URL}/${file.key}`,
             org_name: file.originalname,

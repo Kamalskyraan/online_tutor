@@ -11,7 +11,7 @@ export class commonModel {
     return newObj;
   }
 
-  async saveUpload(file: Express.MulterS3.File) {
+  async saveUpload(file: Express.MulterS3.File, category: string) {
     const query = `
     INSERT INTO media (pathname, org_name , file_url , file_type, file_size, mime_type)
     VALUES (?, ? , ?, ?, ? , ?)
@@ -21,7 +21,7 @@ export class commonModel {
       file.key,
       file.originalname,
       `${process.env.CLOUDFRONT_URL}/${file.key}`,
-      file.mimetype.split("/")[0],
+      category,
       file.size,
       file.mimetype,
     ]);

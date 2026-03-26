@@ -42,7 +42,7 @@ router.post("/upload", multer_1.upload.single("file"), (req, res) => {
     type: 'string',
     required: true,
     description: 'File category',
-    enum: ['image','video','pdf']
+    enum: ['image','video','pdf' , 'docx']
   }
   
   #swagger.responses[200] = {

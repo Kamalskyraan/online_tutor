@@ -57,12 +57,15 @@ export class CommonController {
   static uploadFile = async (req: Request, res: Response) => {
     try {
       const file = req.file as Express.MulterS3.File;
-
+      const { category } = req.body;
       if (!file) {
         return sendResponse(res, 200, 0, [], "file is required", []);
       }
+      if (!category) {
+        return sendResponse(res, 200, 0, [], "Category is required", []);
+      }
 
-      const uploadId = await cmnModel.saveUpload(file);
+      const uploadId = await cmnModel.saveUpload(file , category);
 
       return sendResponse(
         res,
@@ -70,6 +73,7 @@ export class CommonController {
         1,
         {
           id: uploadId,
+          category,
           pathname: file.key,
           url: `https://${process.env.CLOUDFRONT_URL}/${file.key}`,
           org_name: file.originalname,
