@@ -12,7 +12,7 @@ class commonModel {
     }
     async saveUpload(file, category) {
         const query = `
-    INSERT INTO media (pathname, org_name , file_url , media_type, file_size, mime_type)
+    INSERT INTO media (pathname, org_name , file_url , file_type, file_size, mime_type)
     VALUES (?, ? , ?, ?, ? , ?)
   `;
         const result = await (0, helper_1.executeQuery)(query, [
