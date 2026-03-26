@@ -99,7 +99,7 @@ class TutorModel {
             return [];
         const tutorData = tutor[0];
         const { user_id, stream_id } = tutorData;
-        const user = await (0, helper_1.executeQuery)(`SELECT user_id , user_name , gender , pincode , area , district , state , self_about , address , lat , lng , is_form_filled as personal_form FROM users WHERE user_id = ? LIMIT 1`, [user_id]);
+        const user = await (0, helper_1.executeQuery)(`SELECT user_id , user_name , gender , pincode , area , district , state , self_about , address , lat , lng , is_form_filled as personal_form , is_show_num  FROM users WHERE user_id = ? LIMIT 1`, [user_id]);
         const userData = user.length ? user[0] : {};
         let streams = {};
         if (stream_id) {

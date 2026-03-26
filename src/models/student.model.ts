@@ -27,17 +27,25 @@ export class StudentModel {
   }
   async fetchStudentData(student_id?: string) {
     const student: any = await executeQuery(
-      `SELECT student_id ,user_id ,  user_name ,user_id ,  stream_id , learn_course , req_course FROM tutor WHERE tutor_id = ? LIMIT 1`,
+      `SELECT tutor_id, user_id, user_name, stream_id, learn_course, req_course 
+     FROM tutor 
+     WHERE tutor_id = ? 
+     LIMIT 1`,
       [student_id],
     );
 
     if (!student.length) return null;
-    const studentData = student[0];
 
+    const studentData = student[0];
     const { user_id, stream_id, learn_course, req_course } = studentData;
 
     const user: any = await executeQuery(
-      `SELECT user_id , user_name , gender , pincode , area , district , state , self_about , address , lat , lng , is_form_filled as personal_form FROM users WHERE user_id = ? LIMIT 1`,
+      `SELECT user_id, user_name, gender, pincode, area, district, state, 
+            self_about, address, lat, lng, 
+            is_form_filled as personal_form 
+     FROM users 
+     WHERE user_id = ? 
+     LIMIT 1`,
       [user_id],
     );
 
@@ -48,9 +56,23 @@ export class StudentModel {
       streams = await eduMdl.fetchStreamsForAll(stream_id);
     }
 
-    return{
-      
+    let learnCourses: any[] = [];
+    if (learn_course) {
+      learnCourses = await this.fetchSubjectsByIds(learn_course);
     }
+
+    let requestedCourses: any[] = [];
+    if (req_course) {
+      requestedCourses = await this.fetchRequestedCoursesByIds(req_course);
+    }
+
+    return {
+      ...studentData,
+      user: userData,
+      streams,
+      learn_courses: learnCourses,
+      requested_courses: requestedCourses,
+    };
   }
 
   async fetchRequestedCoursesByIds(req_course: string) {

@@ -136,7 +136,7 @@ export class TutorModel {
     const { user_id, stream_id } = tutorData;
 
     const user: any = await executeQuery(
-      `SELECT user_id , user_name , gender , pincode , area , district , state , self_about , address , lat , lng , is_form_filled as personal_form FROM users WHERE user_id = ? LIMIT 1`,
+      `SELECT user_id , user_name , gender , pincode , area , district , state , self_about , address , lat , lng , is_form_filled as personal_form , is_show_num  FROM users WHERE user_id = ? LIMIT 1`,
       [user_id],
     );
 

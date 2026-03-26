@@ -164,6 +164,8 @@ AuthController.login = async (req, res) => {
         const personal_form = users[0].is_form_filled;
         const subForm = await userMdl.fetchSubFormData(user?.user_id);
         const sub_form = subForm?.sub_form;
+        const tutor_id = await userMdl.geTutorByUserId(user?.user_id);
+        const student_id = await userMdl.getStudentByUserId(user?.user_id);
         if (device_type === "web") {
             res.cookie("token", token, {
                 httpOnly: true,
@@ -180,6 +182,8 @@ AuthController.login = async (req, res) => {
                 personal_form,
                 sub_form,
                 user_role,
+                tutor_id,
+                student_id,
             },
         ], "Login successful", []);
     }

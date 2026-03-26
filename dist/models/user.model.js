@@ -216,7 +216,7 @@ class UserModel {
     }
     async getStudentByUserId(user_id) {
         const result = await (0, helper_1.executeQuery)(`SELECT id, student_id FROM student WHERE user_id = ? LIMIT 1`, [user_id]);
-        return result.length ? result[0] : null;
+        return result.length ? result[0].student_id : "";
     }
     async fetchSubFormData(user_id) {
         const tutorData = await (0, helper_1.executeQuery)(`SELECT tutor_id FROM tutor WHERE user_id = ? LIMIT 1`, [user_id]);
@@ -282,7 +282,7 @@ class UserModel {
     }
     async geTutorByUserId(user_id) {
         const result = await (0, helper_1.executeQuery)(`SELECT id, tutor_id FROM tutor WHERE user_id = ? LIMIT 1`, [user_id]);
-        return result.length ? result[0] : null;
+        return result.length ? result[0].tutor_id : "";
     }
 }
 exports.UserModel = UserModel;

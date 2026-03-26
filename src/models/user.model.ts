@@ -367,7 +367,7 @@ export class UserModel {
       [user_id],
     );
 
-    return result.length ? result[0] : null;
+    return result.length ? result[0].student_id : "";
   }
 
   async fetchSubFormData(user_id: string) {
@@ -484,6 +484,6 @@ export class UserModel {
       [user_id],
     );
 
-    return result.length ? result[0] : null;
+    return result.length ? result[0].tutor_id : "";
   }
 }
