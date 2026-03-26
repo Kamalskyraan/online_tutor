@@ -362,6 +362,22 @@ export class userController {
 
   static approveCourseRequest = async (req: Request, res: Response) => {
     try {
+      const { request_id } = req.body;
+
+      if (!request_id) {
+        return sendResponse(res, 200, 0, [], "request_id is required", []);
+      }
+
+      const result = await userModel.approveCourseRequest(Number(request_id));
+
+      return sendResponse(
+        res,
+        200,
+        1,
+        [],
+        "Course request approved successfully",
+        [],
+      );
     } catch (err: any) {
       return sendResponse(
         res,

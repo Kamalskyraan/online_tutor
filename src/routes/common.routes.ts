@@ -9,7 +9,7 @@ router.get(
 
   (req, res) => {
     /*
-    #swagger.tags = ['10.Common']
+    #swagger.tags = ['11.Common']
     #swagger.summary = 'Get Country Data'
     #swagger.description = 'Fetch Country Data From country.json'
 
@@ -28,7 +28,7 @@ router.get(
 
 router.post("/upload", upload.single("file"), (req, res) => {
   /*
-#swagger.tags = ['10.Common']
+#swagger.tags = ['11.Common']
 #swagger.summary = 'Upload Image | Video | PDF'
 #swagger.description = 'Upload files to S3 bucket and return file details'
 
@@ -66,7 +66,7 @@ router.post("/upload", upload.single("file"), (req, res) => {
 
 router.post("/get-uploads", (req, res) => {
   /*
-    #swagger.tags = ['10.Common']
+    #swagger.tags = ['11.Common']
     #swagger.summary = 'Get uploaded files fetched sucessfully'
     #swagger.description = 'Get files fetched succesfully'
 

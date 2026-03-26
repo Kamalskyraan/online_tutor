@@ -219,10 +219,10 @@ export interface userDetailsRequest {
 
 //
 export interface Location {
-  lat: number;
-  lng: number;
+  lat: string;
+  lng: string;
   radius?: number;
-  search_address?: number;
+  search_address?: string;
 }
 
 export interface TutorLocation {

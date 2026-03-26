@@ -208,7 +208,7 @@ export const updateTutorSchema = Joi.object({
   // 1
   represent: Joi.string().valid("1", "2", "3"),
   gender: Joi.string().valid("male", "female", "others"),
-  is_show_num: Joi.boolean(),
+  is_show_num: Joi.boolean().truthy(1).falsy(0),
   about_myself: Joi.string().allow(null, ""),
 
   // 2

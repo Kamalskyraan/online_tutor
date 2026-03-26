@@ -17,7 +17,7 @@ router.post("/add-update-tutor", (req, res) => {
         user_id : 'USER_7wbjv2wt',
         represent : "1",
         gender : "male",
-        is_show_num : true,
+        is_show_num : 1,
         about_myself : "abcd efg hijk",
         country : "India",
         pincode : "624601",
@@ -114,4 +114,34 @@ router.post("/get-user-data", (req, res) => {
 
   return userController.userDetails(req, res);
 });
+
+router.post("/approve-course-req", (req, res) => {
+  /*
+    #swagger.tags = ['2.User']
+    #swagger.summary = 'Approve Course Request '
+    #swagger.description = 'Approve Course Request'
+
+    
+    #swagger.parameters['body'] = {
+      in: 'body',
+      required: true,
+      schema: {  
+       request_id : "1"
+      }
+    }
+
+
+    #swagger.responses[200] = {
+      description: "course request approved  successfully"
+    }
+
+    #swagger.responses[500] = {
+      description: "Internal Server Error"
+    }
+  */
+
+  userController.approveCourseRequest(req, res);
+});
+
+
 export default router;

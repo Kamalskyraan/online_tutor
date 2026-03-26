@@ -22,10 +22,11 @@ router.use("/edu", eduRoutes);
 router.use("/subject", subjectRoutes);
 router.use("/help", helpRoutes);
 router.use("/source", sourceRoutes);
+router.use("/tutor", tutorRoutes);
 router.use("/student", studentRoutes);
 router.use("/review", reviewRoutes);
 router.use("/cmn", commonRoutes);
-router.use("/tutor", tutorRoutes);
+
 // common
 
 router.post("/upload", upload.single("file"), (req: Request, res: Response) => {

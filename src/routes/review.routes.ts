@@ -5,7 +5,7 @@ const router = Router();
 
 router.post("/add-update-review", (req, res) => {
   /*
-    #swagger.tags = ['9.review']
+    #swagger.tags = ['10.review']
     #swagger.summary = 'Add Update Review'
     #swagger.description = 'Add Review and Update Review'
 
@@ -35,7 +35,7 @@ router.post("/add-update-review", (req, res) => {
 });
 router.post("/get-reviews", (req, res) => {
   /*
-    #swagger.tags = ['9.review']
+    #swagger.tags = ['10.review']
     #swagger.summary = 'Add Update Review'
     #swagger.description = 'Add Review and Update Review'
 
@@ -66,7 +66,7 @@ router.post("/get-reviews", (req, res) => {
 });
 router.post("/reply-review", (req, res) => {
   /*
-    #swagger.tags = ['9.review']
+    #swagger.tags = ['10.review']
     #swagger.summary = 'Add Update Review Reply'
     #swagger.description = 'Add Review and Update Review Reply'
 
@@ -97,7 +97,7 @@ router.post("/reply-review", (req, res) => {
 
 router.post("/add-review-like", (req, res) => {
   /*
-    #swagger.tags = ['9.review']
+    #swagger.tags = ['10.review']
     #swagger.summary = 'Add Update Review Like'
     #swagger.description = 'Add Review  Like and Update Review Like'
 
@@ -127,7 +127,7 @@ router.post("/add-review-like", (req, res) => {
 
 router.post("/remove-review", (req, res) => {
   /*
-    #swagger.tags = ['9.review']
+    #swagger.tags = ['10.review']
     #swagger.summary = 'Delete Review'
     #swagger.description = 'Remove Review based on student'
 
@@ -156,7 +156,7 @@ router.post("/remove-review", (req, res) => {
 
 router.get("/get-report-reasons", (req, res) => {
   /*
-    #swagger.tags = ['9.review']
+    #swagger.tags = ['10.review']
     #swagger.summary = 'Get Report Reasons'
     #swagger.description = 'Fetch Report Reasons From country.json'
 
@@ -174,7 +174,7 @@ router.get("/get-report-reasons", (req, res) => {
 
 router.post("/report-review", (req, res) => {
   /*
-    #swagger.tags = ['9.review']
+    #swagger.tags = ['10.review']
     #swagger.summary = 'Report a  Review'
     #swagger.description = 'Report a  Review '
 

@@ -363,8 +363,8 @@
                                     "example": "male"
                                 },
                                 "is_show_num": {
-                                    "type": "boolean",
-                                    "example": true
+                                    "type": "number",
+                                    "example": 1
                                 },
                                 "about_myself": {
                                     "type": "string",
@@ -557,6 +557,39 @@
                 "responses": {
                     "200": {
                         "description": "fetch user data successfully"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/api/user/approve-course-req": {
+            "post": {
+                "tags": [
+                    "2.User"
+                ],
+                "summary": "Approve Course Request ",
+                "description": "Approve Course Request",
+                "parameters": [
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "request_id": {
+                                    "type": "string",
+                                    "example": "1"
+                                }
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "course request approved successfully"
                     },
                     "500": {
                         "description": "Internal Server Error"
@@ -1231,419 +1264,6 @@
                 }
             }
         },
-        "/api/student/nearby-tutors": {
-            "post": {
-                "description": "",
-                "responses": {
-                    "default": {
-                        "description": ""
-                    }
-                }
-            }
-        },
-        "/api/review/add-update-review": {
-            "post": {
-                "tags": [
-                    "9.review"
-                ],
-                "summary": "Add Update Review",
-                "description": "Add Review and Update Review",
-                "parameters": [
-                    {
-                        "name": "body",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "type": "object",
-                            "properties": {
-                                "id": {
-                                    "type": "number",
-                                    "example": 1
-                                },
-                                "tutor_id": {
-                                    "type": "string",
-                                    "example": "TUTOR_4w4lwlu0"
-                                },
-                                "student_id": {
-                                    "type": "string",
-                                    "example": "STUDENT_UOFswA1y"
-                                },
-                                "rating": {
-                                    "type": "string",
-                                    "example": "5"
-                                },
-                                "review_text": {
-                                    "type": "string",
-                                    "example": "abcd efgh ijklmn opqrst"
-                                }
-                            }
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Add or Update Review successfully"
-                    },
-                    "500": {
-                        "description": "Internal Server Error"
-                    }
-                }
-            }
-        },
-        "/api/review/get-reviews": {
-            "post": {
-                "tags": [
-                    "9.review"
-                ],
-                "summary": "Add Update Review",
-                "description": "Add Review and Update Review",
-                "parameters": [
-                    {
-                        "name": "body",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "type": "object",
-                            "properties": {
-                                "id": {
-                                    "type": "number",
-                                    "example": 1
-                                },
-                                "tutor_id": {
-                                    "type": "string",
-                                    "example": "TUTOR_4w4lwlu0"
-                                },
-                                "student_id": {
-                                    "type": "string",
-                                    "example": "STUDENT_UOFswA1y"
-                                },
-                                "rating": {
-                                    "type": "string",
-                                    "example": "5"
-                                },
-                                "from_date": {
-                                    "type": "string",
-                                    "example": "2026-03-04"
-                                },
-                                "to_date": {
-                                    "type": "string",
-                                    "example": "2026-03-05"
-                                }
-                            }
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Review Fetched successfully"
-                    },
-                    "500": {
-                        "description": "Internal Server Error"
-                    }
-                }
-            }
-        },
-        "/api/review/reply-review": {
-            "post": {
-                "tags": [
-                    "9.review"
-                ],
-                "summary": "Add Update Review Reply",
-                "description": "Add Review and Update Review Reply",
-                "parameters": [
-                    {
-                        "name": "body",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "type": "object",
-                            "properties": {
-                                "id": {
-                                    "type": "number",
-                                    "example": 1
-                                },
-                                "tutor_id": {
-                                    "type": "string",
-                                    "example": "TUTOR_4w4lwlu0"
-                                },
-                                "student_id": {
-                                    "type": "string",
-                                    "example": "STUDENT_UOFswA1y"
-                                },
-                                "reply_text": {
-                                    "type": "string",
-                                    "example": "abcd efgh ijklmn opqrst"
-                                },
-                                "review_id": {
-                                    "type": "string",
-                                    "example": "3"
-                                }
-                            }
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Add or Update Review Reply successfully"
-                    },
-                    "500": {
-                        "description": "Internal Server Error"
-                    }
-                }
-            }
-        },
-        "/api/review/add-review-like": {
-            "post": {
-                "tags": [
-                    "9.review"
-                ],
-                "summary": "Add Update Review Like",
-                "description": "Add Review Like and Update Review Like",
-                "parameters": [
-                    {
-                        "name": "body",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "type": "object",
-                            "properties": {
-                                "id": {
-                                    "type": "number",
-                                    "example": 1
-                                },
-                                "review_id": {
-                                    "type": "string",
-                                    "example": "1"
-                                },
-                                "tutor_id": {
-                                    "type": "string",
-                                    "example": "TUTOR_4w4lwlu0"
-                                },
-                                "student_id": {
-                                    "type": "string",
-                                    "example": "STUDENT_UOFswA1y"
-                                }
-                            }
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Review Liked successfully"
-                    },
-                    "500": {
-                        "description": "Internal Server Error"
-                    }
-                }
-            }
-        },
-        "/api/review/remove-review": {
-            "post": {
-                "tags": [
-                    "9.review"
-                ],
-                "summary": "Delete Review",
-                "description": "Remove Review based on student",
-                "parameters": [
-                    {
-                        "name": "body",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "type": "object",
-                            "properties": {
-                                "id": {
-                                    "type": "number",
-                                    "example": 1
-                                },
-                                "student_id": {
-                                    "type": "string",
-                                    "example": "STUDENT_UOFswA1y"
-                                }
-                            }
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Review Deleted successfully"
-                    },
-                    "500": {
-                        "description": "Internal Server Error"
-                    }
-                }
-            }
-        },
-        "/api/review/get-report-reasons": {
-            "get": {
-                "tags": [
-                    "9.review"
-                ],
-                "summary": "Get Report Reasons",
-                "description": "Fetch Report Reasons From country.json",
-                "responses": {
-                    "200": {
-                        "description": "Report Reasons fetched successfully"
-                    },
-                    "500": {
-                        "description": "Internal Server Error"
-                    }
-                }
-            }
-        },
-        "/api/review/report-review": {
-            "post": {
-                "tags": [
-                    "9.review"
-                ],
-                "summary": "Report a Review",
-                "description": "Report a Review ",
-                "parameters": [
-                    {
-                        "name": "body",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "type": "object",
-                            "properties": {
-                                "review_id": {
-                                    "type": "string",
-                                    "example": "1"
-                                },
-                                "student_id": {
-                                    "type": "string",
-                                    "example": "STUDENT_UOFswA1y"
-                                },
-                                "tutor_id": {
-                                    "type": "string",
-                                    "example": "TUTOR_4w4lwlu0"
-                                },
-                                "reason_id": {
-                                    "type": "string",
-                                    "example": "-1"
-                                },
-                                "other_reason": {
-                                    "type": "string",
-                                    "example": "abcdefgh ijkl"
-                                }
-                            }
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Review Reported successfully"
-                    },
-                    "500": {
-                        "description": "Internal Server Error"
-                    }
-                }
-            }
-        },
-        "/api/cmn/get-country-data": {
-            "get": {
-                "tags": [
-                    "10.Common"
-                ],
-                "summary": "Get Country Data",
-                "description": "Fetch Country Data From country.json",
-                "responses": {
-                    "200": {
-                        "description": "Country data list fetched successfully"
-                    },
-                    "500": {
-                        "description": "Internal Server Error"
-                    }
-                }
-            }
-        },
-        "/api/cmn/upload": {
-            "post": {
-                "tags": [
-                    "10.Common"
-                ],
-                "summary": "Upload Image | Video | PDF",
-                "description": "Upload files to S3 bucket and return file details",
-                "consumes": [
-                    "multipart/form-data"
-                ],
-                "parameters": [
-                    {
-                        "name": "file",
-                        "in": "formData",
-                        "type": "file",
-                        "required": true,
-                        "description": "File to upload (image, video, pdf)"
-                    },
-                    {
-                        "name": "category",
-                        "in": "formData",
-                        "type": "string",
-                        "required": true,
-                        "description": "File category",
-                        "enum": [
-                            "image",
-                            "video",
-                            "pdf",
-                            "docx"
-                        ]
-                    },
-                    {
-                        "name": "body",
-                        "in": "body",
-                        "schema": {
-                            "type": "object",
-                            "properties": {
-                                "category": {
-                                    "example": "any"
-                                }
-                            }
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "File uploaded successfully"
-                    },
-                    "500": {
-                        "description": "Internal Server Error"
-                    }
-                }
-            }
-        },
-        "/api/cmn/get-uploads": {
-            "post": {
-                "tags": [
-                    "10.Common"
-                ],
-                "summary": "Get uploaded files fetched sucessfully",
-                "description": "Get files fetched succesfully",
-                "parameters": [
-                    {
-                        "name": "body",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "type": "object",
-                            "properties": {
-                                "ids": {
-                                    "type": "string",
-                                    "example": "1,2"
-                                }
-                            }
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Files fetched successfully"
-                    },
-                    "500": {
-                        "description": "Internal Server Error"
-                    }
-                }
-            }
-        },
         "/api/tutor/add-update-demos": {
             "post": {
                 "tags": [
@@ -1797,6 +1417,483 @@
                 "responses": {
                     "200": {
                         "description": "Data fetched successfully"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/api/student/nearby-tutors": {
+            "post": {
+                "tags": [
+                    "9.Student"
+                ],
+                "summary": "Get Near By Tutor",
+                "description": "Get Tutor",
+                "parameters": [
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "lat": {
+                                    "type": "string",
+                                    "example": "12.45"
+                                },
+                                "lng": {
+                                    "type": "string",
+                                    "example": "10.46"
+                                },
+                                "search_address": {
+                                    "type": "string",
+                                    "example": "cbe"
+                                }
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Tutor Data fetched successfully"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/api/student/get-student-data": {
+            "post": {
+                "tags": [
+                    "9.Student"
+                ],
+                "summary": "Get Student Data",
+                "description": "Get Student data using student_id",
+                "parameters": [
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "student_id": {
+                                    "type": "string",
+                                    "example": "STUDENT_2Ie159-E"
+                                }
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Student Data fetched successfully"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/api/review/add-update-review": {
+            "post": {
+                "tags": [
+                    "10.review"
+                ],
+                "summary": "Add Update Review",
+                "description": "Add Review and Update Review",
+                "parameters": [
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "id": {
+                                    "type": "number",
+                                    "example": 1
+                                },
+                                "tutor_id": {
+                                    "type": "string",
+                                    "example": "TUTOR_4w4lwlu0"
+                                },
+                                "student_id": {
+                                    "type": "string",
+                                    "example": "STUDENT_UOFswA1y"
+                                },
+                                "rating": {
+                                    "type": "string",
+                                    "example": "5"
+                                },
+                                "review_text": {
+                                    "type": "string",
+                                    "example": "abcd efgh ijklmn opqrst"
+                                }
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Add or Update Review successfully"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/api/review/get-reviews": {
+            "post": {
+                "tags": [
+                    "10.review"
+                ],
+                "summary": "Add Update Review",
+                "description": "Add Review and Update Review",
+                "parameters": [
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "id": {
+                                    "type": "number",
+                                    "example": 1
+                                },
+                                "tutor_id": {
+                                    "type": "string",
+                                    "example": "TUTOR_4w4lwlu0"
+                                },
+                                "student_id": {
+                                    "type": "string",
+                                    "example": "STUDENT_UOFswA1y"
+                                },
+                                "rating": {
+                                    "type": "string",
+                                    "example": "5"
+                                },
+                                "from_date": {
+                                    "type": "string",
+                                    "example": "2026-03-04"
+                                },
+                                "to_date": {
+                                    "type": "string",
+                                    "example": "2026-03-05"
+                                }
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Review Fetched successfully"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/api/review/reply-review": {
+            "post": {
+                "tags": [
+                    "10.review"
+                ],
+                "summary": "Add Update Review Reply",
+                "description": "Add Review and Update Review Reply",
+                "parameters": [
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "id": {
+                                    "type": "number",
+                                    "example": 1
+                                },
+                                "tutor_id": {
+                                    "type": "string",
+                                    "example": "TUTOR_4w4lwlu0"
+                                },
+                                "student_id": {
+                                    "type": "string",
+                                    "example": "STUDENT_UOFswA1y"
+                                },
+                                "reply_text": {
+                                    "type": "string",
+                                    "example": "abcd efgh ijklmn opqrst"
+                                },
+                                "review_id": {
+                                    "type": "string",
+                                    "example": "3"
+                                }
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Add or Update Review Reply successfully"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/api/review/add-review-like": {
+            "post": {
+                "tags": [
+                    "10.review"
+                ],
+                "summary": "Add Update Review Like",
+                "description": "Add Review Like and Update Review Like",
+                "parameters": [
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "id": {
+                                    "type": "number",
+                                    "example": 1
+                                },
+                                "review_id": {
+                                    "type": "string",
+                                    "example": "1"
+                                },
+                                "tutor_id": {
+                                    "type": "string",
+                                    "example": "TUTOR_4w4lwlu0"
+                                },
+                                "student_id": {
+                                    "type": "string",
+                                    "example": "STUDENT_UOFswA1y"
+                                }
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Review Liked successfully"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/api/review/remove-review": {
+            "post": {
+                "tags": [
+                    "10.review"
+                ],
+                "summary": "Delete Review",
+                "description": "Remove Review based on student",
+                "parameters": [
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "id": {
+                                    "type": "number",
+                                    "example": 1
+                                },
+                                "student_id": {
+                                    "type": "string",
+                                    "example": "STUDENT_UOFswA1y"
+                                }
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Review Deleted successfully"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/api/review/get-report-reasons": {
+            "get": {
+                "tags": [
+                    "10.review"
+                ],
+                "summary": "Get Report Reasons",
+                "description": "Fetch Report Reasons From country.json",
+                "responses": {
+                    "200": {
+                        "description": "Report Reasons fetched successfully"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/api/review/report-review": {
+            "post": {
+                "tags": [
+                    "10.review"
+                ],
+                "summary": "Report a Review",
+                "description": "Report a Review ",
+                "parameters": [
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "review_id": {
+                                    "type": "string",
+                                    "example": "1"
+                                },
+                                "student_id": {
+                                    "type": "string",
+                                    "example": "STUDENT_UOFswA1y"
+                                },
+                                "tutor_id": {
+                                    "type": "string",
+                                    "example": "TUTOR_4w4lwlu0"
+                                },
+                                "reason_id": {
+                                    "type": "string",
+                                    "example": "-1"
+                                },
+                                "other_reason": {
+                                    "type": "string",
+                                    "example": "abcdefgh ijkl"
+                                }
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Review Reported successfully"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/api/cmn/get-country-data": {
+            "get": {
+                "tags": [
+                    "11.Common"
+                ],
+                "summary": "Get Country Data",
+                "description": "Fetch Country Data From country.json",
+                "responses": {
+                    "200": {
+                        "description": "Country data list fetched successfully"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/api/cmn/upload": {
+            "post": {
+                "tags": [
+                    "11.Common"
+                ],
+                "summary": "Upload Image | Video | PDF",
+                "description": "Upload files to S3 bucket and return file details",
+                "consumes": [
+                    "multipart/form-data"
+                ],
+                "parameters": [
+                    {
+                        "name": "file",
+                        "in": "formData",
+                        "type": "file",
+                        "required": true,
+                        "description": "File to upload (image, video, pdf)"
+                    },
+                    {
+                        "name": "category",
+                        "in": "formData",
+                        "type": "string",
+                        "required": true,
+                        "description": "File category",
+                        "enum": [
+                            "image",
+                            "video",
+                            "pdf",
+                            "docx"
+                        ]
+                    },
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "category": {
+                                    "example": "any"
+                                }
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "File uploaded successfully"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/api/cmn/get-uploads": {
+            "post": {
+                "tags": [
+                    "11.Common"
+                ],
+                "summary": "Get uploaded files fetched sucessfully",
+                "description": "Get files fetched succesfully",
+                "parameters": [
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "ids": {
+                                    "type": "string",
+                                    "example": "1,2"
+                                }
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Files fetched successfully"
                     },
                     "500": {
                         "description": "Internal Server Error"

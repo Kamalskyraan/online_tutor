@@ -9,16 +9,6 @@ class StudentController {
 exports.StudentController = StudentController;
 _a = StudentController;
 StudentController.studentModel = new student_model_1.StudentModel();
-StudentController.getNearbyTutors = async (req, res) => {
-    try {
-        const body = req.body;
-        const tutors = await _a.studentModel.findNearbyTutors(body);
-        (0, helper_1.sendResponse)(res, 200, 1, tutors, "Tutor Data Fetched successfully", []);
-    }
-    catch (err) {
-        (0, helper_1.sendResponse)(res, 200, 0, [], "Internal Server error", err.errors || err.message || err);
-    }
-};
 StudentController.getStudentData = async (req, res) => {
     try {
         const { student_id } = req.body;
@@ -30,6 +20,16 @@ StudentController.getStudentData = async (req, res) => {
     }
     catch (err) {
         return (0, helper_1.sendResponse)(res, 500, 0, "Internal Server Error", err.errors || err.message || err);
+    }
+};
+StudentController.getNearbyTutors = async (req, res) => {
+    try {
+        const body = req.body;
+        const tutors = await _a.studentModel.findNearbyTutors(body);
+        (0, helper_1.sendResponse)(res, 200, 1, tutors, "Tutor Data Fetched successfully", []);
+    }
+    catch (err) {
+        (0, helper_1.sendResponse)(res, 200, 0, [], "Internal Server error", err.errors || err.message || err);
     }
 };
 //# sourceMappingURL=student.controller.js.map

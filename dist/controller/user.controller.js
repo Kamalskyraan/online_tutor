@@ -250,6 +250,12 @@ userController.updateTutorSubject = async (req, res) => {
 };
 userController.approveCourseRequest = async (req, res) => {
     try {
+        const { request_id } = req.body;
+        if (!request_id) {
+            return (0, helper_1.sendResponse)(res, 200, 0, [], "request_id is required", []);
+        }
+        const result = await userModel.approveCourseRequest(Number(request_id));
+        return (0, helper_1.sendResponse)(res, 200, 1, [], "Course request approved successfully", []);
     }
     catch (err) {
         return (0, helper_1.sendResponse)(res, 500, 0, [], "Internal Server Error", err.errors || err.message || err);

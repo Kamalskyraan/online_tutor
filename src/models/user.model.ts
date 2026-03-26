@@ -31,6 +31,7 @@ export class UserModel {
       about_myself = null,
       user_id,
     } = user;
+
     const result: any = await executeQuery(
       `UPDATE users SET user_role = ? , gender = ? , is_show_num = ? , self_about = ?  WHERE user_id = ?  `,
       [user_role, gender, is_show_num, about_myself, user_id],

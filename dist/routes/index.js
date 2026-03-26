@@ -24,10 +24,10 @@ router.use("/edu", education_routes_1.default);
 router.use("/subject", subject_routes_1.default);
 router.use("/help", support_routes_1.default);
 router.use("/source", source_routes_1.default);
+router.use("/tutor", tutor_routes_1.default);
 router.use("/student", student_routes_1.default);
 router.use("/review", review_routes_1.default);
 router.use("/cmn", common_routes_1.default);
-router.use("/tutor", tutor_routes_1.default);
 // common
 router.post("/upload", multer_1.upload.single("file"), (req, res) => {
     res.json({

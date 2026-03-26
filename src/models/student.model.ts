@@ -4,32 +4,80 @@ import { EduModel } from "./education.model";
 
 const eduMdl = new EduModel();
 export class StudentModel {
-  public async findNearbyTutors(location: Location): Promise<TutorLocation[]> {
-    const { lat, lng, radius = 25 } = location;
-    const query = `
-      SELECT user_id , user_name  ,  lat , lng , state , pincode,
-      (
-        6371 * acos(
-          cos(radians(?)) *
-          cos(radians(lat)) *
-          cos(radians(lng) - radians(?)) +
-          sin(radians(?)) *
-          sin(radians(lat))
-        )
-      ) AS distance
-      FROM users
-      HAVING distance < ?
+  public async findNearbyTutors(location: any): Promise<TutorLocation[]> {
+    const { lat, lng, radius = 100, search_address } = location;
+
+    if (lat && lng) {
+      const query = `
+      SELECT 
+        u.user_id,
+        u.user_name,
+        u.lat,
+        u.lng,
+        u.state,
+        u.district,
+        u.area,
+        u.pincode,
+        (
+          6371 * acos(
+            cos(radians(?)) *
+            cos(radians(u.lat)) *
+            cos(radians(u.lng) - radians(?)) +
+            sin(radians(?)) *
+            sin(radians(u.lat))
+          )
+        ) AS distance
+      FROM users u
+      INNER JOIN tutor t ON t.user_id = u.user_id
+      WHERE u.lat IS NOT NULL AND u.lng IS NOT NULL
+      HAVING distance <= ?
       ORDER BY distance ASC
     `;
 
-    const [rows] = await executeQuery(query, [lat, lng, lat, radius]);
-    return rows as TutorLocation[];
+      const rows: any = await executeQuery(query, [lat, lng, lat, radius]);
+      return rows;
+    }
+
+    if (search_address) {
+      const query = `
+      SELECT 
+        u.user_id,
+        u.user_name,
+        u.lat,
+        u.lng,
+        u.state,
+        u.district,
+        u.area,
+        u.pincode
+      FROM users u
+      INNER JOIN tutor t ON t.user_id = u.user_id
+      WHERE 
+        u.state LIKE ? OR
+        u.district LIKE ? OR
+        u.area LIKE ? OR
+        u.pincode LIKE ?
+      ORDER BY u.user_name ASC
+    `;
+
+      const search = `%${search_address}%`;
+
+      const rows: any = await executeQuery(query, [
+        search,
+        search,
+        search,
+        search,
+      ]);
+
+      return rows;
+    }
+
+    return [];
   }
   async fetchStudentData(student_id?: string) {
     const student: any = await executeQuery(
-      `SELECT tutor_id, user_id, user_name, stream_id, learn_course, req_course 
-     FROM tutor 
-     WHERE tutor_id = ? 
+      `SELECT student_id, user_id, user_name, stream_id, learn_course, req_course 
+     FROM student 
+     WHERE student_id = ? 
      LIMIT 1`,
       [student_id],
     );

@@ -185,7 +185,7 @@ exports.updateTutorSchema = joi_1.default.object({
     // 1
     represent: joi_1.default.string().valid("1", "2", "3"),
     gender: joi_1.default.string().valid("male", "female", "others"),
-    is_show_num: joi_1.default.boolean(),
+    is_show_num: joi_1.default.boolean().truthy(1).falsy(0),
     about_myself: joi_1.default.string().allow(null, ""),
     // 2
     country: joi_1.default.string(),
