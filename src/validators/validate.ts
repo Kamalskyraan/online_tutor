@@ -280,7 +280,7 @@ export const updateTutorSubjectsSchema = Joi.object({
   tutor_id: Joi.string().required(),
   // 1
   subject_id: Joi.string().allow(null, ""),
-  subject_name: Joi.string(),
+  subject_name: Joi.string().allow(null, ""),
   covered_topics: Joi.array()
     .items(Joi.string().trim().min(1))
     .min(1)

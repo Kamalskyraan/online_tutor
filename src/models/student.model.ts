@@ -1,5 +1,5 @@
 import { Location, TutorLocation } from "../interface/interface";
-import { executeQuery } from "../utils/helper";
+import { convertNullToString, executeQuery } from "../utils/helper";
 import { EduModel } from "./education.model";
 
 const eduMdl = new EduModel();
@@ -9,38 +9,57 @@ export class StudentModel {
 
     if (lat && lng) {
       const query = `
-      SELECT 
-        u.user_id,
-        u.user_name,
-        u.lat,
-        u.lng,
-        u.state,
-        u.district,
-        u.area,
-        u.pincode t.tutor_id
-        
-        (
-          6371 * acos(
-            cos(radians(?)) *
-            cos(radians(u.lat)) *
-            cos(radians(u.lng) - radians(?)) +
-            sin(radians(?)) *
-            sin(radians(u.lat))
-          )
-        ) AS distance,
-         
-        t.tutor_id,
-        t.represent,
-        t.stream_id
-      FROM users u
-      INNER JOIN tutor t ON t.user_id = u.user_id
-      WHERE u.lat IS NOT NULL AND u.lng IS NOT NULL
-      HAVING distance <= ?
-      ORDER BY distance ASC
-    `;
+    SELECT 
+      u.user_id,
+      u.user_name,
+      u.lat,
+      u.lng,
+      u.state,
+      u.district,
+      u.area,
+      u.pincode,
+      t.tutor_id,
+      t.stream_id,
+      t.represent,
+
+
+      (
+        6371 * acos(
+          cos(radians(?)) *
+          cos(radians(u.lat)) *
+          cos(radians(u.lng) - radians(?)) +
+          sin(radians(?)) *
+          sin(radians(u.lat))
+        )
+      ) AS distance
+
+    FROM users u
+    LEFT JOIN tutor t ON t.user_id = u.user_id
+    WHERE u.lat IS NOT NULL AND u.lng IS NOT NULL
+    HAVING distance <= ?
+    ORDER BY distance ASC
+  `;
 
       const rows: any = await executeQuery(query, [lat, lng, lat, radius]);
-      return rows;
+
+      const streamIds = rows
+        .map((r: any) => r.stream_id)
+        .filter((id: any) => id);
+
+      let streams: any = {};
+
+      if (streamIds.length) {
+        streams = await eduMdl.fetchStreamsForAll(streamIds);
+      }
+
+      const finalData = rows.map((row: any) => {
+        return {
+          ...row,
+          stream: streams[row.stream_id] || null,
+        };
+      });
+
+      return convertNullToString(finalData);
     }
 
     if (search_address) {

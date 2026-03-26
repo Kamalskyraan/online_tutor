@@ -70,6 +70,7 @@ export class EduModel {
     if (!stream_id) return [];
 
     const ids = stream_id
+      .toString()
       .split(",")
       .map((id) => Number(id.trim()))
       .filter((id) => !isNaN(id));
@@ -92,8 +93,6 @@ export class EduModel {
      WHERE es.id IN (${placeholders})`,
       ids,
     );
-
-    
 
     return result;
   }

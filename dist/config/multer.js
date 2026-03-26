@@ -16,35 +16,19 @@ exports.upload = (0, multer_1.default)({
         key: (req, file, cb) => {
             const ext = path_1.default.extname(file.originalname).toLowerCase();
             let folder = "others";
-            // if (file.mimetype.startsWith("image/")) {
-            //   folder = "image";
-            // } else if (file.mimetype.startsWith("video/")) {
-            //   folder = "video";
-            // } else if (file.mimetype === "application/pdf") {
-            //   folder = "pdf";
-            // } else if (
-            //   file.mimetype === "application/msword" ||
-            //   file.mimetype ===
-            //     "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-            // ) {
-            //   folder = "docs";
-            // } else {
-            //   return cb(new Error("Invalid file type"));
-            // }
-            if ([".jpg", ".jpeg", ".png", ".gif", ".webp"].includes(ext)) {
+            if (file.mimetype.startsWith("image/")) {
                 folder = "image";
             }
-            else if ([".mp4", ".mov", ".avi", ".mkv"].includes(ext)) {
+            else if (file.mimetype.startsWith("video/")) {
                 folder = "video";
             }
-            else if ([".pdf"].includes(ext)) {
+            else if (file.mimetype === "application/pdf") {
                 folder = "pdf";
             }
-            else if ([".doc", ".docx"].includes(ext)) {
+            else if (file.mimetype === "application/msword" ||
+                file.mimetype ===
+                    "application/vnd.openxmlformats-officedocument.wordprocessingml.document") {
                 folder = "docs";
-            }
-            else if ([".xls", ".xlsx", ".csv"].includes(ext)) {
-                folder = "excel";
             }
             else {
                 return cb(new Error("Invalid file type"));

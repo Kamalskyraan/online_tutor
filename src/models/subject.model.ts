@@ -262,6 +262,7 @@ export class SubjectModel {
     const result: any = await executeQuery(query, params);
 
     if (!result.length) return [];
+    
     return result;
   }
 

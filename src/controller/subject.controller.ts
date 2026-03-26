@@ -132,6 +132,8 @@ export class SubjectController {
       const { tutor_id, id } = req.body;
       const result = await subMdl.getTutorSubjectById(tutor_id, id);
 
+
+
       if (!result) {
         return sendResponse(res, 200, 0, [], "Subject not found", []);
       }
@@ -140,7 +142,7 @@ export class SubjectController {
         res,
         200,
         1,
-        [result],
+        result,
         "Subject fetched successfully",
         [],
       );

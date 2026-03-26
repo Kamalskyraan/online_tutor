@@ -13,7 +13,7 @@ export class commonModel {
 
   async saveUpload(file: Express.MulterS3.File, category: string) {
     const query = `
-    INSERT INTO media (pathname, org_name , file_url , file_type, file_size, mime_type)
+    INSERT INTO media (pathname, org_name , file_url , media_type, file_size, mime_type)
     VALUES (?, ? , ?, ?, ? , ?)
   `;
 
