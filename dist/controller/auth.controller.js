@@ -12,9 +12,11 @@ const helper_1 = require("../utils/helper");
 const validate_1 = require("../validators/validate");
 const mail_service_1 = require("../service/mail.service");
 const user_model_1 = require("../models/user.model");
+const tutor_model_1 = require("../models/tutor.model");
 //
 const authModel = new auth_model_1.AuthModel();
 const userMdl = new user_model_1.UserModel();
+const tutMdl = new tutor_model_1.TutorModel();
 class AuthController {
 }
 exports.AuthController = AuthController;
@@ -166,6 +168,7 @@ AuthController.login = async (req, res) => {
         const sub_form = subForm?.sub_form;
         const tutor_id = await userMdl.geTutorByUserId(user?.user_id);
         const student_id = await userMdl.getStudentByUserId(user?.user_id);
+        const FirstSub = await tutMdl.fetchFirstSub(mobile);
         if (device_type === "web") {
             res.cookie("token", token, {
                 httpOnly: true,
@@ -184,6 +187,7 @@ AuthController.login = async (req, res) => {
                 user_role,
                 tutor_id,
                 student_id,
+                first_sub: FirstSub[0].id ?? 0,
             },
         ], "Login successful", []);
     }

@@ -24,10 +24,12 @@ import {
 } from "../validators/validate";
 import { sendMail } from "../service/mail.service";
 import { UserModel } from "../models/user.model";
+import { TutorModel } from "../models/tutor.model";
 
 //
 const authModel = new AuthModel();
 const userMdl = new UserModel();
+const tutMdl = new TutorModel();
 export class AuthController {
   static RequestOtp = async (req: Request, res: Response) => {
     try {
@@ -266,6 +268,8 @@ export class AuthController {
       const tutor_id = await userMdl.geTutorByUserId(user?.user_id);
       const student_id = await userMdl.getStudentByUserId(user?.user_id);
 
+      const FirstSub = await tutMdl.fetchFirstSub(mobile);
+
       if (device_type === "web") {
         res.cookie("token", token, {
           httpOnly: true,
@@ -296,6 +300,7 @@ export class AuthController {
             user_role,
             tutor_id,
             student_id,
+            first_sub: FirstSub[0].id ?? 0,
           },
         ],
         "Login successful",

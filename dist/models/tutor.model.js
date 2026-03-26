@@ -111,6 +111,20 @@ class TutorModel {
             streams,
         };
     }
+    async fetchFirstSub(mobile) {
+        const res = await (0, helper_1.executeQuery)(`
+    SELECT 
+      u.user_id, 
+      t.tutor_id,
+      ts.*
+    FROM users u
+    LEFT JOIN tutor t ON t.user_id = u.user_id
+    LEFT JOIN tutor_subjects ts ON ts.tutor_id = t.tutor_id
+    WHERE u.mobile = ?
+    LIMIT 1
+    `, [mobile]);
+        return res;
+    }
 }
 exports.TutorModel = TutorModel;
 //# sourceMappingURL=tutor.model.js.map
