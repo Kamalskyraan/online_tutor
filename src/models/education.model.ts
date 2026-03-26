@@ -25,7 +25,7 @@ export class EduModel {
     }
     const result: EducationLevel[] = await executeQuery(query, params);
     return result;
-  }
+  } 
   async fetchStreams(filter?: {
     id: string;
     status: string;

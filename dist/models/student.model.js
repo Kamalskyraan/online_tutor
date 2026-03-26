@@ -34,23 +34,27 @@ class StudentModel {
       ) AS distance
 
     FROM users u
-    LEFT JOIN tutor t ON t.user_id = u.user_id
+    RIGHT JOIN tutor t ON t.user_id = u.user_id
     WHERE u.lat IS NOT NULL AND u.lng IS NOT NULL
     HAVING distance <= ?
     ORDER BY distance ASC
   `;
             const rows = await (0, helper_1.executeQuery)(query, [lat, lng, lat, radius]);
-            const streamIds = rows
-                .map((r) => r.stream_id)
-                .filter((id) => id);
-            let streams = {};
-            if (streamIds.length) {
-                streams = await eduMdl.fetchStreamsForAll(streamIds);
-            }
+            const allStreamIds = rows
+                .map((row) => row.stream_id)
+                .filter((id) => id)
+                .join(",");
+            const streams = await eduMdl.fetchStreamsForAll(allStreamIds);
+            const streamMap = new Map();
+            streams.forEach((s) => {
+                streamMap.set(s.stream_id, s);
+            });
             const finalData = rows.map((row) => {
                 return {
                     ...row,
-                    stream: streams[row.stream_id] || null,
+                    stream: row.stream_id
+                        ? streamMap.get(Number(row.stream_id)) || null
+                        : null,
                 };
             });
             return (0, helper_1.convertNullToString)(finalData);

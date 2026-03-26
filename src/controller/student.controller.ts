@@ -41,7 +41,7 @@ export class StudentController {
       const body: Location = req.body;
 
       const tutors = await this.studentModel.findNearbyTutors(body);
-       
+
       sendResponse(res, 200, 1, tutors, "Tutor Data Fetched successfully", []);
     } catch (err: any) {
       console.log(err);
