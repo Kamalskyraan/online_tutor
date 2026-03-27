@@ -64,7 +64,7 @@ router.post("/add-update-student", (req, res) => {
           lng : "10.56",
           district : "CBE",
           area : "RSpuram",
-          is_show_num : true,
+          is_show_num : 1,
                
           stream_id : "1",
           learn_course_id : "1,2,3",

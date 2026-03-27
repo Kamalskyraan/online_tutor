@@ -480,8 +480,8 @@
                   "example": "RSpuram"
                 },
                 "is_show_num": {
-                  "type": "boolean",
-                  "example": true
+                  "type": "number",
+                  "example": 1
                 },
                 "stream_id": {
                   "type": "string",
