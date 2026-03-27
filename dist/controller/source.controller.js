@@ -23,7 +23,7 @@ SourceController.getAdressDetailsFromPincode = async (req, res) => {
         if (!data) {
             return (0, helper_1.sendResponse)(res, 200, 0, [], "Pincode not found");
         }
-        return (0, helper_1.sendResponse)(res, 200, 1, data, "Address fetched successfully from pincode");
+        return (0, helper_1.sendResponse)(res, 200, 1, [data], "Address fetched successfully from pincode");
     }
     catch (err) {
         return (0, helper_1.sendResponse)(res, err.status || 500, 0, [], "Something went wrong", err.errors || err.message || err);

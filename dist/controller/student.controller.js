@@ -16,7 +16,9 @@ StudentController.getStudentData = async (req, res) => {
             return (0, helper_1.sendResponse)(res, 200, 0, [], "Student Id is required", []);
         }
         const studentData = await _a.studentModel.fetchStudentData(student_id);
-        return (0, helper_1.sendResponse)(res, 200, 1, studentData, "Student Data Fetched Successfully", []);
+        return (0, helper_1.sendResponse)(res, 200, 1, 
+        // convertNullToString(),
+        studentData, "Student Data Fetched Successfully", []);
     }
     catch (err) {
         return (0, helper_1.sendResponse)(res, 500, 0, "Internal Server Error", err.errors || err.message || err);

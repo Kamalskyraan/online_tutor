@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { StudentModel } from "../models/student.model";
-import { sendResponse } from "../utils/helper";
+import { convertNullToString, sendResponse } from "../utils/helper";
 import { Location } from "../interface/interface";
 
 export class StudentController {
@@ -18,6 +18,7 @@ export class StudentController {
         res,
         200,
         1,
+        // convertNullToString(),
         studentData,
         "Student Data Fetched Successfully",
         [],

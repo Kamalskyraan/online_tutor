@@ -27,7 +27,7 @@ export class SourceController {
         res,
         200,
         1,
-        data,
+        [data],
         "Address fetched successfully from pincode",
       );
     } catch (err: any) {
