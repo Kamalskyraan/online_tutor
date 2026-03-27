@@ -1084,13 +1084,14 @@
           {
             "name": "body",
             "in": "body",
-            "required": true,
             "schema": {
               "type": "object",
               "properties": {
                 "pincode": {
-                  "type": "string",
-                  "example": "624601"
+                  "example": "any"
+                },
+                "icountry": {
+                  "example": "any"
                 }
               }
             }
