@@ -67,7 +67,7 @@ export class SubjectController {
     }
   };
 
-  //
+  
   static addUpdateSubjectsToTutor = async (req: Request, res: Response) => {
     try {
       const payload = await validateRequest(

@@ -3,7 +3,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.StudentModel = void 0;
 const helper_1 = require("../utils/helper");
 const education_model_1 = require("./education.model");
+const review_model_1 = require("./review.model");
 const eduMdl = new education_model_1.EduModel();
+const rvMdl = new review_model_1.ReviewModel();
 class StudentModel {
     async findNearbyTutors(location) {
         const { lat, lng, radius = 100, search_address } = location;
@@ -18,9 +20,11 @@ class StudentModel {
       u.district,
       u.area,
       u.pincode,
+      u.self_about,
       t.tutor_id,
       t.stream_id,
       t.represent,
+
 
 
       (
@@ -49,12 +53,77 @@ class StudentModel {
             streams.forEach((s) => {
                 streamMap.set(s.stream_id, s);
             });
+            const tutorIds = rows.map((r) => r.tutor_id).filter((id) => id);
+            const placeholders = tutorIds.map(() => "?").join(",");
+            let subjectRows = [];
+            if (tutorIds.length === 1) {
+                subjectRows = await (0, helper_1.executeQuery)(`
+    SELECT ts.*, s.subject_name as db_subject_name
+    FROM tutor_subjects ts
+    LEFT JOIN subjects s ON s.id = ts.subject_id
+    WHERE ts.tutor_id = ?
+    AND ts.status = 'active'
+    `, [tutorIds[0]]);
+            }
+            else if (tutorIds.length > 1) {
+                const placeholders = tutorIds.map(() => "?").join(",");
+                subjectRows = await (0, helper_1.executeQuery)(`
+    SELECT ts.*, s.subject_name as db_subject_name 
+    FROM tutor_subjects ts
+    LEFT JOIN subjects s ON s.id = ts.subject_id
+    WHERE ts.tutor_id IN (${placeholders})
+    AND ts.status = 'active'
+    `, tutorIds);
+            }
+            const subjectMap = new Map();
+            subjectRows.map((sub) => {
+                const tutorId = sub.tutor_id;
+                if (!subjectMap.has(tutorId)) {
+                    subjectMap.set(tutorId, []);
+                }
+                let subjectArr = [];
+                if (sub.subject_id) {
+                    subjectArr.push({
+                        id: sub.subject_id,
+                        subject_name: sub.db_subject_name,
+                    });
+                }
+                else if (sub.subject_name) {
+                    subjectArr.push({
+                        id: "",
+                        subject_name: sub.subject_name,
+                    });
+                }
+                subjectMap.get(tutorId).push({
+                    id: sub.id,
+                    sub: subjectArr,
+                    // class_mode: sub.class_mode,
+                    // class_type: sub.class_type,
+                    // min_fee: sub.min_fee,
+                    // max_fee: sub.max_fee,
+                });
+            });
+            const avgRating = await rvMdl.getReviewSummary(tutorIds);
+            const ratingMap = new Map();
+            [avgRating].forEach((r) => {
+                ratingMap.set(r.tutor_id, {
+                    avg_rating: r.avg_rating,
+                    total_reviews: r.total_reviews,
+                });
+            });
             const finalData = rows.map((row) => {
+                const rating = ratingMap.get(row.tutor_id) || {
+                    average_rating: 0,
+                    total_reviews: 0,
+                };
                 return {
                     ...row,
                     stream: row.stream_id
                         ? streamMap.get(Number(row.stream_id)) || null
                         : null,
+                    subjects: subjectMap.get(row.tutor_id) || [],
+                    average_rating: rating.average_rating,
+                    total_reviews: rating.total_reviews,
                 };
             });
             return (0, helper_1.convertNullToString)(finalData);

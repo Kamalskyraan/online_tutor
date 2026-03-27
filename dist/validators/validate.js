@@ -204,7 +204,7 @@ exports.updateUserProfileSchema = joi_1.default.object({
     user_name: joi_1.default.string(),
     represent: joi_1.default.string().valid("1", "2", "3"),
     gender: joi_1.default.string().valid("male", "female", "others"),
-    is_show_num: joi_1.default.boolean(),
+    is_show_num: joi_1.default.boolean().truthy(1).falsy(0),
     about_myself: joi_1.default.string().allow(null, ""),
     email: joi_1.default.string(),
     mobile: joi_1.default.string(),
@@ -287,7 +287,7 @@ exports.updateStudentSchema = joi_1.default.object({
     // address: Joi.string(),
     lat: joi_1.default.string(),
     lng: joi_1.default.string(),
-    is_show_num: joi_1.default.boolean().messages({}),
+    is_show_num: joi_1.default.boolean().truthy(1).falsy(0),
     // 2
     stream_id: joi_1.default.string(),
     learn_course_id: joi_1.default.string(),

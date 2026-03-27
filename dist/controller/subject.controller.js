@@ -36,7 +36,6 @@ SubjectController.getSubjects = async (req, res) => {
         (0, helper_1.sendResponse)(res, 500, 0, [], "Internal Server Error", err.errors || err.message || err);
     }
 };
-//
 SubjectController.addUpdateSubjectsToTutor = async (req, res) => {
     try {
         const payload = await (0, helper_1.validateRequest)(req.body, validate_1.updateTutorSubjectsSchema);

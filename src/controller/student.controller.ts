@@ -18,7 +18,7 @@ export class StudentController {
         res,
         200,
         1,
-        // convertNullToString(),
+
         studentData,
         "Student Data Fetched Successfully",
         [],

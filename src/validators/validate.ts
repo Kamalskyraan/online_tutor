@@ -230,7 +230,7 @@ export const updateUserProfileSchema = Joi.object({
   user_name: Joi.string(),
   represent: Joi.string().valid("1", "2", "3"),
   gender: Joi.string().valid("male", "female", "others"),
-  is_show_num: Joi.boolean(),
+  is_show_num: Joi.boolean().truthy(1).falsy(0),
   about_myself: Joi.string().allow(null, ""),
   email: Joi.string(),
   mobile: Joi.string(),
@@ -320,7 +320,7 @@ export const updateStudentSchema = Joi.object({
   // address: Joi.string(),
   lat: Joi.string(),
   lng: Joi.string(),
-  is_show_num: Joi.boolean().messages({}),
+  is_show_num: Joi.boolean().truthy(1).falsy(0),
 
   // 2
 

@@ -28,12 +28,18 @@ class commonModel {
     async getUploadFiles(ids) {
         const placeholders = ids.map(() => "?").join(",");
         const query = `
-    SELECT id, pathname, file_url, file_type, file_size
+    SELECT id, pathname, file_url as url, file_type as category, file_size, org_name
     FROM media
     WHERE id IN (${placeholders})
   `;
         const result = await (0, helper_1.executeQuery)(query, ids);
-        return result;
+        return result.map((file) => ({
+            ...file,
+            file_size: this.formatFileSize(Number(file.file_size)),
+        }));
+    }
+    formatFileSize(bytes) {
+        return `${(bytes / (1024 / 1024)).toFixed(4)} MB`;
     }
 }
 exports.commonModel = commonModel;
