@@ -20,7 +20,7 @@ export class commonModel {
     const result: any = await executeQuery(query, [
       file.key,
       file.originalname,
-      `${process.env.CLOUDFRONT_URL}/${file.key}`,
+      `https://${process.env.CLOUDFRONT_URL}/${file.key}`,
       category,
       file.size,
       file.mimetype,

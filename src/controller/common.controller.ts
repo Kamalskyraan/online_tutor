@@ -65,7 +65,7 @@ export class CommonController {
         return sendResponse(res, 200, 0, [], "Category is required", []);
       }
 
-      const uploadId = await cmnModel.saveUpload(file , category);
+      const uploadId = await cmnModel.saveUpload(file, category);
 
       return sendResponse(
         res,

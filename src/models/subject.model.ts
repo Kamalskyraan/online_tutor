@@ -1,6 +1,13 @@
 import { getSubjectBody, subjectBody } from "../interface/interface";
 import { executeQuery } from "../utils/helper";
+import { commonModel } from "./common.model";
+import { EduModel } from "./education.model";
+import { SourceModel } from "./source.model";
 
+const srcMdl = new SourceModel();
+const cmnMdl = new commonModel();
+
+const eduMdl = new EduModel();
 export class SubjectModel {
   async insertUpdateSubject({
     id,
@@ -254,15 +261,98 @@ export class SubjectModel {
     WHERE tutor_id = ?
     AND status = 'active'
   `;
+
     const params: any[] = [tutor_id];
+
     if (id) {
       query += ` AND id = ?`;
       params.push(id);
     }
-    const result: any = await executeQuery(query, params);
 
+    const result: any = await executeQuery(query, params);
     if (!result.length) return [];
-    
+
+    await Promise.all(
+      result.map(async (row: any) => {
+        Object.keys(row).forEach((key) => {
+          if (row[key] === null) {
+            row[key] = "";
+          }
+        });
+
+        let subjects: any[] = [];
+
+        if (row.subject_id) {
+          const subjectData: any = await executeQuery(
+            `SELECT id, subject_name FROM subjects WHERE id = ?`,
+            [row.subject_id],
+          );
+
+          if (subjectData.length) {
+            subjects.push(subjectData[0]);
+          }
+        } else if (row.subject_name) {
+          subjects.push({
+            id: "",
+            subject_name: row.subject_name,
+          });
+        }
+
+        row.subjects = subjects;
+        delete row.subject_id;
+        delete row.subject_name;
+
+        try {
+          row.covered_topics = row.covered_topics
+            ? JSON.parse(row.covered_topics)
+            : [];
+        } catch {
+          row.covered_topics = [];
+        }
+
+        try {
+          let syllabusIds: number[] = [];
+
+          if (row.sylabus) {
+            if (row.sylabus.startsWith("[")) {
+              syllabusIds = JSON.parse(row.sylabus);
+            } else {
+              syllabusIds = row.sylabus.split(",").map((id: any) => Number(id));
+            }
+          }
+
+          row.syllabus = syllabusIds.length
+            ? await cmnMdl.getUploadFiles(syllabusIds)
+            : [];
+        } catch {
+          row.syllabus = [];
+        }
+
+        delete row.sylabus;
+
+        try {
+          let streamIdStr = "";
+
+          if (row.stream_ids) {
+            if (row.stream_ids.startsWith("[")) {
+              const parsed = JSON.parse(row.stream_ids);
+              streamIdStr = parsed.join(",");
+            } else {
+              streamIdStr = row.stream_ids;
+            }
+          }
+
+          row.streams = streamIdStr
+            ? await eduMdl.fetchStreamsForAll(streamIdStr)
+            : [];
+        } catch {
+          row.streams = [];
+        }
+
+        delete row.stream_ids;
+      }),
+    );
+
     return result;
   }
 

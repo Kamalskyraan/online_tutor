@@ -18,7 +18,7 @@ class commonModel {
         const result = await (0, helper_1.executeQuery)(query, [
             file.key,
             file.originalname,
-            `${process.env.CLOUDFRONT_URL}/${file.key}`,
+            `https://${process.env.CLOUDFRONT_URL}/${file.key}`,
             category,
             file.size,
             file.mimetype,

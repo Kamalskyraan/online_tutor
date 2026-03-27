@@ -76,7 +76,7 @@ class EduModel {
      LEFT JOIN education_stream es
        ON el.id = es.edu_id
      WHERE es.id IN (${placeholders})`, ids);
-        return result;
+        return (0, helper_1.convertNullToString)(result);
     }
 }
 exports.EduModel = EduModel;

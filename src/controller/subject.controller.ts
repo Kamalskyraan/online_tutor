@@ -140,7 +140,6 @@ export class SubjectController {
         res,
         200,
         1,
-        // convertNullObjectToString(res),
         result,
         "Subject fetched successfully",
         [],

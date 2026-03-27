@@ -1,5 +1,5 @@
 import { EducationLevel, StreamLevel } from "../interface/interface";
-import { executeQuery } from "../utils/helper";
+import { convertNullToString, executeQuery } from "../utils/helper";
 
 export class EduModel {
   async fetchEducationLvl(filter?: {
@@ -25,7 +25,7 @@ export class EduModel {
     }
     const result: EducationLevel[] = await executeQuery(query, params);
     return result;
-  } 
+  }
   async fetchStreams(filter?: {
     id: string;
     status: string;
@@ -94,6 +94,6 @@ export class EduModel {
       ids,
     );
 
-    return result;
+    return convertNullToString(result);
   }
 }
