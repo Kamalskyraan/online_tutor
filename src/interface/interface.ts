@@ -177,7 +177,7 @@ export interface studentPersonalBody {
   district: string;
   area: string;
   is_show_num: string;
-  address: string;
+  address?: string;
   user_role: string;
   lat: string;
   lng: string;

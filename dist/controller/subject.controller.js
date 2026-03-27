@@ -83,7 +83,9 @@ SubjectController.getTutorSubjects = async (req, res) => {
         if (!result) {
             return (0, helper_1.sendResponse)(res, 200, 0, [], "Subject not found", []);
         }
-        return (0, helper_1.sendResponse)(res, 200, 1, result, "Subject fetched successfully", []);
+        return (0, helper_1.sendResponse)(res, 200, 1, 
+        // convertNullObjectToString(res),
+        result, "Subject fetched successfully", []);
     }
     catch (err) {
         return (0, helper_1.sendResponse)(res, 500, 0, [], "Internal Server Error", [

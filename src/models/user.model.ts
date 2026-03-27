@@ -172,7 +172,7 @@ export class UserModel {
       district,
       state,
       is_show_num,
-      address,
+
       user_id,
       user_role,
       lat,
@@ -215,10 +215,7 @@ export class UserModel {
       fields.push(`is_show_num = ?`);
       values.push(is_show_num);
     }
-    if (address !== undefined) {
-      fields.push(`address = ?`);
-      values.push(address);
-    }
+
     if (user_role !== undefined) {
       fields.push(`user_role = ?`);
       values.push(user_role);

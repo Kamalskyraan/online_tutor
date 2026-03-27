@@ -306,9 +306,9 @@ export const updateStudentSchema = Joi.object({
   user_id: Joi.string().required().messages({
     "any.required": "User Id is required",
   }),
-  user_name: Joi.string().required().messages({
-    "any.required": "User Name is required",
-  }),
+  // user_name: Joi.string().required().messages({
+  //   "any.required": "User Name is required",
+  // }),
   // 1
   gender: Joi.string().valid("male", "female", "other"),
   dob: Joi.string(),
@@ -317,7 +317,7 @@ export const updateStudentSchema = Joi.object({
   state: Joi.string(),
   district: Joi.string(),
   area: Joi.string(),
-  address: Joi.string(),
+  // address: Joi.string(),
   lat: Joi.string(),
   lng: Joi.string(),
   is_show_num: Joi.boolean().messages({}),

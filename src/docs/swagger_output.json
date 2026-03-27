@@ -443,10 +443,6 @@
                   "type": "string",
                   "example": "USER_LDsMp-Dsm"
                 },
-                "user_name": {
-                  "type": "string",
-                  "example": "kamaleh"
-                },
                 "dob": {
                   "type": "string",
                   "example": "2002-03-15"
@@ -486,10 +482,6 @@
                 "is_show_num": {
                   "type": "boolean",
                   "example": true
-                },
-                "address": {
-                  "type": "string",
-                  "example": "abcde fghij klmnop"
                 },
                 "stream_id": {
                   "type": "string",

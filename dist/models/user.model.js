@@ -85,7 +85,7 @@ class UserModel {
         return rows.user_role;
     }
     async updateUserBasicForStudent(user) {
-        const { gender, dob, country, pincode, area, district, state, is_show_num, address, user_id, user_role, lat, lng, } = user;
+        const { gender, dob, country, pincode, area, district, state, is_show_num, user_id, user_role, lat, lng, } = user;
         let query = `UPDATE users SET `;
         const fields = [];
         const values = [];
@@ -120,10 +120,6 @@ class UserModel {
         if (is_show_num !== undefined) {
             fields.push(`is_show_num = ?`);
             values.push(is_show_num);
-        }
-        if (address !== undefined) {
-            fields.push(`address = ?`);
-            values.push(address);
         }
         if (user_role !== undefined) {
             fields.push(`user_role = ?`);

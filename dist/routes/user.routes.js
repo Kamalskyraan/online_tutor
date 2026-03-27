@@ -55,7 +55,6 @@ router.post("/add-update-student", (req, res) => {
         schema: {
           user_role : "student",
           user_id : "USER_LDsMp-Dsm",
-          user_name : "kamaleh",
           dob : "2002-03-15",
           gender : "male",
           country : "India",
@@ -66,7 +65,7 @@ router.post("/add-update-student", (req, res) => {
           district : "CBE",
           area : "RSpuram",
           is_show_num : true,
-          address : "abcde fghij klmnop",
+               
           stream_id : "1",
           learn_course_id : "1,2,3",
           learn_course : ["Full Stack Development","java"]

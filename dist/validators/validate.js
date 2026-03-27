@@ -273,9 +273,9 @@ exports.updateStudentSchema = joi_1.default.object({
     user_id: joi_1.default.string().required().messages({
         "any.required": "User Id is required",
     }),
-    user_name: joi_1.default.string().required().messages({
-        "any.required": "User Name is required",
-    }),
+    // user_name: Joi.string().required().messages({
+    //   "any.required": "User Name is required",
+    // }),
     // 1
     gender: joi_1.default.string().valid("male", "female", "other"),
     dob: joi_1.default.string(),
@@ -284,7 +284,7 @@ exports.updateStudentSchema = joi_1.default.object({
     state: joi_1.default.string(),
     district: joi_1.default.string(),
     area: joi_1.default.string(),
-    address: joi_1.default.string(),
+    // address: Joi.string(),
     lat: joi_1.default.string(),
     lng: joi_1.default.string(),
     is_show_num: joi_1.default.boolean().messages({}),
