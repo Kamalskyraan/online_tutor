@@ -281,6 +281,36 @@ export class SubjectModel {
         });
 
         let subjects: any[] = [];
+        let languages: any[] = [];
+        try {
+          let langIds: number[] = [];
+
+          if (row.teach_language) {
+            if (row.teach_language.startsWith("[")) {
+              langIds = JSON.parse(row.teach_language);
+            } else {
+              langIds = row.teach_language
+                .split(",")
+                .map((id: any) => Number(id));
+            }
+          }
+
+          if (langIds.length) {
+            const placeholders = langIds.map(() => "?").join(",");
+
+            const langData: any = await executeQuery(
+              `SELECT id, lang_name FROM languages WHERE id IN (${placeholders})`,
+              langIds,
+            );
+
+            languages = langData;
+          }
+        } catch {
+          languages = [];
+        }
+
+        row.languages = languages;
+        delete row.teach_language;
 
         if (row.subject_id) {
           const subjectData: any = await executeQuery(

@@ -209,6 +209,30 @@ class SubjectModel {
                 }
             });
             let subjects = [];
+            let languages = [];
+            try {
+                let langIds = [];
+                if (row.teach_language) {
+                    if (row.teach_language.startsWith("[")) {
+                        langIds = JSON.parse(row.teach_language);
+                    }
+                    else {
+                        langIds = row.teach_language
+                            .split(",")
+                            .map((id) => Number(id));
+                    }
+                }
+                if (langIds.length) {
+                    const placeholders = langIds.map(() => "?").join(",");
+                    const langData = await (0, helper_1.executeQuery)(`SELECT id, lang_name FROM languages WHERE id IN (${placeholders})`, langIds);
+                    languages = langData;
+                }
+            }
+            catch {
+                languages = [];
+            }
+            row.languages = languages;
+            delete row.teach_language;
             if (row.subject_id) {
                 const subjectData = await (0, helper_1.executeQuery)(`SELECT id, subject_name FROM subjects WHERE id = ?`, [row.subject_id]);
                 if (subjectData.length) {
