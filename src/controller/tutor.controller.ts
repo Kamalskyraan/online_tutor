@@ -2,8 +2,10 @@ import { Request, Response } from "express";
 import { sendResponse, validateRequest } from "../utils/helper";
 import { TutorModel } from "../models/tutor.model";
 import { addUpdateDemosSchema, getDemosSchema } from "../validators/validate";
+import { ReviewModel } from "../models/review.model";
 
 const tutModel = new TutorModel();
+const rvMdl = new ReviewModel();
 export class TutorController {
   static addUpdateDemos = async (req: Request, res: Response) => {
     try {
@@ -109,4 +111,91 @@ export class TutorController {
       );
     }
   };
+
+  static getTutorDataById = async (req: Request, res: Response) => {
+    try {
+      const { tutor_id, search_subject } = req.body;
+      if (!tutor_id) {
+        return sendResponse(res, 200, 0, [], "tutor_id is required", []);
+      }
+
+      const tutor = await tutModel.getTutorById(tutor_id);
+      if (!tutor) {
+        return sendResponse(res, 200, 0, [], "Tutor not found", []);
+      }
+
+      if (search_subject && tutor.subjects?.length) {
+        const keyword = search_subject.toLowerCase();
+
+        tutor.subjects.sort((a: any, b: any) => {
+          const aName = a.sub?.[0]?.subject_name?.toLowerCase() || "";
+          const bName = b.sub?.[0]?.subject_name?.toLowerCase() || "";
+
+          const aMatch = aName.includes(keyword);
+          const bMatch = bName.includes(keyword);
+
+          if (aMatch && !bMatch) return -1;
+          if (!aMatch && bMatch) return 1;
+
+          if (aName.startsWith(keyword)) return -1;
+          if (bName.startsWith(keyword)) return 1;
+
+          return 0;
+        });
+      }
+
+      return sendResponse(res, 200, 1, tutor, "Tutor fetched successfully", []);
+    } catch (err: any) {
+      return sendResponse(res, 500, 0, [], "Internal Server Error", [
+        err.errors || err.message || err,
+      ]);
+    }
+  };
+
+  static getReviewsAboutTutor = async (req: Request, res: Response) => {
+    try {
+      const { tutor_id } = req.body;
+      const reviewData = await rvMdl.fetchReviewsForTutorById(tutor_id);
+      return sendResponse(
+        res,
+        200,
+        1,
+        reviewData,
+        "Reviews Fetched sucessfully",
+        [],
+      );
+    } catch (err: any) {
+      return sendResponse(res, 500, 0, [], "Internal Server Error", [
+        err.errors || err.message || err,
+      ]);
+    }
+  };
+
+  static addStudentLikeTutor = async (req: Request, res: Response) => {
+    try {
+      const { tutor_id, student_id, status } = req.body;
+      const result = await tutModel.addUpdateLikeForTutor(
+        tutor_id,
+        student_id,
+        status,
+      );
+
+      let message = "";
+
+      if (result.action === "removed") {
+        message = "Reaction removed";
+      } else if (result.action === "updated") {
+        message = Number(status) === 1 ? "Tutor liked" : "Tutor disliked";
+      } else {
+        message = Number(status) === 1 ? "Tutor liked" : "Tutor disliked";
+      }
+      return sendResponse(res, 200, 1, [], message, []);
+    } catch (err: any) {
+      return sendResponse(res, 500, 0, [], "Internal Server Error", [
+        err.errors || err.message || err,
+      ]);
+    }
+  };
+
+  
 }

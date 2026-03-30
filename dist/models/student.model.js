@@ -8,127 +8,10 @@ const eduMdl = new education_model_1.EduModel();
 const rvMdl = new review_model_1.ReviewModel();
 class StudentModel {
     async findNearbyTutors(location) {
-        const { lat, lng, radius = 100, search_address } = location;
+        const { lat, lng, radius = 100, search_address, search_subject, page = 1, limit = 5, } = location;
+        const offset = (page - 1) * limit;
+        let rows = [];
         if (lat && lng) {
-            const query = `
-    SELECT 
-      u.user_id,
-      u.user_name,
-      u.lat,
-      u.lng,
-      u.state,
-      u.district,
-      u.area,
-      u.pincode,
-      u.self_about,
-      t.tutor_id,
-      t.stream_id,
-      t.represent,
-
-
-
-      (
-        6371 * acos(
-          cos(radians(?)) *
-          cos(radians(u.lat)) *
-          cos(radians(u.lng) - radians(?)) +
-          sin(radians(?)) *
-          sin(radians(u.lat))
-        )
-      ) AS distance
-
-    FROM users u
-    RIGHT JOIN tutor t ON t.user_id = u.user_id
-    WHERE u.lat IS NOT NULL AND u.lng IS NOT NULL
-    HAVING distance <= ?
-    ORDER BY distance ASC
-  `;
-            const rows = await (0, helper_1.executeQuery)(query, [lat, lng, lat, radius]);
-            const allStreamIds = rows
-                .map((row) => row.stream_id)
-                .filter((id) => id)
-                .join(",");
-            const streams = await eduMdl.fetchStreamsForAll(allStreamIds);
-            const streamMap = new Map();
-            streams.forEach((s) => {
-                streamMap.set(s.stream_id, s);
-            });
-            const tutorIds = rows.map((r) => r.tutor_id).filter((id) => id);
-            const placeholders = tutorIds.map(() => "?").join(",");
-            let subjectRows = [];
-            if (tutorIds.length === 1) {
-                subjectRows = await (0, helper_1.executeQuery)(`
-    SELECT ts.*, s.subject_name as db_subject_name
-    FROM tutor_subjects ts
-    LEFT JOIN subjects s ON s.id = ts.subject_id
-    WHERE ts.tutor_id = ?
-    AND ts.status = 'active'
-    `, [tutorIds[0]]);
-            }
-            else if (tutorIds.length > 1) {
-                const placeholders = tutorIds.map(() => "?").join(",");
-                subjectRows = await (0, helper_1.executeQuery)(`
-    SELECT ts.*, s.subject_name as db_subject_name 
-    FROM tutor_subjects ts
-    LEFT JOIN subjects s ON s.id = ts.subject_id
-    WHERE ts.tutor_id IN (${placeholders})
-    AND ts.status = 'active'
-    `, tutorIds);
-            }
-            const subjectMap = new Map();
-            subjectRows.map((sub) => {
-                const tutorId = sub.tutor_id;
-                if (!subjectMap.has(tutorId)) {
-                    subjectMap.set(tutorId, []);
-                }
-                let subjectArr = [];
-                if (sub.subject_id) {
-                    subjectArr.push({
-                        id: sub.subject_id,
-                        subject_name: sub.db_subject_name,
-                    });
-                }
-                else if (sub.subject_name) {
-                    subjectArr.push({
-                        id: "",
-                        subject_name: sub.subject_name,
-                    });
-                }
-                subjectMap.get(tutorId).push({
-                    id: sub.id,
-                    sub: subjectArr,
-                    // class_mode: sub.class_mode,
-                    // class_type: sub.class_type,
-                    // min_fee: sub.min_fee,
-                    // max_fee: sub.max_fee,
-                });
-            });
-            const avgRating = await rvMdl.getReviewSummary(tutorIds);
-            const ratingMap = new Map();
-            [avgRating].forEach((r) => {
-                ratingMap.set(r.tutor_id, {
-                    avg_rating: r.avg_rating,
-                    total_reviews: r.total_reviews,
-                });
-            });
-            const finalData = rows.map((row) => {
-                const rating = ratingMap.get(row.tutor_id) || {
-                    average_rating: 0,
-                    total_reviews: 0,
-                };
-                return {
-                    ...row,
-                    stream: row.stream_id
-                        ? streamMap.get(Number(row.stream_id)) || null
-                        : null,
-                    subjects: subjectMap.get(row.tutor_id) || [],
-                    average_rating: rating.average_rating,
-                    total_reviews: rating.total_reviews,
-                };
-            });
-            return (0, helper_1.convertNullToString)(finalData);
-        }
-        if (search_address) {
             const query = `
       SELECT 
         u.user_id,
@@ -138,26 +21,127 @@ class StudentModel {
         u.state,
         u.district,
         u.area,
-        u.pincode
+        u.pincode,
+        u.self_about,
+        u.profile_img,
+        t.tutor_id,
+        t.stream_id,
+        t.represent,
+
+        (
+          6371 * acos(
+            cos(radians(?)) *
+            cos(radians(u.lat)) *
+            cos(radians(u.lng) - radians(?)) +
+            sin(radians(?)) *
+            sin(radians(u.lat))
+          )
+        ) AS distance
+
       FROM users u
-      INNER JOIN tutor t ON t.user_id = u.user_id
+      RIGHT JOIN tutor t ON t.user_id = u.user_id
+      RIGHT JOIN tutor_subjects ts ON ts.tutor_id = t.tutor_id AND ts.status = 'active'
+      WHERE u.lat IS NOT NULL AND u.lng IS NOT NULL
+      HAVING distance <= ?
+      ORDER BY distance ASC
+      LIMIT ? OFFSET ?
+    `;
+            rows = await (0, helper_1.executeQuery)(query, [lat, lng, lat, radius, limit, offset]);
+        }
+        else if (search_address) {
+            const search = `%${search_address}%`;
+            const query = `
+      SELECT 
+        u.user_id,
+        u.user_name,
+        u.lat,
+        u.lng,
+        u.state,
+        u.district,
+        u.area,
+        u.pincode,
+        u.profile_img,
+        t.tutor_id,
+        t.stream_id,
+        t.represent
+      FROM users u
+      RIGHT JOIN tutor t ON t.user_id = u.user_id
+      RIGHT JOIN tutor_subjects ts ON ts.tutor_id = t.tutor_id AND ts.status = 'active'
       WHERE 
         u.state LIKE ? OR
         u.district LIKE ? OR
         u.area LIKE ? OR
         u.pincode LIKE ?
-      ORDER BY u.user_name ASC
+      LIMIT ? OFFSET ?
     `;
-            const search = `%${search_address}%`;
-            const rows = await (0, helper_1.executeQuery)(query, [
+            rows = await (0, helper_1.executeQuery)(query, [
                 search,
                 search,
                 search,
                 search,
+                limit,
+                offset,
             ]);
-            return rows;
         }
-        return [];
+        else if (search_subject) {
+            const keyword = search_subject.toLowerCase();
+            const search = `%${search_subject}%`;
+            const query = `
+      SELECT DISTINCT
+        u.user_id,
+        u.user_name,
+        u.lat,
+        u.lng,
+        u.profile_img,
+        t.tutor_id,
+        t.stream_id,
+        t.represent
+      FROM users u
+      RIGHT JOIN tutor t ON t.user_id = u.user_id
+      RIGHT JOIN tutor_subjects ts ON ts.tutor_id = t.tutor_id AND ts.status = 'active'
+      
+      LEFT JOIN subjects s ON s.id = ts.subject_id
+      WHERE 
+        ts.status = 'active'
+        AND (
+          s.subject_name LIKE ? OR
+          ts.subject_name LIKE ?
+        )
+      LIMIT ? OFFSET ?
+    `;
+            rows = await (0, helper_1.executeQuery)(query, [search, search, limit, offset]);
+        }
+        if (!rows.length)
+            return [];
+        const data = await this.buildTutorFullData(rows);
+        if (search_subject) {
+            const keyword = search_subject.toLowerCase();
+            const sorted = data.map((tutor) => {
+                let hasMatch = false;
+                tutor.subjects.sort((a, b) => {
+                    const aName = a.sub[0]?.subject_name?.toLowerCase() || "";
+                    const bName = b.sub[0]?.subject_name?.toLowerCase() || "";
+                    const aMatch = aName.includes(keyword);
+                    const bMatch = bName.includes(keyword);
+                    if (aMatch)
+                        hasMatch = true;
+                    if (bMatch)
+                        hasMatch = true;
+                    if (aMatch && !bMatch)
+                        return -1;
+                    if (!aMatch && bMatch)
+                        return 1;
+                    return 0;
+                });
+                return {
+                    ...tutor,
+                    _matchPriority: hasMatch ? 1 : 0,
+                };
+            });
+            sorted.sort((a, b) => b._matchPriority - a._matchPriority);
+            return sorted.map(({ _matchPriority, ...rest }) => rest);
+        }
+        return data;
     }
     async fetchStudentData(student_id) {
         const student = await (0, helper_1.executeQuery)(`SELECT student_id, user_id, user_name, stream_id, learn_course, req_course 
@@ -224,6 +208,283 @@ class StudentModel {
      FROM subjects 
      WHERE id IN (${placeholders})`, ids);
         return result;
+    }
+    //
+    async buildTutorFullData(rows) {
+        const safeParse = (data) => {
+            try {
+                return data ? JSON.parse(data) : [];
+            }
+            catch {
+                return [];
+            }
+        };
+        //
+        const allStreamIds = rows
+            .map((r) => r.stream_id)
+            .filter(Boolean)
+            .join(",");
+        const streams = await eduMdl.fetchStreamsForAll(allStreamIds);
+        const streamMap = new Map();
+        streams.forEach((s) => {
+            streamMap.set(s.stream_id, s);
+        });
+        //
+        const tutorIds = rows.map((r) => r.tutor_id).filter(Boolean);
+        let subjectRows = [];
+        if (tutorIds.length) {
+            const placeholders = tutorIds.map(() => "?").join(",");
+            subjectRows = await (0, helper_1.executeQuery)(`
+      SELECT ts.*, s.subject_name as db_subject_name 
+      FROM tutor_subjects ts
+      LEFT JOIN subjects s ON s.id = ts.subject_id
+      WHERE ts.tutor_id IN (${placeholders})
+      AND ts.status = 'active'
+      `, tutorIds);
+        }
+        const subjectMap = new Map();
+        subjectRows.forEach((sub) => {
+            if (!subjectMap.has(sub.tutor_id)) {
+                subjectMap.set(sub.tutor_id, []);
+            }
+            subjectMap.get(sub.tutor_id).push({
+                id: sub.id,
+                sub: [
+                    {
+                        id: sub.subject_id || "",
+                        subject_name: sub.db_subject_name || sub.subject_name,
+                        covered_topics: safeParse(sub.covered_topics),
+                        min_fee: sub.min_fee,
+                        max_fee: sub.max_fee,
+                        tenure_type: sub.tenure_type,
+                        class_mode: sub.class_mode,
+                        class_type: sub.class_type,
+                    },
+                ],
+            });
+        });
+        //
+        const ratingMap = new Map();
+        await Promise.all(tutorIds.map(async (id) => {
+            const rating = await rvMdl.getReviewSummary(id);
+            ratingMap.set(id, rating);
+        }));
+        let finalData = rows.map((row) => ({
+            ...row,
+            stream: row.stream_id
+                ? streamMap.get(Number(row.stream_id)) || null
+                : null,
+            subjects: subjectMap.get(row.tutor_id) || [],
+            ...(ratingMap.get(row.tutor_id) || {
+                average_rating: 0,
+                total_reviews: 0,
+            }),
+        }));
+        const fileIds = finalData.map((r) => r.profile_img).filter(Boolean);
+        let fileData = [];
+        if (fileIds.length) {
+            const placeholders = fileIds.map(() => "?").join(",");
+            fileData = await (0, helper_1.executeQuery)(`SELECT file_type , file_url ,pathname , org_name , file_size   FROM media WHERE id IN (${placeholders})`, fileIds);
+        }
+        const fileMap = new Map();
+        fileData.forEach((file) => {
+            fileMap.set(file.id, {
+                ...file,
+                file_url: file.file_url?.startsWith("http")
+                    ? file.file_url
+                    : `https://${file.file_url}`,
+            });
+        });
+        finalData = finalData.map((row) => ({
+            ...row,
+            profile_img: row.profile_img
+                ? fileMap.get(row.profile_img) || null
+                : null,
+        }));
+        return (0, helper_1.convertNullToString)(finalData);
+    }
+    async buildTutorFullDatasForId(rows) {
+        const safeParse = (data) => {
+            try {
+                return data ? JSON.parse(data) : [];
+            }
+            catch {
+                return [];
+            }
+        };
+        const allStreamIds = rows
+            .map((r) => r.stream_id)
+            .filter(Boolean)
+            .join(",");
+        const streams = await eduMdl.fetchStreamsForAll(allStreamIds);
+        const streamMap = new Map();
+        streams.forEach((s) => {
+            streamMap.set(Number(s.stream_id), s);
+        });
+        const tutorIds = rows.map((r) => r.tutor_id).filter(Boolean);
+        let subjectRows = [];
+        if (tutorIds.length) {
+            const placeholders = tutorIds.map(() => "?").join(",");
+            subjectRows = await (0, helper_1.executeQuery)(`
+      SELECT ts.*, s.subject_name as db_subject_name 
+      FROM tutor_subjects ts
+      LEFT JOIN subjects s ON s.id = ts.subject_id
+      WHERE ts.tutor_id IN (${placeholders})
+      AND ts.status = 'active'
+      `, tutorIds);
+        }
+        const allSylabusIds = new Set();
+        const allLanguageIds = new Set();
+        const allSubjectStreamIds = new Set();
+        subjectRows.forEach((sub) => {
+            if (sub.sylabus) {
+                allSylabusIds.add(Number(sub.sylabus));
+            }
+            if (sub.teach_language) {
+                sub.teach_language.split(",").forEach((id) => {
+                    if (id)
+                        allLanguageIds.add(Number(id));
+                });
+            }
+            if (sub.stream_ids) {
+                sub.stream_ids.split(",").forEach((id) => {
+                    if (id)
+                        allSubjectStreamIds.add(Number(id));
+                });
+            }
+        });
+        let sylabusData = [];
+        if (allSylabusIds.size) {
+            const ids = [...allSylabusIds];
+            const placeholders = ids.map(() => "?").join(",");
+            sylabusData = await (0, helper_1.executeQuery)(`SELECT id, file_type, file_url, pathname, org_name 
+       FROM media 
+       WHERE id IN (${placeholders})`, ids);
+        }
+        let languageData = [];
+        if (allLanguageIds.size) {
+            const ids = [...allLanguageIds];
+            const placeholders = ids.map(() => "?").join(",");
+            languageData = await (0, helper_1.executeQuery)(`SELECT id, lang_name FROM languages WHERE id IN (${placeholders})`, ids);
+        }
+        const subjectStreams = await eduMdl.fetchStreamsForAll([...allSubjectStreamIds].join(","));
+        const sylabusMap = new Map();
+        sylabusData.forEach((f) => {
+            sylabusMap.set(Number(f.id), {
+                id: f.id || "",
+                file_type: f.file_type || "",
+                pathname: f.pathname || "",
+                org_name: f.org_name || "",
+                file_url: f.file_url
+                    ? f.file_url.startsWith("http")
+                        ? f.file_url
+                        : `https://${f.file_url}`
+                    : "",
+            });
+        });
+        const languageMap = new Map();
+        languageData.forEach((l) => {
+            languageMap.set(Number(l.id), {
+                id: l.id || "",
+                lang_name: l.lang_name || "",
+            });
+        });
+        const subjectStreamMap = new Map();
+        subjectStreams.forEach((s) => {
+            subjectStreamMap.set(Number(s.stream_id), s);
+        });
+        const subjectMap = new Map();
+        subjectRows.forEach((sub) => {
+            if (!subjectMap.has(sub.tutor_id)) {
+                subjectMap.set(sub.tutor_id, []);
+            }
+            subjectMap.get(sub.tutor_id).push({
+                id: sub.id || "",
+                sub: [
+                    {
+                        id: sub.subject_id || "",
+                        subject_name: sub.db_subject_name || sub.subject_name || "",
+                        covered_topics: safeParse(sub.covered_topics),
+                        min_fee: sub.min_fee || "",
+                        max_fee: sub.max_fee || "",
+                        tenure_type: sub.tenure_type || "",
+                        class_mode: sub.class_mode || "",
+                        class_type: sub.class_type || "",
+                        sylabus: sub.sylabus
+                            ? sylabusMap.get(Number(sub.sylabus)) || {}
+                            : {},
+                        teach_language: sub.teach_language
+                            ? sub.teach_language
+                                .split(",")
+                                .map((id) => languageMap.get(Number(id)) || {})
+                                .filter((v) => Object.keys(v).length)
+                            : [],
+                        stream_ids: sub.stream_ids
+                            ? sub.stream_ids
+                                .split(",")
+                                .map((id) => subjectStreamMap.get(Number(id)) || {})
+                                .filter((v) => Object.keys(v).length)
+                            : [],
+                        prior_exp: sub.prior_exp || "",
+                    },
+                ],
+            });
+        });
+        const ratingMap = new Map();
+        await Promise.all(tutorIds.map(async (id) => {
+            const rating = await rvMdl.getReviewSummary(id);
+            ratingMap.set(id, rating);
+        }));
+        let finalData = rows.map((row) => ({
+            ...row,
+            stream: row.stream_id ? streamMap.get(Number(row.stream_id)) || {} : {},
+            subjects: subjectMap.get(row.tutor_id) || [],
+            ...(ratingMap.get(row.tutor_id) || {
+                average_rating: 0,
+                total_reviews: 0,
+            }),
+        }));
+        const fileIds = finalData.map((r) => r.profile_img).filter(Boolean);
+        let fileData = [];
+        if (fileIds.length) {
+            const placeholders = fileIds.map(() => "?").join(",");
+            fileData = await (0, helper_1.executeQuery)(`SELECT id, file_type, file_url, pathname, org_name 
+       FROM media 
+       WHERE id IN (${placeholders})`, fileIds);
+        }
+        const fileMap = new Map();
+        fileData.forEach((file) => {
+            fileMap.set(Number(file.id), {
+                id: file.id || "",
+                file_type: file.file_type || "",
+                pathname: file.pathname || "",
+                org_name: file.org_name || "",
+                file_url: file.file_url
+                    ? file.file_url.startsWith("http")
+                        ? file.file_url
+                        : `https://${file.file_url}`
+                    : "",
+            });
+        });
+        finalData = finalData.map((row) => ({
+            ...row,
+            profile_img: row.profile_img
+                ? fileMap.get(Number(row.profile_img)) || {}
+                : {},
+        }));
+        return finalData;
+    }
+    //
+    async studentClassBooking(data) {
+        const { student_id, tutor_id, linked_sub } = data;
+        const result = await (0, helper_1.executeQuery)(`
+    INSERT INTO tutor_student_rel (student_id, tutor_id, linked_sub,requested_at)
+    VALUES (?, ?, ? , NOW())
+    `, [student_id, tutor_id, linked_sub]);
+        return {
+            booking_id: result.insertId,
+            status: "pending",
+        };
     }
 }
 exports.StudentModel = StudentModel;

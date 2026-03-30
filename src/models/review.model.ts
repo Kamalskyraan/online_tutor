@@ -1,5 +1,9 @@
 import { fetchReview, replyReview, Review } from "../interface/interface";
-import { executeQuery, sendResponse } from "../utils/helper";
+import {
+  convertNullToString,
+  executeQuery,
+  sendResponse,
+} from "../utils/helper";
 
 export class ReviewModel {
   async createReview(data: Review): Promise<number> {
@@ -96,6 +100,85 @@ export class ReviewModel {
     };
   }
 
+  async fetchReviewsForTutorById(tutor_id: string) {
+    let query = `
+    SELECT 
+      r.id, r.tutor_id, r.student_id, r.rating, r.review_text,
+
+      DATE_FORMAT(r.created_at, '%Y-%m-%d %H:%i:%s') AS created_at,
+      DATE_FORMAT(r.updated_at, '%Y-%m-%d %H:%i:%s') AS updated_at,
+
+      s.student_id,
+      u.user_name,
+      u.user_id,
+      u.user_role,
+      u.profile_img,
+      u.mobile,
+
+      rr.review_id,
+      rr.reply_text,
+       COUNT(DISTINCT rl.id) AS total_likes,
+      DATE_FORMAT(rr.updated_at, '%Y-%m-%d %H:%i:%s') AS reply_date 
+
+    FROM reviews r
+
+    LEFT JOIN student s ON s.student_id = r.student_id
+    LEFT JOIN users u ON u.user_id = s.user_id
+    LEFT JOIN review_reply rr ON rr.review_id = r.id
+    LEFT JOIN review_likes rl ON rl.review_id = r.id
+    WHERE r.tutor_id = ?
+    GROUP BY r.id
+    ORDER BY r.id DESC
+  `;
+
+    const reviews = await executeQuery(query, [tutor_id]);
+
+    const profileIds = [
+      ...new Set(reviews.map((r: any) => r.profile_img).filter(Boolean)),
+    ];
+
+    let mediaData: any[] = [];
+
+    if (profileIds.length) {
+      const placeholders = profileIds.map(() => "?").join(",");
+
+      mediaData = await executeQuery(
+        `SELECT id, file_type, file_url, pathname, org_name 
+       FROM media 
+       WHERE id IN (${placeholders})`,
+        profileIds,
+      );
+    }
+
+    const mediaMap = new Map();
+
+    mediaData.forEach((file: any) => {
+      mediaMap.set(Number(file.id), {
+        id: file.id || "",
+        file_type: file.file_type || "",
+        pathname: file.pathname || "",
+        org_name: file.org_name || "",
+        file_url: file.file_url
+          ? file.file_url.startsWith("http")
+            ? file.file_url
+            : `https://${file.file_url}`
+          : "",
+      });
+    });
+
+    const finalReviews = reviews.map((r: any) => ({
+      ...r,
+
+      profile_img: r.profile_img
+        ? mediaMap.get(Number(r.profile_img)) || {}
+        : {},
+    }));
+
+    return {
+      reviews: convertNullToString(finalReviews),
+    };
+  }
+
   async createUpdateReviewReply(data: replyReview) {
     const { id, review_id, tutor_id, student_id, reply_text } = data;
 
@@ -142,7 +225,6 @@ export class ReviewModel {
     const countRes: any = await executeQuery(countQuery, [tutor_id]);
 
     const rating_breakdown: any = {
-      0: 0,
       1: 0,
       2: 0,
       3: 0,

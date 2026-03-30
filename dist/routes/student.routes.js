@@ -16,7 +16,9 @@ router.post("/nearby-tutors", (req, res) => {
         schema: {
           lat : "12.45",
           lng : "10.46",
-          search_address : "cbe"
+          search_address : "cbe",
+          search_subject : "Java",
+          page : 1
           }
       }
   
@@ -56,6 +58,34 @@ router.post("/get-student-data", (req, res) => {
       }
     */
     student_controller_1.StudentController.getStudentData(req, res);
+});
+router.post("/book-session", (req, res) => {
+    /*
+      #swagger.tags = ['9.Student']
+      #swagger.summary = 'Book a tutor's Subject session'
+      #swagger.description = 'Book a tutor's Subject session'
+  
+      
+      #swagger.parameters['body'] = {
+        in: 'body',
+        required: true,
+        schema: {
+          student_id: "STUDENT_4Gy3VZ_N",
+          tutor_id : "TUTOR_A2u50js3",
+          linked_sub: "1"
+          }
+      }
+  
+  
+      #swagger.responses[200] = {
+        description: "Session Booked Successfully"
+      }
+  
+      #swagger.responses[500] = {
+        description: "Internal Server Error"
+      }
+    */
+    return student_controller_1.StudentController.bookASession(req, res);
 });
 exports.default = router;
 //# sourceMappingURL=student.routes.js.map

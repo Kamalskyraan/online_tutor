@@ -5,7 +5,9 @@ exports.TutorController = void 0;
 const helper_1 = require("../utils/helper");
 const tutor_model_1 = require("../models/tutor.model");
 const validate_1 = require("../validators/validate");
+const review_model_1 = require("../models/review.model");
 const tutModel = new tutor_model_1.TutorModel();
+const rvMdl = new review_model_1.ReviewModel();
 class TutorController {
 }
 exports.TutorController = TutorController;
@@ -66,6 +68,76 @@ TutorController.getTutorData = async (req, res) => {
     }
     catch (err) {
         return (0, helper_1.sendResponse)(res, 500, 0, [], "Internal Server Error", err.errors || err.message || err);
+    }
+};
+TutorController.getTutorDataById = async (req, res) => {
+    try {
+        const { tutor_id, search_subject } = req.body;
+        if (!tutor_id) {
+            return (0, helper_1.sendResponse)(res, 200, 0, [], "tutor_id is required", []);
+        }
+        const tutor = await tutModel.getTutorById(tutor_id);
+        if (!tutor) {
+            return (0, helper_1.sendResponse)(res, 200, 0, [], "Tutor not found", []);
+        }
+        if (search_subject && tutor.subjects?.length) {
+            const keyword = search_subject.toLowerCase();
+            tutor.subjects.sort((a, b) => {
+                const aName = a.sub?.[0]?.subject_name?.toLowerCase() || "";
+                const bName = b.sub?.[0]?.subject_name?.toLowerCase() || "";
+                const aMatch = aName.includes(keyword);
+                const bMatch = bName.includes(keyword);
+                if (aMatch && !bMatch)
+                    return -1;
+                if (!aMatch && bMatch)
+                    return 1;
+                if (aName.startsWith(keyword))
+                    return -1;
+                if (bName.startsWith(keyword))
+                    return 1;
+                return 0;
+            });
+        }
+        return (0, helper_1.sendResponse)(res, 200, 1, tutor, "Tutor fetched successfully", []);
+    }
+    catch (err) {
+        return (0, helper_1.sendResponse)(res, 500, 0, [], "Internal Server Error", [
+            err.errors || err.message || err,
+        ]);
+    }
+};
+TutorController.getReviewsAboutTutor = async (req, res) => {
+    try {
+        const { tutor_id } = req.body;
+        const reviewData = await rvMdl.fetchReviewsForTutorById(tutor_id);
+        return (0, helper_1.sendResponse)(res, 200, 1, reviewData, "Reviews Fetched sucessfully", []);
+    }
+    catch (err) {
+        return (0, helper_1.sendResponse)(res, 500, 0, [], "Internal Server Error", [
+            err.errors || err.message || err,
+        ]);
+    }
+};
+TutorController.addStudentLikeTutor = async (req, res) => {
+    try {
+        const { tutor_id, student_id, status } = req.body;
+        const result = await tutModel.addUpdateLikeForTutor(tutor_id, student_id, status);
+        let message = "";
+        if (result.action === "removed") {
+            message = "Reaction removed";
+        }
+        else if (result.action === "updated") {
+            message = Number(status) === 1 ? "Tutor liked" : "Tutor disliked";
+        }
+        else {
+            message = Number(status) === 1 ? "Tutor liked" : "Tutor disliked";
+        }
+        return (0, helper_1.sendResponse)(res, 200, 1, [], message, []);
+    }
+    catch (err) {
+        return (0, helper_1.sendResponse)(res, 500, 0, [], "Internal Server Error", [
+            err.errors || err.message || err,
+        ]);
     }
 };
 //# sourceMappingURL=tutor.controller.js.map

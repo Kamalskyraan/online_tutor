@@ -33,4 +33,20 @@ StudentController.getNearbyTutors = async (req, res) => {
         (0, helper_1.sendResponse)(res, 200, 0, [], "Internal Server error", err.errors || err.message || err);
     }
 };
+StudentController.bookASession = async (req, res) => {
+    try {
+        const { student_id, tutor_id, linked_sub } = req.body;
+        const data = await _a.studentModel.studentClassBooking({
+            student_id,
+            tutor_id,
+            linked_sub,
+        });
+        return (0, helper_1.sendResponse)(res, 200, 1, data, "Booking request sent (Pending)", []);
+    }
+    catch (err) {
+        return (0, helper_1.sendResponse)(res, 500, 0, [], "Internal Server Error", [
+            err.errors || err.message || err,
+        ]);
+    }
+};
 //# sourceMappingURL=student.controller.js.map

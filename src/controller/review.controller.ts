@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { sendResponse, validateRequest } from "../utils/helper";
+import { convertNullToString, sendResponse, validateRequest } from "../utils/helper";
 import {
   fetchReviewSchema,
   replyReviewSchema,
@@ -63,7 +63,7 @@ export class ReviewController {
         res,
         200,
         1,
-        ReviewData,
+        convertNullToString(ReviewData),
         "Reviews Fetched Successfully",
         [],
       );

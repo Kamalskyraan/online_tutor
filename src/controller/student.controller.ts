@@ -56,4 +56,30 @@ export class StudentController {
       );
     }
   };
+
+  static bookASession = async (req: Request, res: Response) => {
+    try {
+      const { student_id, tutor_id, linked_sub } = req.body;
+      const data = await this.studentModel.studentClassBooking({
+        student_id,
+        tutor_id,
+        linked_sub,
+      });
+
+      return sendResponse(
+        res,
+        200,
+        1,
+        data,
+        "Booking request sent (Pending)",
+        [],
+      );
+    } catch (err: any) {
+      return sendResponse(res, 500, 0, [], "Internal Server Error", [
+        err.errors || err.message || err,
+      ]);
+    }
+  };
+
+  
 }

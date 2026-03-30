@@ -1,7 +1,9 @@
 import { getDemosBody } from "../interface/interface";
-import { executeQuery } from "../utils/helper";
+import { convertNullToString, executeQuery } from "../utils/helper";
 import { EduModel } from "./education.model";
+import { StudentModel } from "./student.model";
 const eduMdl = new EduModel();
+const stuMdl = new StudentModel();
 export class TutorModel {
   async insertUpdateDemos(data: any) {
     const { id, tutor_id, media_type, media_id, title, thumbnail } = data;
@@ -171,5 +173,152 @@ export class TutorModel {
     );
 
     return res;
+  }
+
+  async getTutorById(tutor_id: string) {
+    const query = `
+    SELECT 
+      u.user_id,
+      u.user_name,
+      u.lat,
+      u.lng,
+      u.state,
+      u.district,
+      u.area,
+      u.pincode,
+      u.mobile,
+      u.is_show_num,
+      u.self_about,
+      u.profile_img,
+      t.tutor_id,
+      t.stream_id,
+      t.represent
+    FROM users u
+    RIGHT JOIN tutor t ON t.user_id = u.user_id
+    RIGHT JOIN tutor_subjects ts 
+      ON ts.tutor_id = t.tutor_id 
+      AND ts.status = 'active'
+    WHERE t.tutor_id = ?
+    LIMIT 1
+  `;
+
+    const rows = await executeQuery(query, [tutor_id]);
+    if (!rows.length) return null;
+
+    const data = await stuMdl.buildTutorFullDatasForId(rows);
+    const tutor = data[0];
+
+    const demoMedia = await executeQuery(
+      `SELECT id, media_type, media_id, title, thumbnail 
+     FROM tutor_demo_media 
+     WHERE tutor_id = ?`,
+      [tutor_id],
+    );
+
+    const mediaIds = [
+      ...new Set(
+        demoMedia
+          .flatMap((item: any) => [item.media_id, item.thumbnail])
+          .filter(Boolean),
+      ),
+    ];
+
+    let mediaData: any[] = [];
+
+    if (mediaIds.length) {
+      const placeholders = mediaIds.map(() => "?").join(",");
+      mediaData = await executeQuery(
+        `SELECT id, file_type, file_url, pathname, org_name 
+       FROM media 
+       WHERE id IN (${placeholders})`,
+        mediaIds,
+      );
+    }
+
+    const mediaMap = new Map();
+
+    mediaData.forEach((file: any) => {
+      mediaMap.set(Number(file.id), {
+        id: convertNullToString(file.id),
+        file_type: convertNullToString(file.file_type),
+        pathname: convertNullToString(file.pathname),
+        org_name: convertNullToString(file.org_name),
+        file_url:
+          convertNullToString(file.file_url) ??
+          convertNullToString(file.file_url),
+      });
+    });
+
+    const images: any[] = [];
+    const videos: any[] = [];
+
+    demoMedia.forEach((item: any) => {
+      const mainMedia = mediaMap.get(Number(item.media_id));
+      const thumbnailMedia = mediaMap.get(Number(item.thumbnail));
+
+      if (!mainMedia) return;
+
+      const responseObj = {
+        id: convertNullToString(item.id),
+        title: convertNullToString(item.title),
+        media_id: convertNullToString(item.media_id),
+        thumbnail_id: convertNullToString(item.thumbnail),
+        file: convertNullToString(mainMedia),
+        thumbnail: thumbnailMedia ? convertNullToString(thumbnailMedia) : null,
+      };
+
+      if (item.media_type === "image") {
+        images.push(responseObj);
+      } else if (item.media_type === "video") {
+        videos.push(responseObj);
+      } else {
+        const type = mainMedia.file_type?.toLowerCase();
+        if (type?.includes("image")) images.push(responseObj);
+        else if (type?.includes("video")) videos.push(responseObj);
+      }
+    });
+
+    tutor.demo_media = {
+      images,
+      videos,
+    };
+
+    return convertNullToString(tutor);
+  }
+
+  async addUpdateLikeForTutor(
+    tutor_id: string,
+    student_id: string,
+    status: number,
+  ) {
+    const existing: any = await executeQuery(
+      `SELECT is_like FROM tutor_likes WHERE tutor_id = ? AND student_id = ?`,
+      [tutor_id, student_id],
+    );
+
+    if (!existing.length) {
+      await executeQuery(
+        `INSERT INTO tutor_likes (tutor_id, student_id, is_like) VALUES (?, ?, ?)`,
+        [tutor_id, student_id, status],
+      );
+
+      return { action: "liked/disliked" };
+    }
+
+    if (existing[0].status === status) {
+      await executeQuery(
+        `DELETE FROM tutor_likes WHERE tutor_id = ? AND student_id = ?`,
+        [tutor_id, student_id],
+      );
+
+      return { action: "removed" };
+    }
+
+    await executeQuery(
+      `UPDATE tutor_likes SET is_like = ? WHERE tutor_id = ? AND student_id = ?`,
+      [status, tutor_id, student_id],
+    );
+
+    return { action: "updated" };
   }
 }

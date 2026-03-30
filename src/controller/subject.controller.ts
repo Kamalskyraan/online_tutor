@@ -145,6 +145,8 @@ export class SubjectController {
         [],
       );
     } catch (err: any) {
+
+      console.log(err)
       return sendResponse(res, 500, 0, [], "Internal Server Error", [
         err.errors || err.message || err,
       ]);

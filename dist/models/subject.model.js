@@ -174,30 +174,42 @@ class SubjectModel {
     async getTutorSubjectById(tutor_id, id) {
         let query = `
     SELECT 
-      id,
-      tutor_id,
-      subject_id,
-      subject_name,
-      sylabus,
-      covered_topics,
-      prior_exp,
-      exp_year,
-      exp_month,
-      teach_language,
-      class_mode,
-      class_type,
-      stream_ids,
-      min_fee,
-      max_fee,
-      tenure_type
-    FROM tutor_subjects
-    WHERE tutor_id = ?
+      ts.id,
+      ts.tutor_id,
+      ts.subject_id,
+      ts.subject_name,
+      ts.sylabus,
+      ts.covered_topics,
+      ts.prior_exp,
+      ts.exp_year,
+      ts.exp_month,
+      ts.teach_language,
+      ts.class_mode,
+      ts.class_type,
+      ts.stream_ids,
+      ts.min_fee,
+      ts.max_fee,
+      ts.tenure_type,
+      u.area,
+  u.state,
+  u.district,
+  u.pincode
+    FROM tutor_subjects ts
+    LEFT JOIN tutor t ON t.tutor_id = ts.tutor_id
+    LEFT JOIN users u ON u.user_id = t.user_id
+    WHERE ts.tutor_id = ?
     AND status = 'active'
   `;
         const params = [tutor_id];
         if (id) {
-            query += ` AND id = ?`;
+            query += ` AND ts.id = ?`;
             params.push(id);
+        }
+        if (!id) {
+            await (0, helper_1.executeQuery)(`DELETE FROM tutor_subjects 
+     WHERE tutor_id = ? 
+     AND status = 'active' 
+     AND sub_form < 3`, [tutor_id]);
         }
         const result = await (0, helper_1.executeQuery)(query, params);
         if (!result.length)
@@ -241,7 +253,7 @@ class SubjectModel {
             }
             else if (row.subject_name) {
                 subjects.push({
-                    id: "",
+                    id: 0,
                     subject_name: row.subject_name,
                 });
             }

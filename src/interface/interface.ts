@@ -298,3 +298,10 @@ export interface getDemosBody {
   media_type: string;
   id?: number;
 }
+
+// class book
+export interface studentBookClass {
+  student_id: string;
+  tutor_id: string;
+  linked_sub: string;
+}
