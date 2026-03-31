@@ -33,10 +33,13 @@ class commonModel {
     WHERE id IN (${placeholders})
   `;
         const result = await (0, helper_1.executeQuery)(query, ids);
-        return result.map((file) => ({
-            ...file,
-            file_size: this.formatFileSize(Number(file.file_size)),
-        }));
+        return result.map((file) => {
+            const formatted = {
+                ...file,
+                file_size: this.formatFileSize(Number(file.file_size)),
+            };
+            return this.convertNullObjectToString(formatted);
+        });
     }
     formatFileSize(bytes) {
         return `${(bytes / (1024 / 1024)).toFixed(4)} MB`;

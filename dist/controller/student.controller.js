@@ -49,4 +49,16 @@ StudentController.bookASession = async (req, res) => {
         ]);
     }
 };
+StudentController.bookSessionStatus = async (req, res) => {
+    try {
+        const { session_id } = req.body;
+        const data = await _a.studentModel.getbookSessionStatus(session_id);
+        return (0, helper_1.sendResponse)(res, 200, 1, data, "Status Fetched successfully", []);
+    }
+    catch (err) {
+        return (0, helper_1.sendResponse)(res, 500, 0, [], "Internal Server Error", [
+            err.errors || err.message || err,
+        ]);
+    }
+};
 //# sourceMappingURL=student.controller.js.map

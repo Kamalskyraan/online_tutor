@@ -1,9 +1,11 @@
 import { getDemosBody } from "../interface/interface";
 import { convertNullToString, executeQuery } from "../utils/helper";
+import { commonModel } from "./common.model";
 import { EduModel } from "./education.model";
 import { StudentModel } from "./student.model";
 const eduMdl = new EduModel();
 const stuMdl = new StudentModel();
+const cmnModel = new commonModel();
 export class TutorModel {
   async insertUpdateDemos(data: any) {
     const { id, tutor_id, media_type, media_id, title, thumbnail } = data;
@@ -77,47 +79,140 @@ export class TutorModel {
       message: "Demos Deleted Successfully",
     };
   }
+  // async getDemoVideosAndImages(data: getDemosBody) {
+  //   const { tutor_id, media_type, id } = data;
+
+  //   if (id) {
+  //     const row: any = await executeQuery(
+  //       `SELECT id , tutor_id , media_type , media_id , title , thumbnail  FROM tutor_demo_media
+  //      WHERE id = ? AND tutor_id = ?`,
+  //       [id, tutor_id],
+  //     );
+
+  //     const media = row[0];
+
+  //     return {
+  //       [media.media_type === "video" ? "videos" : "images"]: [media],
+  //     };
+  //   }
+  //   if (media_type === "video" || media_type === "image") {
+  //     const rows: any = await executeQuery(
+  //       `SELECT id , tutor_id , media_type , media_id , title , thumbnail FROM tutor_demo_media
+  //      WHERE tutor_id = ? AND media_type = ?`,
+  //       [tutor_id, media_type],
+  //     );
+
+  //     return {
+  //       [media_type === "video" ? "videos" : "images"]: rows,
+  //     };
+  //   }
+
+  //   const rows: any = await executeQuery(
+  //     `SELECT id , tutor_id , media_type , media_id , title , thumbnail FROM tutor_demo_media WHERE tutor_id = ?`,
+  //     [tutor_id],
+  //   );
+
+  //   const videos = [];
+  //   const images = [];
+  //   for (const row of rows) {
+  //     if (row.media_type === "video") {
+  //       videos.push(row);
+  //     } else if (row.media_type === "image") {
+  //       images.push(row);
+  //     }
+  //   }
+
+  //   return {
+  //     videos,
+  //     images,
+  //   };
+  // }
+
   async getDemoVideosAndImages(data: getDemosBody) {
     const { tutor_id, media_type, id } = data;
 
+    let rows: any[] = [];
+
     if (id) {
-      const row: any = await executeQuery(
-        `SELECT id , tutor_id , media_type , media_id , title , thumbnail  FROM tutor_demo_media 
+      const result: any = await executeQuery(
+        `SELECT id, tutor_id, media_type, media_id, title, thumbnail 
+       FROM tutor_demo_media 
        WHERE id = ? AND tutor_id = ?`,
         [id, tutor_id],
       );
 
-      const media = row[0];
-
-      return {
-        [media.media_type === "video" ? "videos" : "images"]: [media],
-      };
-    }
-    if (media_type === "video" || media_type === "image") {
-      const rows: any = await executeQuery(
-        `SELECT id , tutor_id , media_type , media_id , title , thumbnail FROM tutor_demo_media
+      rows = result;
+    } else if (media_type === "video" || media_type === "image") {
+      rows = await executeQuery(
+        `SELECT id, tutor_id, media_type, media_id, title, thumbnail 
+       FROM tutor_demo_media
        WHERE tutor_id = ? AND media_type = ?`,
         [tutor_id, media_type],
       );
+    } else {
+      rows = await executeQuery(
+        `SELECT id, tutor_id, media_type, media_id, title, thumbnail 
+       FROM tutor_demo_media 
+       WHERE tutor_id = ?`,
+        [tutor_id],
+      );
+    }
 
+    if (!rows || rows.length === 0) {
+      return { videos: [], images: [] };
+    }
+
+    const allIds = rows
+      .flatMap((row) => [row.media_id, row.thumbnail])
+      .filter((id) => id);
+
+    let filesMap: any = {};
+
+    if (allIds.length > 0) {
+      const uniqueIds = [...new Set(allIds)];
+
+      const files: any[] = await cmnModel.getUploadFiles(uniqueIds);
+
+      filesMap = files.reduce((acc: any, file: any) => {
+        acc[file.id] = file;
+        return acc;
+      }, {});
+    }
+
+    const videos: any[] = [];
+    const images: any[] = [];
+
+    for (const row of rows) {
+      const formatted = {
+        id: row.id,
+        tutor_id: row.tutor_id,
+        media_type: row.media_type,
+        title: row.title,
+
+        media: filesMap[row.media_id] ? [filesMap[row.media_id]] : [],
+        thumbnail: filesMap[row.thumbnail] ? [filesMap[row.thumbnail]] : [],
+      };
+
+      if (row.media_type === "video") {
+        videos.push(formatted);
+      } else if (row.media_type === "image") {
+        images.push(formatted);
+      }
+    }
+
+    if (id) {
       return {
-        [media_type === "video" ? "videos" : "images"]: rows,
+        [rows[0].media_type === "video" ? "videos" : "images"]:
+          rows[0].media_type === "video" ? videos : images,
       };
     }
 
-    const rows: any = await executeQuery(
-      `SELECT id , tutor_id , media_type , media_id , title , thumbnail FROM tutor_demo_media WHERE tutor_id = ?`,
-      [tutor_id],
-    );
+    if (media_type === "video") {
+      return { videos };
+    }
 
-    const videos = [];
-    const images = [];
-    for (const row of rows) {
-      if (row.media_type === "video") {
-        videos.push(row);
-      } else if (row.media_type === "image") {
-        images.push(row);
-      }
+    if (media_type === "image") {
+      return { images };
     }
 
     return {
@@ -320,5 +415,27 @@ export class TutorModel {
     );
 
     return { action: "updated" };
+  }
+
+  async fetchTutorRequests(tutor_id: string) {
+    const result: any = await executeQuery(
+      `SELECT 
+        tsr.*,
+        u.user_id,
+        u.user_name,
+        u.area,
+        u.state,
+        u.district,
+        u.pincode,
+        u.profile_img
+
+     FROM tutor_student_rel tsr
+     LEFT JOIN users u ON u.user_id = tsr.student_id
+
+     WHERE tsr.tutor_id = ?`,
+      [tutor_id],
+    );
+
+    return convertNullToString(result);
   }
 }

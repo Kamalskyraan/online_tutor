@@ -197,5 +197,17 @@ export class TutorController {
     }
   };
 
-  
+  static getTutorRequest = async (req: Request, res: Response) => {
+    try {
+      const { tutor_id } = req.body;
+      const tutModel = new TutorModel();
+      const data = await tutModel.fetchTutorRequests(tutor_id);
+
+      return sendResponse(res, 200, 1, data, "Internal Server Error", []);
+    } catch (err: any) {
+      return sendResponse(res, 500, 0, [], "Internal Server Error", [
+        err.errors || err.message || err,
+      ]);
+    }
+  };
 }

@@ -40,10 +40,14 @@ export class commonModel {
 
     const result: any = await executeQuery(query, ids);
 
-    return result.map((file: any) => ({
-      ...file,
-      file_size: this.formatFileSize(Number(file.file_size)),
-    }));
+    return result.map((file: any) => {
+      const formatted = {
+        ...file,
+        file_size: this.formatFileSize(Number(file.file_size)),
+      };
+
+      return this.convertNullObjectToString(formatted);
+    });
   }
 
   formatFileSize(bytes: number): string {

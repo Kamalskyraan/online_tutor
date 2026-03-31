@@ -74,6 +74,7 @@ export class SubjectModel {
     const checkQuery = `
     SELECT id FROM tutor_subjects 
     WHERE tutor_id = ? 
+    AND status = 'active'
     AND (
       (subject_id IS NOT NULL AND subject_id = ?) OR
       (subject_id IS NULL AND LOWER(subject_name) = LOWER(?))
@@ -399,6 +400,8 @@ export class SubjectModel {
 
     return result;
   }
+
+
 
   async removeTutorSubject(id: number) {
     const existing: any = await executeQuery(

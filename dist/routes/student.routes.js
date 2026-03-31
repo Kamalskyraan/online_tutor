@@ -87,5 +87,31 @@ router.post("/book-session", (req, res) => {
     */
     return student_controller_1.StudentController.bookASession(req, res);
 });
+router.post("/get-book-session", (req, res) => {
+    /*
+      #swagger.tags = ['9.Student']
+      #swagger.summary = 'Get Status for Session'
+      #swagger.description = 'Get book session status'
+  
+      
+      #swagger.parameters['body'] = {
+        in: 'body',
+        required: true,
+        schema: {
+          session_id : 1
+          }
+      }
+  
+  
+      #swagger.responses[200] = {
+        description: "Session status Successfully"
+      }
+  
+      #swagger.responses[500] = {
+        description: "Internal Server Error"
+      }
+    */
+    return student_controller_1.StudentController.bookSessionStatus(req, res);
+});
 exports.default = router;
 //# sourceMappingURL=student.routes.js.map

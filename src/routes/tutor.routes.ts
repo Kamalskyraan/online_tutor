@@ -202,4 +202,31 @@ router.post("/add-update-like-tutor", (req, res) => {
 
   return TutorController.addStudentLikeTutor(req, res);
 });
+
+router.post("/get-tutor-request", (req, res) => {
+  /*
+    #swagger.tags = ['8.Tutor']
+    #swagger.summary = 'Get Tutor's Requests All'
+    #swagger.description = 'Get Tutor's Request'
+
+    #swagger.parameters['body'] = {
+      in: 'body',
+      required: false,
+      schema: {
+        tutor_id : "TUTOR_A2u50js3" 
+          }
+    }
+
+    #swagger.responses[200] = {
+      description: "Tutor's Request successfully",
+     
+    }
+
+    #swagger.responses[500] = {
+      description: "Something went wrong"
+    }
+  */
+
+  return TutorController.getTutorRequest(req, res);
+});
 export default router;

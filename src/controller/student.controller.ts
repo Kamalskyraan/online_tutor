@@ -81,5 +81,16 @@ export class StudentController {
     }
   };
 
-  
+  static bookSessionStatus = async (req: Request, res: Response) => {
+    try {
+      const { session_id } = req.body;
+      const data = await this.studentModel.getbookSessionStatus(session_id);
+
+      return sendResponse(res, 200, 1, data, "Status Fetched successfully", []);
+    } catch (err: any) {
+      return sendResponse(res, 500, 0, [], "Internal Server Error", [
+        err.errors || err.message || err,
+      ]);
+    }
+  };
 }
