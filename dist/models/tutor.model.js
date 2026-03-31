@@ -151,10 +151,10 @@ class TutorModel {
                 thumbnail: filesMap[row.thumbnail] ? [filesMap[row.thumbnail]] : [],
             };
             if (row.media_type === "video") {
-                videos.push(formatted);
+                videos.push(cmnModel.convertNullObjectToString(formatted));
             }
             else if (row.media_type === "image") {
-                images.push(formatted);
+                images.push(cmnModel.convertNullObjectToString(formatted));
             }
         }
         if (id) {
@@ -312,20 +312,42 @@ class TutorModel {
     }
     async fetchTutorRequests(tutor_id) {
         const result = await (0, helper_1.executeQuery)(`SELECT 
-        tsr.*,
-        u.user_id,
-        u.user_name,
-        u.area,
-        u.state,
-        u.district,
-        u.pincode,
-        u.profile_img
-
-     FROM tutor_student_rel tsr
-     LEFT JOIN users u ON u.user_id = tsr.student_id
-
-     WHERE tsr.tutor_id = ?`, [tutor_id]);
-        return (0, helper_1.convertNullToString)(result);
+    tsr.*,
+    u.user_id,
+    u.user_name,
+    u.area,
+    u.state,
+    u.district,
+    u.pincode,
+    u.mobile,
+    u.profile_img
+  FROM tutor_student_rel tsr
+  LEFT JOIN student s ON s.student_id = tsr.student_id
+  LEFT JOIN users u ON u.user_id = s.user_id
+  WHERE tsr.tutor_id = ?`, [tutor_id]);
+        if (!result || result.length === 0) {
+            return [];
+        }
+        const profileImgIds = result
+            .map((row) => row.profile_img)
+            .filter((id) => id);
+        let fileMap = {};
+        if (profileImgIds.length > 0) {
+            const uniqueIds = [...new Set(profileImgIds)];
+            const files = await cmnModel.getUploadFiles(uniqueIds);
+            fileMap = files.reduce((acc, file) => {
+                acc[file.id] = file;
+                return acc;
+            }, {});
+        }
+        const finalData = result.map((row) => {
+            const formatted = {
+                ...row,
+                profile_img: fileMap[row.profile_img] ? [fileMap[row.profile_img]] : [],
+            };
+            return cmnModel.convertNullObjectToString(formatted);
+        });
+        return finalData;
     }
 }
 exports.TutorModel = TutorModel;

@@ -194,9 +194,9 @@ export class TutorModel {
       };
 
       if (row.media_type === "video") {
-        videos.push(formatted);
+        videos.push(cmnModel.convertNullObjectToString(formatted));
       } else if (row.media_type === "image") {
-        images.push(formatted);
+        images.push(cmnModel.convertNullObjectToString(formatted));
       }
     }
 
@@ -418,24 +418,54 @@ export class TutorModel {
   }
 
   async fetchTutorRequests(tutor_id: string) {
-    const result: any = await executeQuery(
+    const result: any[] = await executeQuery(
       `SELECT 
-        tsr.*,
-        u.user_id,
-        u.user_name,
-        u.area,
-        u.state,
-        u.district,
-        u.pincode,
-        u.profile_img
-
-     FROM tutor_student_rel tsr
-     LEFT JOIN users u ON u.user_id = tsr.student_id
-
-     WHERE tsr.tutor_id = ?`,
+    tsr.*,
+    u.user_id,
+    u.user_name,
+    u.area,
+    u.state,
+    u.district,
+    u.pincode,
+    u.mobile,
+    u.profile_img
+  FROM tutor_student_rel tsr
+  LEFT JOIN student s ON s.student_id = tsr.student_id
+  LEFT JOIN users u ON u.user_id = s.user_id
+  WHERE tsr.tutor_id = ?`,
       [tutor_id],
     );
 
-    return convertNullToString(result);
+    if (!result || result.length === 0) {
+      return [];
+    }
+
+    const profileImgIds = result
+      .map((row) => row.profile_img)
+      .filter((id) => id);
+
+    let fileMap: any = {};
+
+    if (profileImgIds.length > 0) {
+      const uniqueIds = [...new Set(profileImgIds)];
+
+      const files = await cmnModel.getUploadFiles(uniqueIds);
+
+      fileMap = files.reduce((acc: any, file: any) => {
+        acc[file.id] = file;
+        return acc;
+      }, {});
+    }
+
+    const finalData = result.map((row: any) => {
+      const formatted = {
+        ...row,
+        profile_img: fileMap[row.profile_img] ? [fileMap[row.profile_img]] : [],
+      };
+
+      return cmnModel.convertNullObjectToString(formatted);
+    });
+
+    return finalData;
   }
 }

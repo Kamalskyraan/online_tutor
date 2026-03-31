@@ -143,9 +143,8 @@ TutorController.addStudentLikeTutor = async (req, res) => {
 TutorController.getTutorRequest = async (req, res) => {
     try {
         const { tutor_id } = req.body;
-        const tutModel = new tutor_model_1.TutorModel();
         const data = await tutModel.fetchTutorRequests(tutor_id);
-        return (0, helper_1.sendResponse)(res, 200, 1, data, "Internal Server Error", []);
+        return (0, helper_1.sendResponse)(res, 200, 1, data, "Request Fetched successfully", []);
     }
     catch (err) {
         return (0, helper_1.sendResponse)(res, 500, 0, [], "Internal Server Error", [
