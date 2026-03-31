@@ -64,47 +64,6 @@ class TutorModel {
             message: "Demos Deleted Successfully",
         };
     }
-    // async getDemoVideosAndImages(data: getDemosBody) {
-    //   const { tutor_id, media_type, id } = data;
-    //   if (id) {
-    //     const row: any = await executeQuery(
-    //       `SELECT id , tutor_id , media_type , media_id , title , thumbnail  FROM tutor_demo_media
-    //      WHERE id = ? AND tutor_id = ?`,
-    //       [id, tutor_id],
-    //     );
-    //     const media = row[0];
-    //     return {
-    //       [media.media_type === "video" ? "videos" : "images"]: [media],
-    //     };
-    //   }
-    //   if (media_type === "video" || media_type === "image") {
-    //     const rows: any = await executeQuery(
-    //       `SELECT id , tutor_id , media_type , media_id , title , thumbnail FROM tutor_demo_media
-    //      WHERE tutor_id = ? AND media_type = ?`,
-    //       [tutor_id, media_type],
-    //     );
-    //     return {
-    //       [media_type === "video" ? "videos" : "images"]: rows,
-    //     };
-    //   }
-    //   const rows: any = await executeQuery(
-    //     `SELECT id , tutor_id , media_type , media_id , title , thumbnail FROM tutor_demo_media WHERE tutor_id = ?`,
-    //     [tutor_id],
-    //   );
-    //   const videos = [];
-    //   const images = [];
-    //   for (const row of rows) {
-    //     if (row.media_type === "video") {
-    //       videos.push(row);
-    //     } else if (row.media_type === "image") {
-    //       images.push(row);
-    //     }
-    //   }
-    //   return {
-    //     videos,
-    //     images,
-    //   };
-    // }
     async getDemoVideosAndImages(data) {
         const { tutor_id, media_type, id } = data;
         let rows = [];
@@ -314,12 +273,18 @@ class TutorModel {
         const result = await (0, helper_1.executeQuery)(`SELECT 
     tsr.*,
     u.user_id,
+    u.is_show_num,
+    
     u.user_name,
     u.area,
     u.state,
     u.district,
     u.pincode,
     u.mobile,
+    u.gender,
+    u.dob,
+    u.email,
+    
     u.profile_img
   FROM tutor_student_rel tsr
   LEFT JOIN student s ON s.student_id = tsr.student_id
