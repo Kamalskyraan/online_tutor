@@ -45,7 +45,7 @@ class TutorModel {
                 message: "Max 3 images upload",
             };
         }
-        await (0, helper_1.executeQuery)(`INSERT INTO tutor_demo_media
+        const result = await (0, helper_1.executeQuery)(`INSERT INTO tutor_demo_media
      (tutor_id, media_type, media_id, title , thumbnail)
      VALUES (?, ?, ?, ? , ?)`, [
             tutor_id,
@@ -56,6 +56,7 @@ class TutorModel {
         ]);
         return {
             message: "Upload successfully",
+            id: result.insertId,
         };
     }
     async deleteDemos(id) {
@@ -284,7 +285,7 @@ class TutorModel {
     u.gender,
     u.dob,
     u.email,
-    
+
     u.profile_img
   FROM tutor_student_rel tsr
   LEFT JOIN student s ON s.student_id = tsr.student_id

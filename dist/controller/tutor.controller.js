@@ -23,7 +23,22 @@ TutorController.addUpdateDemos = async (req, res) => {
             title,
             thumbnail,
         });
-        return (0, helper_1.sendResponse)(res, 200, 1, [], demos.message, []);
+        let responseData = [];
+        if (id) {
+            const data = await tutModel.getDemoVideosAndImages({
+                tutor_id,
+                id,
+            });
+            responseData = data;
+        }
+        else {
+            const data = await tutModel.getDemoVideosAndImages({
+                tutor_id,
+                id: demos.id,
+            });
+            responseData = data;
+        }
+        return (0, helper_1.sendResponse)(res, 200, 1, responseData, demos.message, []);
     }
     catch (err) {
         console.log(err);

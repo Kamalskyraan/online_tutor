@@ -56,7 +56,7 @@ export class TutorModel {
       };
     }
 
-    await executeQuery(
+    const result: any = await executeQuery(
       `INSERT INTO tutor_demo_media
      (tutor_id, media_type, media_id, title , thumbnail)
      VALUES (?, ?, ?, ? , ?)`,
@@ -71,6 +71,7 @@ export class TutorModel {
 
     return {
       message: "Upload successfully",
+      id: result.insertId,
     };
   }
   async deleteDemos(id: number) {
@@ -385,7 +386,7 @@ export class TutorModel {
     u.gender,
     u.dob,
     u.email,
-    
+
     u.profile_img
   FROM tutor_student_rel tsr
   LEFT JOIN student s ON s.student_id = tsr.student_id

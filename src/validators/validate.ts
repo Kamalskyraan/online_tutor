@@ -405,7 +405,7 @@ export const addUpdateDemosSchema = Joi.object({
     "string.empty": "Media ID cannot be empty",
   }),
 
-  title: Joi.string().allow(null).optional().messages({
+  title: Joi.string().allow(null, "").optional().messages({
     "string.base": "Title must be a string",
   }),
 

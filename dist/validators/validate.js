@@ -359,7 +359,7 @@ exports.addUpdateDemosSchema = joi_1.default.object({
         "any.required": "Media ID is required",
         "string.empty": "Media ID cannot be empty",
     }),
-    title: joi_1.default.string().allow(null).optional().messages({
+    title: joi_1.default.string().allow(null, "").optional().messages({
         "string.base": "Title must be a string",
     }),
     thumbnail: joi_1.default.string().allow(null, "").optional().messages({

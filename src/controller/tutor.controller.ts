@@ -11,6 +11,7 @@ export class TutorController {
     try {
       const { id, tutor_id, media_type, media_id, title, thumbnail } =
         await validateRequest(req.body, addUpdateDemosSchema);
+
       const demos = await tutModel.insertUpdateDemos({
         id,
         tutor_id,
@@ -19,7 +20,26 @@ export class TutorController {
         title,
         thumbnail,
       });
-      return sendResponse(res, 200, 1, [], demos.message, []);
+
+      let responseData: any = [];
+
+      if (id) {
+        const data = await tutModel.getDemoVideosAndImages({
+          tutor_id,
+          id,
+        });
+
+        responseData = data;
+      } else {
+        const data = await tutModel.getDemoVideosAndImages({
+          tutor_id,
+          id: demos.id,
+        });
+
+        responseData = data;
+      }
+
+      return sendResponse(res, 200, 1, responseData, demos.message, []);
     } catch (err: any) {
       console.log(err);
       return sendResponse(
@@ -64,6 +84,7 @@ export class TutorController {
         media_type,
         id,
       });
+
       return sendResponse(
         res,
         200,

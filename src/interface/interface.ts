@@ -295,7 +295,7 @@ export interface addSubjectsToTutor {
 // demos
 export interface getDemosBody {
   tutor_id: string;
-  media_type: string;
+  media_type?: string;
   id?: number;
 }
 

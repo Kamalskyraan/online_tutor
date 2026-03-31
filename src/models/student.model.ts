@@ -682,6 +682,4 @@ export class StudentModel {
 
     return data.length > 0 ? data[0].status : "";
   }
-
-  
 }
