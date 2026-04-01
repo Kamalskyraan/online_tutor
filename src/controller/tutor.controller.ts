@@ -3,9 +3,11 @@ import { sendResponse, validateRequest } from "../utils/helper";
 import { TutorModel } from "../models/tutor.model";
 import { addUpdateDemosSchema, getDemosSchema } from "../validators/validate";
 import { ReviewModel } from "../models/review.model";
+import { LeadsModel } from "../models/leads.model";
 
 const tutModel = new TutorModel();
 const rvMdl = new ReviewModel();
+const leadsMdl = new LeadsModel();
 export class TutorController {
   static addUpdateDemos = async (req: Request, res: Response) => {
     try {
@@ -135,7 +137,7 @@ export class TutorController {
 
   static getTutorDataById = async (req: Request, res: Response) => {
     try {
-      const { tutor_id, search_subject } = req.body;
+      const { tutor_id, search_subject, student_id } = req.body;
       if (!tutor_id) {
         return sendResponse(res, 200, 0, [], "tutor_id is required", []);
       }
@@ -144,6 +146,13 @@ export class TutorController {
       if (!tutor) {
         return sendResponse(res, 200, 0, [], "Tutor not found", []);
       }
+
+      await leadsMdl.insertLead({
+        tutor_id,
+        student_id,
+        lead_type: "profile",
+        search_subject,
+      });
 
       if (search_subject && tutor.subjects?.length) {
         const keyword = search_subject.toLowerCase();
@@ -220,16 +229,75 @@ export class TutorController {
 
   static getTutorRequest = async (req: Request, res: Response) => {
     try {
-      const { tutor_id } = req.body;
+      const {
+        tutor_id,
+        subject_name,
+        from_date,
+        to_date,
+        page = 1,
+        limit = 10,
+        status,
+      } = req.body;
 
-      const data = await tutModel.fetchTutorRequests(tutor_id);
-
+      const data = await tutModel.fetchTutorRequests(
+        tutor_id,
+        Number(page),
+        Number(limit),
+        subject_name,
+        from_date,
+        to_date,
+        status,
+      );
       return sendResponse(
         res,
         200,
         1,
         data,
         "Request Fetched successfully",
+        [],
+      );
+    } catch (err: any) {
+      return sendResponse(res, 500, 0, [], "Internal Server Error", [
+        err.errors || err.message || err,
+      ]);
+    }
+  };
+
+  static requestAcceptRejectFlow = async (req: Request, res: Response) => {
+    try {
+      const { req_id, status } = req.body;
+      if (!req_id) {
+        return sendResponse(res, 200, 0, [], "Request Id is required", []);
+      }
+
+      await tutModel.acceptOrRejectRequest(req_id, status);
+
+      const respStatus = status === "accepted" ? "accepted" : "rejected";
+      return sendResponse(
+        res,
+        200,
+        1,
+        [],
+        `Tutor ${respStatus} successfully`,
+        [],
+      );
+    } catch (err: any) {
+      return sendResponse(res, 500, 0, [], "Internal Server Error", [
+        err.errors || err.message || err,
+      ]);
+    }
+  };
+
+  static getTutorSubjectSuggestion = async (req: Request, res: Response) => {
+    try {
+      const { tutor_id } = req.body;
+      const respData = await tutModel.fetchTutorSuggestion(tutor_id);
+      return sendResponse(
+        res,
+        200,
+        1,
+        respData,
+        "Tutor suggestion fetch successfuly",
         [],
       );
     } catch (err: any) {

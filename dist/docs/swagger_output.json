@@ -1084,14 +1084,17 @@
                     {
                         "name": "body",
                         "in": "body",
+                        "required": true,
                         "schema": {
                             "type": "object",
                             "properties": {
                                 "pincode": {
-                                    "example": "any"
+                                    "type": "string",
+                                    "example": "624601"
                                 },
                                 "icountry": {
-                                    "example": "any"
+                                    "type": "string",
+                                    "example": "india"
                                 }
                             }
                         }
@@ -1439,6 +1442,10 @@
                                 "search_subject": {
                                     "type": "string",
                                     "example": "abacus"
+                                },
+                                "student_id": {
+                                    "type": "string",
+                                    "example": "STUDENT_4Gy3VZ_N"
                                 }
                             }
                         }
@@ -1539,7 +1546,95 @@
                     {
                         "name": "body",
                         "in": "body",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "tutor_id": {
+                                    "type": "string",
+                                    "example": "TUTOR_A2u50js3"
+                                },
+                                "page": {
+                                    "type": "number",
+                                    "example": 1
+                                },
+                                "status": {
+                                    "type": "string",
+                                    "example": "accepted or rejected or pending"
+                                },
+                                "subject_name": {
+                                    "type": "string",
+                                    "example": "Java"
+                                },
+                                "from_date": {
+                                    "type": "string",
+                                    "example": "2026-03-31"
+                                },
+                                "to_date": {
+                                    "type": "string",
+                                    "example": "2026-03-30"
+                                }
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Tutor's Request fetched successfully"
+                    },
+                    "500": {
+                        "description": "Something went wrong"
+                    }
+                }
+            }
+        },
+        "/api/tutor/accept-reject-request": {
+            "post": {
+                "tags": [
+                    "8.Tutor"
+                ],
+                "summary": "Accept or Reject Request",
+                "description": "Accept Or Reject Request by tutor_id",
+                "parameters": [
+                    {
+                        "name": "body",
+                        "in": "body",
                         "required": false,
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "req_id": {
+                                    "type": "number",
+                                    "example": 1
+                                },
+                                "status": {
+                                    "type": "string",
+                                    "example": "accepted or rejected"
+                                }
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Demos fetched successfully"
+                    },
+                    "500": {
+                        "description": "Something went wrong"
+                    }
+                }
+            }
+        },
+        "/api/tutor/get-tutor-suggestion": {
+            "post": {
+                "tags": [
+                    "8.Tutor"
+                ],
+                "summary": "Get Tutor",
+                "description": "Get Tutor",
+                "parameters": [
+                    {
+                        "name": "body",
+                        "in": "body",
                         "schema": {
                             "type": "object",
                             "properties": {
@@ -1553,7 +1648,7 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "Tutor's Request successfully"
+                        "description": "Tutor's suggestion fetched successfully"
                     },
                     "500": {
                         "description": "Something went wrong"
@@ -1591,6 +1686,10 @@
                                 "search_subject": {
                                     "type": "string",
                                     "example": "Java"
+                                },
+                                "student_id": {
+                                    "type": "string",
+                                    "example": "STUDENT_4Gy3VZ_N"
                                 },
                                 "page": {
                                     "type": "number",

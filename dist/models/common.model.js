@@ -42,7 +42,7 @@ class commonModel {
         });
     }
     formatFileSize(bytes) {
-        return `${(bytes / (1024 / 1024)).toFixed(4)} MB`;
+        return `${(bytes / (1024 * 1024)).toFixed(4)} MB`;
     }
 }
 exports.commonModel = commonModel;

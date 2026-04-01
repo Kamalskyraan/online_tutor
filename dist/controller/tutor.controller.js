@@ -6,8 +6,10 @@ const helper_1 = require("../utils/helper");
 const tutor_model_1 = require("../models/tutor.model");
 const validate_1 = require("../validators/validate");
 const review_model_1 = require("../models/review.model");
+const leads_model_1 = require("../models/leads.model");
 const tutModel = new tutor_model_1.TutorModel();
 const rvMdl = new review_model_1.ReviewModel();
+const leadsMdl = new leads_model_1.LeadsModel();
 class TutorController {
 }
 exports.TutorController = TutorController;
@@ -87,7 +89,7 @@ TutorController.getTutorData = async (req, res) => {
 };
 TutorController.getTutorDataById = async (req, res) => {
     try {
-        const { tutor_id, search_subject } = req.body;
+        const { tutor_id, search_subject, student_id } = req.body;
         if (!tutor_id) {
             return (0, helper_1.sendResponse)(res, 200, 0, [], "tutor_id is required", []);
         }
@@ -95,6 +97,12 @@ TutorController.getTutorDataById = async (req, res) => {
         if (!tutor) {
             return (0, helper_1.sendResponse)(res, 200, 0, [], "Tutor not found", []);
         }
+        await leadsMdl.insertLead({
+            tutor_id,
+            student_id,
+            lead_type: "profile",
+            search_subject,
+        });
         if (search_subject && tutor.subjects?.length) {
             const keyword = search_subject.toLowerCase();
             tutor.subjects.sort((a, b) => {
@@ -157,9 +165,37 @@ TutorController.addStudentLikeTutor = async (req, res) => {
 };
 TutorController.getTutorRequest = async (req, res) => {
     try {
-        const { tutor_id } = req.body;
-        const data = await tutModel.fetchTutorRequests(tutor_id);
+        const { tutor_id, subject_name, from_date, to_date, page = 1, limit = 10, status, } = req.body;
+        const data = await tutModel.fetchTutorRequests(tutor_id, Number(page), Number(limit), subject_name, from_date, to_date, status);
         return (0, helper_1.sendResponse)(res, 200, 1, data, "Request Fetched successfully", []);
+    }
+    catch (err) {
+        return (0, helper_1.sendResponse)(res, 500, 0, [], "Internal Server Error", [
+            err.errors || err.message || err,
+        ]);
+    }
+};
+TutorController.requestAcceptRejectFlow = async (req, res) => {
+    try {
+        const { req_id, status } = req.body;
+        if (!req_id) {
+            return (0, helper_1.sendResponse)(res, 200, 0, [], "Request Id is required", []);
+        }
+        await tutModel.acceptOrRejectRequest(req_id, status);
+        const respStatus = status === "accepted" ? "accepted" : "rejected";
+        return (0, helper_1.sendResponse)(res, 200, 1, [], `Tutor ${respStatus} successfully`, []);
+    }
+    catch (err) {
+        return (0, helper_1.sendResponse)(res, 500, 0, [], "Internal Server Error", [
+            err.errors || err.message || err,
+        ]);
+    }
+};
+TutorController.getTutorSubjectSuggestion = async (req, res) => {
+    try {
+        const { tutor_id } = req.body;
+        const respData = await tutModel.fetchTutorSuggestion(tutor_id);
+        return (0, helper_1.sendResponse)(res, 200, 1, respData, "Tutor suggestion fetch successfuly", []);
     }
     catch (err) {
         return (0, helper_1.sendResponse)(res, 500, 0, [], "Internal Server Error", [

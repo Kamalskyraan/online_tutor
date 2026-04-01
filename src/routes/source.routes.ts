@@ -15,8 +15,7 @@ router.post("/get-address-by-pincode", (req, res) => {
       required: true,
       schema: {
         pincode: '624601',
-        i
-        country : "india"
+        icountry : "india"
         
       }
     }

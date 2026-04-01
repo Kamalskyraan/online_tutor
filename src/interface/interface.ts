@@ -222,7 +222,9 @@ export interface Location {
   lat: string;
   lng: string;
   radius?: number;
+  student_id: string;
   search_address?: string;
+  search_subject?: string;
 }
 
 export interface TutorLocation {

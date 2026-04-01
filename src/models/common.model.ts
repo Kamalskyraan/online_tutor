@@ -51,6 +51,6 @@ export class commonModel {
   }
 
   formatFileSize(bytes: number): string {
-    return `${(bytes / (1024 / 1024)).toFixed(4)} MB`;
+    return `${(bytes / (1024 * 1024)).toFixed(4)} MB`;
   }
 }

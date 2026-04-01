@@ -131,7 +131,8 @@ router.post("/get-tutor-byid", (req, res) => {
       required: false,
       schema: {
         tutor_id : "TUTOR_A2u50js3" ,
-        search_subject : "abacus"
+        search_subject : "abacus",
+        student_id : "STUDENT_4Gy3VZ_N"
           }
     }
 
@@ -209,16 +210,19 @@ router.post("/get-tutor-request", (req, res) => {
     #swagger.summary = 'Get Tutor's Requests All'
     #swagger.description = 'Get Tutor's Request'
 
+   
     #swagger.parameters['body'] = {
-      in: 'body',
-      required: false,
-      schema: {
-        tutor_id : "TUTOR_A2u50js3" 
-          }
-    }
+    in:'body',
+    schema:{ 
+    tutor_id : "TUTOR_A2u50js3",page : 1,
+        status : "accepted or rejected or pending",
+        subject_name : "Java",
+        from_date : "2026-03-31",
+        to_date : "2026-03-30"
+        }}
 
     #swagger.responses[200] = {
-      description: "Tutor's Request successfully",
+      description: "Tutor's Request  fetched successfully",
      
     }
 
@@ -228,5 +232,57 @@ router.post("/get-tutor-request", (req, res) => {
   */
 
   return TutorController.getTutorRequest(req, res);
+});
+router.post("/accept-reject-request", (req, res) => {
+  /*
+    #swagger.tags = ['8.Tutor']
+    #swagger.summary = 'Accept or Reject Request'
+    #swagger.description = 'Accept Or Reject Request by tutor_id'
+
+    #swagger.parameters['body'] = {
+      in: 'body',
+      required: false,
+      schema: {
+        req_id : 1 ,
+        status : "accepted or rejected"
+          }
+    }
+
+    #swagger.responses[200] = {
+      description: "Demos fetched successfully",
+     
+    }
+
+    #swagger.responses[500] = {
+      description: "Something went wrong"
+    }
+  */
+  TutorController.requestAcceptRejectFlow(req, res);
+});
+
+router.post("/get-tutor-suggestion", (req, res) => {
+  /*
+    #swagger.tags = ['8.Tutor']
+    #swagger.summary = 'Get Tutor's Subject suggestion'
+    #swagger.description = 'Get Tutor's Subject suggestion'
+
+   
+    #swagger.parameters['body'] = {
+    in:'body',
+    schema:{ 
+    tutor_id : "TUTOR_A2u50js3"
+        }}
+
+    #swagger.responses[200] = {
+      description: "Tutor's suggestion  fetched successfully",
+     
+    }
+
+    #swagger.responses[500] = {
+      description: "Something went wrong"
+    }
+  */
+
+  TutorController.getTutorSubjectSuggestion(req, res);
 });
 export default router;

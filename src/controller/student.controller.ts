@@ -2,9 +2,11 @@ import { Request, Response } from "express";
 import { StudentModel } from "../models/student.model";
 import { convertNullToString, sendResponse } from "../utils/helper";
 import { Location } from "../interface/interface";
+import { LeadsModel } from "../models/leads.model";
 
 export class StudentController {
   private static studentModel = new StudentModel();
+  private static leadsMdl = new LeadsModel();
 
   static getStudentData = async (req: Request, res: Response) => {
     try {
@@ -42,6 +44,21 @@ export class StudentController {
       const body: Location = req.body;
 
       const tutors = await this.studentModel.findNearbyTutors(body);
+
+      if (tutors.length) {
+        const tutorIds = [...new Set(tutors.map((t: any) => t.tutor_id))];
+
+        for (const tutor_id of tutorIds) {
+          if (tutor_id) {
+            await this.leadsMdl.insertLead({
+              tutor_id: tutor_id.toString(),
+              student_id: body.student_id,
+              lead_type: "search",
+              search_subject: body.search_subject,
+            });
+          }
+        }
+      }
 
       sendResponse(res, 200, 1, tutors, "Tutor Data Fetched successfully", []);
     } catch (err: any) {

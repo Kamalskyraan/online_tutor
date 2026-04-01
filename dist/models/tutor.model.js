@@ -270,50 +270,167 @@ class TutorModel {
         await (0, helper_1.executeQuery)(`UPDATE tutor_likes SET is_like = ? WHERE tutor_id = ? AND student_id = ?`, [status, tutor_id, student_id]);
         return { action: "updated" };
     }
-    async fetchTutorRequests(tutor_id) {
-        const result = await (0, helper_1.executeQuery)(`SELECT 
-    tsr.*,
-    u.user_id,
-    u.is_show_num,
-    
-    u.user_name,
-    u.area,
-    u.state,
-    u.district,
-    u.pincode,
-    u.mobile,
-    u.gender,
-    u.dob,
-    u.email,
-
-    u.profile_img
-  FROM tutor_student_rel tsr
-  LEFT JOIN student s ON s.student_id = tsr.student_id
-  LEFT JOIN users u ON u.user_id = s.user_id
-  WHERE tsr.tutor_id = ?`, [tutor_id]);
-        if (!result || result.length === 0) {
-            return [];
+    //
+    async fetchTutorRequests(tutor_id, page, limit, subject_name, from_date, to_date, status) {
+        const offset = (page - 1) * limit;
+        // 👉 STEP 1: Build dynamic WHERE
+        let where = `WHERE tsr.tutor_id = ?`;
+        let params = [tutor_id];
+        // ✅ STATUS FILTER
+        if (status) {
+            where += ` AND tsr.status = ?`;
+            params.push(status);
         }
+        // ✅ DATE FILTER
+        if (from_date && to_date) {
+            if (from_date === to_date) {
+                // 👉 same day filter
+                where += ` AND DATE(tsr.requested_at) = ?`;
+                params.push(from_date);
+            }
+            else {
+                // 👉 range filter
+                where += ` AND DATE(tsr.requested_at) BETWEEN ? AND ?`;
+                params.push(from_date, to_date);
+            }
+        }
+        // 👉 STEP 2: MAIN QUERY
+        const result = await (0, helper_1.executeQuery)(`SELECT 
+      tsr.*,
+      u.user_id,
+      u.dob,
+      u.pincode,
+      u.district,
+      u.area,
+      u.state,
+      u.address,
+      u.is_show_num,
+      u.mobile,
+      u.email,
+      u.user_name,
+      u.profile_img,
+      s.stream_id
+    FROM tutor_student_rel tsr
+    LEFT JOIN student s ON s.student_id = tsr.student_id
+    LEFT JOIN users u ON u.user_id = s.user_id
+    ${where}
+    ORDER BY tsr.id DESC
+    LIMIT ? OFFSET ?`, [...params, Number(limit), Number(offset)]);
+        if (!result.length) {
+            return {
+                data: [],
+                pagination: { total: 0, page, limit, totalPages: 0 },
+            };
+        }
+        // 👉 PROFILE IMAGE (OPTIMIZED)
         const profileImgIds = result
-            .map((row) => row.profile_img)
-            .filter((id) => id);
+            .map((row) => Number(row.profile_img))
+            .filter((id) => !isNaN(id) && id > 0);
         let fileMap = {};
         if (profileImgIds.length > 0) {
-            const uniqueIds = [...new Set(profileImgIds)];
-            const files = await cmnModel.getUploadFiles(uniqueIds);
+            const files = await cmnModel.getUploadFiles([...new Set(profileImgIds)]);
             fileMap = files.reduce((acc, file) => {
                 acc[file.id] = file;
                 return acc;
             }, {});
         }
-        const finalData = result.map((row) => {
-            const formatted = {
+        // 👉 STEP 3: PROCESS DATA
+        let finalData = await Promise.all(result.map(async (row) => {
+            // tutor_subjects
+            const linkedIds = row.linked_sub
+                ?.toString()
+                .split(",")
+                .map((id) => Number(id.trim()))
+                .filter((id) => !isNaN(id));
+            let tutorSubjects = [];
+            if (linkedIds?.length) {
+                const placeholders = linkedIds.map(() => "?").join(",");
+                tutorSubjects = await (0, helper_1.executeQuery)(`SELECT id, stream_ids, subject_id, subject_name 
+           FROM tutor_subjects 
+           WHERE id IN (${placeholders})`, linkedIds);
+            }
+            // STREAMS
+            const streams = row.stream_id
+                ? await eduMdl.fetchStreamsForAll(row.stream_id.toString())
+                : [];
+            // SUBJECTS
+            const subjects = await this.fetchSubjectsFromTutorSubjects(tutorSubjects);
+            // PROFILE IMG
+            const profile_img = fileMap[row.profile_img]
+                ? [fileMap[row.profile_img]]
+                : [];
+            return cmnModel.convertNullObjectToString({
                 ...row,
-                profile_img: fileMap[row.profile_img] ? [fileMap[row.profile_img]] : [],
+                streams,
+                subjects,
+                profile_img,
+            });
+        }));
+        // 👉 STEP 4: SUBJECT FILTER (IMPORTANT)
+        if (subject_name) {
+            finalData = finalData.filter((row) => row.subjects.some((sub) => sub.subject_name.toLowerCase().includes(subject_name.toLowerCase())));
+        }
+        // 👉 STEP 5: COUNT QUERY (same filters)
+        const countRes = await (0, helper_1.executeQuery)(`SELECT COUNT(*) as total 
+     FROM tutor_student_rel tsr
+     ${where}`, params);
+        const total = countRes[0].total;
+        return {
+            data: finalData,
+            pagination: {
+                total,
+                page: Number(page),
+                limit: Number(limit),
+                totalPages: Math.ceil(total / limit),
+            },
+        };
+    }
+    //
+    //
+    async fetchSubjectsFromTutorSubjects(tutorSubjects) {
+        if (!tutorSubjects || tutorSubjects.length === 0)
+            return [];
+        const subjectIds = tutorSubjects
+            .map((ts) => ts.subject_id)
+            .filter((id) => id);
+        let subjectMap = {};
+        if (subjectIds.length > 0) {
+            const placeholders = subjectIds.map(() => "?").join(",");
+            const dbSubjects = await (0, helper_1.executeQuery)(`SELECT id, subject_name FROM subjects WHERE id IN (${placeholders})`, subjectIds);
+            subjectMap = dbSubjects.reduce((acc, sub) => {
+                acc[sub.id] = sub.subject_name;
+                return acc;
+            }, {});
+        }
+        return tutorSubjects.map((ts) => {
+            if (ts.subject_id && subjectMap[ts.subject_id]) {
+                return {
+                    subject_id: Number(ts.subject_id),
+                    subject_name: subjectMap[ts.subject_id],
+                };
+            }
+            if (ts.subject_name) {
+                return {
+                    subject_id: 0,
+                    subject_name: ts.subject_name,
+                };
+            }
+            return {
+                subject_id: 0,
+                subject_name: "",
             };
-            return cmnModel.convertNullObjectToString(formatted);
         });
-        return finalData;
+    }
+    async acceptOrRejectRequest(req_id, status) {
+        const data = await (0, helper_1.executeQuery)(`UPDATE tutor_student_rel SET status = ? WHERE id = ?`, [status, req_id]);
+        return data[0];
+    }
+    async fetchTutorSuggestion(tutor_id) {
+        const tutorSubjects = await (0, helper_1.executeQuery)(`SELECT subject_id, subject_name 
+     FROM tutor_subjects 
+     WHERE tutor_id = ?`, [tutor_id]);
+        const formattedSubjects = await this.fetchSubjectsFromTutorSubjects(tutorSubjects);
+        return formattedSubjects;
     }
 }
 exports.TutorModel = TutorModel;
