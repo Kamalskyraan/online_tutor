@@ -203,4 +203,22 @@ TutorController.getTutorSubjectSuggestion = async (req, res) => {
         ]);
     }
 };
+TutorController.setViewMobile = async (req, res) => {
+    try {
+        const { tutor_id, student_id } = req.body;
+        if (!tutor_id || !student_id) {
+            return (0, helper_1.sendResponse)(res, 400, 0, [], "tutor_id and student_id are required", []);
+        }
+        const result = await tutModel.updateMobileViewStatus(tutor_id, student_id);
+        if (result.affectedRows === 0) {
+            return (0, helper_1.sendResponse)(res, 200, 0, [], "No record found to update", []);
+        }
+        return (0, helper_1.sendResponse)(res, 200, 1, [], "Mobile view status updated successfully", []);
+    }
+    catch (err) {
+        return (0, helper_1.sendResponse)(res, 500, 0, [], "Internal Server Error", [
+            err.errors || err.message || err,
+        ]);
+    }
+};
 //# sourceMappingURL=tutor.controller.js.map

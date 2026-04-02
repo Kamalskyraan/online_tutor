@@ -273,28 +273,22 @@ class TutorModel {
     //
     async fetchTutorRequests(tutor_id, page, limit, subject_name, from_date, to_date, status) {
         const offset = (page - 1) * limit;
-        // 👉 STEP 1: Build dynamic WHERE
         let where = `WHERE tsr.tutor_id = ?`;
         let params = [tutor_id];
-        // ✅ STATUS FILTER
         if (status) {
             where += ` AND tsr.status = ?`;
             params.push(status);
         }
-        // ✅ DATE FILTER
         if (from_date && to_date) {
             if (from_date === to_date) {
-                // 👉 same day filter
                 where += ` AND DATE(tsr.requested_at) = ?`;
                 params.push(from_date);
             }
             else {
-                // 👉 range filter
                 where += ` AND DATE(tsr.requested_at) BETWEEN ? AND ?`;
                 params.push(from_date, to_date);
             }
         }
-        // 👉 STEP 2: MAIN QUERY
         const result = await (0, helper_1.executeQuery)(`SELECT 
       tsr.*,
       u.user_id,
@@ -305,6 +299,7 @@ class TutorModel {
       u.state,
       u.address,
       u.is_show_num,
+      u.gender,
       u.mobile,
       u.email,
       u.user_name,
@@ -322,7 +317,6 @@ class TutorModel {
                 pagination: { total: 0, page, limit, totalPages: 0 },
             };
         }
-        // 👉 PROFILE IMAGE (OPTIMIZED)
         const profileImgIds = result
             .map((row) => Number(row.profile_img))
             .filter((id) => !isNaN(id) && id > 0);
@@ -334,9 +328,7 @@ class TutorModel {
                 return acc;
             }, {});
         }
-        // 👉 STEP 3: PROCESS DATA
         let finalData = await Promise.all(result.map(async (row) => {
-            // tutor_subjects
             const linkedIds = row.linked_sub
                 ?.toString()
                 .split(",")
@@ -345,17 +337,18 @@ class TutorModel {
             let tutorSubjects = [];
             if (linkedIds?.length) {
                 const placeholders = linkedIds.map(() => "?").join(",");
-                tutorSubjects = await (0, helper_1.executeQuery)(`SELECT id, stream_ids, subject_id, subject_name 
+                tutorSubjects = await (0, helper_1.executeQuery)(`SELECT id, stream_ids, subject_id, subject_name , status
            FROM tutor_subjects 
            WHERE id IN (${placeholders})`, linkedIds);
             }
-            // STREAMS
             const streams = row.stream_id
                 ? await eduMdl.fetchStreamsForAll(row.stream_id.toString())
                 : [];
-            // SUBJECTS
             const subjects = await this.fetchSubjectsFromTutorSubjects(tutorSubjects);
-            // PROFILE IMG
+            const checjSub = tutorSubjects.map((sub) => ({
+                status: sub.status,
+            }));
+            console.log(checjSub);
             const profile_img = fileMap[row.profile_img]
                 ? [fileMap[row.profile_img]]
                 : [];
@@ -363,14 +356,13 @@ class TutorModel {
                 ...row,
                 streams,
                 subjects,
+                is_deleted: checjSub[0].status,
                 profile_img,
             });
         }));
-        // 👉 STEP 4: SUBJECT FILTER (IMPORTANT)
         if (subject_name) {
             finalData = finalData.filter((row) => row.subjects.some((sub) => sub.subject_name.toLowerCase().includes(subject_name.toLowerCase())));
         }
-        // 👉 STEP 5: COUNT QUERY (same filters)
         const countRes = await (0, helper_1.executeQuery)(`SELECT COUNT(*) as total 
      FROM tutor_student_rel tsr
      ${where}`, params);
@@ -431,6 +423,14 @@ class TutorModel {
      WHERE tutor_id = ?`, [tutor_id]);
         const formattedSubjects = await this.fetchSubjectsFromTutorSubjects(tutorSubjects);
         return formattedSubjects;
+    }
+    async updateMobileViewStatus(tutor_id, student_id) {
+        const result = await (0, helper_1.executeQuery)(`
+    UPDATE tutor_student_rel
+    SET is_view = 1
+    WHERE tutor_id = ? AND student_id = ?
+    `, [tutor_id, student_id]);
+        return result;
     }
 }
 exports.TutorModel = TutorModel;

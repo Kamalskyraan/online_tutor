@@ -9,7 +9,59 @@ class LeadsModel {
      (tutor_id, student_id, lead_type, search_subject)
      VALUES (?, ?, ?, ?)`, [tutor_id, student_id, lead_type, search_subject]);
     }
-    async fetchLeads() {
+    async fetchLeads(filters) {
+        const { tutor_id, lead_id, from_date, to_date, subject_name, locations, leads_type, page = 1, limit = 10, } = filters;
+        const offset = (page - 1) * limit;
+        let query = `
+    SELECT *
+    FROM tutor_leads
+    WHERE tutor_id = ?
+  `;
+        const params = [tutor_id];
+        if (lead_id) {
+            query += ` AND id = ?`;
+            params.push(lead_id);
+        }
+        if (leads_type) {
+            query += ` AND lead_type = ?`;
+            params.push(leads_type);
+        }
+        if (subject_name) {
+            query += ` AND search_subject LIKE ?`;
+            params.push(`%${subject_name}%`);
+        }
+        if (locations) {
+            query += ` AND search_address LIKE ?`;
+            params.push(`%${locations}%`);
+        }
+        if (from_date && to_date) {
+            query += ` AND DATE(created_at) BETWEEN ? AND ?`;
+            params.push(from_date, to_date);
+        }
+        else if (from_date) {
+            query += ` AND DATE(created_at) >= ?`;
+            params.push(from_date);
+        }
+        else if (to_date) {
+            query += ` AND DATE(created_at) <= ?`;
+            params.push(to_date);
+        }
+        query += ` ORDER BY created_at DESC LIMIT ? OFFSET ?`;
+        params.push(limit, offset);
+        const data = await (0, helper_1.executeQuery)(query, params);
+        const countQuery = `
+    SELECT COUNT(*) as total
+    FROM tutor_leads
+    WHERE tutor_id = ?
+`;
+        const countResult = await (0, helper_1.executeQuery)(countQuery, [tutor_id]);
+        const total = countResult[0]?.total || 0;
+        return {
+            total,
+            page,
+            limit,
+            data,
+        };
     }
 }
 exports.LeadsModel = LeadsModel;
