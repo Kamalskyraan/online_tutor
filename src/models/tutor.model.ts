@@ -330,7 +330,6 @@ export class TutorModel {
       images,
       videos,
     };
-    
 
     return convertNullToString(tutor);
   }
@@ -384,30 +383,24 @@ export class TutorModel {
   ) {
     const offset = (page - 1) * limit;
 
-    // 👉 STEP 1: Build dynamic WHERE
     let where = `WHERE tsr.tutor_id = ?`;
     let params: any[] = [tutor_id];
 
-    // ✅ STATUS FILTER
     if (status) {
       where += ` AND tsr.status = ?`;
       params.push(status);
     }
 
-    // ✅ DATE FILTER
     if (from_date && to_date) {
       if (from_date === to_date) {
-        // 👉 same day filter
         where += ` AND DATE(tsr.requested_at) = ?`;
         params.push(from_date);
       } else {
-        // 👉 range filter
         where += ` AND DATE(tsr.requested_at) BETWEEN ? AND ?`;
         params.push(from_date, to_date);
       }
     }
 
-    // 👉 STEP 2: MAIN QUERY
     const result: any[] = await executeQuery(
       `SELECT 
       tsr.*,
@@ -419,6 +412,7 @@ export class TutorModel {
       u.state,
       u.address,
       u.is_show_num,
+      u.gender,
       u.mobile,
       u.email,
       u.user_name,
@@ -440,7 +434,6 @@ export class TutorModel {
       };
     }
 
-    // 👉 PROFILE IMAGE (OPTIMIZED)
     const profileImgIds = result
       .map((row) => Number(row.profile_img))
       .filter((id) => !isNaN(id) && id > 0);
@@ -456,10 +449,8 @@ export class TutorModel {
       }, {});
     }
 
-    // 👉 STEP 3: PROCESS DATA
     let finalData = await Promise.all(
       result.map(async (row: any) => {
-        // tutor_subjects
         const linkedIds = row.linked_sub
           ?.toString()
           .split(",")
@@ -472,23 +463,22 @@ export class TutorModel {
           const placeholders = linkedIds.map(() => "?").join(",");
 
           tutorSubjects = await executeQuery(
-            `SELECT id, stream_ids, subject_id, subject_name 
+            `SELECT id, stream_ids, subject_id, subject_name , status
            FROM tutor_subjects 
            WHERE id IN (${placeholders})`,
             linkedIds,
           );
         }
 
-        // STREAMS
         const streams = row.stream_id
           ? await eduMdl.fetchStreamsForAll(row.stream_id.toString())
           : [];
 
-        // SUBJECTS
         const subjects =
           await this.fetchSubjectsFromTutorSubjects(tutorSubjects);
 
-        // PROFILE IMG
+          
+
         const profile_img = fileMap[row.profile_img]
           ? [fileMap[row.profile_img]]
           : [];
@@ -502,7 +492,6 @@ export class TutorModel {
       }),
     );
 
-    // 👉 STEP 4: SUBJECT FILTER (IMPORTANT)
     if (subject_name) {
       finalData = finalData.filter((row: any) =>
         row.subjects.some((sub: any) =>
@@ -511,7 +500,6 @@ export class TutorModel {
       );
     }
 
-    // 👉 STEP 5: COUNT QUERY (same filters)
     const countRes: any = await executeQuery(
       `SELECT COUNT(*) as total 
      FROM tutor_student_rel tsr
@@ -599,5 +587,18 @@ export class TutorModel {
       await this.fetchSubjectsFromTutorSubjects(tutorSubjects);
 
     return formattedSubjects;
+  }
+
+  async updateMobileViewStatus(tutor_id: string, student_id: string) {
+    const result = await executeQuery(
+      `
+    UPDATE tutor_student_rel
+    SET is_view = 1
+    WHERE tutor_id = ? AND student_id = ?
+    `,
+      [tutor_id, student_id],
+    );
+
+    return result;
   }
 }

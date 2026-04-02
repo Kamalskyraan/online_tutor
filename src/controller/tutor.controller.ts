@@ -306,4 +306,43 @@ export class TutorController {
       ]);
     }
   };
+
+  static setViewMobile = async (req: Request, res: Response) => {
+    try {
+      const { tutor_id, student_id } = req.body;
+
+      if (!tutor_id || !student_id) {
+        return sendResponse(
+          res,
+          400,
+          0,
+          [],
+          "tutor_id and student_id are required",
+          [],
+        );
+      }
+
+      const result = await tutModel.updateMobileViewStatus(
+        tutor_id,
+        student_id,
+      );
+
+      if (result.affectedRows === 0) {
+        return sendResponse(res, 200, 0, [], "No record found to update", []);
+      }
+
+      return sendResponse(
+        res,
+        200,
+        1,
+        [],
+        "Mobile view status updated successfully",
+        [],
+      );
+    } catch (err: any) {
+      return sendResponse(res, 500, 0, [], "Internal Server Error", [
+        err.errors || err.message || err,
+      ]);
+    }
+  };
 }

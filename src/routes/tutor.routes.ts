@@ -285,4 +285,31 @@ router.post("/get-tutor-suggestion", (req, res) => {
 
   TutorController.getTutorSubjectSuggestion(req, res);
 });
+
+router.post("/update-view-status", (req, res) => {
+  /*
+    #swagger.tags = ['8.Tutor']
+    #swagger.summary = 'Update View Status'
+    #swagger.description = 'Update View Status for mobile view'
+
+   
+    #swagger.parameters['body'] = {
+    in:'body',
+    schema:{ 
+    tutor_id : "TUTOR_A2u50js3",
+    student_id : "STUDENT_4Gy3VZ"
+        }}
+
+    #swagger.responses[200] = {
+      description: "Tutor set Mobile View Status successfully",
+     
+    }
+
+    #swagger.responses[500] = {
+      description: "Something went wrong"
+    }
+  */
+
+  TutorController.setViewMobile(req, res);
+});
 export default router;
