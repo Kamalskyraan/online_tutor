@@ -12,7 +12,7 @@ import commonRoutes from "./common.routes";
 import tutorRoutes from "./tutor.routes";
 import { startMultipartUpload } from "../config/upload";
 import { upload } from "../config/multer";
-
+import leadsRoutes from "./leads.routes";
 const router = Router();
 
 router.use("/auth", authRoutes);
@@ -26,6 +26,7 @@ router.use("/tutor", tutorRoutes);
 router.use("/student", studentRoutes);
 router.use("/review", reviewRoutes);
 router.use("/cmn", commonRoutes);
+router.use("/leads", leadsRoutes);
 
 // common
 

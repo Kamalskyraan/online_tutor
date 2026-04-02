@@ -26,6 +26,7 @@ LeadsController.getTutorLeads = async (req, res) => {
             page,
             limit,
         });
+        console.log(data);
         return (0, helper_1.sendResponse)(res, 200, 1, data, "Leads fetched successfully", []);
     }
     catch (err) {

@@ -378,7 +378,6 @@ class TutorModel {
         };
     }
     //
-    //
     async fetchSubjectsFromTutorSubjects(tutorSubjects) {
         if (!tutorSubjects || tutorSubjects.length === 0)
             return [];

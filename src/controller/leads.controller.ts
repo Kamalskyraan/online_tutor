@@ -34,6 +34,8 @@ export class LeadsController {
         limit,
       });
 
+      console.log(data)
+
       return sendResponse(res, 200, 1, data, "Leads fetched successfully", []);
     } catch (err: any) {
       return sendResponse(res, 500, 0, [], "Internal Server Error", [
@@ -41,6 +43,4 @@ export class LeadsController {
       ]);
     }
   };
-
-  
 }

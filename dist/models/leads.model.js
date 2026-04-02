@@ -31,8 +31,19 @@ class LeadsModel {
             params.push(`%${subject_name}%`);
         }
         if (locations) {
-            query += ` AND search_address LIKE ?`;
-            params.push(`%${locations}%`);
+            const locationArray = locations
+                .split(",")
+                .map((loc) => loc.trim())
+                .filter((loc) => loc);
+            if (locationArray.length) {
+                const likeConditions = locationArray
+                    .map(() => `search_address LIKE ?`)
+                    .join(" OR ");
+                query += ` AND (${likeConditions})`;
+                locationArray.forEach((loc) => {
+                    params.push(`%${loc}%`);
+                });
+            }
         }
         if (from_date && to_date) {
             query += ` AND DATE(created_at) BETWEEN ? AND ?`;
@@ -57,10 +68,10 @@ class LeadsModel {
         const countResult = await (0, helper_1.executeQuery)(countQuery, [tutor_id]);
         const total = countResult[0]?.total || 0;
         return {
+            data,
             total,
             page,
             limit,
-            data,
         };
     }
 }

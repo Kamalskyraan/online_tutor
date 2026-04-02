@@ -16,6 +16,7 @@ const review_routes_1 = __importDefault(require("./review.routes"));
 const common_routes_1 = __importDefault(require("./common.routes"));
 const tutor_routes_1 = __importDefault(require("./tutor.routes"));
 const multer_1 = require("../config/multer");
+const leads_routes_1 = __importDefault(require("./leads.routes"));
 const router = (0, express_1.Router)();
 router.use("/auth", auth_routes_1.default);
 router.use("/user", user_routes_1.default);
@@ -28,6 +29,7 @@ router.use("/tutor", tutor_routes_1.default);
 router.use("/student", student_routes_1.default);
 router.use("/review", review_routes_1.default);
 router.use("/cmn", common_routes_1.default);
+router.use("/leads", leads_routes_1.default);
 // common
 router.post("/upload", multer_1.upload.single("file"), (req, res) => {
     res.json({

@@ -2254,6 +2254,74 @@
                     }
                 }
             }
+        },
+        "/api/leads/get-tutor-leads": {
+            "post": {
+                "tags": [
+                    "12.Leads"
+                ],
+                "summary": "Get Leads",
+                "description": "Get Leads",
+                "parameters": [
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "required": false,
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "tutor_id": {
+                                    "type": "string",
+                                    "example": "TUTOR_A2u50js3"
+                                },
+                                "lead_id": {
+                                    "type": "string",
+                                    "example": "1"
+                                },
+                                "from_date": {
+                                    "type": "string",
+                                    "example": "2026-03-10"
+                                },
+                                "to_date": {
+                                    "type": "string",
+                                    "example": "2026-03-11"
+                                },
+                                "subject_name": {
+                                    "type": "string",
+                                    "example": "abc"
+                                },
+                                "locations": {
+                                    "type": "array",
+                                    "example": [
+                                        "abc",
+                                        "cbe",
+                                        "chen"
+                                    ],
+                                    "items": {
+                                        "type": "string"
+                                    }
+                                },
+                                "leads_type": {
+                                    "type": "string",
+                                    "example": "profile"
+                                },
+                                "page": {
+                                    "type": "number",
+                                    "example": 1
+                                }
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Leads fetched successfully"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
         }
     }
 }
