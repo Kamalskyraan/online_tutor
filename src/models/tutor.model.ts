@@ -477,7 +477,9 @@ export class TutorModel {
         const subjects =
           await this.fetchSubjectsFromTutorSubjects(tutorSubjects);
 
-          
+        const checjSub = tutorSubjects.map((sub: any) => ({
+          status: sub.status,
+        }));
 
         const profile_img = fileMap[row.profile_img]
           ? [fileMap[row.profile_img]]
@@ -487,6 +489,7 @@ export class TutorModel {
           ...row,
           streams,
           subjects,
+          is_deleted: checjSub[0].status,
           profile_img,
         });
       }),
