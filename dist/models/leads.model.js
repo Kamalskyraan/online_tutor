@@ -69,6 +69,7 @@ class LeadsModel {
     s.user_id,
     s.stream_id,
     u.user_name,
+    u.is_show_num,
     u.mobile,
     u.email,
     u.area,
@@ -119,8 +120,16 @@ class LeadsModel {
             const profile_img = fileMap[row.profile_img]
                 ? [fileMap[row.profile_img]]
                 : [];
+            let showNum;
+            if (row.is_show_num === 0) {
+                showNum = 0;
+            }
+            else {
+                showNum = 1;
+            }
             return cmnMdl.convertNullObjectToString({
                 ...row,
+                is_show_num: showNum,
                 subjects,
                 is_deleted: tutorSubjects?.[0]?.status ?? 0,
                 streams,
