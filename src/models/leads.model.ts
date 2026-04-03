@@ -185,11 +185,12 @@ export class LeadsModel {
         } else {
           showNum = 1;
         }
+
         return cmnMdl.convertNullObjectToString({
           ...row,
           is_show_num: showNum,
           subjects,
-          is_deleted: tutorSubjects?.[0]?.status,
+          is_deleted: tutorSubjects?.[0]?.status ?? "direct-view",
           streams,
           profile_img,
         });
