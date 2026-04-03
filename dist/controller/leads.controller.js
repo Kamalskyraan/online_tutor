@@ -56,18 +56,25 @@ LeadsController.setViewMobileLeads = async (req, res) => {
 };
 LeadsController.getLeadsLocations = async (req, res) => {
     try {
-        const { tutor_id, from_date, to_date, leads_type, search_subject } = req.body;
+        const { tutor_id, from_date, to_date, leads_type, search_subject, page = 1, limit = 5, } = req.body;
         if (!tutor_id) {
             return (0, helper_1.sendResponse)(res, 200, 0, [], "tutor_id is required", []);
         }
-        const data = await leadsMdl.fetchLeadsLocations({
+        const result = await leadsMdl.fetchLeadsLocations({
             tutor_id,
             from_date,
             to_date,
             leads_type,
             search_subject,
+            page,
+            limit,
         });
-        return (0, helper_1.sendResponse)(res, 200, 1, data, "Locations fetched successfully", []);
+        return (0, helper_1.sendResponse)(res, 200, 1, {
+            data: result.data,
+            total: result.total,
+            page: result.page,
+            limit: result.limit,
+        }, "Locations fetched successfully", []);
     }
     catch (err) {
         return (0, helper_1.sendResponse)(res, 500, 0, [], "Internal Server Error", [

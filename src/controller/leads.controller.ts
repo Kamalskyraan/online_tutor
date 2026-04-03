@@ -85,26 +85,40 @@ export class LeadsController {
 
   static getLeadsLocations = async (req: Request, res: Response) => {
     try {
-      const { tutor_id, from_date, to_date, leads_type, search_subject } =
-        req.body;
-
-      if (!tutor_id) {
-        return sendResponse(res, 200, 0, [], "tutor_id is required", []);
-      }
-
-      const data = await leadsMdl.fetchLeadsLocations({
+      const {
         tutor_id,
         from_date,
         to_date,
         leads_type,
         search_subject,
+        page = 1,
+        limit = 5,
+      } = req.body;
+
+      if (!tutor_id) {
+        return sendResponse(res, 200, 0, [], "tutor_id is required", []);
+      }
+
+      const result = await leadsMdl.fetchLeadsLocations({
+        tutor_id,
+        from_date,
+        to_date,
+        leads_type,
+        search_subject,
+        page,
+        limit,
       });
 
       return sendResponse(
         res,
         200,
         1,
-        data,
+        {
+          data: result.data,
+          total: result.total,
+          page: result.page,
+          limit: result.limit,
+        },
         "Locations fetched successfully",
         [],
       );

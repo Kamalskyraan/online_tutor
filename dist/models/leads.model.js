@@ -156,7 +156,8 @@ class LeadsModel {
         };
     }
     async fetchLeadsLocations(filters) {
-        const { tutor_id, from_date, to_date, leads_type, search_subject } = filters;
+        const { tutor_id, from_date, to_date, leads_type, search_subject, page = 1, limit = 1, } = filters;
+        const offset = (page - 1) * limit;
         let where = `WHERE tl.tutor_id = ?`;
         let params = [tutor_id];
         if (leads_type) {
@@ -177,7 +178,7 @@ class LeadsModel {
                 params.push(from_date, to_date);
             }
         }
-        const result = await (0, helper_1.executeQuery)(`SELECT 
+        const data = await (0, helper_1.executeQuery)(`SELECT 
       tl.search_address,
       COUNT(*) as total
      FROM tutor_leads tl
@@ -185,11 +186,25 @@ class LeadsModel {
      AND tl.search_address IS NOT NULL
      AND tl.search_address != ''
      GROUP BY tl.search_address
-     ORDER BY total DESC`, params);
-        return result.map((row) => ({
-            search_address: row.search_address,
-            count: row.total,
-        }));
+     ORDER BY total DESC
+     LIMIT ? OFFSET ?`, [...params, limit, offset]);
+        const countResult = await (0, helper_1.executeQuery)(`SELECT COUNT(*) as total FROM (
+        SELECT tl.search_address
+        FROM tutor_leads tl
+        ${where}
+        AND tl.search_address IS NOT NULL
+        AND tl.search_address != ''
+        GROUP BY tl.search_address
+     ) as grouped`, params);
+        return {
+            data: data.map((row) => ({
+                search_address: row.search_address,
+                count: row.total,
+            })),
+            total: countResult[0]?.total || 0,
+            page,
+            limit,
+        };
     }
     async setReadStatus(lead_id) {
         const result = await (0, helper_1.executeQuery)(`UPDATE tutor_leads SET is_read = 1 WHERE id = ?`, [lead_id]);

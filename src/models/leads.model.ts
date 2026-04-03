@@ -225,8 +225,17 @@ export class LeadsModel {
     };
   }
   async fetchLeadsLocations(filters: any) {
-    const { tutor_id, from_date, to_date, leads_type, search_subject } =
-      filters;
+    const {
+      tutor_id,
+      from_date,
+      to_date,
+      leads_type,
+      search_subject,
+      page = 1,
+      limit = 1,
+    } = filters;
+
+    const offset = (page - 1) * limit;
 
     let where = `WHERE tl.tutor_id = ?`;
     let params: any[] = [tutor_id];
@@ -251,7 +260,8 @@ export class LeadsModel {
       }
     }
 
-    const result: any[] = await executeQuery(
+    
+    const data: any[] = await executeQuery(
       `SELECT 
       tl.search_address,
       COUNT(*) as total
@@ -260,14 +270,32 @@ export class LeadsModel {
      AND tl.search_address IS NOT NULL
      AND tl.search_address != ''
      GROUP BY tl.search_address
-     ORDER BY total DESC`,
+     ORDER BY total DESC
+     LIMIT ? OFFSET ?`,
+      [...params, limit, offset],
+    );
+
+    const countResult: any[] = await executeQuery(
+      `SELECT COUNT(*) as total FROM (
+        SELECT tl.search_address
+        FROM tutor_leads tl
+        ${where}
+        AND tl.search_address IS NOT NULL
+        AND tl.search_address != ''
+        GROUP BY tl.search_address
+     ) as grouped`,
       params,
     );
 
-    return result.map((row: any) => ({
-      search_address: row.search_address,
-      count: row.total,
-    }));
+    return {
+      data: data.map((row: any) => ({
+        search_address: row.search_address,
+        count: row.total,
+      })),
+      total: countResult[0]?.total || 0,
+      page,
+      limit,
+    };
   }
 
   async setReadStatus(lead_id: number) {
