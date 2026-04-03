@@ -480,7 +480,6 @@ export class TutorModel {
         const checjSub = tutorSubjects.map((sub: any) => ({
           status: sub.status,
         }));
-        console.log(checjSub);
 
         const profile_img = fileMap[row.profile_img]
           ? [fileMap[row.profile_img]]
@@ -525,7 +524,6 @@ export class TutorModel {
   }
   //
 
-  
   async fetchSubjectsFromTutorSubjects(tutorSubjects: any[]) {
     if (!tutorSubjects || tutorSubjects.length === 0) return [];
 
