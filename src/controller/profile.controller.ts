@@ -152,6 +152,5 @@ export class ProfileController {
     }
   };
 
-
   
 }

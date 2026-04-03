@@ -75,6 +75,7 @@ router.post("/get-leads-locations", (req, res) => {
     in:'body',
     schema:{ 
     tutor_id : "TUTOR_A2u50js3",
+    page : 1,
     from_date : "2026-04-03",
     to_date : "2026-04-04",
      search_subject: "tamil"

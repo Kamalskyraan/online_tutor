@@ -74,6 +74,7 @@ LeadsController.getLeadsLocations = async (req, res) => {
             total: result.total,
             page: result.page,
             limit: result.limit,
+            total_pages: result.total_pages,
         }, "Locations fetched successfully", []);
     }
     catch (err) {

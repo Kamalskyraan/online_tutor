@@ -249,8 +249,8 @@ export const updateUserProfileSchema = Joi.object({
   area: Joi.string(),
 
   // 3
-  education: Joi.string(),
-  stream: Joi.number(),
+
+  stream_id: Joi.number(),
 });
 
 export const getUserDetailsSchema = Joi.object({

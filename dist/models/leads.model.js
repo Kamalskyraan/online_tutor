@@ -196,12 +196,15 @@ class LeadsModel {
         AND tl.search_address != ''
         GROUP BY tl.search_address
      ) as grouped`, params);
+        const total = countResult[0]?.total || 0;
+        const total_pages = Math.ceil(total / limit);
         return {
             data: data.map((row) => ({
                 search_address: row.search_address,
                 count: row.total,
             })),
             total: countResult[0]?.total || 0,
+            total_pages,
             page,
             limit,
         };

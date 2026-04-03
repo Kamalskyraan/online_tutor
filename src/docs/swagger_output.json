@@ -628,27 +628,57 @@
     },
     "/api/profile/add-update-userdata": {
       "post": {
-        "description": "",
+        "tags": [
+          "3.Profile"
+        ],
+        "summary": "add Update user data",
+        "description": "Add and Update user",
         "parameters": [
           {
             "name": "body",
             "in": "body",
+            "required": true,
             "schema": {
               "type": "object",
               "properties": {
                 "user_id": {
-                  "example": "any"
+                  "type": "string",
+                  "example": "USER_7wbjv2wt"
                 },
-                "payload": {
-                  "example": "any"
+                "user_name": {
+                  "type": "string",
+                  "example": "kamalesh"
+                },
+                "email": {
+                  "type": "string",
+                  "example": "skyraankamalesh@gmail.com"
+                },
+                "gender": {
+                  "type": "string",
+                  "example": "male or female or other"
+                },
+                "country_code": {
+                  "type": "string",
+                  "example": "+91"
+                },
+                "mobile": {
+                  "type": "string",
+                  "example": "9876543211"
+                },
+                "add_mobile": {
+                  "type": "string",
+                  "example": "9876543210"
                 }
               }
             }
           }
         ],
         "responses": {
-          "default": {
-            "description": ""
+          "200": {
+            "description": "fetch user data successfully"
+          },
+          "500": {
+            "description": "Internal Server Error"
           }
         }
       }
@@ -2376,6 +2406,10 @@
                 "tutor_id": {
                   "type": "string",
                   "example": "TUTOR_A2u50js3"
+                },
+                "page": {
+                  "type": "number",
+                  "example": 1
                 },
                 "from_date": {
                   "type": "string",
