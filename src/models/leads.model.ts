@@ -189,7 +189,7 @@ export class LeadsModel {
           ...row,
           is_show_num: showNum,
           subjects,
-          is_deleted: tutorSubjects?.[0]?.status ?? 0,
+          is_deleted: tutorSubjects?.[0]?.status,
           streams,
           profile_img,
         });
