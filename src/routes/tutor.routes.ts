@@ -312,4 +312,6 @@ router.post("/update-view-status", (req, res) => {
 
   TutorController.setViewMobile(req, res);
 });
+
+
 export default router;

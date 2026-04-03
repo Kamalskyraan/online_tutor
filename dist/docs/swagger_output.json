@@ -2322,6 +2322,118 @@
                     }
                 }
             }
+        },
+        "/api/leads/update-leads-view-status": {
+            "post": {
+                "tags": [
+                    "12.Leads"
+                ],
+                "summary": "Update View Status In Leads",
+                "description": "Update View Status for mobile view In Leads",
+                "parameters": [
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "tutor_id": {
+                                    "type": "string",
+                                    "example": "TUTOR_A2u50js3"
+                                },
+                                "student_id": {
+                                    "type": "string",
+                                    "example": "STUDENT_4Gy3VZ"
+                                }
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Tutor set Mobile View Status successfully"
+                    },
+                    "500": {
+                        "description": "Something went wrong"
+                    }
+                }
+            }
+        },
+        "/api/leads/get-leads-locations": {
+            "post": {
+                "tags": [
+                    "12.Leads"
+                ],
+                "summary": "Get Leads Locations count",
+                "description": "Get Leads Locations count",
+                "parameters": [
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "tutor_id": {
+                                    "type": "string",
+                                    "example": "TUTOR_A2u50js3"
+                                },
+                                "from_date": {
+                                    "type": "string",
+                                    "example": "2026-04-03"
+                                },
+                                "to_date": {
+                                    "type": "string",
+                                    "example": "2026-04-04"
+                                },
+                                "search_subject": {
+                                    "type": "string",
+                                    "example": "tamil"
+                                }
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Get Leads Locations count sucessfully"
+                    },
+                    "500": {
+                        "description": "Something went wrong"
+                    }
+                }
+            }
+        },
+        "/api/leads/update-read-status": {
+            "post": {
+                "tags": [
+                    "12.Leads"
+                ],
+                "summary": "Update Read Status In Leads",
+                "description": "Update Read Status for mobile view In Leads",
+                "parameters": [
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "lead_id": {
+                                    "type": "number",
+                                    "example": 1
+                                }
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Tutor set card read Status successfully"
+                    },
+                    "500": {
+                        "description": "Something went wrong"
+                    }
+                }
+            }
         }
     }
 }

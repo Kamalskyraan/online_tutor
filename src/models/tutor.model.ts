@@ -603,4 +603,16 @@ export class TutorModel {
 
     return result;
   }
+  async updateMobileViewStatusInLeads(tutor_id: string, student_id: string) {
+    const result = await executeQuery(
+      `
+    UPDATE tutor_leads
+    SET is_view = 1
+    WHERE tutor_id = ? AND student_id = ?
+    `,
+      [tutor_id, student_id],
+    );
+
+    return result;
+  }
 }

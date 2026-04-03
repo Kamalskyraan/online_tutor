@@ -11,26 +11,31 @@ const eduMdl = new education_model_1.EduModel();
 class LeadsModel {
     async insertLead(data) {
         const { tutor_id, student_id = null, lead_type, search_subject = null, } = data;
+        let search_address = null;
+        if (student_id) {
+            const studentRes = await (0, helper_1.executeQuery)(`SELECT u.district
+       FROM student s
+       LEFT JOIN users u ON u.user_id = s.user_id
+       WHERE s.student_id = ?`, [student_id]);
+            search_address = studentRes?.[0]?.district || null;
+        }
         await (0, helper_1.executeQuery)(`INSERT INTO tutor_leads 
-     (tutor_id, student_id, lead_type, search_subject)
-     VALUES (?, ?, ?, ?)`, [tutor_id, student_id, lead_type, search_subject]);
+     (tutor_id, student_id, lead_type, search_subject , search_address)
+     VALUES (?, ?, ?, ? , ?)`, [tutor_id, student_id, lead_type, search_subject, search_address]);
     }
     async fetchLeads(filters) {
         const { tutor_id, lead_id, from_date, to_date, subject_name, locations, leads_type, page = 1, limit = 10, } = filters;
         const offset = (page - 1) * limit;
         let where = `WHERE tl.tutor_id = ?`;
         let params = [tutor_id];
-        // lead_id filter
         if (lead_id) {
             where += ` AND tl.id = ?`;
             params.push(lead_id);
         }
-        // lead type filter
         if (leads_type) {
             where += ` AND tl.lead_type = ?`;
             params.push(leads_type);
         }
-        // location filter
         if (locations) {
             const locationArray = Array.isArray(locations)
                 ? locations
@@ -48,7 +53,6 @@ class LeadsModel {
                 });
             }
         }
-        // date filter
         if (from_date && to_date) {
             if (from_date === to_date) {
                 where += ` AND DATE(tl.created_at) = ?`;
@@ -96,7 +100,6 @@ class LeadsModel {
             }, {});
         }
         let finalData = await Promise.all(result.map(async (row) => {
-            // If you have linked_sub in leads
             const linkedIds = row.linked_sub
                 ?.toString()
                 .split(",")
@@ -140,6 +143,46 @@ class LeadsModel {
                 totalPages: Math.ceil(total / limit),
             },
         };
+    }
+    async fetchLeadsLocations(filters) {
+        const { tutor_id, from_date, to_date, leads_type, search_subject } = filters;
+        let where = `WHERE tl.tutor_id = ?`;
+        let params = [tutor_id];
+        if (leads_type) {
+            where += ` AND tl.lead_type = ?`;
+            params.push(leads_type);
+        }
+        if (search_subject) {
+            where += ` AND tl.search_subject LIKE ?`;
+            params.push(`%${search_subject}%`);
+        }
+        if (from_date && to_date) {
+            if (from_date === to_date) {
+                where += ` AND DATE(tl.created_at) = ?`;
+                params.push(from_date);
+            }
+            else {
+                where += ` AND DATE(tl.created_at) BETWEEN ? AND ?`;
+                params.push(from_date, to_date);
+            }
+        }
+        const result = await (0, helper_1.executeQuery)(`SELECT 
+      tl.search_address,
+      COUNT(*) as total
+     FROM tutor_leads tl
+     ${where}
+     AND tl.search_address IS NOT NULL
+     AND tl.search_address != ''
+     GROUP BY tl.search_address
+     ORDER BY total DESC`, params);
+        return result.map((row) => ({
+            search_address: row.search_address,
+            count: row.total,
+        }));
+    }
+    async setReadStatus(lead_id) {
+        const result = await (0, helper_1.executeQuery)(`UPDATE tutor_leads SET is_read = 1 WHERE id = ?`, [lead_id]);
+        return result;
     }
 }
 exports.LeadsModel = LeadsModel;

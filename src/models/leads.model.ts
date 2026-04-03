@@ -21,11 +21,23 @@ export class LeadsModel {
       search_subject = null,
     } = data;
 
+    let search_address: string | null = null;
+    if (student_id) {
+      const studentRes: any = await executeQuery(
+        `SELECT u.district
+       FROM student s
+       LEFT JOIN users u ON u.user_id = s.user_id
+       WHERE s.student_id = ?`,
+        [student_id],
+      );
+
+      search_address = studentRes?.[0]?.district || null;
+    }
     await executeQuery(
       `INSERT INTO tutor_leads 
-     (tutor_id, student_id, lead_type, search_subject)
-     VALUES (?, ?, ?, ?)`,
-      [tutor_id, student_id, lead_type, search_subject],
+     (tutor_id, student_id, lead_type, search_subject , search_address)
+     VALUES (?, ?, ?, ? , ?)`,
+      [tutor_id, student_id, lead_type, search_subject, search_address],
     );
   }
 
@@ -47,19 +59,16 @@ export class LeadsModel {
     let where = `WHERE tl.tutor_id = ?`;
     let params: any[] = [tutor_id];
 
-    // lead_id filter
     if (lead_id) {
       where += ` AND tl.id = ?`;
       params.push(lead_id);
     }
 
-    // lead type filter
     if (leads_type) {
       where += ` AND tl.lead_type = ?`;
       params.push(leads_type);
     }
 
-    // location filter
     if (locations) {
       const locationArray = Array.isArray(locations)
         ? locations
@@ -82,7 +91,6 @@ export class LeadsModel {
       }
     }
 
-    // date filter
     if (from_date && to_date) {
       if (from_date === to_date) {
         where += ` AND DATE(tl.created_at) = ?`;
@@ -140,7 +148,6 @@ export class LeadsModel {
 
     let finalData = await Promise.all(
       result.map(async (row: any) => {
-        // If you have linked_sub in leads
         const linkedIds = row.linked_sub
           ?.toString()
           .split(",")
@@ -206,5 +213,58 @@ export class LeadsModel {
         totalPages: Math.ceil(total / limit),
       },
     };
+  }
+  async fetchLeadsLocations(filters: any) {
+    const { tutor_id, from_date, to_date, leads_type, search_subject } =
+      filters;
+
+    let where = `WHERE tl.tutor_id = ?`;
+    let params: any[] = [tutor_id];
+
+    if (leads_type) {
+      where += ` AND tl.lead_type = ?`;
+      params.push(leads_type);
+    }
+
+    if (search_subject) {
+      where += ` AND tl.search_subject LIKE ?`;
+      params.push(`%${search_subject}%`);
+    }
+
+    if (from_date && to_date) {
+      if (from_date === to_date) {
+        where += ` AND DATE(tl.created_at) = ?`;
+        params.push(from_date);
+      } else {
+        where += ` AND DATE(tl.created_at) BETWEEN ? AND ?`;
+        params.push(from_date, to_date);
+      }
+    }
+
+    const result: any[] = await executeQuery(
+      `SELECT 
+      tl.search_address,
+      COUNT(*) as total
+     FROM tutor_leads tl
+     ${where}
+     AND tl.search_address IS NOT NULL
+     AND tl.search_address != ''
+     GROUP BY tl.search_address
+     ORDER BY total DESC`,
+      params,
+    );
+
+    return result.map((row: any) => ({
+      search_address: row.search_address,
+      count: row.total,
+    }));
+  }
+
+  async setReadStatus(lead_id: number) {
+    const result: any = await executeQuery(
+      `UPDATE tutor_leads SET is_read = 1 WHERE id = ?`,
+      [lead_id],
+    );
+    return result;
   }
 }

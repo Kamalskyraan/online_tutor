@@ -430,6 +430,14 @@ class TutorModel {
     `, [tutor_id, student_id]);
         return result;
     }
+    async updateMobileViewStatusInLeads(tutor_id, student_id) {
+        const result = await (0, helper_1.executeQuery)(`
+    UPDATE tutor_leads
+    SET is_view = 1
+    WHERE tutor_id = ? AND student_id = ?
+    `, [tutor_id, student_id]);
+        return result;
+    }
 }
 exports.TutorModel = TutorModel;
 //# sourceMappingURL=tutor.model.js.map
