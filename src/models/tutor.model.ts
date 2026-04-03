@@ -485,8 +485,15 @@ export class TutorModel {
           ? [fileMap[row.profile_img]]
           : [];
 
+        let showNum;
+        if (row.is_show_num === 0) {
+          showNum = 0;
+        } else {
+          showNum = 1;
+        }
         return cmnModel.convertNullObjectToString({
           ...row,
+          is_show_num: showNum,
           streams,
           subjects,
           is_deleted: checjSub[0].status,
