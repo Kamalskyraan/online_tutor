@@ -68,7 +68,7 @@ class LeadsModel {
     s.student_id,
     s.user_id,
     s.stream_id,
-    s.dob,
+    u.dob,
     u.user_name,
     u.is_show_num,
     u.gender,
