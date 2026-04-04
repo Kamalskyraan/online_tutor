@@ -134,12 +134,10 @@ exports.loginSchema = joi_1.default.object({
     }),
 });
 exports.resetPasswordSchema = joi_1.default.object({
-    country_code: joi_1.default.string().required().messages({
-        "any.required": "Country Code is required",
+    country_code: joi_1.default.string().messages({
         "string.empty": "Country Code is required",
     }),
-    mobile: joi_1.default.string().required().messages({
-        "string.empty": "Mobile is required",
+    mobile: joi_1.default.string().messages({
         "any.required": "Mobile is required",
     }),
     new_password: joi_1.default.string().min(8).max(32).required().messages({
@@ -152,6 +150,7 @@ exports.resetPasswordSchema = joi_1.default.object({
         "string.empty": "Confirm password is required",
         "any.required": "Confirm password is required",
     }),
+    user_id: joi_1.default.string().optional().allow(null, ""),
 });
 // source
 exports.educationSchema = joi_1.default.object({

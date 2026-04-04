@@ -21,41 +21,38 @@ router.get("/get-country-data", (req, res) => {
   */
     return common_controller_1.CommonController.countryData(req, res);
 });
+// router.post("/upload", upload.single("file"), (req, res) => {
+//   /*
+// #swagger.tags = ['11.Common']
+// #swagger.summary = 'Upload Image | Video | PDF'
+// #swagger.description = 'Upload files to S3 bucket and return file details'
+// ```
+// #swagger.consumes = ['multipart/form-data']
+// #swagger.parameters['file'] = {
+//   in: 'formData',
+//   type: 'file',
+//   required: true,
+//   description: 'File to upload (image, video, pdf)'
+// }
+// #swagger.parameters['category'] = {
+//   in: 'formData',
+//   type: 'string',
+//   required: true,
+//   description: 'File category',
+//   enum: ['image','video','pdf' , 'docx']
+// }
+// #swagger.responses[200] = {
+//   description: "File uploaded successfully"
+// }
+// #swagger.responses[500] = {
+//   description: "Internal Server Error"
+// }
+// ```
+// */
+//   return CommonController.uploadFile(req, res);
+// });
 router.post("/upload", multer_1.upload.single("file"), (req, res) => {
-    /*
-  #swagger.tags = ['11.Common']
-  #swagger.summary = 'Upload Image | Video | PDF'
-  #swagger.description = 'Upload files to S3 bucket and return file details'
-  
-  ```
-  #swagger.consumes = ['multipart/form-data']
-  
-  #swagger.parameters['file'] = {
-    in: 'formData',
-    type: 'file',
-    required: true,
-    description: 'File to upload (image, video, pdf)'
-  }
-  
-  #swagger.parameters['category'] = {
-    in: 'formData',
-    type: 'string',
-    required: true,
-    description: 'File category',
-    enum: ['image','video','pdf' , 'docx']
-  }
-  
-  #swagger.responses[200] = {
-    description: "File uploaded successfully"
-  }
-  
-  #swagger.responses[500] = {
-    description: "Internal Server Error"
-  }
-  ```
-  
-  */
-    return common_controller_1.CommonController.uploadFile(req, res);
+    common_controller_1.CommonController.uploadFileLoc(req, res);
 });
 router.post("/get-uploads", (req, res) => {
     /*

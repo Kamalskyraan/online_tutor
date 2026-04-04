@@ -29,6 +29,26 @@ export class commonModel {
     return result.insertId;
   }
 
+  async saveUploadLoc(file: Express.Multer.File, category: string) {
+    const fileUrl = `/uploads/${file.filename}`;
+
+    const query = `
+    INSERT INTO media (pathname, org_name, file_url, file_type, file_size, mime_type)
+    VALUES (?, ?, ?, ?, ?, ?)
+  `;
+
+    const result: any = await executeQuery(query, [
+      file.filename,
+      file.originalname,
+      fileUrl,
+      category,
+      file.size,
+      file.mimetype,
+    ]);
+
+    return result.insertId;
+  }
+
   async getUploadFiles(ids: number[]) {
     const placeholders = ids.map(() => "?").join(",");
 

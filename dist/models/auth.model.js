@@ -70,6 +70,12 @@ class AuthModel {
         const sql = `DELETE FROM user_devices WHERE user_id = ?`;
         await (0, helper_1.executeQuery)(sql, [user_id]);
     }
+    async updatePasswordByUserId(user_id, password) {
+        await (0, helper_1.executeQuery)(`UPDATE users SET password = ? WHERE user_id = ?`, [
+            password,
+            user_id,
+        ]);
+    }
 }
 exports.AuthModel = AuthModel;
 //# sourceMappingURL=auth.model.js.map

@@ -25,6 +25,22 @@ class commonModel {
         ]);
         return result.insertId;
     }
+    async saveUploadLoc(file, category) {
+        const fileUrl = `/uploads/${file.filename}`;
+        const query = `
+    INSERT INTO media (pathname, org_name, file_url, file_type, file_size, mime_type)
+    VALUES (?, ?, ?, ?, ?, ?)
+  `;
+        const result = await (0, helper_1.executeQuery)(query, [
+            file.filename,
+            file.originalname,
+            fileUrl,
+            category,
+            file.size,
+            file.mimetype,
+        ]);
+        return result.insertId;
+    }
     async getUploadFiles(ids) {
         const placeholders = ids.map(() => "?").join(",");
         const query = `

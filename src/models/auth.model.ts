@@ -110,5 +110,10 @@ export class AuthModel {
     await executeQuery(sql, [user_id]);
   }
 
-  
+  async updatePasswordByUserId(user_id: string, password: string) {
+    await executeQuery(`UPDATE users SET password = ? WHERE user_id = ?`, [
+      password,
+      user_id,
+    ]);
+  }
 }

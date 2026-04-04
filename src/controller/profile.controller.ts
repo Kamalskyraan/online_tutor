@@ -3,37 +3,51 @@ import { sendResponse, validateRequest } from "../utils/helper";
 import { ProfileModel } from "../models/profile.model";
 import { commonModel } from "../models/common.model";
 import { updateUserProfileSchema } from "../validators/validate";
-
+import { EduModel } from "../models/education.model";
+import bcrypt from "bcryptjs";
 const profileMdl = new ProfileModel();
 const cmnModel = new commonModel();
+const eduModl = new EduModel();
 export class ProfileController {
   static getUserData = async (req: Request, res: Response) => {
     try {
-      const { user_id, user_role } = req.body;
+      const { user_id } = req.body;
+
       if (!user_id) {
         return sendResponse(res, 200, 0, [], "User_id is required", []);
       }
-      const result = await profileMdl.fetchUserProfileData(user_id, user_role);
 
-      console.log(result);
+      const user_role = await profileMdl.fetchUserRole(user_id);
 
-      if (!result) {
+      if (!user_role) {
         return sendResponse(res, 200, 0, [], "User not found", []);
       }
 
-      const converted = await profileMdl.convertRepresentData(
-        result?.data?.represent,
-      );
+      const result = await profileMdl.fetchUserProfileData(user_id, user_role);
 
-      const stringData = await cmnModel.convertNullObjectToString(result?.data);
+      if (!result || !result.data) {
+        return sendResponse(res, 200, 0, [], "User data not found", []);
+      }
+
+      const data = result.data;
+
+      const streamId = data.stream_id || data.student_stream_id;
+      let streams = null;
+
+      if (streamId) {
+        streams = await eduModl.fetchStreamsForAll(streamId.toString());
+      }
+
+      const stringData = await cmnModel.convertNullObjectToString(data);
 
       return sendResponse(
         res,
         200,
         1,
         {
+          role: result.role,
           ...stringData,
-          represent_name: converted,
+          streams,
         },
         "User Profile Data Fetched successfully",
         [],
@@ -152,5 +166,46 @@ export class ProfileController {
     }
   };
 
+  static checkOldPassword = async (req: Request, res: Response) => {
+    try {
+      const { user_id, old_password } = req.body;
+
+      if (!user_id || !old_password) {
+        return sendResponse(
+          res,
+          200,
+          0,
+          [],
+          "user_id and old_password are required",
+          [],
+        );
+      }
+
+      const user = await profileMdl.checkOldPassword(user_id);
+
+      if (!user) {
+        return sendResponse(res, 200, 0, [], "User not found", []);
+      }
+
+      const isMatch = await bcrypt.compare(old_password, user.password);
+
+      if (!isMatch) {
+        return sendResponse(res, 200, 0, [], "Old password is incorrect", []);
+      }
+
+      return sendResponse(res, 200, 1, [], "Old password is correct", []);
+    } catch (err: any) {
+      return sendResponse(
+        res,
+        500,
+        0,
+        [],
+        "Something went wrong",
+        err.errors || err.message || err,
+      );
+    }
+  };
   
 }
+
+

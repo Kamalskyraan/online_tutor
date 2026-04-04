@@ -150,12 +150,10 @@ export const loginSchema = Joi.object({
 });
 
 export const resetPasswordSchema = Joi.object({
-  country_code: Joi.string().required().messages({
-    "any.required": "Country Code is required",
+  country_code: Joi.string().messages({
     "string.empty": "Country Code is required",
   }),
-  mobile: Joi.string().required().messages({
-    "string.empty": "Mobile is required",
+  mobile: Joi.string().messages({
     "any.required": "Mobile is required",
   }),
 
@@ -170,6 +168,7 @@ export const resetPasswordSchema = Joi.object({
     "string.empty": "Confirm password is required",
     "any.required": "Confirm password is required",
   }),
+  user_id: Joi.string().optional().allow(null, ""),
 });
 
 // source

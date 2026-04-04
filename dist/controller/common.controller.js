@@ -68,6 +68,30 @@ CommonController.uploadFile = async (req, res) => {
         return (0, helper_1.sendResponse)(res, 500, 0, [], "something went wrong", err.message || err);
     }
 };
+CommonController.uploadFileLoc = async (req, res) => {
+    try {
+        const file = req.file;
+        const { category } = req.body;
+        if (!file) {
+            return (0, helper_1.sendResponse)(res, 200, 0, [], "file is required", []);
+        }
+        if (!category) {
+            return (0, helper_1.sendResponse)(res, 200, 0, [], "Category is required", []);
+        }
+        const uploadId = await cmnModel.saveUploadLoc(file, category);
+        return (0, helper_1.sendResponse)(res, 200, 1, {
+            id: uploadId,
+            category,
+            pathname: file.filename,
+            url: `${req.protocol}://${req.get("host")}/uploads/${file.filename}`,
+            org_name: file.originalname,
+            file_size: `${(file.size / (1024 * 1024)).toFixed(4)}MB`,
+        }, "Upload successfully", []);
+    }
+    catch (err) {
+        return (0, helper_1.sendResponse)(res, 500, 0, [], "something went wrong", err.message || err);
+    }
+};
 CommonController.getUploadFiles = async (req, res) => {
     try {
         let { ids } = req.body;

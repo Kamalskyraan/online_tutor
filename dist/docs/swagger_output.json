@@ -271,6 +271,10 @@
                                 "confirm_password": {
                                     "type": "string",
                                     "example": "123456789"
+                                },
+                                "user_id": {
+                                    "type": "string",
+                                    "example": "USER_59xhKU0B"
                                 }
                             }
                         }
@@ -589,7 +593,7 @@
                 }
             }
         },
-        "/api/profile/get-userdata": {
+        "/api/profile/get-profiledata": {
             "post": {
                 "tags": [
                     "3.Profile"
@@ -607,10 +611,6 @@
                                 "user_id": {
                                     "type": "string",
                                     "example": "USER_7wbjv2wt"
-                                },
-                                "user_role": {
-                                    "type": "string",
-                                    "example": "student or tutor"
                                 }
                             }
                         }
@@ -668,6 +668,50 @@
                                 "add_mobile": {
                                     "type": "string",
                                     "example": "9876543210"
+                                },
+                                "primary_num": {
+                                    "type": "string",
+                                    "example": "9876543211"
+                                },
+                                "country": {
+                                    "type": "string",
+                                    "example": "India"
+                                },
+                                "pincode": {
+                                    "type": "string",
+                                    "example": "624601"
+                                },
+                                "state": {
+                                    "type": "string",
+                                    "example": "Tamilnadu"
+                                },
+                                "district": {
+                                    "type": "string",
+                                    "example": "Dindigul"
+                                },
+                                "area": {
+                                    "type": "string",
+                                    "example": "gaandhimaanagar"
+                                },
+                                "address": {
+                                    "type": "string",
+                                    "example": "no.123/qwe"
+                                },
+                                "stream_id": {
+                                    "type": "number",
+                                    "example": 1
+                                },
+                                "represent": {
+                                    "type": "string",
+                                    "example": "1 or 2 or 3"
+                                },
+                                "is_show_num": {
+                                    "type": "number",
+                                    "example": 1
+                                },
+                                "self_about": {
+                                    "type": "string",
+                                    "example": "abc def ghi"
                                 }
                             }
                         }
@@ -736,6 +780,43 @@
                 "responses": {
                     "default": {
                         "description": ""
+                    }
+                }
+            }
+        },
+        "/api/profile/check-old-password": {
+            "post": {
+                "tags": [
+                    "3.Profile"
+                ],
+                "summary": "Check Old Password",
+                "description": "Find Old Password",
+                "parameters": [
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "user_id": {
+                                    "type": "string",
+                                    "example": "USER_7wbjv2wt"
+                                },
+                                "old_password": {
+                                    "type": "string",
+                                    "example": "12345678"
+                                }
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Password is correct"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
                     }
                 }
             }
@@ -2200,35 +2281,8 @@
         },
         "/api/cmn/upload": {
             "post": {
-                "tags": [
-                    "11.Common"
-                ],
-                "summary": "Upload Image | Video | PDF",
-                "description": "Upload files to S3 bucket and return file details",
-                "consumes": [
-                    "multipart/form-data"
-                ],
+                "description": "",
                 "parameters": [
-                    {
-                        "name": "file",
-                        "in": "formData",
-                        "type": "file",
-                        "required": true,
-                        "description": "File to upload (image, video, pdf)"
-                    },
-                    {
-                        "name": "category",
-                        "in": "formData",
-                        "type": "string",
-                        "required": true,
-                        "description": "File category",
-                        "enum": [
-                            "image",
-                            "video",
-                            "pdf",
-                            "docx"
-                        ]
-                    },
                     {
                         "name": "body",
                         "in": "body",
@@ -2243,11 +2297,8 @@
                     }
                 ],
                 "responses": {
-                    "200": {
-                        "description": "File uploaded successfully"
-                    },
-                    "500": {
-                        "description": "Internal Server Error"
+                    "default": {
+                        "description": ""
                     }
                 }
             }

@@ -146,7 +146,8 @@ router.post("/reset-password", (req, res) => {
       country_code : "+91",
         mobile : '9876543210',
         new_password : '123456789',
-        confirm_password : '123456789'
+        confirm_password : '123456789',
+        user_id : "USER_59xhKU0B"
       }
     }
 

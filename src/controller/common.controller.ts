@@ -94,6 +94,48 @@ export class CommonController {
     }
   };
 
+  static uploadFileLoc = async (req: Request, res: Response) => {
+    try {
+      const file = req.file as Express.Multer.File;
+      const { category } = req.body;
+
+      if (!file) {
+        return sendResponse(res, 200, 0, [], "file is required", []);
+      }
+
+      if (!category) {
+        return sendResponse(res, 200, 0, [], "Category is required", []);
+      }
+
+      const uploadId = await cmnModel.saveUploadLoc(file, category);
+
+      return sendResponse(
+        res,
+        200,
+        1,
+        {
+          id: uploadId,
+          category,
+          pathname: file.filename,
+          url: `${req.protocol}://${req.get("host")}/uploads/${file.filename}`,
+          org_name: file.originalname,
+          file_size: `${(file.size / (1024 * 1024)).toFixed(4)}MB`,
+        },
+        "Upload successfully",
+        [],
+      );
+    } catch (err: any) {
+      return sendResponse(
+        res,
+        500,
+        0,
+        [],
+        "something went wrong",
+        err.message || err,
+      );
+    }
+  };
+
   static getUploadFiles = async (req: Request, res: Response) => {
     try {
       let { ids } = req.body;

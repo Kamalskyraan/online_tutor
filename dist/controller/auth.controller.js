@@ -199,13 +199,20 @@ AuthController.login = async (req, res) => {
 };
 AuthController.resetPassword = async (req, res) => {
     try {
-        const { mobile, country_code, new_password, confirm_password } = await (0, helper_1.validateRequest)(req.body, validate_1.resetPasswordSchema);
+        const { mobile, country_code, new_password, confirm_password, user_id } = await (0, helper_1.validateRequest)(req.body, validate_1.resetPasswordSchema);
         if (new_password !== confirm_password) {
             return (0, helper_1.sendResponse)(res, 200, 0, [], "Passwords do not match", []);
         }
         const hashedPassword = await bcryptjs_1.default.hash(new_password, 10);
-        await authModel.updatePassword(country_code, mobile, hashedPassword);
-        return (0, helper_1.sendResponse)(res, 200, 1, [], "Password updated successfully", []);
+        if (user_id) {
+            await authModel.updatePasswordByUserId(user_id, hashedPassword);
+            return (0, helper_1.sendResponse)(res, 200, 1, [], "Password updated successfully (via user_id)", []);
+        }
+        if (mobile && country_code) {
+            await authModel.updatePassword(country_code, mobile, hashedPassword);
+            return (0, helper_1.sendResponse)(res, 200, 1, [], "Password updated successfully (via mobile)", []);
+        }
+        return (0, helper_1.sendResponse)(res, 200, 0, [], "user_id or mobile + country_code is required", []);
     }
     catch (err) {
         return (0, helper_1.sendResponse)(res, err.status || 500, 0, [], "Something went wrong", [err.errors || err.message || err]);

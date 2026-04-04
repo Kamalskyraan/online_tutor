@@ -3,7 +3,7 @@ import { ProfileController } from "../controller/profile.controller";
 
 const router = Router();
 
-router.post("/get-userdata", (req, res) => {
+router.post("/get-profiledata", (req, res) => {
   /*
     #swagger.tags = ['3.Profile']
     #swagger.summary = 'get user data'
@@ -14,8 +14,7 @@ router.post("/get-userdata", (req, res) => {
       in: 'body',
       required: true,
       schema: {  
-        user_id : "USER_7wbjv2wt",
-        user_role : "student or tutor"
+        user_id : "USER_7wbjv2wt"
       }
     }
 
@@ -30,6 +29,7 @@ router.post("/get-userdata", (req, res) => {
   */
   return ProfileController.getUserData(req, res);
 });
+
 router.post(
   "/add-update-userdata",
 
@@ -51,7 +51,18 @@ router.post(
         country_code : "+91",
         mobile : "9876543211",
         add_mobile : "9876543210",
-        
+        primary_num : "9876543211",
+        country : "India",
+        pincode : "624601",
+        state : "Tamilnadu",
+        district : "Dindigul",
+        area : "gaandhimaanagar",
+        address : "no.123/qwe",
+        stream_id : 1,
+        represent: "1 or 2 or 3",
+        is_show_num : 1,
+        self_about : "abc def ghi"
+
       }
     }
 
@@ -72,5 +83,33 @@ router.post(
   "/add-update-additional-number",
   ProfileController.addUpdateAdditionalNumber,
 );
+
+router.post("/check-old-password", (req, res) => {
+  /*
+    #swagger.tags = ['3.Profile']
+    #swagger.summary = 'Check Old Password'
+    #swagger.description = 'Find Old Password'
+
+    
+    #swagger.parameters['body'] = {
+      in: 'body',
+      required: true,
+      schema: {  
+        user_id : "USER_7wbjv2wt",
+        old_password : "12345678"
+      }
+    }
+
+
+    #swagger.responses[200] = {
+      description: "Password is correct"
+    }
+
+    #swagger.responses[500] = {
+      description: "Internal Server Error"
+    }
+  */
+  ProfileController.checkOldPassword(req, res);
+});
 
 export default router;

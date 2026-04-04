@@ -314,14 +314,45 @@ export class AuthController {
   };
   static resetPassword = async (req: Request, res: Response) => {
     try {
-      const { mobile, country_code, new_password, confirm_password } =
+      const { mobile, country_code, new_password, confirm_password, user_id } =
         await validateRequest(req.body, resetPasswordSchema);
       if (new_password !== confirm_password) {
         return sendResponse(res, 200, 0, [], "Passwords do not match", []);
       }
       const hashedPassword = await bcrypt.hash(new_password, 10);
-      await authModel.updatePassword(country_code, mobile, hashedPassword);
-      return sendResponse(res, 200, 1, [], "Password updated successfully", []);
+
+      if (user_id) {
+        await authModel.updatePasswordByUserId(user_id, hashedPassword);
+
+        return sendResponse(
+          res,
+          200,
+          1,
+          [],
+          "Password updated successfully (via user_id)",
+          [],
+        );
+      }
+      if (mobile && country_code) {
+        await authModel.updatePassword(country_code, mobile, hashedPassword);
+
+        return sendResponse(
+          res,
+          200,
+          1,
+          [],
+          "Password updated successfully (via mobile)",
+          [],
+        );
+      }
+      return sendResponse(
+        res,
+        200,
+        0,
+        [],
+        "user_id or mobile + country_code is required",
+        [],
+      );
     } catch (err: any) {
       return sendResponse(
         res,
