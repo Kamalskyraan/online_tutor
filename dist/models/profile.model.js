@@ -74,6 +74,7 @@ class ProfileModel {
                 row.profile_img = [];
             }
         }
+        console.log("jjj");
         return {
             role: user_role,
             data: row,
