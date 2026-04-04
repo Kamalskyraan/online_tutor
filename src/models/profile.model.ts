@@ -204,11 +204,14 @@ export class ProfileModel {
   }
 
   async updateProfileImage(user_id: string, profile_id: string) {
-    const [result]: any = await executeQuery(
-      `UPDATE users SET profile_img WHERE user_id = ?`,
+    const result: any = await executeQuery(
+      `UPDATE users SET profile_img = ? WHERE user_id = ?`,
       [profile_id, user_id],
     );
 
-    return result;
+    return {
+      affectedRows: result?.affectedRows || 0,
+      changedRows: result?.changedRows || 0,
+    };
   }
 }

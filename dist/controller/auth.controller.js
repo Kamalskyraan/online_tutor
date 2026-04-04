@@ -23,8 +23,8 @@ exports.AuthController = AuthController;
 _a = AuthController;
 AuthController.RequestOtp = async (req, res) => {
     try {
-        const { country_code, mobile, email, type, add_mobile } = req.body;
-        const user = await authModel.findUser(country_code, mobile, add_mobile);
+        const { country_code, mobile, email, type } = req.body;
+        const user = await authModel.findUser(country_code, mobile);
         if (type === "1") {
             if (user) {
                 return (0, helper_1.sendResponse)(res, 200, 0, [], "User already exists", []);
@@ -43,7 +43,6 @@ AuthController.RequestOtp = async (req, res) => {
             country_code,
             otp,
             expires_at,
-            add_mobile,
         });
         // if (process.env.NODE_ENV === "production") {
         //   await sendSmsOTP(mobile, otp);
@@ -65,13 +64,12 @@ AuthController.RequestOtp = async (req, res) => {
 };
 AuthController.VerifyOtp = async (req, res) => {
     try {
-        const { country_code, mobile, otp, email, add_mobile } = req.body;
+        const { country_code, mobile, otp, email } = req.body;
         const otpRecord = await (0, auth_model_1.getValiOTP)({
             country_code,
             mobile,
             otp,
             email,
-            add_mobile,
         });
         if (otpRecord.message === "invalid") {
             return (0, helper_1.sendResponse)(res, 200, 0, [], "Invalid OTP");

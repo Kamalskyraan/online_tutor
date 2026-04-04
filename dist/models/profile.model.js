@@ -155,8 +155,11 @@ class ProfileModel {
         return rows;
     }
     async updateProfileImage(user_id, profile_id) {
-        const [result] = await (0, helper_1.executeQuery)(`UPDATE users SET profile_img WHERE user_id = ?`, [profile_id, user_id]);
-        return result;
+        const result = await (0, helper_1.executeQuery)(`UPDATE users SET profile_img = ? WHERE user_id = ?`, [profile_id, user_id]);
+        return {
+            affectedRows: result?.affectedRows || 0,
+            changedRows: result?.changedRows || 0,
+        };
     }
 }
 exports.ProfileModel = ProfileModel;

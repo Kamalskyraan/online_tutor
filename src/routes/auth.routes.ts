@@ -17,8 +17,7 @@ router.post("/request-otp", (req, res) => {
         mobile: '9876543210',
         country_code : '+91',
         type : "0 or 1 or 2",
-        email : "abc@gmail.com",
-        add_mobile : "9876543211"
+        email : "abc@gmail.com"
       }
     }
 
@@ -48,8 +47,7 @@ router.post("/verify-otp", (req, res) => {
         mobile: '9876543210',
         country_code : '+91',
         otp : '1234',
-        email : "abc@gmail.com",
-        add_mobile : "9876543211"
+        email : "abc@gmail.com"
       }
     }
 

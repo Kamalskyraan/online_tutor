@@ -31,9 +31,9 @@ const tutMdl = new TutorModel();
 export class AuthController {
   static RequestOtp = async (req: Request, res: Response) => {
     try {
-      const { country_code, mobile, email, type, add_mobile } = req.body;
+      const { country_code, mobile, email, type } = req.body;
 
-      const user = await authModel.findUser(country_code, mobile, add_mobile);
+      const user = await authModel.findUser(country_code, mobile);
       if (type === "1") {
         if (user) {
           return sendResponse(res, 200, 0, [], "User already exists", []);
@@ -54,7 +54,6 @@ export class AuthController {
         country_code,
         otp,
         expires_at,
-        add_mobile,
       });
 
       // if (process.env.NODE_ENV === "production") {
@@ -83,16 +82,16 @@ export class AuthController {
       );
     }
   };
+
   static VerifyOtp = async (req: Request, res: Response) => {
     try {
-      const { country_code, mobile, otp, email, add_mobile } = req.body;
+      const { country_code, mobile, otp, email } = req.body;
 
       const otpRecord = await getValiOTP({
         country_code,
         mobile,
         otp,
         email,
-        add_mobile,
       });
 
       if (otpRecord.message === "invalid") {

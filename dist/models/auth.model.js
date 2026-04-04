@@ -3,28 +3,21 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.AuthModel = exports.markOTPUsed = exports.getValiOTP = exports.createOTP = void 0;
 const helper_1 = require("../utils/helper");
 const createOTP = async (data) => {
-    const { mobile, add_mobile, email, country_code, otp, expires_at } = data;
-    if (!mobile && !add_mobile && !email) {
-        throw new Error("mobile or add_mobile or email is required");
+    const { mobile, email, country_code, otp, expires_at } = data;
+    if (!mobile && !email) {
+        throw new Error("mobile  or email is required");
     }
     const query = `
     INSERT INTO otp 
-    (mobile, add_mobile, email, country_code, otp, expires_at, is_used)
-    VALUES (?, ?, ?, ?, ?, ?, 0)
+    (mobile,  email, country_code, otp, expires_at, is_used)
+    VALUES (?, ?,  ?, ?, ?, 0)
   `;
-    const params = [
-        mobile || null,
-        add_mobile || null,
-        email || null,
-        country_code,
-        otp,
-        expires_at,
-    ];
+    const params = [mobile || null, email || null, country_code, otp, expires_at];
     return (0, helper_1.executeQuery)(query, params);
 };
 exports.createOTP = createOTP;
 const getValiOTP = async (data) => {
-    const { country_code, mobile, otp, email, add_mobile } = data;
+    const { country_code, mobile, otp, email } = data;
     let query = `
     SELECT id, expires_at, is_used 
     FROM otp 
@@ -34,10 +27,6 @@ const getValiOTP = async (data) => {
     if (mobile) {
         query += ` AND country_code = ? AND mobile = ?`;
         params.push(country_code, mobile);
-    }
-    else if (add_mobile) {
-        query += ` AND country_code = ? AND add_mobile = ?`;
-        params.push(country_code, add_mobile);
     }
     else if (email) {
         query += ` AND email = ?`;

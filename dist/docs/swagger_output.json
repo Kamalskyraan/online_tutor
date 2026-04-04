@@ -71,10 +71,6 @@
                                 "email": {
                                     "type": "string",
                                     "example": "abc@gmail.com"
-                                },
-                                "add_mobile": {
-                                    "type": "string",
-                                    "example": "9876543211"
                                 }
                             }
                         }
@@ -120,10 +116,6 @@
                                 "email": {
                                     "type": "string",
                                     "example": "abc@gmail.com"
-                                },
-                                "add_mobile": {
-                                    "type": "string",
-                                    "example": "9876543211"
                                 }
                             }
                         }

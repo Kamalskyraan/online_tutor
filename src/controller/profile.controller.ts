@@ -5,6 +5,7 @@ import { commonModel } from "../models/common.model";
 import { updateUserProfileSchema } from "../validators/validate";
 import { EduModel } from "../models/education.model";
 import bcrypt from "bcryptjs";
+import { log } from "node:console";
 const profileMdl = new ProfileModel();
 const cmnModel = new commonModel();
 const eduModl = new EduModel();
@@ -94,7 +95,6 @@ export class ProfileController {
     try {
       const { new_primary_number, country_code, user_id } = req.body;
 
-     
       const existing = await profileMdl.checkExistingPrimaryNumber(user_id);
 
       const oldMobile = existing.primary_num;
@@ -217,7 +217,10 @@ export class ProfileController {
       if (!user_id) {
         return sendResponse(res, 200, 0, [], "User ID is required", []);
       }
-      await profileMdl.updateProfileImage(user_id, profile_id);
+      const result = await profileMdl.updateProfileImage(user_id, profile_id);
+      if (result.affectedRows === 0) {
+        return sendResponse(res, 200, 0, [], "User not found", []);
+      }
       return sendResponse(
         res,
         200,
@@ -227,10 +230,10 @@ export class ProfileController {
         [],
       );
     } catch (err: any) {
+      console.log(err);
       return sendResponse(res, 500, 0, [], "Internal Server Error", [
         err.errors || err.message || err,
       ]);
     }
   };
-  
 }

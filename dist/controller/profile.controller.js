@@ -120,10 +120,14 @@ ProfileController.updateProfilePic = async (req, res) => {
         if (!user_id) {
             return (0, helper_1.sendResponse)(res, 200, 0, [], "User ID is required", []);
         }
-        await profileMdl.updateProfileImage(user_id, profile_id);
+        const result = await profileMdl.updateProfileImage(user_id, profile_id);
+        if (result.affectedRows === 0) {
+            return (0, helper_1.sendResponse)(res, 200, 0, [], "User not found", []);
+        }
         return (0, helper_1.sendResponse)(res, 200, 1, [], "Profile Image Update Successfully", []);
     }
     catch (err) {
+        console.log(err);
         return (0, helper_1.sendResponse)(res, 500, 0, [], "Internal Server Error", [
             err.errors || err.message || err,
         ]);
