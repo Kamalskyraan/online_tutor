@@ -107,23 +107,16 @@ export class AuthModel {
     return result.insertId;
   }
 
-  async findUser(country_code: string, mobile?: string, add_mobile?: string) {
+  async findUser(country_code: string, mobile?: string) {
     let query = "";
     let params: any[] = [];
 
-    if (mobile) {
-      query = `SELECT * FROM users WHERE country_code = ? AND mobile = ?`;
-      params = [country_code, mobile];
-    } else if (add_mobile) {
-      query = `SELECT * FROM users WHERE country_code = ? AND add_mobile = ?`;
-      params = [country_code, add_mobile];
-    } else {
-      return null;
-    }
+    query = `SELECT * FROM users WHERE country_code = ? AND mobile = ?`;
+    params = [country_code, mobile];
 
     const [rows]: any = await executeQuery(query, params);
 
-    return rows?.[0] || null;
+    return rows || null;
   }
 
   async addUserDevice(device: userDevice): Promise<number> {
