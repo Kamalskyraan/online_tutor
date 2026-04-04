@@ -67,13 +67,19 @@ export class ProfileModel {
       return { role: user_role, data: "" };
     }
 
-    if (row.profile_img) {
-      const images = await cmnMdl.getUploadFiles([row.profile_img]);
+    if (row) {
+      if (row.profile_img) {
+        const images = await cmnMdl.getUploadFiles([row.profile_img]);
 
-      if (Array.isArray(images)) {
-        row.profile_img = images[0] || null;
+        if (Array.isArray(images)) {
+          row.profile_img = images[0] ? [images[0]] : [];
+        } else {
+          row.profile_img = images?.[row.profile_img]
+            ? [images[row.profile_img]]
+            : [];
+        }
       } else {
-        row.profile_img = images?.[row.profile_img] || null;
+        row.profile_img = [];
       }
     }
 
