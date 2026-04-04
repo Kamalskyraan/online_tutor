@@ -45,6 +45,9 @@ router.post(
       required: true,
       schema: {  
         user_id : "USER_7wbjv2wt",
+        is_mob_verify : 1,
+        is_addmob_verify :1,
+        is_mail_verify : 1,
         user_name : "kamalesh",
         email : "skyraankamalesh@gmail.com",
         gender : "male or female or other",

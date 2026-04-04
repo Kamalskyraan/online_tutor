@@ -5,10 +5,10 @@
     "description": "Api Docs",
     "version": "1.0.0"
   },
-  "host": "localhost:5012",
+  "host": "online-tutor.skyraantech.com/server",
   "basePath": "/",
   "schemes": [
-    "http"
+    "https"
   ],
   "paths": {
     "/check": {
@@ -652,6 +652,18 @@
                 "user_id": {
                   "type": "string",
                   "example": "USER_7wbjv2wt"
+                },
+                "is_mob_verify": {
+                  "type": "number",
+                  "example": 1
+                },
+                "is_addmob_verify": {
+                  "type": "number",
+                  "example": 1
+                },
+                "is_mail_verify": {
+                  "type": "number",
+                  "example": 1
                 },
                 "user_name": {
                   "type": "string",

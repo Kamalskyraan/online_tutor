@@ -98,6 +98,9 @@ export class ProfileModel {
   ) {
     const userFields: (keyof UpdateUserProfilePayload)[] = [
       "user_name",
+      "is_mob_verify",
+      "is_addmob_verify",
+      "is_mail_verify",
       "gender",
       "email",
       "mobile",

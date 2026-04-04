@@ -191,6 +191,10 @@ export interface studentPersonalBody {
 export interface UpdateUserProfilePayload {
   // 1
   user_name?: string;
+  is_mob_verify?: string;
+  is_mail_verify?: string;
+  is_addmob_verify?: string;
+  //
   gender?: "male" | "female" | "others";
   is_show_num?: boolean;
   about_myself?: string;
