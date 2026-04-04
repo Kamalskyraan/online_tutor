@@ -93,10 +93,12 @@ export class ProfileController {
   static changePrimary = async (req: Request, res: Response) => {
     try {
       const { new_primary_number, country_code, user_id } = req.body;
+
+     
       const existing = await profileMdl.checkExistingPrimaryNumber(user_id);
 
       const oldMobile = existing.primary_num;
-
+      const oldCountry_code = existing.country_code;
       if (oldMobile === new_primary_number) {
         return sendResponse(res, 200, 0, [], "Already This is primary number");
       }
@@ -105,6 +107,7 @@ export class ProfileController {
         user_id,
         new_primary_number,
         country_code,
+        oldMobile,
       );
       return sendResponse(
         res,
@@ -205,7 +208,29 @@ export class ProfileController {
       );
     }
   };
+  static updateProfilePic = async (req: Request, res: Response) => {
+    try {
+      const { profile_id, user_id } = req.body;
+      if (!profile_id) {
+        return sendResponse(res, 200, 0, [], "Profile ID is required", []);
+      }
+      if (!user_id) {
+        return sendResponse(res, 200, 0, [], "User ID is required", []);
+      }
+      await profileMdl.updateProfileImage(user_id, profile_id);
+      return sendResponse(
+        res,
+        200,
+        1,
+        [],
+        "Profile Image Update Successfully",
+        [],
+      );
+    } catch (err: any) {
+      return sendResponse(res, 500, 0, [], "Internal Server Error", [
+        err.errors || err.message || err,
+      ]);
+    }
+  };
   
 }
-
-

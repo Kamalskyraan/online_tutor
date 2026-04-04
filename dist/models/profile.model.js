@@ -13,7 +13,8 @@ class ProfileModel {
             const [rows] = await (0, helper_1.executeQuery)(`SELECT 
         u.user_id, u.user_name, u.profile_img, u.gender,
         u.country_code, u.mobile, u.email,
-        u.district, u.state, u.pincode,
+        u.district, u.state, u.pincode,u.is_show_num , u.lat , u.lng , 
+        u.is_mob_verify , u.is_addmob_verify , u.is_mail_verify,
         
         u.add_mobile, u.primary_num,
         u.country, u.address, u.area, u.self_about,
@@ -31,7 +32,8 @@ class ProfileModel {
         u.country_code, u.mobile, u.email,
         u.district, u.state, u.pincode,
         u.add_mobile, u.primary_num,
-        u.country, u.address, u.area, u.self_about,
+        u.country, u.address, u.area, u.self_about,u.is_show_num , u.lat , u.lng , 
+        u.is_mob_verify , u.is_addmob_verify , u.is_mail_verify,
 
         s.student_id,
         s.stream_id as student_stream_id,
@@ -126,13 +128,19 @@ class ProfileModel {
         }
     }
     async checkExistingPrimaryNumber(user_id) {
-        const [rows] = await (0, helper_1.executeQuery)(`SELECT primary_num FROM users WHERE user_id = ?`, [user_id]);
+        const [rows] = await (0, helper_1.executeQuery)(`SELECT primary_num , country_code FROM users WHERE user_id = ?`, [user_id]);
         return rows;
     }
-    async updatePrimaryNumber(user_id, mobile, country_code) {
+    async updatePrimaryNumber(user_id, new_primary_number, country_code, oldMobile) {
         await (0, helper_1.executeQuery)(`UPDATE users 
-     SET primary_num = ?, country_code = ?
-     WHERE user_id = ?`, [mobile, country_code, user_id]);
+     SET mobile = ? ,  primary_num = ?, country_code = ? , add_mobile = ?
+     WHERE user_id = ?`, [
+            new_primary_number,
+            new_primary_number,
+            country_code,
+            oldMobile,
+            user_id,
+        ]);
         return true;
     }
     async updateAdditionalMobile(add_mobile, user_id) {
@@ -145,6 +153,10 @@ class ProfileModel {
     async checkOldPassword(user_id) {
         const [rows] = await (0, helper_1.executeQuery)(`SELECT password FROM users WHERE user_id = ?`, [user_id]);
         return rows;
+    }
+    async updateProfileImage(user_id, profile_id) {
+        const [result] = await (0, helper_1.executeQuery)(`UPDATE users SET profile_img WHERE user_id = ?`, [profile_id, user_id]);
+        return result;
     }
 }
 exports.ProfileModel = ProfileModel;

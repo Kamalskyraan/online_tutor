@@ -10,6 +10,8 @@ export interface RequestOtps {
   country_code: string;
   mobile: string;
   otp?: string;
+  email?: string;
+  add_mobile?: string;
 }
 
 export interface RequestOTPBody {
@@ -23,6 +25,7 @@ export interface createOtp {
   otp: string;
   expires_at: Date;
   country_code?: string;
+  add_mobile?: string;
 }
 
 // singup

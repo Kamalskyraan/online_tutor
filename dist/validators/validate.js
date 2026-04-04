@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.reportSchema = exports.reviewLikeSchema = exports.getDemosSchema = exports.addUpdateDemosSchema = exports.addUpdateLangSchema = exports.replyReviewSchema = exports.fetchReviewSchema = exports.reviewSchema = exports.updateStudentSchema = exports.updateTutorSubjectsSchema = exports.subjectSchema = exports.getUserDetailsSchema = exports.updateUserProfileSchema = exports.updateTutorSchema = exports.educationStreamSchema = exports.educationSchema = exports.resetPasswordSchema = exports.loginSchema = exports.signupSchema = exports.verifyOtpSchema = exports.requestOtSchema = exports.helpSchema = void 0;
+exports.reportSchema = exports.reviewLikeSchema = exports.getDemosSchema = exports.addUpdateDemosSchema = exports.addUpdateLangSchema = exports.replyReviewSchema = exports.fetchReviewSchema = exports.reviewSchema = exports.updateStudentSchema = exports.updateTutorSubjectsSchema = exports.subjectSchema = exports.getUserDetailsSchema = exports.updateUserProfileSchema = exports.updateTutorSchema = exports.educationStreamSchema = exports.educationSchema = exports.resetPasswordSchema = exports.loginSchema = exports.signupSchema = exports.helpSchema = void 0;
 const joi_1 = __importDefault(require("joi"));
 exports.helpSchema = joi_1.default.object({
     id: joi_1.default.number().optional().messages({
@@ -31,39 +31,42 @@ exports.helpSchema = joi_1.default.object({
         "string.empty": "Support For Whom is required",
     }),
 });
-exports.requestOtSchema = joi_1.default.object({
-    country_code: joi_1.default.string().messages({
-        "any.required": "Country Code is required",
-        "string.empty": "Country code is required",
-    }),
-    mobile: joi_1.default.string().pattern(/^[0-9]{7,15}$/),
-    email: joi_1.default.string(),
-    type: joi_1.default.string().valid("0", "1", "2").required().messages({
-        "any.only": "Type must be either 0 or 1 or 2",
-        "number.base": "Type must be a number",
-        "any.required": "Type is required",
-    }),
-});
-exports.verifyOtpSchema = joi_1.default.object({
-    country_code: joi_1.default.string().required().messages({
-        "any.required": "Country code is required",
-        "string.empty": "Country code cannot be empty",
-    }),
-    mobile: joi_1.default.string().min(8).max(15).required().messages({
-        "any.required": "Mobile number is required",
-        "string.empty": "Mobile number cannot be empty",
-        "string.min": "Invalid mobile number",
-    }),
-    otp: joi_1.default.string()
-        .length(4)
-        .pattern(/^[0-9]+$/)
-        .required()
-        .messages({
-        "any.required": "OTP is required",
-        "string.length": "OTP must be 4 digits",
-        "string.pattern.base": "OTP must contain only numbers",
-    }),
-});
+// export const requestOtSchema = Joi.object({
+//   country_code: Joi.string().allow(null, "").messages({
+//     "any.required": "Country Code is required",
+//     "string.empty": "Country code is required",
+//   }),
+//   mobile: Joi.string()
+//     .pattern(/^[0-9]{7,15}$/)
+//     .allow(null, ""),
+//   email: Joi.string().allow(null, ""),
+//   type: Joi.string().valid("0", "1", "2").allow(null, "").messages({
+//     "any.only": "Type must be either 0 or 1 or 2",
+//     "number.base": "Type must be a number",
+//     "any.required": "Type is required",
+//   }),
+// });
+// export const verifyOtpSchema = Joi.object({
+//   country_code: Joi.string().required().messages({
+//     "any.required": "Country code is required",
+//     "string.empty": "Country code cannot be empty",
+//   }),
+//   mobile: Joi.string().min(8).max(15).required().messages({
+//     "any.required": "Mobile number is required",
+//     "string.empty": "Mobile number cannot be empty",
+//     "string.min": "Invalid mobile number",
+//   }),
+//   otp: Joi.string()
+//     .length(4)
+//     .pattern(/^[0-9]+$/)
+//     .required()
+//     .messages({
+//       "any.required": "OTP is required",
+//       "string.length": "OTP must be 4 digits",
+//       "string.pattern.base": "OTP must contain only numbers",
+//     }),
+//   email: Joi.string().optional(),
+// });
 exports.signupSchema = joi_1.default.object({
     user_name: joi_1.default.string().trim().min(3).max(50).required().messages({
         "string.base": "User name must be a text",

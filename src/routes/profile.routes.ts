@@ -112,4 +112,61 @@ router.post("/check-old-password", (req, res) => {
   ProfileController.checkOldPassword(req, res);
 });
 
+router.post("/update-profile", (req, res) => {
+  /*
+    #swagger.tags = ['3.Profile']
+    #swagger.summary = 'update Profile Image'
+    #swagger.description = 'Update Profile Image'
+
+    
+    #swagger.parameters['body'] = {
+      in: 'body',
+      required: true,
+      schema: {  
+        user_id : "USER_7wbjv2wt",
+        profile_id : "1"
+      }
+    }
+
+
+    #swagger.responses[200] = {
+      description: "Profile Image updated successfully"
+    }
+
+    #swagger.responses[500] = {
+      description: "Internal Server Error"
+    }
+  */
+  ProfileController.updateProfilePic(req, res);
+});
+
+router.post("/change-primary", (req, res) => {
+  /*
+    #swagger.tags = ['3.Profile']
+    #swagger.summary = 'update Primary Number'
+    #swagger.description = 'Update Primary Number'
+
+    
+    #swagger.parameters['body'] = {
+      in: 'body',
+      required: true,
+      schema: {  
+        user_id : "USER_7wbjv2wt",
+        new_primary_number : "9988776655",
+        country_code : "+91",
+        
+      }
+    }
+
+
+    #swagger.responses[200] = {
+      description: "Profile Image updated successfully"
+    }
+
+    #swagger.responses[500] = {
+      description: "Internal Server Error"
+    }
+  */
+  ProfileController.changePrimary(req, res);
+});
 export default router;

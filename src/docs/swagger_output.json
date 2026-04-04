@@ -67,6 +67,14 @@
                 "type": {
                   "type": "string",
                   "example": "0 or 1 or 2"
+                },
+                "email": {
+                  "type": "string",
+                  "example": "abc@gmail.com"
+                },
+                "add_mobile": {
+                  "type": "string",
+                  "example": "9876543211"
                 }
               }
             }
@@ -108,6 +116,14 @@
                 "otp": {
                   "type": "string",
                   "example": "1234"
+                },
+                "email": {
+                  "type": "string",
+                  "example": "abc@gmail.com"
+                },
+                "add_mobile": {
+                  "type": "string",
+                  "example": "9876543211"
                 }
               }
             }
@@ -729,30 +745,41 @@
     },
     "/api/profile/change-primary": {
       "post": {
-        "description": "",
+        "tags": [
+          "3.Profile"
+        ],
+        "summary": "update Primary Number",
+        "description": "Update Primary Number",
         "parameters": [
           {
             "name": "body",
             "in": "body",
+            "required": true,
             "schema": {
               "type": "object",
               "properties": {
+                "user_id": {
+                  "type": "string",
+                  "example": "USER_7wbjv2wt"
+                },
                 "new_primary_number": {
-                  "example": "any"
+                  "type": "string",
+                  "example": "9988776655"
                 },
                 "country_code": {
-                  "example": "any"
-                },
-                "user_id": {
-                  "example": "any"
+                  "type": "string",
+                  "example": "+91"
                 }
               }
             }
           }
         ],
         "responses": {
-          "default": {
-            "description": ""
+          "200": {
+            "description": "Profile Image updated successfully"
+          },
+          "500": {
+            "description": "Internal Server Error"
           }
         }
       }
@@ -814,6 +841,43 @@
         "responses": {
           "200": {
             "description": "Password is correct"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/profile/update-profile": {
+      "post": {
+        "tags": [
+          "3.Profile"
+        ],
+        "summary": "update Profile Image",
+        "description": "Update Profile Image",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "user_id": {
+                  "type": "string",
+                  "example": "USER_7wbjv2wt"
+                },
+                "profile_id": {
+                  "type": "string",
+                  "example": "1"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Profile Image updated successfully"
           },
           "500": {
             "description": "Internal Server Error"
@@ -2281,8 +2345,35 @@
     },
     "/api/cmn/upload": {
       "post": {
-        "description": "",
+        "tags": [
+          "11.Common"
+        ],
+        "summary": "Upload Image | Video | PDF",
+        "description": "Upload files to Server and return file details",
+        "consumes": [
+          "multipart/form-data"
+        ],
         "parameters": [
+          {
+            "name": "file",
+            "in": "formData",
+            "type": "file",
+            "required": true,
+            "description": "File to upload (image, video, pdf)"
+          },
+          {
+            "name": "category",
+            "in": "formData",
+            "type": "string",
+            "required": true,
+            "description": "File category",
+            "enum": [
+              "image",
+              "video",
+              "pdf",
+              "docx"
+            ]
+          },
           {
             "name": "body",
             "in": "body",
@@ -2297,8 +2388,11 @@
           }
         ],
         "responses": {
-          "default": {
-            "description": ""
+          "200": {
+            "description": "File uploaded successfully"
+          },
+          "500": {
+            "description": "Internal Server Error"
           }
         }
       }

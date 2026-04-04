@@ -14,7 +14,8 @@ export class ProfileModel {
         `SELECT 
         u.user_id, u.user_name, u.profile_img, u.gender,
         u.country_code, u.mobile, u.email,
-        u.district, u.state, u.pincode,
+        u.district, u.state, u.pincode,u.is_show_num , u.lat , u.lng , 
+        u.is_mob_verify , u.is_addmob_verify , u.is_mail_verify,
         
         u.add_mobile, u.primary_num,
         u.country, u.address, u.area, u.self_about,
@@ -35,7 +36,8 @@ export class ProfileModel {
         u.country_code, u.mobile, u.email,
         u.district, u.state, u.pincode,
         u.add_mobile, u.primary_num,
-        u.country, u.address, u.area, u.self_about,
+        u.country, u.address, u.area, u.self_about,u.is_show_num , u.lat , u.lng , 
+        u.is_mob_verify , u.is_addmob_verify , u.is_mail_verify,
 
         s.student_id,
         s.stream_id as student_stream_id,
@@ -155,7 +157,7 @@ export class ProfileModel {
 
   async checkExistingPrimaryNumber(user_id: string) {
     const [rows]: any = await executeQuery(
-      `SELECT primary_num FROM users WHERE user_id = ?`,
+      `SELECT primary_num , country_code FROM users WHERE user_id = ?`,
       [user_id],
     );
 
@@ -164,14 +166,21 @@ export class ProfileModel {
 
   async updatePrimaryNumber(
     user_id: string,
-    mobile: string,
+    new_primary_number: string,
     country_code: string,
+    oldMobile: string,
   ) {
     await executeQuery(
       `UPDATE users 
-     SET primary_num = ?, country_code = ?
+     SET mobile = ? ,  primary_num = ?, country_code = ? , add_mobile = ?
      WHERE user_id = ?`,
-      [mobile, country_code, user_id],
+      [
+        new_primary_number,
+        new_primary_number,
+        country_code,
+        oldMobile,
+        user_id,
+      ],
     );
 
     return true;
@@ -192,5 +201,14 @@ export class ProfileModel {
     );
 
     return rows;
+  }
+
+  async updateProfileImage(user_id: string, profile_id: string) {
+    const [result]: any = await executeQuery(
+      `UPDATE users SET profile_img WHERE user_id = ?`,
+      [profile_id, user_id],
+    );
+
+    return result;
   }
 }

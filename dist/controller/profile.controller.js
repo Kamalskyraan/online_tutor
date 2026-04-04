@@ -65,10 +65,11 @@ ProfileController.changePrimary = async (req, res) => {
         const { new_primary_number, country_code, user_id } = req.body;
         const existing = await profileMdl.checkExistingPrimaryNumber(user_id);
         const oldMobile = existing.primary_num;
+        const oldCountry_code = existing.country_code;
         if (oldMobile === new_primary_number) {
             return (0, helper_1.sendResponse)(res, 200, 0, [], "Already This is primary number");
         }
-        await profileMdl.updatePrimaryNumber(user_id, new_primary_number, country_code);
+        await profileMdl.updatePrimaryNumber(user_id, new_primary_number, country_code, oldMobile);
         return (0, helper_1.sendResponse)(res, 200, 1, [], "Primary Number Changed successfully");
     }
     catch (err) {
@@ -108,6 +109,24 @@ ProfileController.checkOldPassword = async (req, res) => {
     }
     catch (err) {
         return (0, helper_1.sendResponse)(res, 500, 0, [], "Something went wrong", err.errors || err.message || err);
+    }
+};
+ProfileController.updateProfilePic = async (req, res) => {
+    try {
+        const { profile_id, user_id } = req.body;
+        if (!profile_id) {
+            return (0, helper_1.sendResponse)(res, 200, 0, [], "Profile ID is required", []);
+        }
+        if (!user_id) {
+            return (0, helper_1.sendResponse)(res, 200, 0, [], "User ID is required", []);
+        }
+        await profileMdl.updateProfileImage(user_id, profile_id);
+        return (0, helper_1.sendResponse)(res, 200, 1, [], "Profile Image Update Successfully", []);
+    }
+    catch (err) {
+        return (0, helper_1.sendResponse)(res, 500, 0, [], "Internal Server Error", [
+            err.errors || err.message || err,
+        ]);
     }
 };
 //# sourceMappingURL=profile.controller.js.map

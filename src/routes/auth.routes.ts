@@ -16,7 +16,9 @@ router.post("/request-otp", (req, res) => {
       schema: {
         mobile: '9876543210',
         country_code : '+91',
-        type : "0 or 1 or 2"
+        type : "0 or 1 or 2",
+        email : "abc@gmail.com",
+        add_mobile : "9876543211"
       }
     }
 
@@ -45,7 +47,9 @@ router.post("/verify-otp", (req, res) => {
       schema: {
         mobile: '9876543210',
         country_code : '+91',
-        otp : '1234'
+        otp : '1234',
+        email : "abc@gmail.com",
+        add_mobile : "9876543211"
       }
     }
 

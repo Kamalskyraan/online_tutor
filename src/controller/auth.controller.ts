@@ -17,10 +17,8 @@ import {
 } from "../utils/helper";
 import {
   loginSchema,
-  requestOtSchema,
   resetPasswordSchema,
   signupSchema,
-  verifyOtpSchema,
 } from "../validators/validate";
 import { sendMail } from "../service/mail.service";
 import { UserModel } from "../models/user.model";
@@ -33,11 +31,9 @@ const tutMdl = new TutorModel();
 export class AuthController {
   static RequestOtp = async (req: Request, res: Response) => {
     try {
-      const { country_code, mobile, email, type } = validateRequest(
-        req.body,
-        requestOtSchema,
-      );
-      const user = await authModel.findUser(country_code, mobile);
+      const { country_code, mobile, email, type, add_mobile } = req.body;
+
+      const user = await authModel.findUser(country_code, mobile, add_mobile);
       if (type === "1") {
         if (user) {
           return sendResponse(res, 200, 0, [], "User already exists", []);
@@ -52,7 +48,14 @@ export class AuthController {
 
       const otp = generateOTP();
       const expires_at = getOTPExpiry();
-      await createOTP({ mobile, email, country_code, otp, expires_at });
+      await createOTP({
+        mobile,
+        email,
+        country_code,
+        otp,
+        expires_at,
+        add_mobile,
+      });
 
       // if (process.env.NODE_ENV === "production") {
       //   await sendSmsOTP(mobile, otp);
@@ -82,14 +85,14 @@ export class AuthController {
   };
   static VerifyOtp = async (req: Request, res: Response) => {
     try {
-      const { country_code, mobile, otp } = validateRequest(
-        req.body,
-        verifyOtpSchema,
-      );
+      const { country_code, mobile, otp, email, add_mobile } = req.body;
+
       const otpRecord = await getValiOTP({
         country_code,
         mobile,
         otp,
+        email,
+        add_mobile,
       });
 
       if (otpRecord.message === "invalid") {
