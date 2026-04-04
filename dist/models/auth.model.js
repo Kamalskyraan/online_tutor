@@ -18,6 +18,8 @@ const createOTP = async (data) => {
 exports.createOTP = createOTP;
 const getValiOTP = async (data) => {
     const { country_code, mobile, otp, email } = data;
+    if (!otp)
+        return { message: "invalid" };
     let query = `
     SELECT id, expires_at, is_used 
     FROM otp 
@@ -36,8 +38,8 @@ const getValiOTP = async (data) => {
         return { message: "invalid" };
     }
     query += ` ORDER BY id DESC LIMIT 1`;
-    const [rows] = await (0, helper_1.executeQuery)(query, params);
-    if (!rows?.length) {
+    const rows = await (0, helper_1.executeQuery)(query, params);
+    if (!rows || !rows.length) {
         return { message: "invalid" };
     }
     const otpRecord = rows[0];

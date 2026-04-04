@@ -202,6 +202,9 @@ exports.updateTutorSchema = joi_1.default.object({
 });
 exports.updateUserProfileSchema = joi_1.default.object({
     user_id: joi_1.default.string().required(),
+    is_mob_verify: joi_1.default.number().optional(),
+    is_mail_verify: joi_1.default.number().optional(),
+    is_addmob_verify: joi_1.default.number().optional(),
     // 1
     user_name: joi_1.default.string(),
     represent: joi_1.default.string().valid("1", "2", "3"),

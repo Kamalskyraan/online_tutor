@@ -228,6 +228,9 @@ export const updateTutorSchema = Joi.object({
 
 export const updateUserProfileSchema = Joi.object({
   user_id: Joi.string().required(),
+  is_mob_verify: Joi.number().optional(),
+  is_mail_verify: Joi.number().optional(),
+  is_addmob_verify: Joi.number().optional(),
   // 1
   user_name: Joi.string(),
   represent: Joi.string().valid("1", "2", "3"),

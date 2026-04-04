@@ -28,6 +28,8 @@ export const createOTP = async (data: createOtp) => {
 export const getValiOTP = async (data: RequestOtps) => {
   const { country_code, mobile, otp, email } = data;
 
+  if (!otp) return { message: "invalid" };
+
   let query = `
     SELECT id, expires_at, is_used 
     FROM otp 
@@ -48,9 +50,9 @@ export const getValiOTP = async (data: RequestOtps) => {
 
   query += ` ORDER BY id DESC LIMIT 1`;
 
-  const [rows]: any = await executeQuery(query, params);
+  const rows: any = await executeQuery(query, params);
 
-  if (!rows?.length) {
+  if (!rows || !rows.length) {
     return { message: "invalid" };
   }
 
