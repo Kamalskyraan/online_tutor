@@ -188,15 +188,8 @@ export class ProfileModel {
   ) {
     await executeQuery(
       `UPDATE users 
-     SET mobile = ? ,  primary_num = ?, country_code = ? , add_mobile = ?
-     WHERE user_id = ?`,
-      [
-        new_primary_number,
-        new_primary_number,
-        country_code,
-        oldMobile,
-        user_id,
-      ],
+     SET   primary_num = ?  WHERE user_id = ?`,
+      [new_primary_number, user_id],
     );
 
     return true;

@@ -150,14 +150,7 @@ class ProfileModel {
     }
     async updatePrimaryNumber(user_id, new_primary_number, country_code, oldMobile) {
         await (0, helper_1.executeQuery)(`UPDATE users 
-     SET mobile = ? ,  primary_num = ?, country_code = ? , add_mobile = ?
-     WHERE user_id = ?`, [
-            new_primary_number,
-            new_primary_number,
-            country_code,
-            oldMobile,
-            user_id,
-        ]);
+     SET   primary_num = ?  WHERE user_id = ?`, [new_primary_number, user_id]);
         return true;
     }
     async updateAdditionalMobile(add_mobile, user_id) {
