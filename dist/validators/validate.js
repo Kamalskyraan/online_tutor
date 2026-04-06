@@ -213,7 +213,7 @@ exports.updateUserProfileSchema = joi_1.default.object({
     about_myself: joi_1.default.string().allow(null, ""),
     email: joi_1.default.string(),
     mobile: joi_1.default.string(),
-    add_mobile: joi_1.default.string(),
+    add_mobile: joi_1.default.string().allow(null, ""),
     primary_num: joi_1.default.string(),
     tutor_exp: joi_1.default.string(),
     exp_year: joi_1.default.string(),

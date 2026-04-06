@@ -239,7 +239,7 @@ export const updateUserProfileSchema = Joi.object({
   about_myself: Joi.string().allow(null, ""),
   email: Joi.string(),
   mobile: Joi.string(),
-  add_mobile: Joi.string(),
+  add_mobile: Joi.string().allow(null, ""),
   primary_num: Joi.string(),
   tutor_exp: Joi.string(),
   exp_year: Joi.string(),
