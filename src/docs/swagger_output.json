@@ -5,7 +5,7 @@
     "description": "Api Docs",
     "version": "1.0.0"
   },
-  "host": "localhost:5012",
+  "host": "online-tutor.skyraantech.com/server",
   "basePath": "/",
   "schemes": [
     "https"
