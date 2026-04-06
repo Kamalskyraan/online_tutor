@@ -19,6 +19,7 @@ class ProfileModel {
         u.add_mobile, u.primary_num,
         u.country, u.address, u.area, u.self_about,
         t.tutor_id, t.represent, t.stream_id, t.tutor_exp,
+        t.exp_year , t.exp_month,
         cy.currency
       FROM users u
       LEFT JOIN tutor t ON t.user_id = u.user_id
@@ -126,6 +127,10 @@ class ProfileModel {
             tutorUpdateData.represent = payload.represent;
         if (payload.tutor_exp !== undefined)
             tutorUpdateData.tutor_exp = payload.tutor_exp;
+        if (payload.exp_year !== undefined)
+            tutorUpdateData.exp_year = payload.exp_year;
+        if (payload.exp_month !== undefined)
+            tutorUpdateData.exp_month = payload.exp_month;
         if (payload.stream_id !== undefined && payload.stream_id !== null) {
             tutorUpdateData.stream_id = payload.stream_id;
         }

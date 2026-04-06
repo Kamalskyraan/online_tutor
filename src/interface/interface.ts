@@ -214,7 +214,11 @@ export interface UpdateUserProfilePayload {
 
   represent?: "1" | "2" | "3";
   tutor_exp?: string;
+  exp_year?: string;
+  exp_month?: string;
   stream_id: string;
+
+  //
 }
 
 export interface userDetailsRequest {

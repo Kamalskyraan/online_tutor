@@ -732,6 +732,18 @@
                                 "self_about": {
                                     "type": "string",
                                     "example": "abc def ghi"
+                                },
+                                "tutor_exp": {
+                                    "type": "string",
+                                    "example": "0 or 1"
+                                },
+                                "exp_year": {
+                                    "type": "string",
+                                    "example": "1"
+                                },
+                                "exp_month": {
+                                    "type": "string",
+                                    "example": "11"
                                 }
                             }
                         }

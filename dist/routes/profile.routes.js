@@ -60,7 +60,10 @@ router.post("/add-update-userdata", (req, res) => {
         stream_id : "1",
         represent: "1 or 2 or 3",
         is_show_num : 1,
-        self_about : "abc def ghi"
+        self_about : "abc def ghi",
+        tutor_exp : "0 or 1",
+        exp_year : "1",
+        exp_month: "11"
 
       }
     }

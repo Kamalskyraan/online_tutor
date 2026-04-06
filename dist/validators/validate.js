@@ -216,6 +216,8 @@ exports.updateUserProfileSchema = joi_1.default.object({
     add_mobile: joi_1.default.string(),
     primary_num: joi_1.default.string(),
     tutor_exp: joi_1.default.string(),
+    exp_year: joi_1.default.string(),
+    exp_month: joi_1.default.string(),
     country_code: joi_1.default.string(),
     profile_img: joi_1.default.string(),
     // 2
