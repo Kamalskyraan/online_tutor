@@ -226,7 +226,7 @@ exports.updateUserProfileSchema = joi_1.default.object({
     address: joi_1.default.string(),
     area: joi_1.default.string(),
     // 3
-    stream_id: joi_1.default.number(),
+    stream_id: joi_1.default.string(),
 });
 exports.getUserDetailsSchema = joi_1.default.object({
     user_id: joi_1.default.string().optional().allow("").messages({

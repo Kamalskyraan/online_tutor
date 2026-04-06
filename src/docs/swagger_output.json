@@ -5,7 +5,7 @@
     "description": "Api Docs",
     "version": "1.0.0"
   },
-  "host": "online-tutor.skyraantech.com/server",
+  "host": "localhost:5012",
   "basePath": "/",
   "schemes": [
     "https"
@@ -718,8 +718,8 @@
                   "example": "no.123/qwe"
                 },
                 "stream_id": {
-                  "type": "number",
-                  "example": 1
+                  "type": "string",
+                  "example": "1"
                 },
                 "represent": {
                   "type": "string",
@@ -882,6 +882,43 @@
         "responses": {
           "200": {
             "description": "Profile Image updated successfully"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/profile/change-register-num": {
+      "post": {
+        "tags": [
+          "3.Profile"
+        ],
+        "summary": "update Register Number",
+        "description": "Update Register Number",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "user_id": {
+                  "type": "string",
+                  "example": "USER_7wbjv2wt"
+                },
+                "mobile": {
+                  "type": "string",
+                  "example": "9876543210"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Register Number updated successfully"
           },
           "500": {
             "description": "Internal Server Error"

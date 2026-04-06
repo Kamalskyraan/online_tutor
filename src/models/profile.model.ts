@@ -82,7 +82,7 @@ export class ProfileModel {
         row.profile_img = [];
       }
     }
-    console.log("jjj");
+
     return {
       role: user_role,
       data: row,
@@ -149,8 +149,9 @@ export class ProfileModel {
     if (payload.tutor_exp !== undefined)
       tutorUpdateData.tutor_exp = payload.tutor_exp;
 
-    if (payload.stream !== undefined)
-      tutorUpdateData.stream_id = payload.stream;
+    if (payload.stream_id !== undefined && payload.stream_id !== null) {
+      tutorUpdateData.stream_id = payload.stream_id;
+    }
 
     if (Object.keys(tutorUpdateData).length > 0) {
       const setClause = Object.keys(tutorUpdateData)
@@ -213,9 +214,25 @@ export class ProfileModel {
   }
 
   async updateProfileImage(user_id: string, profile_id: string) {
+    const value = profile_id ? profile_id : null;
     const result: any = await executeQuery(
       `UPDATE users SET profile_img = ? WHERE user_id = ?`,
-      [profile_id, user_id],
+      [value, user_id],
+    );
+
+    return {
+      affectedRows: result?.affectedRows || 0,
+      changedRows: result?.changedRows || 0,
+    };
+  }
+
+  async updateRegisterNumber(user_id: string, mobile: string) {
+    const result: any = await executeQuery(
+      `UPDATE users 
+     SET mobile = ?, 
+         is_mob_verify = 1
+     WHERE user_id = ?`,
+      [mobile, user_id],
     );
 
     return {

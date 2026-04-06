@@ -255,7 +255,7 @@ export const updateUserProfileSchema = Joi.object({
 
   // 3
 
-  stream_id: Joi.number(),
+  stream_id: Joi.string(),
 });
 
 export const getUserDetailsSchema = Joi.object({

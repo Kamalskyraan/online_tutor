@@ -210,12 +210,14 @@ export class ProfileController {
   };
   static updateProfilePic = async (req: Request, res: Response) => {
     try {
-      const { profile_id, user_id } = req.body;
-      if (!profile_id) {
-        return sendResponse(res, 200, 0, [], "Profile ID is required", []);
-      }
+      let { profile_id, user_id } = req.body;
+
       if (!user_id) {
         return sendResponse(res, 200, 0, [], "User ID is required", []);
+      }
+
+      if (!profile_id) {
+        profile_id = null;
       }
       const result = await profileMdl.updateProfileImage(user_id, profile_id);
       if (result.affectedRows === 0) {
@@ -227,6 +229,50 @@ export class ProfileController {
         1,
         [],
         "Profile Image Update Successfully",
+        [],
+      );
+    } catch (err: any) {
+      console.log(err);
+      return sendResponse(res, 500, 0, [], "Internal Server Error", [
+        err.errors || err.message || err,
+      ]);
+    }
+  };
+
+  static changeRegisterNumber = async (req: Request, res: Response) => {
+    try {
+      const { user_id, mobile } = req.body;
+
+      if (!user_id) {
+        return sendResponse(res, 200, 0, [], "User ID is required", []);
+      }
+
+      if (!mobile) {
+        return sendResponse(res, 200, 0, [], "Mobile number is required", []);
+      }
+
+      const result: any = await profileMdl.updateRegisterNumber(
+        user_id,
+        mobile,
+      );
+
+      if (!result || result.affectedRows === 0) {
+        return sendResponse(
+          res,
+          200,
+          0,
+          [],
+          "User not found or not updated",
+          [],
+        );
+      }
+
+      return sendResponse(
+        res,
+        200,
+        1,
+        [],
+        "Register Number Updated Successfully",
         [],
       );
     } catch (err: any) {

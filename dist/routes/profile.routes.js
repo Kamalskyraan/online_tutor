@@ -57,7 +57,7 @@ router.post("/add-update-userdata", (req, res) => {
         district : "Dindigul",
         area : "gaandhimaanagar",
         address : "no.123/qwe",
-        stream_id : 1,
+        stream_id : "1",
         represent: "1 or 2 or 3",
         is_show_num : 1,
         self_about : "abc def ghi"
@@ -160,6 +160,34 @@ router.post("/change-primary", (req, res) => {
       }
     */
     profile_controller_1.ProfileController.changePrimary(req, res);
+});
+router.post("/change-register-num", (req, res) => {
+    /*
+      #swagger.tags = ['3.Profile']
+      #swagger.summary = 'update Register Number'
+      #swagger.description = 'Update Register Number'
+  
+      
+      #swagger.parameters['body'] = {
+        in: 'body',
+        required: true,
+        schema: {
+          user_id : "USER_7wbjv2wt",
+          mobile : "9876543210"
+          
+        }
+      }
+  
+  
+      #swagger.responses[200] = {
+        description: "Register Number updated successfully"
+      }
+  
+      #swagger.responses[500] = {
+        description: "Internal Server Error"
+      }
+    */
+    profile_controller_1.ProfileController.changeRegisterNumber(req, res);
 });
 exports.default = router;
 //# sourceMappingURL=profile.routes.js.map
