@@ -175,9 +175,14 @@ class ProfileModel {
     }
     async updateRegisterNumber(user_id, mobile) {
         const result = await (0, helper_1.executeQuery)(`UPDATE users 
-     SET mobile = ?, 
-         is_mob_verify = 1
-     WHERE user_id = ?`, [mobile, user_id]);
+     SET 
+       mobile = ?,
+       primary_num = CASE 
+         WHEN primary_num = mobile THEN ?
+         ELSE primary_num
+       END,
+       is_mob_verify = 1
+     WHERE user_id = ?`, [mobile, mobile, user_id]);
         return {
             affectedRows: result?.affectedRows || 0,
             changedRows: result?.changedRows || 0,

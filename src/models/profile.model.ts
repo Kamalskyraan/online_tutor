@@ -229,10 +229,15 @@ export class ProfileModel {
   async updateRegisterNumber(user_id: string, mobile: string) {
     const result: any = await executeQuery(
       `UPDATE users 
-     SET mobile = ?, 
-         is_mob_verify = 1
+     SET 
+       mobile = ?,
+       primary_num = CASE 
+         WHEN primary_num = mobile THEN ?
+         ELSE primary_num
+       END,
+       is_mob_verify = 1
      WHERE user_id = ?`,
-      [mobile, user_id],
+      [mobile, mobile, user_id],
     );
 
     return {
