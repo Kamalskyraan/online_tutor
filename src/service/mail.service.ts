@@ -3,8 +3,8 @@ import dotenv from "dotenv";
 dotenv.config();
 
 const configOptions = {
-  host: "mail.skyraantech.com",
-  port: 465,
+  host: "smtp.example.com",
+  port: 587,
   secure: true,
   auth: {
     user: process.env.SENDER_MAIL,

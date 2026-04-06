@@ -12,6 +12,7 @@ class ProfileModel {
         if (user_role === "tutor") {
             const [rows] = await (0, helper_1.executeQuery)(`SELECT 
         u.user_id, u.user_name, u.profile_img, u.gender,
+        u.num_changed_at ,
         u.country_code, u.mobile, u.email,
         u.district, u.state, u.pincode,u.is_show_num , u.lat , u.lng , 
         u.is_mob_verify , u.is_addmob_verify , u.is_mail_verify,
@@ -31,6 +32,7 @@ class ProfileModel {
             const [rows] = await (0, helper_1.executeQuery)(`SELECT 
         u.user_id, u.user_name, u.profile_img, u.gender,
         u.dob,
+        num_changed_at,
         u.country_code, u.mobile, u.email,
         u.district, u.state, u.pincode,
         u.add_mobile, u.primary_num,
@@ -255,7 +257,8 @@ class ProfileModel {
          WHEN primary_num = mobile THEN ?
          ELSE primary_num
        END,
-       is_mob_verify = 1
+       is_mob_verify = 1,
+       num_changed_at = CURDATE() 
      WHERE user_id = ?`, [mobile, mobile, user_id]);
         return {
             affectedRows: result?.affectedRows || 0,
