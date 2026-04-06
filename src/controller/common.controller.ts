@@ -117,7 +117,7 @@ export class CommonController {
           id: uploadId,
           category,
           pathname: file.filename,
-          url: `${req.protocol}://${req.get("host")}/uploads/${file.filename}`,
+          url: `${process.env.ASSET_URL}/uploads/${file.filename}`,
           org_name: file.originalname,
           file_size: `${(file.size / (1024 * 1024)).toFixed(4)}MB`,
         },
