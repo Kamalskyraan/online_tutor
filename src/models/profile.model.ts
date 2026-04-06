@@ -36,7 +36,7 @@ export class ProfileModel {
         `SELECT 
         u.user_id, u.user_name, u.profile_img, u.gender,
         u.dob,
-        num_changed_at,
+        u.num_changed_at,
         u.country_code, u.mobile, u.email,
         u.district, u.state, u.pincode,
         u.add_mobile, u.primary_num,
