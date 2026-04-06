@@ -33,6 +33,7 @@ export class ProfileModel {
       const [rows]: any = await executeQuery(
         `SELECT 
         u.user_id, u.user_name, u.profile_img, u.gender,
+        u.dob,
         u.country_code, u.mobile, u.email,
         u.district, u.state, u.pincode,
         u.add_mobile, u.primary_num,

@@ -26,7 +26,7 @@ class commonModel {
         return result.insertId;
     }
     async saveUploadLoc(file, category) {
-        const fileUrl = `/uploads/${file.filename}`;
+        const fileUrl = `${process.env.ASSET_URL}/uploads/${file.filename}`;
         const query = `
     INSERT INTO media (pathname, org_name, file_url, file_type, file_size, mime_type)
     VALUES (?, ?, ?, ?, ?, ?)
