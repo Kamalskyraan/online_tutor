@@ -8,9 +8,9 @@ const nodemailer_1 = __importDefault(require("nodemailer"));
 const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
 const configOptions = {
-    host: "smtp.gmail.com",
-    port: 587,
-    secure: false,
+    host: "mail.server.skyraantech.com",
+    port: 465,
+    secure: true,
     auth: {
         user: process.env.SENDER_MAIL,
         pass: process.env.PASSWORD,
