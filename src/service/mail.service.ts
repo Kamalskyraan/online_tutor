@@ -3,7 +3,7 @@ import dotenv from "dotenv";
 dotenv.config();
 
 const configOptions = {
-  host: "mail.server.skyraantech.com",
+  host: "mail.skyraantech.com",
   port: 465,
   secure: true,
   auth: {
