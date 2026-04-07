@@ -164,5 +164,4 @@ export class AuthModel {
 
     return Array.isArray(rows) ? rows[0] : rows;
   }
-  
 }

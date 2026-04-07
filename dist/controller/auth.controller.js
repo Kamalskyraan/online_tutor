@@ -198,8 +198,8 @@ AuthController.login = async (req, res) => {
                 tutor_id,
                 student_id,
                 first_sub: FirstSub[0].id ?? 0,
-                is_deleted: (0, helper_1.convertNullToString)(user.is_deleted),
-                deleted_at: (0, helper_1.convertNullToString)(user.deleted_at),
+                is_deleted: user.is_deleted,
+                deleted_at: user?.deleted_at ?? "",
             },
         ], "Login successful", []);
     }

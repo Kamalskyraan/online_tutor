@@ -205,7 +205,30 @@ router.post("/add-update-like-tutor", (req, res) => {
 });
 
 router.post("/get-likes-about", (req, res) => {
-  
+  /*
+    #swagger.tags = ['8.Tutor']
+    #swagger.summary = 'Get Likes data'
+    #swagger.description = 'Get Likes data based on tutor_id or student_id'
+
+    #swagger.parameters['body'] = {
+      in: 'body',
+      required: false,
+      schema: {
+        tutor_id : "TUTOR_A2u50js3" ,
+        student_id : "STUDENT_7uwDAj0o"
+          }
+    }
+
+    #swagger.responses[200] = {
+      description: "Liked fetch  successfully",
+     
+    }
+
+    #swagger.responses[500] = {
+      description: "Something went wrong"
+    }
+  */
+
   return TutorController.getReviewsAboutTutor(req, res);
 });
 

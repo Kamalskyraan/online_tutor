@@ -1868,24 +1868,37 @@
     },
     "/api/tutor/get-likes-about": {
       "post": {
-        "description": "",
+        "tags": [
+          "8.Tutor"
+        ],
+        "summary": "Get Likes data",
+        "description": "Get Likes data based on tutor_id or student_id",
         "parameters": [
           {
             "name": "body",
             "in": "body",
+            "required": false,
             "schema": {
               "type": "object",
               "properties": {
                 "tutor_id": {
-                  "example": "any"
+                  "type": "string",
+                  "example": "TUTOR_A2u50js3"
+                },
+                "student_id": {
+                  "type": "string",
+                  "example": "STUDENT_7uwDAj0o"
                 }
               }
             }
           }
         ],
         "responses": {
-          "default": {
-            "description": ""
+          "200": {
+            "description": "Liked fetch successfully"
+          },
+          "500": {
+            "description": "Something went wrong"
           }
         }
       }
