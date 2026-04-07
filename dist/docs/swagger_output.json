@@ -1866,6 +1866,30 @@
                 }
             }
         },
+        "/api/tutor/get-likes-about": {
+            "post": {
+                "description": "",
+                "parameters": [
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "tutor_id": {
+                                    "example": "any"
+                                }
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "default": {
+                        "description": ""
+                    }
+                }
+            }
+        },
         "/api/tutor/get-tutor-request": {
             "post": {
                 "tags": [

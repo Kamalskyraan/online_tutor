@@ -9,10 +9,12 @@ const helper_1 = require("../utils/helper");
 const startDeleteCron = () => {
     node_cron_1.default.schedule("0 2 * * *", async () => {
         try {
-            console.log("Running delete cleanup cron...");
             await (0, helper_1.executeQuery)(`
         UPDATE users
-        SET is_deleted = 2
+        SET 
+          is_deleted = 2,
+          mobile = NULL,
+          add_mobile = NULL
         WHERE is_deleted = 1
         AND deleted_at < NOW() - INTERVAL 30 DAY
       `);

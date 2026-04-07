@@ -624,7 +624,26 @@ export class TutorModel {
   }
 
   async fetchLikes(tutor_id?: string, student_id?: string) {
-    const role_id = tutor_id ? tutor_id : student_id;
-    const [result] = await executeQuery(`SELECT * FROM tutor_likes WHERE `);
+    if (!tutor_id && !student_id) {
+      return [];
+    }
+
+    let query = `SELECT * FROM tutor_likes WHERE `;
+    let params: any[] = [];
+
+    if (tutor_id && student_id) {
+      query += `tutor_id = ? AND student_id = ?`;
+      params.push(tutor_id, student_id);
+    } else if (tutor_id) {
+      query += `tutor_id = ?`;
+      params.push(tutor_id);
+    } else {
+      query += `student_id = ?`;
+      params.push(student_id);
+    }
+
+    const [rows]: any = await executeQuery(query, params);
+
+    return rows;
   }
 }

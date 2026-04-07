@@ -8,6 +8,7 @@ import {
   markOTPUsed,
 } from "../models/auth.model";
 import {
+  convertNullToString,
   executeQuery,
   fetchCountryName,
   generateOTP,
@@ -315,7 +316,8 @@ export class AuthController {
             tutor_id,
             student_id,
             first_sub: FirstSub[0].id ?? 0,
-            is_deleted: user.is_deleted,
+            is_deleted: convertNullToString(user.is_deleted),
+            deleted_at: convertNullToString(user.deleted_at),
           },
         ],
         "Login successful",
