@@ -27,6 +27,7 @@
     "multer-s3": "^3.0.1",
     "mysql2": "^3.16.1",
     "nanoid": "^5.1.6",
+    "node-cron": "^4.2.1",
     "nodemailer": "^8.0.2",
     "swagger-autogen": "^2.23.7",
     "swagger-ui-express": "^5.0.1"

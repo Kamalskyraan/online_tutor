@@ -159,6 +159,23 @@ AuthController.login = async (req, res) => {
         const isPasswordValid = await bcryptjs_1.default.compare(password, user.password);
         if (!isPasswordValid)
             return (0, helper_1.sendResponse)(res, 200, 0, [], "Invalid password", []);
+        if (Number(user.is_deleted) === 1) {
+            const deletedAt = new Date(user.deleted_at);
+            const now = new Date();
+            const diffDays = (now.getTime() - deletedAt.getTime()) / (1000 * 60 * 60 * 24);
+            if (diffDays <= 30) {
+                await (0, helper_1.executeQuery)(`UPDATE users 
+       SET is_deleted = "0", deleted_at = NULL, delete_reasons = NULL 
+       WHERE user_id = ?`, [user.user_id]);
+            }
+            else {
+                await (0, helper_1.executeQuery)(`UPDATE users SET is_deleted = 3 WHERE user_id = ?`, [user.user_id]);
+                return (0, helper_1.sendResponse)(res, 200, 0, [], "Account permanently deleted. Contact support.", []);
+            }
+        }
+        if (user.is_deleted === 2) {
+            return (0, helper_1.sendResponse)(res, 200, 0, [], "Account permanently deleted. Contact support.", []);
+        }
         await authModel.clearExistUserDevice(user.user_id);
         await authModel.addUserDevice({
             user_id: user.user_id,

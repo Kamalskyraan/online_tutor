@@ -5,7 +5,7 @@
     "description": "Api Docs",
     "version": "1.0.0"
   },
-  "host": "localhost:5012",
+  "host": "online-tutor.skyraantech.com/server",
   "basePath": "/",
   "schemes": [
     "https"
@@ -964,6 +964,43 @@
         "responses": {
           "200": {
             "description": "Fetch Delete Reasons successfully"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/profile/remove-account": {
+      "post": {
+        "tags": [
+          "3.Profile"
+        ],
+        "summary": "Account Remove",
+        "description": "Account Remove tab",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "user_id": {
+                  "type": "string",
+                  "example": "USER_eFzOtN1M"
+                },
+                "reasons": {
+                  "type": "string",
+                  "example": "What this is ?"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Account removed successfully"
           },
           "500": {
             "description": "Internal Server Error"

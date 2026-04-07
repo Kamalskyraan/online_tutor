@@ -234,4 +234,33 @@ router.post("/get-delete-reasons", (req, res) => {
 
   ProfileController.deleteAccountReasons(req, res);
 });
+
+router.post("/remove-account", (req, res) => {
+  /*
+    #swagger.tags = ['3.Profile']
+    #swagger.summary = 'Account Remove'
+    #swagger.description = 'Account Remove tab'
+
+    
+    #swagger.parameters['body'] = {
+      in: 'body',
+      required: true,
+      schema: {  
+       user_id : "USER_eFzOtN1M",
+       reasons : "What this is ?"
+        
+      }
+    }
+
+
+    #swagger.responses[200] = {
+      description: "Account removed successfully"
+    }
+
+    #swagger.responses[500] = {
+      description: "Internal Server Error"
+    }
+  */
+  return ProfileController.removeAccount(req, res);
+});
 export default router;

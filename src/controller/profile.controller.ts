@@ -297,7 +297,27 @@ export class ProfileController {
         [],
       );
     } catch (err: any) {
+      console.log(err);
       return sendResponse(res, 500, 0, [], "Internal Server Error", []);
+    }
+  };
+
+  static removeAccount = async (req: Request, res: Response) => {
+    try {
+      const { user_id, reasons } = req.body;
+      if (!user_id) {
+        return sendResponse(res, 200, 0, [], "user_id is required", []);
+      }
+      if (!reasons) {
+        return sendResponse(res, 200, 0, [], "reason_id is required", []);
+      }
+      const data = await profileMdl.deleteAccount(user_id, reasons);
+
+      return sendResponse(res, 200, 1, [], "Account Removed Successfully", []);
+    } catch (err: any) {
+      return sendResponse(res, 500, 0, [], "Internak Server Error", [
+        err.errors || err.message || err,
+      ]);
     }
   };
 }

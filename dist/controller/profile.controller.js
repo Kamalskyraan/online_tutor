@@ -162,7 +162,26 @@ ProfileController.deleteAccountReasons = async (req, res) => {
         return (0, helper_1.sendResponse)(res, 200, 1, reasons, "Delete Reasons Fetched Successfully", []);
     }
     catch (err) {
+        console.log(err);
         return (0, helper_1.sendResponse)(res, 500, 0, [], "Internal Server Error", []);
+    }
+};
+ProfileController.removeAccount = async (req, res) => {
+    try {
+        const { user_id, reasons } = req.body;
+        if (!user_id) {
+            return (0, helper_1.sendResponse)(res, 200, 0, [], "user_id is required", []);
+        }
+        if (!reasons) {
+            return (0, helper_1.sendResponse)(res, 200, 0, [], "reason_id is required", []);
+        }
+        const data = await profileMdl.deleteAccount(user_id, reasons);
+        return (0, helper_1.sendResponse)(res, 200, 1, [], "Account Removed Successfully", []);
+    }
+    catch (err) {
+        return (0, helper_1.sendResponse)(res, 500, 0, [], "Internak Server Error", [
+            err.errors || err.message || err,
+        ]);
     }
 };
 //# sourceMappingURL=profile.controller.js.map

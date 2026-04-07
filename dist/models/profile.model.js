@@ -203,15 +203,36 @@ class ProfileModel {
         };
     }
     async fetchReasons(id) {
-        let query = `SELECT * FROM delete_reasons`;
+        let query = `SELECT id, reason FROM delete_reasons`;
         let params = [];
         if (id) {
             query += ` WHERE id = ?`;
             params.push(id);
         }
-        const [response] = await (0, helper_1.executeQuery)(query, params);
-        console.log(response);
-        return response;
+        const rows = await (0, helper_1.executeQuery)(query, params);
+        const result = Array.isArray(rows) ? rows : [rows];
+        if (!id) {
+            result.push({
+                id: -1,
+                reason: "Others",
+            });
+        }
+        return result;
+    }
+    async deleteAccount(user_id, reasons) {
+        const query = `
+    UPDATE users
+    SET 
+      is_deleted = '1',
+      delete_reasons= ?,
+      deleted_at = NOW()
+    WHERE user_id = ?
+  `;
+        const result = await (0, helper_1.executeQuery)(query, [reasons, user_id]);
+        return {
+            success: result?.affectedRows > 0,
+            message: "Account marked as deleted",
+        };
     }
 }
 exports.ProfileModel = ProfileModel;

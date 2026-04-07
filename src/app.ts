@@ -6,6 +6,7 @@ import swaggerUi from "swagger-ui-express";
 import swaggerFile from "./docs/swagger_output.json";
 import router from "./routes";
 import db, { connectDB } from "./config/db";
+import { startDeleteCron } from "./config/cron";
 const app = express();
 
 const PORT = process.env.PORT || 5000;
@@ -25,6 +26,7 @@ app.get("/check", (req, res) => {
 const data = JSON.parse(fs.readFileSync("./public/country.json", "utf8"));
 
 connectDB();
+startDeleteCron();
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });

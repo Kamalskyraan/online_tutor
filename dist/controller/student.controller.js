@@ -76,4 +76,16 @@ StudentController.bookSessionStatus = async (req, res) => {
         ]);
     }
 };
+StudentController.getFees = async (req, res) => {
+    try {
+        const { subject_id, subject_name } = req.body;
+        const data = await _a.studentModel.fetchFees(subject_id, subject_name);
+        return (0, helper_1.sendResponse)(res, 200, 1, data, "Fees fetched successfully");
+    }
+    catch (err) {
+        return (0, helper_1.sendResponse)(res, 500, 0, [], "Internal Server Error", [
+            err.errors || err.message || err,
+        ]);
+    }
+};
 //# sourceMappingURL=student.controller.js.map
