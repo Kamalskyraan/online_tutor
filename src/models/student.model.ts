@@ -202,9 +202,7 @@ export class StudentModel {
 
     const offset = (page - 1) * limit;
 
-    /* ===========================
-     ✅ STUDENT PREFERENCE
-  =========================== */
+   
     let prefIds: number[] = [];
 
     if (student_id) {
@@ -216,17 +214,13 @@ export class StudentModel {
       prefIds = pref.map((p: any) => p.learn_course);
     }
 
-    /* ===========================
-     ✅ BASE
-  =========================== */
+   
     let params: any[] = [];
     let where = `WHERE u.is_deleted = 0 AND ts.status = 'active'`;
     let having = "";
     let orderBy = "";
 
-    /* ===========================
-     ✅ DISTANCE
-  =========================== */
+    
     let distanceField = "";
 
     if (lat && lng) {
@@ -245,10 +239,7 @@ export class StudentModel {
       params.push(radius);
     }
 
-    /* ===========================
-     ✅ SEARCH
-  =========================== */
-
+    
     if (search_address) {
       const search = `%${search_address}%`;
       where += `
@@ -273,10 +264,7 @@ export class StudentModel {
       params.push(search, search);
     }
 
-    /* ===========================
-     ✅ FILTERS (UPDATED)
-  =========================== */
-
+    
     if (gender) {
       where += ` AND u.gender = ?`;
       params.push(gender);
@@ -307,9 +295,7 @@ export class StudentModel {
       params.push(...languages);
     }
 
-    /* ===========================
-     ✅ PRIORITY ORDER
-  =========================== */
+   
 
     let priorityOrder = "";
 
@@ -323,10 +309,7 @@ export class StudentModel {
       params.push(...prefIds);
     }
 
-    /* ===========================
-     ✅ ORDER
-  =========================== */
-
+   
     orderBy = `
     ORDER BY
       ${priorityOrder}

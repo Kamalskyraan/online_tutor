@@ -153,24 +153,15 @@ class StudentModel {
     async findNearbyTutors(location) {
         const { lat, lng, radius = 100, search_address, search_subject, page = 1, limit = 5, tutor_type, rating, gender, represent, min_fee, max_fee, tenure_type, languages, student_id, } = location;
         const offset = (page - 1) * limit;
-        /* ===========================
-         ✅ STUDENT PREFERENCE
-      =========================== */
         let prefIds = [];
         if (student_id) {
             const pref = await (0, helper_1.executeQuery)(`SELECT learn_course FROM student WHERE student_id = ?`, [student_id]);
             prefIds = pref.map((p) => p.learn_course);
         }
-        /* ===========================
-         ✅ BASE
-      =========================== */
         let params = [];
         let where = `WHERE u.is_deleted = 0 AND ts.status = 'active'`;
         let having = "";
         let orderBy = "";
-        /* ===========================
-         ✅ DISTANCE
-      =========================== */
         let distanceField = "";
         if (lat && lng) {
             distanceField = `
@@ -186,9 +177,6 @@ class StudentModel {
             having = `HAVING distance <= ?`;
             params.push(radius);
         }
-        /* ===========================
-         ✅ SEARCH
-      =========================== */
         if (search_address) {
             const search = `%${search_address}%`;
             where += `
@@ -211,9 +199,6 @@ class StudentModel {
     `;
             params.push(search, search);
         }
-        /* ===========================
-         ✅ FILTERS (UPDATED)
-      =========================== */
         if (gender) {
             where += ` AND u.gender = ?`;
             params.push(gender);
@@ -238,9 +223,6 @@ class StudentModel {
             where += ` AND ts.teach_language IN (${languages.map(() => "?").join(",")})`;
             params.push(...languages);
         }
-        /* ===========================
-         ✅ PRIORITY ORDER
-      =========================== */
         let priorityOrder = "";
         if (prefIds.length) {
             priorityOrder = `
@@ -251,9 +233,6 @@ class StudentModel {
     `;
             params.push(...prefIds);
         }
-        /* ===========================
-         ✅ ORDER
-      =========================== */
         orderBy = `
     ORDER BY
       ${priorityOrder}
