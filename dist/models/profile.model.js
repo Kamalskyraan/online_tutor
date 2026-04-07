@@ -225,7 +225,7 @@ class ProfileModel {
     SET 
       is_deleted =  1,
       delete_reasons= ?,
-      deleted_at = NOW()
+      deleted_at = CURDATE()
     WHERE user_id = ?
   `;
         const result = await (0, helper_1.executeQuery)(query, [reasons, user_id]);

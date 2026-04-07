@@ -293,7 +293,7 @@ export class ProfileModel {
     SET 
       is_deleted =  1,
       delete_reasons= ?,
-      deleted_at = NOW()
+      deleted_at = CURDATE()
     WHERE user_id = ?
   `;
 
