@@ -155,4 +155,14 @@ ProfileController.changeRegisterNumber = async (req, res) => {
         ]);
     }
 };
+ProfileController.deleteAccountReasons = async (req, res) => {
+    try {
+        const { id } = req.body;
+        const reasons = await profileMdl.fetchReasons(id);
+        return (0, helper_1.sendResponse)(res, 200, 1, reasons, "Delete Reasons Fetched Successfully", []);
+    }
+    catch (err) {
+        return (0, helper_1.sendResponse)(res, 500, 0, [], "Internal Server Error", []);
+    }
+};
 //# sourceMappingURL=profile.controller.js.map

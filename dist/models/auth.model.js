@@ -78,8 +78,8 @@ class AuthModel {
     async findUser(country_code, mobile) {
         let query = "";
         let params = [];
-        query = `SELECT * FROM users WHERE country_code = ? AND mobile = ?`;
-        params = [country_code, mobile];
+        query = `SELECT * FROM users WHERE country_code = ? AND mobile = ? OR add_mobile = ?`;
+        params = [country_code, mobile, mobile];
         const [rows] = await (0, helper_1.executeQuery)(query, params);
         return rows || null;
     }

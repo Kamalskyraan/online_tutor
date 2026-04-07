@@ -102,83 +102,10 @@ export class ProfileModel {
     return rows.user_role;
   }
 
-  // async addUpdateProfileData(
-  //   user_id: string,
-  //   payload: UpdateUserProfilePayload,
-  // ) {
-  //   const userFields: (keyof UpdateUserProfilePayload)[] = [
-  //     "user_name",
-  //     "is_mob_verify",
-  //     "is_addmob_verify",
-  //     "is_mail_verify",
-  //     "gender",
-  //     "email",
-  //     "mobile",
-  //     "add_mobile",
-  //     "primary_num",
-  //     "country_code",
-  //     "country",
-  //     "pincode",
-  //     "state",
-  //     "district",
-  //     "address",
-  //     "area",
-  //     "about_myself",
-  //     "is_show_num",
-  //     "profile_img",
-  //   ];
-  //   const userUpdateData: Record<string, any> = {};
-
-  //   userFields.forEach((field) => {
-  //     if (payload[field] !== undefined) {
-  //       userUpdateData[field] = payload[field];
-  //     }
-  //   });
-
-  //   if (Object.keys(userUpdateData).length > 0) {
-  //     const setClause = Object.keys(userUpdateData)
-  //       .map((key) => `${key} = ?`)
-  //       .join(", ");
-
-  //     await executeQuery(`UPDATE users SET ${setClause} WHERE user_id = ?`, [
-  //       ...Object.values(userUpdateData),
-  //       user_id,
-  //     ]);
-  //   }
-
-  //   const tutorUpdateData: Record<string, any> = {};
-  //   if (payload.represent !== undefined)
-  //     tutorUpdateData.represent = payload.represent;
-
-  //   if (payload.tutor_exp !== undefined)
-  //     tutorUpdateData.tutor_exp = payload.tutor_exp;
-  //   if (payload.exp_year !== undefined)
-  //     tutorUpdateData.exp_year = payload.exp_year;
-  //   if (payload.exp_month !== undefined)
-  //     tutorUpdateData.exp_month = payload.exp_month;
-
-  //   if (payload.stream_id !== undefined && payload.stream_id !== null) {
-  //     tutorUpdateData.stream_id = payload.stream_id;
-  //   }
-
-  //   if (Object.keys(tutorUpdateData).length > 0) {
-  //     const setClause = Object.keys(tutorUpdateData)
-  //       .map((key) => `${key} = ?`)
-  //       .join(", ");
-
-  //     await executeQuery(`UPDATE tutor SET ${setClause} WHERE user_id = ?`, [
-  //       ...Object.values(tutorUpdateData),
-  //       user_id,
-  //     ]);
-  //   }
-
-  // }
-
   async addUpdateProfileData(
     user_id: string,
     payload: UpdateUserProfilePayload,
   ) {
-    // 🔥 Common reusable update function
     const updateTable = async (table: string, data: Record<string, any>) => {
       if (Object.keys(data).length === 0) return;
 
@@ -337,5 +264,18 @@ export class ProfileModel {
       affectedRows: result?.affectedRows || 0,
       changedRows: result?.changedRows || 0,
     };
+  }
+  async fetchReasons(id?: number) {
+    let query = `SELECT * FROM delete_reasons`;
+    let params: any[] = [];
+
+    if (id) {
+      query += ` WHERE id = ?`;
+      params.push(id);
+    }
+
+    const [response]: any = await executeQuery(query, params);
+    console.log(response);
+    return response;
   }
 }

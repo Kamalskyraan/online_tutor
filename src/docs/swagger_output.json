@@ -5,7 +5,7 @@
     "description": "Api Docs",
     "version": "1.0.0"
   },
-  "host": "online-tutor.skyraantech.com/server",
+  "host": "localhost:5012",
   "basePath": "/",
   "schemes": [
     "https"
@@ -931,6 +931,39 @@
         "responses": {
           "200": {
             "description": "Register Number updated successfully"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/profile/get-delete-reasons": {
+      "post": {
+        "tags": [
+          "3.Profile"
+        ],
+        "summary": "Get Delete Reasons",
+        "description": "Fetch Delete Reasons",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "number",
+                  "example": 1
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Fetch Delete Reasons successfully"
           },
           "500": {
             "description": "Internal Server Error"

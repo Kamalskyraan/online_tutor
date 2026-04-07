@@ -282,4 +282,22 @@ export class ProfileController {
       ]);
     }
   };
+
+  static deleteAccountReasons = async (req: Request, res: Response) => {
+    try {
+      const { id } = req.body;
+      const reasons = await profileMdl.fetchReasons(id);
+
+      return sendResponse(
+        res,
+        200,
+        1,
+        reasons,
+        "Delete Reasons Fetched Successfully",
+        [],
+      );
+    } catch (err: any) {
+      return sendResponse(res, 500, 0, [], "Internal Server Error", []);
+    }
+  };
 }

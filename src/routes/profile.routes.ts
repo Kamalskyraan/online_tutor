@@ -205,4 +205,33 @@ router.post("/change-register-num", (req, res) => {
 
   ProfileController.changeRegisterNumber(req, res);
 });
+
+router.post("/get-delete-reasons", (req, res) => {
+  /*
+    #swagger.tags = ['3.Profile']
+    #swagger.summary = 'Get Delete Reasons'
+    #swagger.description = 'Fetch Delete Reasons'
+
+    
+    #swagger.parameters['body'] = {
+      in: 'body',
+      required: true,
+      schema: {  
+       id : 1
+        
+      }
+    }
+
+
+    #swagger.responses[200] = {
+      description: "Fetch Delete Reasons successfully"
+    }
+
+    #swagger.responses[500] = {
+      description: "Internal Server Error"
+    }
+  */
+
+  ProfileController.deleteAccountReasons(req, res);
+});
 export default router;
