@@ -246,37 +246,6 @@ export class AuthController {
       if (!isPasswordValid)
         return sendResponse(res, 200, 0, [], "Invalid password", []);
 
-      if (Number(user.is_deleted) === 1) {
-        const deletedAt = new Date(user.deleted_at);
-        const now = new Date();
-
-        const diffDays =
-          (now.getTime() - deletedAt.getTime()) / (1000 * 60 * 60 * 24);
-
-        if (diffDays <= 30) {
-          await executeQuery(
-            `UPDATE users 
-       SET is_deleted = "0", deleted_at = NULL, delete_reasons = NULL 
-       WHERE user_id = ?`,
-            [user.user_id],
-          );
-        } else {
-          await executeQuery(
-            `UPDATE users SET is_deleted = 3 WHERE user_id = ?`,
-            [user.user_id],
-          );
-
-          return sendResponse(
-            res,
-            200,
-            0,
-            [],
-            "Account permanently deleted. Contact support.",
-            [],
-          );
-        }
-      }
-
       if (user.is_deleted === 2) {
         return sendResponse(
           res,
@@ -346,6 +315,7 @@ export class AuthController {
             tutor_id,
             student_id,
             first_sub: FirstSub[0].id ?? 0,
+            is_deleted: user.is_deleted,
           },
         ],
         "Login successful",
@@ -357,6 +327,7 @@ export class AuthController {
       ]);
     }
   };
+
   static resetPassword = async (req: Request, res: Response) => {
     try {
       const { mobile, country_code, new_password, confirm_password, user_id } =
@@ -434,6 +405,74 @@ export class AuthController {
         "Something went wrong",
         [err.errors || err.message || err],
       );
+    }
+  };
+  static reactivateAccount = async (req: Request, res: Response) => {
+    try {
+      const { user_id } = req.body;
+
+      if (!user_id) {
+        return sendResponse(res, 200, 0, [], "user_id is required");
+      }
+
+      const user = await authModel.fetchUserDataForReactive(user_id);
+
+      if (!user) {
+        return sendResponse(res, 404, 0, [], "User not found");
+      }
+
+      if (Number(user.is_deleted) === 0) {
+        return sendResponse(res, 200, 0, [], "Account already active");
+      }
+
+      if (Number(user.is_deleted) === 1) {
+        const deletedAt = user.deleted_at ? new Date(user.deleted_at) : null;
+
+        if (!deletedAt || isNaN(deletedAt.getTime())) {
+          return sendResponse(res, 200, 0, [], "Invalid deletion date");
+        }
+
+        const now = new Date();
+
+        const diffDays =
+          (now.getTime() - deletedAt.getTime()) / (1000 * 60 * 60 * 24);
+
+        if (diffDays <= 30) {
+          await executeQuery(
+            `UPDATE users 
+           SET is_deleted = 0, deleted_at = NULL, delete_reasons = NULL 
+           WHERE user_id = ?`,
+            [user.user_id],
+          );
+
+          return sendResponse(
+            res,
+            200,
+            1,
+            [],
+            "Account reactivated successfully",
+          );
+        }
+
+        await executeQuery(
+          `UPDATE users SET is_deleted = 2 WHERE user_id = ?`,
+          [user.user_id],
+        );
+
+        return sendResponse(
+          res,
+          200,
+          0,
+          [],
+          "Account permanently deleted. Contact support.",
+        );
+      }
+
+      return sendResponse(res, 400, 0, [], "Invalid account state");
+    } catch (err: any) {
+      return sendResponse(res, 500, 0, [], "Internal Server Error", [
+        err.errors || err.message || err,
+      ]);
     }
   };
 }

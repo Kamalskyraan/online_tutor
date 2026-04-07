@@ -195,4 +195,31 @@ router.post("/logout", (req, res) => {
   AuthController.logout(req, res);
 });
 
+router.post("/reactive-account", (req, res) => {
+  /*
+    #swagger.tags = ['1.Auth']
+    #swagger.summary = 'Reactive Account'
+    #swagger.description = 'Reactive Account with user ID'
+
+    
+    #swagger.parameters['body'] = {
+      in: 'body',
+      required: true,
+      schema: {
+        user_id : 'USER_7wbjv2wt'
+      }
+    }
+
+
+    #swagger.responses[200] = {
+      description: "Account Reactive  successfully"
+    }
+
+    #swagger.responses[500] = {
+      description: "Internal Server Error"
+    }
+  */
+  return AuthController.reactivateAccount(req, res);
+});
+
 export default router;

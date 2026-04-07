@@ -446,6 +446,10 @@ class TutorModel {
     `, [tutor_id, student_id]);
         return result;
     }
+    async fetchLikes(tutor_id, student_id) {
+        const role_id = tutor_id ? tutor_id : student_id;
+        const [result] = await (0, helper_1.executeQuery)(`SELECT * FROM tutor_likes WHERE `);
+    }
 }
 exports.TutorModel = TutorModel;
 //# sourceMappingURL=tutor.model.js.map

@@ -113,11 +113,21 @@ export class StudentController {
 
   static getFees = async (req: Request, res: Response) => {
     try {
-      const { subject_id, subject_name } = req.body;
+      const { subject_id, subject_name, fee_type } = req.body;
 
-      const data = await this.studentModel.fetchFees(subject_id, subject_name);
+      const data = await this.studentModel.fetchFees(
+        subject_id,
+        subject_name,
+        fee_type,
+      );
 
-      return sendResponse(res, 200, 1, data, "Fees fetched successfully");
+      return sendResponse(
+        res,
+        200,
+        1,
+        convertNullToString(data),
+        "Fees fetched successfully",
+      );
     } catch (err: any) {
       return sendResponse(res, 500, 0, [], "Internal Server Error", [
         err.errors || err.message || err,

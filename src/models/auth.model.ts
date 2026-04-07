@@ -156,4 +156,12 @@ export class AuthModel {
       user_id,
     ]);
   }
+  async fetchUserDataForReactive(user_id: string) {
+    const rows: any = await executeQuery(
+      `SELECT * FROM users WHERE user_id = ?`,
+      [user_id],
+    );
+
+    return Array.isArray(rows) ? rows[0] : rows;
+  }
 }

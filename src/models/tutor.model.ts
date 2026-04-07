@@ -622,4 +622,9 @@ export class TutorModel {
 
     return result;
   }
+
+  async fetchLikes(tutor_id?: string, student_id?: string) {
+    const role_id = tutor_id ? tutor_id : student_id;
+    const [result] = await executeQuery(`SELECT * FROM tutor_likes WHERE `);
+  }
 }

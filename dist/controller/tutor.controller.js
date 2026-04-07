@@ -163,6 +163,21 @@ TutorController.addStudentLikeTutor = async (req, res) => {
         ]);
     }
 };
+TutorController.getLikesData = async (req, res) => {
+    try {
+        const { tutor_id, student_id } = req.body;
+        if (!tutor_id && !student_id) {
+            return (0, helper_1.sendResponse)(res, 200, 0, [], "Either tutor_id or student_id is required", []);
+        }
+        const data = await tutModel.fetchLikes(tutor_id, student_id);
+        return (0, helper_1.sendResponse)(res, 200, 1, data, "Liked Data fetched successfully", []);
+    }
+    catch (err) {
+        return (0, helper_1.sendResponse)(res, 500, 0, [], "Internal Server Error", [
+            err.errors || err.message || err,
+        ]);
+    }
+};
 TutorController.getTutorRequest = async (req, res) => {
     try {
         const { tutor_id, subject_name, from_date, to_date, page = 1, limit = 10, status, } = req.body;

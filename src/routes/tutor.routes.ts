@@ -204,6 +204,11 @@ router.post("/add-update-like-tutor", (req, res) => {
   return TutorController.addStudentLikeTutor(req, res);
 });
 
+// router.post("/get-likes-about" , (req,res)=>{
+
+
+// })
+
 router.post("/get-tutor-request", (req, res) => {
   /*
     #swagger.tags = ['8.Tutor']
@@ -233,6 +238,8 @@ router.post("/get-tutor-request", (req, res) => {
 
   return TutorController.getTutorRequest(req, res);
 });
+
+
 router.post("/accept-reject-request", (req, res) => {
   /*
     #swagger.tags = ['8.Tutor']
@@ -312,6 +319,5 @@ router.post("/update-view-status", (req, res) => {
 
   TutorController.setViewMobile(req, res);
 });
-
 
 export default router;

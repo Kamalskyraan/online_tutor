@@ -153,19 +153,28 @@ class StudentModel {
     async findNearbyTutors(location) {
         const { lat, lng, radius = 100, search_address, search_subject, page = 1, limit = 5, tutor_type, rating, gender, represent, min_fee, max_fee, tenure_type, languages, student_id, } = location;
         const offset = (page - 1) * limit;
+        /* ===========================
+         ✅ STUDENT PREFERENCE
+      =========================== */
         let prefIds = [];
         if (student_id) {
-            const pref = await (0, helper_1.executeQuery)(`SELECT subject_id FROM student_preferences WHERE student_id = ?`, [student_id]);
-            prefIds = pref.map((p) => p.subject_id);
+            const pref = await (0, helper_1.executeQuery)(`SELECT learn_course FROM student WHERE student_id = ?`, [student_id]);
+            prefIds = pref.map((p) => p.learn_course);
         }
+        /* ===========================
+         ✅ BASE
+      =========================== */
         let params = [];
         let where = `WHERE u.is_deleted = 0 AND ts.status = 'active'`;
         let having = "";
-        let distanceSelect = "";
         let orderBy = "";
+        /* ===========================
+         ✅ DISTANCE
+      =========================== */
+        let distanceField = "";
         if (lat && lng) {
-            distanceSelect = `
-      (6371 * acos(
+            distanceField = `
+      ,(6371 * acos(
         cos(radians(?)) *
         cos(radians(u.lat)) *
         cos(radians(u.lng) - radians(?)) +
@@ -177,6 +186,9 @@ class StudentModel {
             having = `HAVING distance <= ?`;
             params.push(radius);
         }
+        /* ===========================
+         ✅ SEARCH
+      =========================== */
         if (search_address) {
             const search = `%${search_address}%`;
             where += `
@@ -199,10 +211,9 @@ class StudentModel {
     `;
             params.push(search, search);
         }
-        if (tutor_type) {
-            where += ` AND t.tutor_type = ?`;
-            params.push(tutor_type);
-        }
+        /* ===========================
+         ✅ FILTERS (UPDATED)
+      =========================== */
         if (gender) {
             where += ` AND u.gender = ?`;
             params.push(gender);
@@ -211,26 +222,25 @@ class StudentModel {
             where += ` AND t.represent = ?`;
             params.push(represent);
         }
-        if (rating) {
-            where += ` AND t.rating >= ?`;
-            params.push(rating);
-        }
         if (min_fee) {
-            where += ` AND t.fee >= ?`;
+            where += ` AND ts.min_fee >= ?`;
             params.push(min_fee);
         }
         if (max_fee) {
-            where += ` AND t.fee <= ?`;
+            where += ` AND ts.max_fee <= ?`;
             params.push(max_fee);
         }
         if (tenure_type) {
-            where += ` AND t.tenure_type = ?`;
+            where += ` AND ts.tenure_type = ?`;
             params.push(tenure_type);
         }
         if (languages && languages.length) {
-            where += ` AND t.languages IN (${languages.map(() => "?").join(",")})`;
+            where += ` AND ts.teach_language IN (${languages.map(() => "?").join(",")})`;
             params.push(...languages);
         }
+        /* ===========================
+         ✅ PRIORITY ORDER
+      =========================== */
         let priorityOrder = "";
         if (prefIds.length) {
             priorityOrder = `
@@ -241,14 +251,20 @@ class StudentModel {
     `;
             params.push(...prefIds);
         }
+        /* ===========================
+         ✅ ORDER
+      =========================== */
         orderBy = `
     ORDER BY
       ${priorityOrder}
       ${lat && lng ? "distance ASC," : ""}
-      t.rating DESC
+      rating DESC
   `;
+        /* ===========================
+         ✅ FINAL QUERY (FIXED)
+      =========================== */
         const query = `
-    SELECT DISTINCT
+    SELECT 
       u.user_id,
       u.user_name,
       u.lat,
@@ -259,25 +275,29 @@ class StudentModel {
       u.district,
       u.area,
       u.pincode,
-      u.self_about,
 
       t.tutor_id,
-      t.stream_id,
       t.represent,
-      t.rating,
-      t.fee,
-      t.tutor_type,
-      t.tenure_type,
-      t.languages,
 
-      ${distanceSelect}
+      ts.subject_id,
+      ts.subject_name,
+      ts.min_fee,
+      ts.max_fee,
+      ts.tenure_type,
+      ts.teach_language,
+
+      AVG(r.rating) as rating
+      ${distanceField}
 
     FROM users u
     JOIN tutor t ON t.user_id = u.user_id
     JOIN tutor_subjects ts ON ts.tutor_id = t.tutor_id
     LEFT JOIN subjects s ON s.id = ts.subject_id
+    LEFT JOIN reviews r ON r.tutor_id = t.tutor_id
 
     ${where}
+
+    GROUP BY t.tutor_id
 
     ${having}
 
@@ -286,6 +306,8 @@ class StudentModel {
     LIMIT ? OFFSET ?
   `;
         params.push(limit, offset);
+        console.log("QUERY:", query);
+        console.log("PARAMS:", params);
         const rows = await (0, helper_1.executeQuery)(query, params);
         if (!rows.length)
             return [];
@@ -681,7 +703,7 @@ class StudentModel {
         const data = await (0, helper_1.executeQuery)(`SELECT status FROM tutor_student_rel WHERE id = ?`, [session_id]);
         return data.length > 0 ? data[0].status : "";
     }
-    async fetchFees(subject_id, subject_name) {
+    async fetchFees(subject_id, subject_name, tenure_type) {
         let where = `WHERE 1=1`;
         let params = [];
         if (subject_id) {
@@ -692,10 +714,14 @@ class StudentModel {
             where += ` AND subject_name LIKE ?`;
             params.push(`%${subject_name}%`);
         }
+        if (tenure_type) {
+            where += ` AND tenure_type = ?`;
+            params.push(tenure_type);
+        }
         const query = `
     SELECT 
-      MIN(min_fee) AS lowest_min_fee,
-      MAX(max_fee) AS highest_max_fee
+      MIN(min_fee) as min_fee,
+      MAX(max_fee) AS max_fee
     FROM tutor_subjects
     ${where}
   `;

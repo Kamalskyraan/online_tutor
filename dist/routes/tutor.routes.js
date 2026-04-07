@@ -193,6 +193,8 @@ router.post("/add-update-like-tutor", (req, res) => {
     */
     return tutor_controller_1.TutorController.addStudentLikeTutor(req, res);
 });
+// router.post("/get-likes-about" , (req,res)=>{
+// })
 router.post("/get-tutor-request", (req, res) => {
     /*
       #swagger.tags = ['8.Tutor']

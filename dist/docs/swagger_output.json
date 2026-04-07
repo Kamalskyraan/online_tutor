@@ -343,6 +343,39 @@
                 }
             }
         },
+        "/api/auth/reactive-account": {
+            "post": {
+                "tags": [
+                    "1.Auth"
+                ],
+                "summary": "Reactive Account",
+                "description": "Reactive Account with user ID",
+                "parameters": [
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "user_id": {
+                                    "type": "string",
+                                    "example": "USER_7wbjv2wt"
+                                }
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Account Reactive successfully"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
         "/api/user/add-update-tutor": {
             "post": {
                 "tags": [
@@ -2025,6 +2058,30 @@
                                     "type": "string",
                                     "example": "STUDENT_4Gy3VZ_N"
                                 },
+                                "gender": {
+                                    "type": "string",
+                                    "example": "male or female or others"
+                                },
+                                "represent": {
+                                    "type": "string",
+                                    "example": "1 or 2 or 3"
+                                },
+                                "min_fee": {
+                                    "type": "string",
+                                    "example": "120"
+                                },
+                                "max_fee": {
+                                    "type": "string",
+                                    "example": "1200"
+                                },
+                                "tenure_type": {
+                                    "type": "string",
+                                    "example": "hour or week or day"
+                                },
+                                "languages": {
+                                    "type": "string",
+                                    "example": "1,2,3"
+                                },
                                 "page": {
                                     "type": "number",
                                     "example": 1
@@ -2143,6 +2200,47 @@
                 "responses": {
                     "200": {
                         "description": "Session status Successfully"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/api/student/get-fees": {
+            "post": {
+                "tags": [
+                    "9.Student"
+                ],
+                "summary": "Get Fees",
+                "description": "Get Fees MIn and Max",
+                "parameters": [
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "required": false,
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "subject_id": {
+                                    "type": "number",
+                                    "example": 1
+                                },
+                                "subject_name": {
+                                    "type": "string",
+                                    "example": "tamil"
+                                },
+                                "fee_type": {
+                                    "type": "string",
+                                    "example": "hour or week or day"
+                                }
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Fees fetched Successfully"
                     },
                     "500": {
                         "description": "Internal Server Error"

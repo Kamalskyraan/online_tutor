@@ -19,6 +19,12 @@ router.post("/nearby-tutors", (req, res) => {
           search_address : "cbe",
           search_subject : "Java",
           student_id : "STUDENT_4Gy3VZ_N",
+          gender : "male or female or others",
+          represent : "1 or 2 or 3",
+          min_fee : "120",
+          max_fee : "1200",
+          tenure_type : "hour or week or day",
+          languages : "1,2,3",
           page : 1
           }
       }
@@ -113,6 +119,34 @@ router.post("/get-book-session", (req, res) => {
       }
     */
     return student_controller_1.StudentController.bookSessionStatus(req, res);
+});
+router.post("/get-fees", (req, res) => {
+    /*
+      #swagger.tags = ['9.Student']
+      #swagger.summary = 'Get Fees'
+      #swagger.description = 'Get Fees MIn and Max'
+  
+      
+      #swagger.parameters['body'] = {
+        in: 'body',
+        required: false,
+        schema: {
+          subject_id : 1,
+          subject_name : "tamil",
+          fee_type : "hour or week or day"
+          }
+      }
+  
+  
+      #swagger.responses[200] = {
+        description: "Fees fetched  Successfully"
+      }
+  
+      #swagger.responses[500] = {
+        description: "Internal Server Error"
+      }
+    */
+    student_controller_1.StudentController.getFees(req, res);
 });
 exports.default = router;
 //# sourceMappingURL=student.routes.js.map

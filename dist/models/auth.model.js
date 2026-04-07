@@ -106,6 +106,10 @@ class AuthModel {
             user_id,
         ]);
     }
+    async fetchUserDataForReactive(user_id) {
+        const rows = await (0, helper_1.executeQuery)(`SELECT * FROM users WHERE user_id = ?`, [user_id]);
+        return Array.isArray(rows) ? rows[0] : rows;
+    }
 }
 exports.AuthModel = AuthModel;
 //# sourceMappingURL=auth.model.js.map

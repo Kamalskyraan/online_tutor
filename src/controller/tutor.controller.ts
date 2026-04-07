@@ -227,6 +227,35 @@ export class TutorController {
     }
   };
 
+  static getLikesData = async (req: Request, res: Response) => {
+    try {
+      const { tutor_id, student_id } = req.body;
+      if (!tutor_id && !student_id) {
+        return sendResponse(
+          res,
+          200,
+          0,
+          [],
+          "Either tutor_id or student_id is required",
+          [],
+        );
+      }
+      const data = await tutModel.fetchLikes(tutor_id, student_id);
+      return sendResponse(
+        res,
+        200,
+        1,
+        data,
+        "Liked Data fetched successfully",
+        [],
+      );
+    } catch (err: any) {
+      return sendResponse(res, 500, 0, [], "Internal Server Error", [
+        err.errors || err.message || err,
+      ]);
+    }
+  };
+
   static getTutorRequest = async (req: Request, res: Response) => {
     try {
       const {
