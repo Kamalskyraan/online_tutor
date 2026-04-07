@@ -291,7 +291,7 @@ export class ProfileModel {
     const query = `
     UPDATE users
     SET 
-      is_deleted = '1',
+      is_deleted =  1,
       delete_reasons= ?,
       deleted_at = NOW()
     WHERE user_id = ?
