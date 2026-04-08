@@ -28,16 +28,22 @@ StudentController.getNearbyTutors = async (req, res) => {
     try {
         const body = req.body;
         const tutors = await _a.studentModel.findNearbyTutors(body);
-        if (tutors.length) {
-            const tutorIds = [...new Set(tutors.map((t) => t.tutor_id))];
+        if (tutors?.data.length) {
+            const tutorIds = [...new Set(tutors?.data.map((t) => t.tutor_id))];
             for (const tutor_id of tutorIds) {
                 if (tutor_id) {
-                    await _a.leadsMdl.insertLead({
-                        tutor_id: tutor_id.toString(),
-                        student_id: body.student_id,
-                        lead_type: "search",
-                        search_subject: body.search_subject,
-                    });
+                    const existing = await (0, helper_1.executeQuery)(`SELECT id FROM tutor_leads 
+       WHERE tutor_id = ? 
+       AND student_id = ? 
+       AND DATE(created_at) = CURDATE()`, [tutor_id, body.student_id]);
+                    if (!existing.length) {
+                        await _a.leadsMdl.insertLead({
+                            tutor_id: tutor_id.toString(),
+                            student_id: body.student_id,
+                            lead_type: "search",
+                            search_subject: body.search_subject,
+                        });
+                    }
                 }
             }
         }

@@ -20,8 +20,8 @@ class LeadsModel {
             search_address = studentRes?.[0]?.district || null;
         }
         await (0, helper_1.executeQuery)(`INSERT INTO tutor_leads 
-     (tutor_id, student_id, lead_type, search_subject , search_address)
-     VALUES (?, ?, ?, ? , ?)`, [tutor_id, student_id, lead_type, search_subject, search_address]);
+     (tutor_id, student_id, lead_type, search_subject , search_address )
+     VALUES (?, ?, ?, ? , ? )`, [tutor_id, student_id, lead_type, search_subject, search_address]);
     }
     async fetchLeads(filters) {
         const { tutor_id, lead_id, from_date, to_date, subject_name, locations, leads_type, page = 1, limit = 10, } = filters;

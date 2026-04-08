@@ -35,8 +35,8 @@ export class LeadsModel {
     }
     await executeQuery(
       `INSERT INTO tutor_leads 
-     (tutor_id, student_id, lead_type, search_subject , search_address)
-     VALUES (?, ?, ?, ? , ?)`,
+     (tutor_id, student_id, lead_type, search_subject , search_address )
+     VALUES (?, ?, ?, ? , ? )`,
       [tutor_id, student_id, lead_type, search_subject, search_address],
     );
   }

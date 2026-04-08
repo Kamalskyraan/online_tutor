@@ -1,6 +1,10 @@
 import { Request, Response } from "express";
 import { StudentModel } from "../models/student.model";
-import { convertNullToString, sendResponse } from "../utils/helper";
+import {
+  convertNullToString,
+  executeQuery,
+  sendResponse,
+} from "../utils/helper";
 import { Location } from "../interface/interface";
 import { LeadsModel } from "../models/leads.model";
 
@@ -45,17 +49,27 @@ export class StudentController {
 
       const tutors = await this.studentModel.findNearbyTutors(body);
 
-      if (tutors.length) {
-        const tutorIds = [...new Set(tutors.map((t: any) => t.tutor_id))];
+      if (tutors?.data.length) {
+        const tutorIds = [...new Set(tutors?.data.map((t: any) => t.tutor_id))];
 
         for (const tutor_id of tutorIds) {
           if (tutor_id) {
-            await this.leadsMdl.insertLead({
-              tutor_id: tutor_id.toString(),
-              student_id: body.student_id,
-              lead_type: "search",
-              search_subject: body.search_subject,
-            });
+            const existing: any = await executeQuery(
+              `SELECT id FROM tutor_leads 
+       WHERE tutor_id = ? 
+       AND student_id = ? 
+       AND DATE(created_at) = CURDATE()`,
+              [tutor_id, body.student_id],
+            );
+
+            if (!existing.length) {
+              await this.leadsMdl.insertLead({
+                tutor_id: tutor_id.toString(),
+                student_id: body.student_id,
+                lead_type: "search",
+                search_subject: body.search_subject,
+              });
+            }
           }
         }
       }

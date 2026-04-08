@@ -2116,8 +2116,27 @@
                                     "example": "hour or week or day"
                                 },
                                 "languages": {
+                                    "type": "array",
+                                    "example": [
+                                        "1",
+                                        "2",
+                                        "3"
+                                    ],
+                                    "items": {
+                                        "type": "string"
+                                    }
+                                },
+                                "class_mode": {
                                     "type": "string",
-                                    "example": "1,2,3"
+                                    "example": "1"
+                                },
+                                "class_type": {
+                                    "type": "string",
+                                    "example": "1"
+                                },
+                                "rating": {
+                                    "type": "string",
+                                    "example": "4"
                                 },
                                 "page": {
                                     "type": "number",

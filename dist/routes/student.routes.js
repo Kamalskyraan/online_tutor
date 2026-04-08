@@ -24,7 +24,10 @@ router.post("/nearby-tutors", (req, res) => {
           min_fee : "120",
           max_fee : "1200",
           tenure_type : "hour or week or day",
-          languages : "1,2,3",
+          languages : ["1","2","3"],
+          class_mode : "1",
+          class_type :"1",
+          rating : "4",
           page : 1
           }
       }

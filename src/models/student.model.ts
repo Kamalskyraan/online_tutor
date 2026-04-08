@@ -4,180 +4,14 @@ import {
   TutorLocation,
 } from "../interface/interface";
 import { convertNullToString, executeQuery } from "../utils/helper";
+import { commonModel } from "./common.model";
 import { EduModel } from "./education.model";
 import { ReviewModel } from "./review.model";
 
 const eduMdl = new EduModel();
 const rvMdl = new ReviewModel();
+const cmnMdl = new commonModel();
 export class StudentModel {
-  // public async findNearbyTutors(location: any): Promise<any> {
-  //   const {
-  //     lat,
-  //     lng,
-  //     radius = 100,
-  //     search_address,
-  //     search_subject,
-  //     page = 1,
-  //     limit = 5,
-
-  //     tutor_type,
-  //     rating,
-  //     gender,
-  //     represent,
-  //     min_fee,
-  //     max_fee,
-  //     tenure_type,
-  //     languages,
-  //     student_id,
-  //   } = location;
-
-  //   const offset = (page - 1) * limit;
-
-  //   let rows: any = [];
-
-  //   if (lat && lng) {
-  //     const query = `
-  //     SELECT
-  //       u.user_id,
-  //       u.user_name,
-  //       u.lat,
-  //       u.lng,
-  //       u.state,
-  //       u.district,
-  //       u.area,
-  //       u.pincode,
-  //       u.self_about,
-  //       u.profile_img,
-  //       t.tutor_id,
-  //       t.stream_id,
-  //       t.represent,
-
-  //       (
-  //         6371 * acos(
-  //           cos(radians(?)) *
-  //           cos(radians(u.lat)) *
-  //           cos(radians(u.lng) - radians(?)) +
-  //           sin(radians(?)) *
-  //           sin(radians(u.lat))
-  //         )
-  //       ) AS distance
-
-  //     FROM users u
-  //     RIGHT JOIN tutor t ON t.user_id = u.user_id
-  //     RIGHT JOIN tutor_subjects ts ON ts.tutor_id = t.tutor_id AND ts.status = 'active'
-  //     WHERE u.lat IS NOT NULL AND u.lng IS NOT NULL
-  //     HAVING distance <= ?
-  //     ORDER BY distance ASC
-  //     LIMIT ? OFFSET ?
-  //   `;
-
-  //     rows = await executeQuery(query, [lat, lng, lat, radius, limit, offset]);
-  //   } else if (search_address) {
-  //     const search = `%${search_address}%`;
-
-  //     const query = `
-  //     SELECT
-  //       u.user_id,
-  //       u.user_name,
-  //       u.lat,
-  //       u.lng,
-  //       u.state,
-  //       u.district,
-  //       u.area,
-  //       u.pincode,
-  //       u.profile_img,
-  //       t.tutor_id,
-  //       t.stream_id,
-  //       t.represent
-  //     FROM users u
-  //     RIGHT JOIN tutor t ON t.user_id = u.user_id
-  //     RIGHT JOIN tutor_subjects ts ON ts.tutor_id = t.tutor_id AND ts.status = 'active'
-  //     WHERE
-  //       u.state LIKE ? OR
-  //       u.district LIKE ? OR
-  //       u.area LIKE ? OR
-  //       u.pincode LIKE ?
-  //     LIMIT ? OFFSET ?
-  //   `;
-
-  //     rows = await executeQuery(query, [
-  //       search,
-  //       search,
-  //       search,
-  //       search,
-  //       limit,
-  //       offset,
-  //     ]);
-  //   } else if (search_subject) {
-  //     const keyword = search_subject.toLowerCase();
-  //     const search = `%${search_subject}%`;
-
-  //     const query = `
-  //     SELECT DISTINCT
-  //       u.user_id,
-  //       u.user_name,
-  //       u.lat,
-  //       u.lng,
-  //       u.profile_img,
-  //       t.tutor_id,
-  //       t.stream_id,
-  //       t.represent
-  //     FROM users u
-  //     RIGHT JOIN tutor t ON t.user_id = u.user_id
-  //     RIGHT JOIN tutor_subjects ts ON ts.tutor_id = t.tutor_id AND ts.status = 'active'
-
-  //     LEFT JOIN subjects s ON s.id = ts.subject_id
-  //     WHERE
-  //       ts.status = 'active'
-  //       AND (
-  //         s.subject_name LIKE ? OR
-  //         ts.subject_name LIKE ?
-  //       )
-  //     LIMIT ? OFFSET ?
-  //   `;
-
-  //     rows = await executeQuery(query, [search, search, limit, offset]);
-  //   }
-
-  //   if (!rows.length) return [];
-
-  //   const data = await this.buildTutorFullData(rows);
-
-  //   if (search_subject) {
-  //     const keyword = search_subject.toLowerCase();
-
-  //     const sorted = data.map((tutor: any) => {
-  //       let hasMatch = false;
-
-  //       tutor.subjects.sort((a: any, b: any) => {
-  //         const aName = a.sub[0]?.subject_name?.toLowerCase() || "";
-  //         const bName = b.sub[0]?.subject_name?.toLowerCase() || "";
-
-  //         const aMatch = aName.includes(keyword);
-  //         const bMatch = bName.includes(keyword);
-
-  //         if (aMatch) hasMatch = true;
-  //         if (bMatch) hasMatch = true;
-
-  //         if (aMatch && !bMatch) return -1;
-  //         if (!aMatch && bMatch) return 1;
-  //         return 0;
-  //       });
-
-  //       return {
-  //         ...tutor,
-  //         _matchPriority: hasMatch ? 1 : 0,
-  //       };
-  //     });
-
-  //     sorted.sort((a: any, b: any) => b._matchPriority - a._matchPriority);
-
-  //     return sorted.map(({ _matchPriority, ...rest }: any) => rest);
-  //   }
-
-  //   return data;
-  // }
-
   public async findNearbyTutors(location: any): Promise<any> {
     const {
       lat,
@@ -195,6 +29,8 @@ export class StudentModel {
       min_fee,
       max_fee,
       tenure_type,
+      class_mode,
+      class_type,
       languages,
 
       student_id,
@@ -202,7 +38,6 @@ export class StudentModel {
 
     const offset = (page - 1) * limit;
 
-   
     let prefIds: number[] = [];
 
     if (student_id) {
@@ -214,57 +49,38 @@ export class StudentModel {
       prefIds = pref.map((p: any) => p.learn_course);
     }
 
-   
     let params: any[] = [];
     let where = `WHERE u.is_deleted = 0 AND ts.status = 'active'`;
     let having = "";
     let orderBy = "";
-
-    
     let distanceField = "";
 
     if (lat && lng) {
-      distanceField = `
-      ,(6371 * acos(
+      distanceField = `,
+      (6371 * acos(
         cos(radians(?)) *
         cos(radians(u.lat)) *
         cos(radians(u.lng) - radians(?)) +
         sin(radians(?)) *
         sin(radians(u.lat))
-      )) AS distance
-    `;
+      )) AS distance`;
 
       params.push(lat, lng, lat);
-      having = `HAVING distance <= ?`;
-      params.push(radius);
+      where += ` AND u.lat IS NOT NULL AND u.lng IS NOT NULL`;
     }
 
-    
     if (search_address) {
       const search = `%${search_address}%`;
-      where += `
-      AND (
-        u.state LIKE ? OR
-        u.district LIKE ? OR
-        u.area LIKE ? OR
-        u.pincode LIKE ?
-      )
-    `;
+      where += ` AND (u.state LIKE ? OR u.district LIKE ? OR u.area LIKE ? OR u.pincode LIKE ?)`;
       params.push(search, search, search, search);
     }
 
     if (search_subject) {
       const search = `%${search_subject}%`;
-      where += `
-      AND (
-        s.subject_name LIKE ? OR
-        ts.subject_name LIKE ?
-      )
-    `;
+      where += ` AND (s.subject_name LIKE ? OR ts.subject_name LIKE ?)`;
       params.push(search, search);
     }
 
-    
     if (gender) {
       where += ` AND u.gender = ?`;
       params.push(gender);
@@ -289,37 +105,44 @@ export class StudentModel {
       where += ` AND ts.tenure_type = ?`;
       params.push(tenure_type);
     }
+    if (class_mode) {
+      where += ` AND ts.class_mode = ?`;
+      params.push(class_mode);
+    }
+    if (class_type) {
+      where += ` AND ts.class_type = ?`;
+      params.push(class_type);
+    }
 
     if (languages && languages.length) {
-      where += ` AND ts.teach_language IN (${languages.map(() => "?").join(",")})`;
+      where += ` AND (${languages
+        .map(() => `FIND_IN_SET(?, ts.teach_language)`)
+        .join(" OR ")})`;
       params.push(...languages);
     }
 
-   
-
     let priorityOrder = "";
-
     if (prefIds.length) {
       priorityOrder = `
       CASE 
         WHEN ts.subject_id IN (${prefIds.map(() => "?").join(",")}) THEN 1
         ELSE 0
-      END DESC,
-    `;
+      END DESC,`;
       params.push(...prefIds);
     }
 
-   
+    if (rating) {
+      having += having ? ` AND tutor_rating >= ?` : `HAVING tutor_rating >= ?`;
+
+      params.push(rating);
+    }
+
     orderBy = `
     ORDER BY
       ${priorityOrder}
       ${lat && lng ? "distance ASC," : ""}
-      rating DESC
+      tutor_rating DESC
   `;
-
-    /* ===========================
-     ✅ FINAL QUERY (FIXED)
-  =========================== */
 
     const query = `
     SELECT 
@@ -333,6 +156,7 @@ export class StudentModel {
       u.district,
       u.area,
       u.pincode,
+      u.self_about,
 
       t.tutor_id,
       t.represent,
@@ -343,8 +167,38 @@ export class StudentModel {
       ts.max_fee,
       ts.tenure_type,
       ts.teach_language,
+      ts.class_mode,
+      ts.class_type,
 
-      AVG(r.rating) as rating
+      (
+        SELECT FLOOR(AVG(r2.rating))
+        FROM reviews r2
+        WHERE r2.tutor_id = t.tutor_id
+      ) AS tutor_rating,
+
+      CASE 
+        WHEN EXISTS (
+          SELECT 1 
+          FROM tutor_leads tl2
+          WHERE tl2.tutor_id = t.tutor_id
+            AND tl2.student_id = ?
+            AND tl2.lead_type = 'profile'
+        ) THEN 0
+        ELSE 1
+      END AS is_new,
+
+
+      CASE 
+  WHEN EXISTS (
+    SELECT 1 
+    FROM tutor_likes tl
+    WHERE tl.tutor_id = t.tutor_id
+      AND tl.student_id = ?
+      AND tl.is_like = 1
+  ) THEN 1
+  ELSE 0
+END AS is_like
+
       ${distanceField}
 
     FROM users u
@@ -355,27 +209,61 @@ export class StudentModel {
 
     ${where}
 
-    GROUP BY t.tutor_id
+    GROUP BY t.tutor_id, ts.subject_id
 
-    ${having}
+   
 
+${having}
     ${orderBy}
 
     LIMIT ? OFFSET ?
   `;
 
-    params.push(limit, offset);
+    let finalParams = [];
 
-    console.log("QUERY:", query);
-    console.log("PARAMS:", params);
+    finalParams.push(student_id || "");
 
-    const rows: any = await executeQuery(query, params);
+    finalParams.push(student_id || "");
+    finalParams.push(...params);
 
-    if (!rows.length) return [];
+    finalParams.push(limit, offset);
+
+    const countQuery = `
+    SELECT COUNT(DISTINCT t.tutor_id) as total
+    FROM users u
+    JOIN tutor t ON t.user_id = u.user_id
+    JOIN tutor_subjects ts ON ts.tutor_id = t.tutor_id
+    LEFT JOIN subjects s ON s.id = ts.subject_id
+    LEFT JOIN reviews r ON r.tutor_id = t.tutor_id
+    ${where}
+  `;
+
+    const countResult: any = await executeQuery(countQuery, params);
+    const total = countResult[0]?.total || 0;
+
+    const rows: any = await executeQuery(query, finalParams);
 
     const data = await this.buildTutorFullData(rows);
 
-    return data;
+    if (!rows.length)
+      return {
+        data: [],
+        pagination: {
+          total: 0,
+          page,
+          limit,
+          total_pages: 0,
+        },
+      };
+    return {
+      data,
+      pagination: {
+        total,
+        page,
+        limit,
+        total_pages: Math.ceil(total / limit),
+      },
+    };
   }
 
   async fetchStudentData(student_id?: string) {
@@ -560,30 +448,19 @@ export class StudentModel {
 
     const fileIds = finalData.map((r: any) => r.profile_img).filter(Boolean);
 
-    let fileData: any[] = [];
-    if (fileIds.length) {
-      const placeholders = fileIds.map(() => "?").join(",");
-      fileData = await executeQuery(
-        `SELECT file_type , file_url ,pathname , org_name , file_size   FROM media WHERE id IN (${placeholders})`,
-        fileIds,
-      );
-    }
+    let fileMap = new Map();
 
-    const fileMap = new Map();
-    fileData.forEach((file: any) => {
-      fileMap.set(file.id, {
-        ...file,
-        file_url: file.file_url?.startsWith("http")
-          ? file.file_url
-          : `https://${file.file_url}`,
+    if (fileIds.length) {
+      const files = await cmnMdl.getUploadFiles(fileIds);
+
+      files.forEach((file: any) => {
+        fileMap.set(file.id, file);
       });
-    });
+    }
 
     finalData = finalData.map((row: any) => ({
       ...row,
-      profile_img: row.profile_img
-        ? fileMap.get(row.profile_img) || null
-        : null,
+      profile_img: row.profile_img && fileMap.has(row.profile_img) ? [] : [],
     }));
 
     return convertNullToString(finalData);
