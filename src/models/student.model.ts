@@ -575,7 +575,7 @@ ${having}
           file_type: f.file_type || "",
           pathname: f.pathname || "",
           org_name: f.org_name || "",
-          file_url: f.file_url ? `${f.file_url}` : [],
+          file_url: f.file_url ? f.file_url : [],
         },
       ]);
     });
@@ -615,20 +615,20 @@ ${having}
             class_type: sub.class_type || "",
 
             sylabus: sub.sylabus
-              ? sylabusMap.get(Number(sub.sylabus)) || {}
-              : {},
+              ? sylabusMap.get(Number(sub.sylabus)) || []
+              : [],
 
             teach_language: sub.teach_language
               ? sub.teach_language
                   .split(",")
-                  .map((id: string) => languageMap.get(Number(id)) || {})
+                  .map((id: string) => languageMap.get(Number(id)) || [])
                   .filter((v: any) => Object.keys(v).length)
               : [],
 
             stream_ids: sub.stream_ids
               ? sub.stream_ids
                   .split(",")
-                  .map((id: string) => subjectStreamMap.get(Number(id)) || {})
+                  .map((id: string) => subjectStreamMap.get(Number(id)) || [])
                   .filter((v: any) => Object.keys(v).length)
               : [],
 

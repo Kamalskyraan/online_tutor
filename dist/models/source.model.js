@@ -184,6 +184,90 @@ class SourceModel {
         const result = await (0, helper_1.executeQuery)(query, values);
         return result;
     }
+    async fetchLatLangFromArea(input) {
+        try {
+            const { area, city, state } = input;
+            const query = [area, city, state].filter(Boolean).join(", ");
+            if (!query)
+                return [];
+            const apiKey = process.env.GOOGLE_MAPS_API_KEY;
+            const suggestUrl = `https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${encodeURIComponent(query)}&key=${apiKey}`;
+            const suggestResp = await axios_1.default.get(suggestUrl);
+            if (suggestResp.data.status !== "OK" ||
+                !suggestResp.data.predictions?.length) {
+                return [];
+            }
+            const results = [];
+            await Promise.all(suggestResp.data.predictions.map(async (prediction) => {
+                const placeId = prediction.place_id;
+                if (!placeId)
+                    return;
+                const detailsUrl = `https://maps.googleapis.com/maps/api/place/details/json?place_id=${placeId}&key=${apiKey}`;
+                const detailsResp = await axios_1.default.get(detailsUrl);
+                if (detailsResp.data.status !== "OK" || !detailsResp.data.result) {
+                    return;
+                }
+                const place = detailsResp.data.result;
+                const components = place.address_components || [];
+                const getComp = (type) => components.find((c) => c.types.includes(type))?.long_name ||
+                    null;
+                const countryObj = components.find((c) => c.types.includes("country"));
+                const countryLong = countryObj?.long_name || null;
+                const countryShort = countryObj?.short_name || null;
+                if (!countryObj ||
+                    countryLong?.toLowerCase() !== "india" ||
+                    countryShort?.toLowerCase() !== "in") {
+                    return;
+                }
+                const pincode = getComp("postal_code");
+                const district = getComp("administrative_area_level_2") ||
+                    getComp("locality") ||
+                    getComp("sublocality");
+                const cityName = getComp("locality") ||
+                    getComp("administrative_area_level_2") ||
+                    city ||
+                    null;
+                const stateName = getComp("administrative_area_level_1") || state || null;
+                const formatted_address = place.formatted_address || null;
+                const lat = place.geometry?.location?.lat || null;
+                const lng = place.geometry?.location?.lng || null;
+                if (pincode) {
+                    const [existing] = await (0, helper_1.executeQuery)(`SELECT id FROM pincode_details WHERE pincode = ? LIMIT 1`, [pincode]);
+                    if (existing.length === 0) {
+                        await (0, helper_1.executeQuery)(`INSERT INTO pincode_details
+              (pincode, postcode_localities, city, district, state, country, lat, lng, formatted_address)
+              VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`, [
+                            pincode,
+                            area || null,
+                            cityName,
+                            district,
+                            stateName,
+                            countryLong,
+                            lat,
+                            lng,
+                            formatted_address,
+                        ]);
+                    }
+                }
+                results.push({
+                    pincode,
+                    postcode_localities: area || null,
+                    city: cityName,
+                    district,
+                    state: stateName,
+                    country: countryLong,
+                    lat,
+                    lng,
+                    formatted_address,
+                });
+            }));
+            return results;
+        }
+        catch (err) {
+            console.error("getLatLangFromArea Error:", err.message);
+            return null;
+        }
+    }
 }
 exports.SourceModel = SourceModel;
 //# sourceMappingURL=source.model.js.map

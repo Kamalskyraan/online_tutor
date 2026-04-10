@@ -31,9 +31,35 @@ router.post("/get-address-by-pincode", (req, res) => {
     */
     return source_controller_1.SourceController.getAdressDetailsFromPincode(req, res);
 });
-// router.post("/search-address", (req,res)=>{
-//   return sourceMapsEnabled
-// })
+router.post("/search-address", (req, res) => {
+    /*
+      #swagger.tags = ['7.Source']
+      #swagger.summary = 'Get datas By Address'
+      #swagger.description = 'Get datas by Address'
+  
+      
+      #swagger.parameters['body'] = {
+        in: 'body',
+        required: true,
+        schema: {
+        area : "peelamedu",
+        district : "dindigul",
+        
+          
+        }
+      }
+  
+  
+      #swagger.responses[200] = {
+        description: "Address fetched successfully"
+      }
+  
+      #swagger.responses[500] = {
+        description: "Internal Server Error"
+      }
+    */
+    return source_controller_1.SourceController.getLatLangFromArea(req, res);
+});
 router.post("/add-or-update-education", source_controller_1.SourceController.addUpdateEducationLevel);
 router.post("/add-or-update-stream", source_controller_1.SourceController.addUpdateStream);
 router.post("/get-streams", source_controller_1.SourceController.getStreamsByEducation);

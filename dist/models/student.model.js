@@ -443,7 +443,7 @@ ${having}
                     file_type: f.file_type || "",
                     pathname: f.pathname || "",
                     org_name: f.org_name || "",
-                    file_url: f.file_url ? `${f.file_url}` : [],
+                    file_url: f.file_url ? f.file_url : [],
                 },
             ]);
         });
@@ -476,18 +476,18 @@ ${having}
                         class_mode: sub.class_mode || "",
                         class_type: sub.class_type || "",
                         sylabus: sub.sylabus
-                            ? sylabusMap.get(Number(sub.sylabus)) || {}
-                            : {},
+                            ? sylabusMap.get(Number(sub.sylabus)) || []
+                            : [],
                         teach_language: sub.teach_language
                             ? sub.teach_language
                                 .split(",")
-                                .map((id) => languageMap.get(Number(id)) || {})
+                                .map((id) => languageMap.get(Number(id)) || [])
                                 .filter((v) => Object.keys(v).length)
                             : [],
                         stream_ids: sub.stream_ids
                             ? sub.stream_ids
                                 .split(",")
-                                .map((id) => subjectStreamMap.get(Number(id)) || {})
+                                .map((id) => subjectStreamMap.get(Number(id)) || [])
                                 .filter((v) => Object.keys(v).length)
                             : [],
                         prior_exp: sub.prior_exp || "",

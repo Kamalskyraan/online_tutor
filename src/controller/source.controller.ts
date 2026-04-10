@@ -1,13 +1,12 @@
 import { Request, Response } from "express";
-import { sendResponse, validateRequest } from "../utils/helper";
+import { executeQuery, sendResponse, validateRequest } from "../utils/helper";
 import { SourceModel } from "../models/source.model";
 import {
   addUpdateLangSchema,
   educationSchema,
   educationStreamSchema,
 } from "../validators/validate";
-import axios from "axios";
-import { LocationInput, LocationResult } from "../interface/interface";
+
 const sourceModel = new SourceModel();
 export class SourceController {
   static getAdressDetailsFromPincode = async (req: Request, res: Response) => {
@@ -209,132 +208,52 @@ export class SourceController {
       );
     }
   };
+
+  static async getLatLangFromArea(req: Request, res: Response) {
+    try {
+      const { area, city, state } = req.body;
+
+      if (!area && !city && !state) {
+        return res.status(400).json({
+          success: false,
+          message: "At least one of area, city, or state is required",
+        });
+      }
+
+      const result = await sourceModel.fetchLatLangFromArea({
+        area,
+        city,
+        state,
+      });
+
+      if (result === null) {
+        return res.status(500).json({
+          success: false,
+          message: "Something went wrong while fetching location",
+        });
+      }
+
+      if (!result.length) {
+        return res.status(200).json({
+          success: true,
+          message: "No locations found",
+          data: [],
+        });
+      }
+
+      return res.status(200).json({
+        success: true,
+        message: "Locations fetched successfully",
+        count: result.length,
+        data: result,
+      });
+    } catch (error: any) {
+      console.error("Controller Error (getLatLangFromArea):", error);
+
+      return res.status(500).json({
+        success: false,
+        message: "Internal server error",
+      });
+    }
+  }
 }
-
-// static getLatLangFromArea = async (
-//   input: LocationInput,
-// ): Promise<LocationResult[] | null> => {
-//   try {
-//     const { area, city, state } = input;
-
-//     const query = [area, city, state].filter(Boolean).join(", ");
-//     if (!query) return [];
-
-//     const apiKey = process.env.GOOGLE_MAPS_API_KEY;
-
-//     const suggestUrl = `https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${encodeURIComponent(
-//       query,
-//     )}&key=${apiKey}`;
-
-//     const suggestResp = await axios.get(suggestUrl);
-
-//     if (
-//       suggestResp.data.status !== "OK" ||
-//       !suggestResp.data.predictions?.length
-//     ) {
-//       return [];
-//     }
-
-//     const results: LocationResult[] = [];
-
-//     await Promise.all(
-//       suggestResp.data.predictions.map(async (prediction: any) => {
-//         const placeId = prediction.place_id;
-//         if (!placeId) return;
-
-//         const detailsUrl = `https://maps.googleapis.com/maps/api/place/details/json?place_id=${placeId}&key=${apiKey}`;
-//         const detailsResp = await axios.get(detailsUrl);
-
-//         if (detailsResp.data.status !== "OK" || !detailsResp.data.result) {
-//           return;
-//         }
-
-//         const place = detailsResp.data.result;
-//         const components = place.address_components || [];
-
-//         const getComp = (type: string): string | null =>
-//           components.find((c: any) => c.types.includes(type))?.long_name ||
-//           null;
-
-//         const countryObj = components.find((c: any) =>
-//           c.types.includes("country"),
-//         );
-
-//         const countryLong = countryObj?.long_name || null;
-//         const countryShort = countryObj?.short_name || null;
-
-//         if (
-//           !countryObj ||
-//           countryLong?.toLowerCase() !== "india" ||
-//           countryShort?.toLowerCase() !== "in"
-//         ) {
-//           return;
-//         }
-
-//         const pincode = getComp("postal_code");
-
-//         const district =
-//           getComp("administrative_area_level_2") ||
-//           getComp("locality") ||
-//           getComp("sublocality");
-
-//         const cityName =
-//           getComp("locality") ||
-//           getComp("administrative_area_level_2") ||
-//           city ||
-//           null;
-
-//         const stateName =
-//           getComp("administrative_area_level_1") || state || null;
-
-//         const formatted_address = place.formatted_address || null;
-//         const lat = place.geometry?.location?.lat || null;
-//         const lng = place.geometry?.location?.lng || null;
-
-//         // 🔥 Avoid duplicate insert (important)
-//         if (pincode) {
-//           const [existing]: any = await db.query(
-//             `SELECT id FROM pincode_details WHERE pincode = ? LIMIT 1`,
-//             [pincode],
-//           );
-
-//           if (existing.length === 0) {
-//             await db.query(
-//               `INSERT INTO pincode_details
-//               (pincode, postcode_localities, city, district, state, country, lat, lng, formatted_address)
-//               VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-//               [
-//                 pincode,
-//                 area || null,
-//                 cityName,
-//                 district,
-//                 stateName,
-//                 countryLong,
-//                 lat,
-//                 lng,
-//                 formatted_address,
-//               ],
-//             );
-//           }
-//         }
-
-//         results.push({
-//           pincode,
-//           postcode_localities: area || null,
-//           city: cityName,
-//           district,
-//           state: stateName,
-//           country: countryLong,
-//           lat,
-//           lng,
-//           formatted_address,
-//         });
-//       }),
-//     );
-
-//     return results;
-//   } catch (err: any) {
-//     console.error("getLatLangFromArea Error:", err.message);
-//     return null;
-//   }
-// };

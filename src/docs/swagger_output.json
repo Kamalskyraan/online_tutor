@@ -1441,6 +1441,46 @@
         }
       }
     },
+    "/api/source/search-address": {
+      "post": {
+        "tags": [
+          "7.Source"
+        ],
+        "summary": "Get datas By Address",
+        "description": "Get datas by Address",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "area": {
+                  "type": "string",
+                  "example": "peelamedu"
+                },
+                "district": {
+                  "type": "string",
+                  "example": "dindigul"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Address fetched successfully"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
     "/api/source/add-or-update-education": {
       "post": {
         "description": "",
