@@ -87,8 +87,10 @@ export class StudentModel {
     }
 
     if (represent) {
-      where += ` AND t.represent = ?`;
-      params.push(represent);
+      const reps = represent.split(",").map((r: any) => r.trim());
+
+      where += ` AND t.represent IN (${reps.map(() => "?").join(",")})`;
+      params.push(...reps);
     }
 
     if (min_fee) {
@@ -114,6 +116,13 @@ export class StudentModel {
       params.push(class_type);
     }
 
+    //     if (class_mode) {
+    //   const modes = class_mode.split(",").map((m: any) => m.trim());
+
+    //   where += ` AND ts.class_mode IN (${modes.map(() => "?").join(",")})`;
+    //   params.push(...modes);
+    // }
+
     if (languages && languages.length) {
       where += ` AND (${languages
         .map(() => `FIND_IN_SET(?, ts.teach_language)`)
@@ -131,10 +140,12 @@ export class StudentModel {
       params.push(...prefIds);
     }
 
-    if (rating) {
+  
+
+    if (rating !== undefined) {
       having += having
-        ? ` AND FLOOR(AVG(r.rating)) >= ?`
-        : `HAVING FLOOR(AVG(r.rating)) >= ?`;
+        ? ` AND FLOOR(COALESCE(AVG(r.rating), 0)) = ?`
+        : ` HAVING FLOOR(COALESCE(AVG(r.rating), 0)) = ?`;
 
       params.push(rating);
     }
@@ -238,6 +249,8 @@ ${having}
     LEFT JOIN subjects s ON s.id = ts.subject_id
     LEFT JOIN reviews r ON r.tutor_id = t.tutor_id
     ${where}
+    GROUP BY t.tutor_id
+  ${having}
   `;
 
     const countResult: any = await executeQuery(countQuery, params);

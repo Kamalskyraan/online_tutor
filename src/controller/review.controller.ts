@@ -51,8 +51,16 @@ export class ReviewController {
 
   static async getUpdateReview(req: Request, res: Response) {
     try {
-      const { id, tutor_id, student_id, rating, from_date, to_date } =
-        await validateRequest(req.body, fetchReviewSchema);
+      const {
+        id,
+        tutor_id,
+        student_id,
+        rating,
+        from_date,
+        to_date,
+        page = 1,
+        limit = 10,
+      } = await validateRequest(req.body, fetchReviewSchema);
 
       const ReviewData = await rvModel.fetchReviews({
         id,
@@ -61,6 +69,8 @@ export class ReviewController {
         rating,
         from_date,
         to_date,
+        page,
+        limit,
       });
 
       return sendResponse(
@@ -68,6 +78,7 @@ export class ReviewController {
         200,
         1,
         convertNullToString(ReviewData),
+
         "Reviews Fetched Successfully",
         [],
       );
@@ -83,6 +94,7 @@ export class ReviewController {
       );
     }
   }
+
   static async replyReview(req: Request, res: Response) {
     try {
       const { id, review_id, tutor_id, student_id, reply_text } =

@@ -25,7 +25,7 @@ class ReviewController {
     }
     static async getUpdateReview(req, res) {
         try {
-            const { id, tutor_id, student_id, rating, from_date, to_date } = await (0, helper_1.validateRequest)(req.body, validate_1.fetchReviewSchema);
+            const { id, tutor_id, student_id, rating, from_date, to_date, page = 1, limit = 10, } = await (0, helper_1.validateRequest)(req.body, validate_1.fetchReviewSchema);
             const ReviewData = await rvModel.fetchReviews({
                 id,
                 tutor_id,
@@ -33,6 +33,8 @@ class ReviewController {
                 rating,
                 from_date,
                 to_date,
+                page,
+                limit,
             });
             return (0, helper_1.sendResponse)(res, 200, 1, (0, helper_1.convertNullToString)(ReviewData), "Reviews Fetched Successfully", []);
         }

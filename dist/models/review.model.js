@@ -46,30 +46,83 @@ class ReviewModel {
      WHERE id = ?`, [reviewId]);
         return review || null;
     }
+    // async fetchReviews(data: fetchReview) {
+    //   const {
+    //     id,
+    //     tutor_id,
+    //     student_id,
+    //     rating,
+    //     from_date,
+    //     to_date,
+    //     page,
+    //     limit,
+    //   } = data;
+    //   // const offset = (page - limit)
+    //   let query = `SELECT r.id , r.tutor_id , r.student_id , r.rating , r.review_text,
+    //     DATE_FORMAT(r.created_at, '%Y-%m-%d') AS created_at,
+    //     DATE_FORMAT(r.updated_at, '%Y-%m-%d') AS updated_at,
+    //     s.student_id ,
+    //     u.user_name,
+    //     u.user_id,
+    //     u.user_role,
+    //     u.profile_img,
+    //     u.mobile,
+    //     rr.review_id,
+    //     rr.reply_text,
+    //     DATE_FORMAT(rr.updated_at, '%Y-%m-%d') AS reply_date
+    //     FROM reviews r
+    //     LEFT JOIN student s ON s.student_id = r.student_id
+    //     LEFT JOIN users u ON u.user_id = s.user_id
+    //    LEFT JOIN review_reply rr ON rr.review_id = r.id
+    //     `;
+    //   const conditions: string[] = [];
+    //   const params: any[] = [];
+    //   if (id) {
+    //     conditions.push(`r.id = ?`);
+    //     params.push(id);
+    //   }
+    //   if (tutor_id) {
+    //     conditions.push(`r.tutor_id = ?`);
+    //     params.push(tutor_id);
+    //   }
+    //   if (student_id) {
+    //     conditions.push(`r.student_id = ?`);
+    //     params.push(student_id);
+    //   }
+    //   if (rating) {
+    //     conditions.push(`r.rating = ?`);
+    //     params.push(rating);
+    //   }
+    //   if (from_date && to_date) {
+    //     conditions.push(`r.created_at BETWEEN ? AND ?`);
+    //     params.push(`${from_date} 00:00:00`, `${to_date} 23:59:59`);
+    //   } else if (from_date) {
+    //     conditions.push(`r.created_at BETWEEN ? AND ?`);
+    //     params.push(`${from_date} 00:00:00`, `${from_date} 23:59:59`);
+    //   }
+    //   if (conditions.length > 0) {
+    //     query += ` WHERE ` + conditions.join(" AND ");
+    //   }
+    //   query += ` ORDER BY r.id DESC`;
+    //   const reviews = await executeQuery(query, params);
+    //   let summary: any = {};
+    //   if (tutor_id) {
+    //     summary = await this.getReviewSummary(tutor_id);
+    //   }
+    //   return {
+    //     reviews,
+    //     summary,
+    //   };
+    // }
     async fetchReviews(data) {
-        const { id, tutor_id, student_id, rating, from_date, to_date } = data;
-        let query = `SELECT r.id , r.tutor_id , r.student_id , r.rating , r.review_text,
-
-      DATE_FORMAT(r.created_at, '%Y-%m-%d') AS created_at,
-      DATE_FORMAT(r.updated_at, '%Y-%m-%d') AS updated_at,
-
-      s.student_id ,
-      u.user_name,
-      u.user_id,
-      u.user_role,
-      u.profile_img,
-      u.mobile,
-      rr.review_id,
-      rr.reply_text,
-      DATE_FORMAT(rr.updated_at, '%Y-%m-%d') AS reply_date 
-
-      FROM reviews r
-
-      LEFT JOIN student s ON s.student_id = r.student_id
-      LEFT JOIN users u ON u.user_id = s.user_id
-     LEFT JOIN review_reply rr ON rr.review_id = r.id
-
-      `;
+        const { id, tutor_id, student_id, rating, from_date, to_date, page = 1, limit = 10, } = data;
+        const offset = (page - 1) * limit;
+        let baseQuery = `
+    FROM reviews r
+    LEFT JOIN student s ON s.student_id = r.student_id
+    LEFT JOIN users u ON u.user_id = s.user_id
+    LEFT JOIN review_reply rr ON rr.review_id = r.id
+  `;
         const conditions = [];
         const params = [];
         if (id) {
@@ -85,7 +138,7 @@ class ReviewModel {
             params.push(student_id);
         }
         if (rating) {
-            conditions.push(`r.rating = ?`);
+            conditions.push(`FLOOR(r.rating) = ?`);
             params.push(rating);
         }
         if (from_date && to_date) {
@@ -96,11 +149,40 @@ class ReviewModel {
             conditions.push(`r.created_at BETWEEN ? AND ?`);
             params.push(`${from_date} 00:00:00`, `${from_date} 23:59:59`);
         }
+        let whereClause = "";
         if (conditions.length > 0) {
-            query += ` WHERE ` + conditions.join(" AND ");
+            whereClause = ` WHERE ` + conditions.join(" AND ");
         }
-        query += ` ORDER BY r.id DESC`;
-        const reviews = await (0, helper_1.executeQuery)(query, params);
+        const dataQuery = `
+    SELECT 
+      r.id, r.tutor_id, r.student_id, r.rating, r.review_text,
+      DATE_FORMAT(r.created_at, '%Y-%m-%d') AS created_at,
+      DATE_FORMAT(r.updated_at, '%Y-%m-%d') AS updated_at,
+
+      u.user_name,
+      u.user_id,
+      u.user_role,
+      u.profile_img,
+      u.mobile,
+
+      rr.review_id,
+      rr.reply_text,
+      DATE_FORMAT(rr.updated_at, '%Y-%m-%d') AS reply_date
+
+    ${baseQuery}
+    ${whereClause}
+    ORDER BY r.id DESC
+    LIMIT ? OFFSET ?
+  `;
+        const finalParams = [...params, limit, offset];
+        const reviews = await (0, helper_1.executeQuery)(dataQuery, finalParams);
+        const countQuery = `
+    SELECT COUNT(*) as total
+    ${baseQuery}
+    ${whereClause}
+  `;
+        const countResult = await (0, helper_1.executeQuery)(countQuery, params);
+        const total = countResult[0]?.total || 0;
         let summary = {};
         if (tutor_id) {
             summary = await this.getReviewSummary(tutor_id);
@@ -108,6 +190,12 @@ class ReviewModel {
         return {
             reviews,
             summary,
+            pagination: {
+                total,
+                page,
+                limit,
+                total_pages: Math.ceil(total / limit),
+            },
         };
     }
     async fetchReviewsForTutorById(tutor_id) {

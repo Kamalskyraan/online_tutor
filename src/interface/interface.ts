@@ -236,6 +236,7 @@ export interface Location {
   student_id: string;
   search_address?: string;
   search_subject?: string;
+  rating?: string;
 }
 
 export interface TutorLocation {
@@ -262,6 +263,8 @@ export interface fetchReview {
   rating: string;
   from_date: string;
   to_date: string;
+  page: number;
+  limit: number;
 }
 
 export interface replyReview {
@@ -317,4 +320,24 @@ export interface studentBookClass {
   student_id: string;
   tutor_id: string;
   linked_sub: string;
+}
+
+//
+
+export interface LocationInput {
+  area?: string;
+  city?: string;
+  state?: string;
+}
+
+export interface LocationResult {
+  pincode: string | null;
+  postcode_localities: string | null;
+  city: string | null;
+  district: string | null;
+  state: string | null;
+  country: string | null;
+  lat: number | null;
+  lng: number | null;
+  formatted_address: string | null;
 }

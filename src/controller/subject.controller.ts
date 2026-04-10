@@ -67,7 +67,6 @@ export class SubjectController {
     }
   };
 
-  
   static addUpdateSubjectsToTutor = async (req: Request, res: Response) => {
     try {
       const payload = await validateRequest(
@@ -145,8 +144,7 @@ export class SubjectController {
         [],
       );
     } catch (err: any) {
-
-      console.log(err)
+      console.log(err);
       return sendResponse(res, 500, 0, [], "Internal Server Error", [
         err.errors || err.message || err,
       ]);
