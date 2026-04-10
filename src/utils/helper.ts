@@ -3,6 +3,7 @@ import db from "../config/db";
 import Joi from "joi";
 import { nanoid } from "nanoid";
 import fs from "fs/promises";
+import { customAlphabet } from "nanoid";
 export const sendResponse = (
   res: Response,
   statusCode: number,
@@ -68,8 +69,17 @@ export const getOTPExpiry = (): Date => {
   return new Date(Date.now() + minutes * 60 * 1000);
 };
 
+// export const generateUserId = (): string => {
+//   return `USER_${nanoid(8)}`;
+// };
+
+const safeNanoId = customAlphabet(
+  "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789",
+  8,
+);
+
 export const generateUserId = (): string => {
-  return `USER_${nanoid(8)}`;
+  return `USER_${safeNanoId()}`;
 };
 
 export const generateTutorId = (): string => {

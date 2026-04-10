@@ -293,7 +293,7 @@ exports.updateStudentSchema = joi_1.default.object({
     // address: Joi.string(),
     lat: joi_1.default.string(),
     lng: joi_1.default.string(),
-    is_show_num: joi_1.default.number(),
+    is_show_num: joi_1.default.boolean().truthy(1).falsy(0),
     // 2
     stream_id: joi_1.default.string(),
     learn_course_id: joi_1.default.string(),

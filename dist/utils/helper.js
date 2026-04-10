@@ -8,6 +8,7 @@ exports.executeQuery = executeQuery;
 const db_1 = __importDefault(require("../config/db"));
 const nanoid_1 = require("nanoid");
 const promises_1 = __importDefault(require("fs/promises"));
+const nanoid_2 = require("nanoid");
 const sendResponse = (res, statusCode, success, data = [], message = "", error = []) => {
     return res.status(statusCode).json({
         success,
@@ -53,8 +54,12 @@ const getOTPExpiry = () => {
     return new Date(Date.now() + minutes * 60 * 1000);
 };
 exports.getOTPExpiry = getOTPExpiry;
+// export const generateUserId = (): string => {
+//   return `USER_${nanoid(8)}`;
+// };
+const safeNanoId = (0, nanoid_2.customAlphabet)("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789", 8);
 const generateUserId = () => {
-    return `USER_${(0, nanoid_1.nanoid)(8)}`;
+    return `USER_${safeNanoId()}`;
 };
 exports.generateUserId = generateUserId;
 const generateTutorId = () => {

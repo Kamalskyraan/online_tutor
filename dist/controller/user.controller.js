@@ -127,6 +127,7 @@ userController.updateStudent = async (req, res) => {
         if (!user_id) {
             return (0, helper_1.sendResponse)(res, 200, 0, [], "User Id is required", []);
         }
+        console.log(payload);
         await userModel.updateUserBasicForStudent(payload);
         let finalCourse = payload.learn_course_id
             ? Array.isArray(payload.learn_course_id)
