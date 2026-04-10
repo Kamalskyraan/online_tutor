@@ -569,13 +569,15 @@ ${having}
 
     const sylabusMap = new Map();
     sylabusData.forEach((f: any) => {
-      sylabusMap.set(Number(f.id), {
+      sylabusMap.set(Number(f.id), [
+        {
         id: f.id || "",
         file_type: f.file_type || "",
         pathname: f.pathname || "",
         org_name: f.org_name || "",
         file_url: f.file_url ? `${process.env.ASSET_URL}${f.file_url}` : [],
-      });
+      }
+      ]);
     });
 
     const languageMap = new Map();
