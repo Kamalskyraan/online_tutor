@@ -142,7 +142,7 @@ export class TutorController {
         return sendResponse(res, 200, 0, [], "tutor_id is required", []);
       }
 
-      const tutor = await tutModel.getTutorById(tutor_id);
+      const tutor = await tutModel.getTutorById(tutor_id , student_id);
       if (!tutor) {
         return sendResponse(res, 200, 0, [], "Tutor not found", []);
       }

@@ -140,8 +140,6 @@ export class StudentModel {
       params.push(...prefIds);
     }
 
-  
-
     if (rating !== undefined) {
       having += having
         ? ` AND FLOOR(COALESCE(AVG(r.rating), 0)) = ?`
@@ -393,6 +391,7 @@ ${having}
       .join(",");
 
     const streams = await eduMdl.fetchStreamsForAll(allStreamIds);
+
     const streamMap = new Map();
     streams.forEach((s: any) => {
       streamMap.set(s.stream_id, s);
@@ -497,6 +496,7 @@ ${having}
     const streams = await eduMdl.fetchStreamsForAll(allStreamIds);
 
     const streamMap = new Map();
+
     streams.forEach((s: any) => {
       streamMap.set(Number(s.stream_id), s);
     });
@@ -574,11 +574,7 @@ ${having}
         file_type: f.file_type || "",
         pathname: f.pathname || "",
         org_name: f.org_name || "",
-        file_url: f.file_url
-          ? f.file_url.startsWith("http")
-            ? f.file_url
-            : `https://${f.file_url}`
-          : "",
+        file_url: f.file_url ? `${process.env.ASSET_URL}${f.file_url}` : [],
       });
     });
 
@@ -635,6 +631,8 @@ ${having}
               : [],
 
             prior_exp: sub.prior_exp || "",
+            exp_year: sub.exp_year || "",
+            exp_month: sub.exp_month || "",
           },
         ],
       });
@@ -684,18 +682,17 @@ ${having}
         pathname: file.pathname || "",
         org_name: file.org_name || "",
         file_url: file.file_url
-          ? file.file_url.startsWith("http")
-            ? file.file_url
-            : `https://${file.file_url}`
+          ? `${process.env.ASSET_URL}${file.file_url}`
           : "",
       });
     });
 
     finalData = finalData.map((row: any) => ({
       ...row,
-      profile_img: row.profile_img
-        ? fileMap.get(Number(row.profile_img)) || {}
-        : {},
+      profile_img:
+        Number(row.profile_img) > 0 && fileMap.get(Number(row.profile_img))
+          ? [fileMap.get(Number(row.profile_img))]
+          : [],
     }));
 
     return finalData;

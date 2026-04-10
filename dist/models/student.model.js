@@ -442,11 +442,7 @@ ${having}
                 file_type: f.file_type || "",
                 pathname: f.pathname || "",
                 org_name: f.org_name || "",
-                file_url: f.file_url
-                    ? f.file_url.startsWith("http")
-                        ? f.file_url
-                        : `https://${f.file_url}`
-                    : "",
+                file_url: f.file_url ? `${process.env.ASSET_URL}${f.file_url}` : [],
             });
         });
         const languageMap = new Map();
@@ -493,6 +489,8 @@ ${having}
                                 .filter((v) => Object.keys(v).length)
                             : [],
                         prior_exp: sub.prior_exp || "",
+                        exp_year: sub.exp_year || "",
+                        exp_month: sub.exp_month || "",
                     },
                 ],
             });
@@ -527,17 +525,15 @@ ${having}
                 pathname: file.pathname || "",
                 org_name: file.org_name || "",
                 file_url: file.file_url
-                    ? file.file_url.startsWith("http")
-                        ? file.file_url
-                        : `https://${file.file_url}`
+                    ? `${process.env.ASSET_URL}${file.file_url}`
                     : "",
             });
         });
         finalData = finalData.map((row) => ({
             ...row,
-            profile_img: row.profile_img
-                ? fileMap.get(Number(row.profile_img)) || {}
-                : {},
+            profile_img: Number(row.profile_img) > 0 && fileMap.get(Number(row.profile_img))
+                ? [fileMap.get(Number(row.profile_img))]
+                : [],
         }));
         return finalData;
     }

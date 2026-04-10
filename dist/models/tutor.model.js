@@ -165,7 +165,7 @@ class TutorModel {
     `, [mobile]);
         return res;
     }
-    async getTutorById(tutor_id) {
+    async getTutorById(tutor_id, student_id) {
         const query = `
     SELECT 
       u.user_id,
@@ -182,7 +182,10 @@ class TutorModel {
       u.profile_img,
       t.tutor_id,
       t.stream_id,
-      t.represent
+      t.represent,
+      t.tutor_exp as tutor_exp,
+      t.exp_year as t_exp_year,
+      t.exp_month as t_exp_month 
     FROM users u
     RIGHT JOIN tutor t ON t.user_id = u.user_id
     RIGHT JOIN tutor_subjects ts 
@@ -196,20 +199,26 @@ class TutorModel {
             return null;
         const data = await stuMdl.buildTutorFullDatasForId(rows);
         const tutor = data[0];
+        let is_like = 0;
+        if (student_id) {
+            const likeRes = await (0, helper_1.executeQuery)(`SELECT id FROM tutor_likes 
+       WHERE tutor_id = ? AND student_id = ?`, [tutor_id, student_id]);
+            is_like = likeRes.length ? 1 : 0;
+        }
+        tutor.is_like = is_like;
         const demoMedia = await (0, helper_1.executeQuery)(`SELECT id, media_type, media_id, title, thumbnail 
      FROM tutor_demo_media 
      WHERE tutor_id = ?`, [tutor_id]);
         const mediaIds = [
             ...new Set(demoMedia
-                .flatMap((item) => [item.media_id, item.thumbnail])
+                .flatMap((i) => [i.media_id, i.thumbnail])
                 .filter(Boolean)),
         ];
         let mediaData = [];
         if (mediaIds.length) {
             const placeholders = mediaIds.map(() => "?").join(",");
             mediaData = await (0, helper_1.executeQuery)(`SELECT id, file_type, file_url, pathname, org_name 
-       FROM media 
-       WHERE id IN (${placeholders})`, mediaIds);
+       FROM media WHERE id IN (${placeholders})`, mediaIds);
         }
         const mediaMap = new Map();
         mediaData.forEach((file) => {
@@ -218,8 +227,8 @@ class TutorModel {
                 file_type: (0, helper_1.convertNullToString)(file.file_type),
                 pathname: (0, helper_1.convertNullToString)(file.pathname),
                 org_name: (0, helper_1.convertNullToString)(file.org_name),
-                file_url: (0, helper_1.convertNullToString)(file.file_url) ??
-                    (0, helper_1.convertNullToString)(file.file_url),
+                file_url: (0, helper_1.convertNullToString)(`${process.env.ASSET_URL}${file.file_url}`) ??
+                    (0, helper_1.convertNullToString)(`${process.env.ASSET_URL}${file.file_url}`),
             });
         });
         const images = [];
@@ -235,7 +244,7 @@ class TutorModel {
                 media_id: (0, helper_1.convertNullToString)(item.media_id),
                 thumbnail_id: (0, helper_1.convertNullToString)(item.thumbnail),
                 file: (0, helper_1.convertNullToString)(mainMedia),
-                thumbnail: thumbnailMedia ? (0, helper_1.convertNullToString)(thumbnailMedia) : null,
+                thumbnail: thumbnailMedia ? [(0, helper_1.convertNullToString)(thumbnailMedia)] : [],
             };
             if (item.media_type === "image") {
                 images.push(responseObj);

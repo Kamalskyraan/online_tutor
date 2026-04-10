@@ -223,7 +223,7 @@ export class TutorModel {
     return res;
   }
 
-  async getTutorById(tutor_id: string) {
+  async getTutorById(tutor_id: string, student_id: string) {
     const query = `
     SELECT 
       u.user_id,
@@ -240,7 +240,10 @@ export class TutorModel {
       u.profile_img,
       t.tutor_id,
       t.stream_id,
-      t.represent
+      t.represent,
+      t.tutor_exp as tutor_exp,
+      t.exp_year as t_exp_year,
+      t.exp_month as t_exp_month 
     FROM users u
     RIGHT JOIN tutor t ON t.user_id = u.user_id
     RIGHT JOIN tutor_subjects ts 
@@ -255,6 +258,19 @@ export class TutorModel {
 
     const data = await stuMdl.buildTutorFullDatasForId(rows);
     const tutor = data[0];
+    let is_like = 0;
+
+    if (student_id) {
+      const likeRes: any = await executeQuery(
+        `SELECT id FROM tutor_likes 
+       WHERE tutor_id = ? AND student_id = ?`,
+        [tutor_id, student_id],
+      );
+
+      is_like = likeRes.length ? 1 : 0;
+    }
+
+    tutor.is_like = is_like;
 
     const demoMedia = await executeQuery(
       `SELECT id, media_type, media_id, title, thumbnail 
@@ -266,7 +282,7 @@ export class TutorModel {
     const mediaIds = [
       ...new Set(
         demoMedia
-          .flatMap((item: any) => [item.media_id, item.thumbnail])
+          .flatMap((i: any) => [i.media_id, i.thumbnail])
           .filter(Boolean),
       ),
     ];
@@ -277,8 +293,7 @@ export class TutorModel {
       const placeholders = mediaIds.map(() => "?").join(",");
       mediaData = await executeQuery(
         `SELECT id, file_type, file_url, pathname, org_name 
-       FROM media 
-       WHERE id IN (${placeholders})`,
+       FROM media WHERE id IN (${placeholders})`,
         mediaIds,
       );
     }
@@ -292,8 +307,8 @@ export class TutorModel {
         pathname: convertNullToString(file.pathname),
         org_name: convertNullToString(file.org_name),
         file_url:
-          convertNullToString(file.file_url) ??
-          convertNullToString(file.file_url),
+          convertNullToString(`${process.env.ASSET_URL}${file.file_url}`) ??
+          convertNullToString(`${process.env.ASSET_URL}${file.file_url}`),
       });
     });
 
@@ -312,7 +327,7 @@ export class TutorModel {
         media_id: convertNullToString(item.media_id),
         thumbnail_id: convertNullToString(item.thumbnail),
         file: convertNullToString(mainMedia),
-        thumbnail: thumbnailMedia ? convertNullToString(thumbnailMedia) : null,
+        thumbnail: thumbnailMedia ? [convertNullToString(thumbnailMedia)] : [],
       };
 
       if (item.media_type === "image") {
@@ -333,7 +348,6 @@ export class TutorModel {
 
     return convertNullToString(tutor);
   }
-  
 
   async addUpdateLikeForTutor(
     tutor_id: string,
@@ -530,6 +544,7 @@ export class TutorModel {
       },
     };
   }
+
   //
 
   async fetchSubjectsFromTutorSubjects(tutorSubjects: any[]) {
