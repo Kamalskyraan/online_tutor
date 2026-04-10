@@ -31,6 +31,9 @@ router.post("/get-address-by-pincode", (req, res) => {
     */
     return source_controller_1.SourceController.getAdressDetailsFromPincode(req, res);
 });
+// router.post("/search-address", (req,res)=>{
+//   return sourceMapsEnabled
+// })
 router.post("/add-or-update-education", source_controller_1.SourceController.addUpdateEducationLevel);
 router.post("/add-or-update-stream", source_controller_1.SourceController.addUpdateStream);
 router.post("/get-streams", source_controller_1.SourceController.getStreamsByEducation);

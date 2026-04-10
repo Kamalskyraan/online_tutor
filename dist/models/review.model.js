@@ -3,19 +3,48 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.ReviewModel = void 0;
 const helper_1 = require("../utils/helper");
 class ReviewModel {
+    // async createReview(data: Review): Promise<number> {
+    //   const { id, tutor_id, student_id, rating, review_text } = data;
+    //   if (id) {
+    //     await executeQuery(
+    //       `UPDATE reviews
+    //      SET tutor_id = ?, student_id = ?, rating = ?, review_text = ?
+    //      WHERE id = ?`,
+    //       [tutor_id, student_id, rating, review_text, id],
+    //     );
+    //     return id;
+    //   } else {
+    //     const result: any = await executeQuery(
+    //       `INSERT INTO reviews (tutor_id, student_id, rating, review_text)
+    //      VALUES (?, ?, ?, ?)`,
+    //       [tutor_id, student_id, rating, review_text],
+    //     );
+    //     return result.insertId;
+    //   }
+    // }
     async createReview(data) {
         const { id, tutor_id, student_id, rating, review_text } = data;
+        let reviewId = id;
         if (id) {
             await (0, helper_1.executeQuery)(`UPDATE reviews 
        SET tutor_id = ?, student_id = ?, rating = ?, review_text = ? 
        WHERE id = ?`, [tutor_id, student_id, rating, review_text, id]);
-            return id;
         }
         else {
             const result = await (0, helper_1.executeQuery)(`INSERT INTO reviews (tutor_id, student_id, rating, review_text) 
        VALUES (?, ?, ?, ?)`, [tutor_id, student_id, rating, review_text]);
-            return result.insertId;
+            reviewId = result.insertId;
         }
+        const [review] = await (0, helper_1.executeQuery)(`SELECT 
+        id,
+        tutor_id,
+        student_id,
+        rating,
+        review_text,
+        created_at
+     FROM reviews
+     WHERE id = ?`, [reviewId]);
+        return review || null;
     }
     async fetchReviews(data) {
         const { id, tutor_id, student_id, rating, from_date, to_date } = data;

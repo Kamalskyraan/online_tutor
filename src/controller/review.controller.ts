@@ -1,5 +1,9 @@
 import { Request, Response } from "express";
-import { convertNullToString, sendResponse, validateRequest } from "../utils/helper";
+import {
+  convertNullToString,
+  sendResponse,
+  validateRequest,
+} from "../utils/helper";
 import {
   fetchReviewSchema,
   replyReviewSchema,
@@ -17,7 +21,7 @@ export class ReviewController {
       const { id, tutor_id, student_id, rating, review_text } =
         await validateRequest(req.body, reviewSchema);
 
-      await rvModel.createReview({
+      const revData = await rvModel.createReview({
         id,
         tutor_id,
         student_id,
@@ -29,7 +33,7 @@ export class ReviewController {
         res,
         200,
         1,
-        [],
+        [revData],
         id ? "Review updated successfully" : "Review added successfully",
       );
     } catch (err: any) {
@@ -182,8 +186,7 @@ export class ReviewController {
 
       return sendResponse(res, 200, 1, result, result.message, []);
     } catch (err: any) {
-
-      console.log(err)
+      console.log(err);
       return sendResponse(
         res,
         500,

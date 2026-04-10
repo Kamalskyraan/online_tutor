@@ -132,7 +132,9 @@ export class StudentModel {
     }
 
     if (rating) {
-      having += having ? ` AND tutor_rating >= ?` : `HAVING tutor_rating >= ?`;
+      having += having
+        ? ` AND FLOOR(AVG(r.rating)) >= ?`
+        : `HAVING FLOOR(AVG(r.rating)) >= ?`;
 
       params.push(rating);
     }

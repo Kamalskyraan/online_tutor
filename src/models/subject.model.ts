@@ -401,8 +401,6 @@ export class SubjectModel {
     return result;
   }
 
-
-
   async removeTutorSubject(id: number) {
     const existing: any = await executeQuery(
       `SELECT id FROM tutor_subjects WHERE id = ? `,

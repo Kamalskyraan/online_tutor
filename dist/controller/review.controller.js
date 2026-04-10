@@ -9,14 +9,14 @@ class ReviewController {
     static async addUpdateReview(req, res) {
         try {
             const { id, tutor_id, student_id, rating, review_text } = await (0, helper_1.validateRequest)(req.body, validate_1.reviewSchema);
-            await rvModel.createReview({
+            const revData = await rvModel.createReview({
                 id,
                 tutor_id,
                 student_id,
                 rating,
                 review_text,
             });
-            return (0, helper_1.sendResponse)(res, 200, 1, [], id ? "Review updated successfully" : "Review added successfully");
+            return (0, helper_1.sendResponse)(res, 200, 1, [revData], id ? "Review updated successfully" : "Review added successfully");
         }
         catch (err) {
             console.log(err);
