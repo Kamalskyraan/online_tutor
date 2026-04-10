@@ -443,8 +443,8 @@ ${having}
                     file_type: f.file_type || "",
                     pathname: f.pathname || "",
                     org_name: f.org_name || "",
-                    file_url: f.file_url ? `${process.env.ASSET_URL}${f.file_url}` : [],
-                }
+                    file_url: f.file_url ? `${f.file_url}` : [],
+                },
             ]);
         });
         const languageMap = new Map();
@@ -526,9 +526,7 @@ ${having}
                 file_type: file.file_type || "",
                 pathname: file.pathname || "",
                 org_name: file.org_name || "",
-                file_url: file.file_url
-                    ? `${process.env.ASSET_URL}${file.file_url}`
-                    : "",
+                file_url: file.file_url ? `${file.file_url}` : "",
             });
         });
         finalData = finalData.map((row) => ({

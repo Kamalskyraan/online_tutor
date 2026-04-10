@@ -328,6 +328,8 @@ export class TutorModel {
         thumbnail: thumbnailMedia ? [convertNullToString(thumbnailMedia)] : [],
       };
 
+     
+
       if (item.media_type === "image") {
         images.push(responseObj);
       } else if (item.media_type === "video") {

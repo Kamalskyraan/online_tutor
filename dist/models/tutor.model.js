@@ -227,9 +227,7 @@ class TutorModel {
                 file_type: (0, helper_1.convertNullToString)(file.file_type),
                 pathname: (0, helper_1.convertNullToString)(file.pathname),
                 org_name: (0, helper_1.convertNullToString)(file.org_name),
-                file_url: file.file_url
-                    ? (0, helper_1.convertNullToString)(`${process.env.ASSET_URL}${file.file_url}`)
-                    : "",
+                file_url: file.file_url ? (0, helper_1.convertNullToString)(`${file.file_url}`) : "",
             });
         });
         const images = [];
