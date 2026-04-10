@@ -327,7 +327,7 @@ export const updateStudentSchema = Joi.object({
   // address: Joi.string(),
   lat: Joi.string(),
   lng: Joi.string(),
-  is_show_num: Joi.number(),
+  is_show_num: Joi.boolean().truthy(1).falsy(0),
 
   // 2
 

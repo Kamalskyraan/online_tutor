@@ -158,6 +158,7 @@ export class userController {
         return sendResponse(res, 200, 0, [], "User Id is required", []);
       }
 
+      console.log(payload);
       await userModel.updateUserBasicForStudent(payload);
 
       let finalCourse: string[] = payload.learn_course_id
