@@ -306,9 +306,7 @@ export class TutorModel {
         file_type: convertNullToString(file.file_type),
         pathname: convertNullToString(file.pathname),
         org_name: convertNullToString(file.org_name),
-        file_url: file.file_url
-          ? convertNullToString(`${process.env.ASSET_URL}${file.file_url}`)
-          : "",
+        file_url: file.file_url ? convertNullToString(`${file.file_url}`) : "",
       });
     });
 
