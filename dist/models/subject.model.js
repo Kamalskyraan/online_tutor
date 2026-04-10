@@ -135,17 +135,80 @@ class SubjectModel {
             id: subjectId,
         };
     }
+    // async addTeachingLanguages(data: any) {
+    //   const { tutor_id, teach_language, id } = data;
+    //   if (!teach_language) return;
+    //   await executeQuery(
+    //     `UPDATE tutor_subjects
+    //    SET teach_language = ?,
+    //        sub_form = GREATEST(COALESCE(sub_form,0), 2)
+    //    WHERE tutor_id = ?`,
+    //     [teach_language, tutor_id],
+    //   );
+    // }
     async addTeachingLanguages(data) {
-        const { tutor_id, teach_language } = data;
+        const { tutor_id, teach_language, id } = data;
         if (!teach_language)
             return;
-        await (0, helper_1.executeQuery)(`UPDATE tutor_subjects
-     SET teach_language = ?,
-         sub_form = GREATEST(COALESCE(sub_form,0), 2)
-     WHERE tutor_id = ?`, [teach_language, tutor_id]);
+        let query = `
+    UPDATE tutor_subjects
+    SET teach_language = ?,
+        sub_form = GREATEST(COALESCE(sub_form,0), 2)
+  `;
+        let params = [teach_language];
+        if (id) {
+            query += ` WHERE id = ? AND tutor_id = ?`;
+            params.push(id, tutor_id);
+        }
+        else {
+            query += ` WHERE tutor_id = ?`;
+            params.push(tutor_id);
+        }
+        await (0, helper_1.executeQuery)(query, params);
     }
+    // async addClassDetails(data: any) {
+    //   const {
+    //     tutor_id,
+    //     class_mode,
+    //     class_type,
+    //     stream_id,
+    //     min_fee,
+    //     max_fee,
+    //     tenure_type,
+    //   } = data;
+    //   if (
+    //     !class_mode &&
+    //     !class_type &&
+    //     !stream_id &&
+    //     !min_fee &&
+    //     !max_fee &&
+    //     !tenure_type
+    //   )
+    //     return;
+    //   await executeQuery(
+    //     `UPDATE tutor_subjects
+    //    SET
+    //      class_mode = ?,
+    //      class_type = ?,
+    //      stream_ids = ?,
+    //      min_fee = ?,
+    //      max_fee = ?,
+    //      tenure_type = ?,
+    //      sub_form = GREATEST(COALESCE(sub_form,0), 3)
+    //    WHERE tutor_id = ?`,
+    //     [
+    //       class_mode,
+    //       class_type,
+    //       stream_id,
+    //       min_fee,
+    //       max_fee,
+    //       tenure_type,
+    //       tutor_id,
+    //     ],
+    //   );
+    // }
     async addClassDetails(data) {
-        const { tutor_id, class_mode, class_type, stream_id, min_fee, max_fee, tenure_type, } = data;
+        const { tutor_id, id, class_mode, class_type, stream_id, min_fee, max_fee, tenure_type, } = data;
         if (!class_mode &&
             !class_type &&
             !stream_id &&
@@ -153,24 +216,34 @@ class SubjectModel {
             !max_fee &&
             !tenure_type)
             return;
-        await (0, helper_1.executeQuery)(`UPDATE tutor_subjects
-     SET 
-       class_mode = ?,
-       class_type = ?,
-       stream_ids = ?,
-       min_fee = ?,
-       max_fee = ?,
-       tenure_type = ?,
-       sub_form = GREATEST(COALESCE(sub_form,0), 3)
-     WHERE tutor_id = ?`, [
+        let query = `
+    UPDATE tutor_subjects
+    SET 
+      class_mode = ?,
+      class_type = ?,
+      stream_ids = ?,
+      min_fee = ?,
+      max_fee = ?,
+      tenure_type = ?,
+      sub_form = GREATEST(COALESCE(sub_form,0), 3)
+  `;
+        let params = [
             class_mode,
             class_type,
             stream_id,
             min_fee,
             max_fee,
             tenure_type,
-            tutor_id,
-        ]);
+        ];
+        if (id) {
+            query += ` WHERE id = ? AND tutor_id = ?`;
+            params.push(id, tutor_id);
+        }
+        else {
+            query += ` WHERE tutor_id = ?`;
+            params.push(tutor_id);
+        }
+        await (0, helper_1.executeQuery)(query, params);
     }
     async getTutorSubjectById(tutor_id, id) {
         let query = `
