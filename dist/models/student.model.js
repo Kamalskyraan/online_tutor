@@ -9,6 +9,14 @@ const eduMdl = new education_model_1.EduModel();
 const rvMdl = new review_model_1.ReviewModel();
 const cmnMdl = new common_model_1.commonModel();
 class StudentModel {
+    // ts.subject_id,
+    //     ts.subject_name,
+    //     ts.min_fee,
+    //     ts.max_fee,
+    //     ts.tenure_type,
+    //     ts.teach_language,
+    //     ts.class_mode,
+    //     ts.class_type,
     async findNearbyTutors(location) {
         const { lat, lng, radius = 100, search_address, search_subject, page = 1, limit = 5, tutor_type, rating, gender, represent, min_fee, max_fee, tenure_type, class_mode, class_type, languages, student_id, } = location;
         const offset = (page - 1) * limit;
@@ -117,15 +125,7 @@ class StudentModel {
       t.tutor_id,
       t.represent,
 
-      ts.subject_id,
-      ts.subject_name,
-      ts.min_fee,
-      ts.max_fee,
-      ts.tenure_type,
-      ts.teach_language,
-      ts.class_mode,
-      ts.class_type,
-
+     
       (
         SELECT FLOOR(AVG(r2.rating))
         FROM reviews r2
