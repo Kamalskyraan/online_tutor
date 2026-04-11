@@ -12,15 +12,6 @@ const eduMdl = new EduModel();
 const rvMdl = new ReviewModel();
 const cmnMdl = new commonModel();
 export class StudentModel {
-
-  // ts.subject_id,
-  //     ts.subject_name,
-  //     ts.min_fee,
-  //     ts.max_fee,
-  //     ts.tenure_type,
-  //     ts.teach_language,
-  //     ts.class_mode,
-  //     ts.class_type,
   public async findNearbyTutors(location: any): Promise<any> {
     const {
       lat,
@@ -173,7 +164,14 @@ export class StudentModel {
 
       t.tutor_id,
       t.represent,
-
+  ts.subject_id,
+      ts.subject_name,
+      ts.min_fee,
+     ts.max_fee,
+      ts.tenure_type,
+     ts.teach_language,
+      ts.class_mode,
+      ts.class_type,
      
       (
         SELECT FLOOR(AVG(r2.rating))
