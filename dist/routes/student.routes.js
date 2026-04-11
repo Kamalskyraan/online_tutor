@@ -136,7 +136,8 @@ router.post("/get-fees", (req, res) => {
         schema: {
           subject_id : 1,
           subject_name : "tamil",
-          fee_type : "hour or week or day"
+          fee_type : "hour or week or day",
+          student_id : "STUDENT_4Gy3VZ"
           }
       }
   

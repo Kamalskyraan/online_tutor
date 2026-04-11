@@ -127,12 +127,13 @@ export class StudentController {
 
   static getFees = async (req: Request, res: Response) => {
     try {
-      const { subject_id, subject_name, fee_type } = req.body;
+      const { subject_id, subject_name, fee_type, student_id } = req.body;
 
       const data = await this.studentModel.fetchFees(
         subject_id,
         subject_name,
         fee_type,
+        student_id,
       );
 
       return sendResponse(

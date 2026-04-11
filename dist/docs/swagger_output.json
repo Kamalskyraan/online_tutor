@@ -2322,6 +2322,10 @@
                                 "fee_type": {
                                     "type": "string",
                                     "example": "hour or week or day"
+                                },
+                                "student_id": {
+                                    "type": "string",
+                                    "example": "STUDENT_4Gy3VZ"
                                 }
                             }
                         }

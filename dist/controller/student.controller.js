@@ -84,8 +84,8 @@ StudentController.bookSessionStatus = async (req, res) => {
 };
 StudentController.getFees = async (req, res) => {
     try {
-        const { subject_id, subject_name, fee_type } = req.body;
-        const data = await _a.studentModel.fetchFees(subject_id, subject_name, fee_type);
+        const { subject_id, subject_name, fee_type, student_id } = req.body;
+        const data = await _a.studentModel.fetchFees(subject_id, subject_name, fee_type, student_id);
         return (0, helper_1.sendResponse)(res, 200, 1, (0, helper_1.convertNullToString)(data), "Fees fetched successfully");
     }
     catch (err) {
