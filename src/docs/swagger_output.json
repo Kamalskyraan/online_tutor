@@ -2337,7 +2337,7 @@
         }
       }
     },
-    "/api/student/student-like-tutorprofile": {
+    "/api/student/student-view-tutorprofile": {
       "post": {
         "tags": [
           "9.Student"

@@ -158,7 +158,7 @@ router.post("/get-fees", (req, res) => {
   StudentController.getFees(req, res);
 });
 
-router.post("/student-like-tutorprofile", (req, res) => {
+router.post("/student-view-tutorprofile", (req, res) => {
   /*
     #swagger.tags = ['9.Student']
     #swagger.summary = 'Update Mobile View Profile'
