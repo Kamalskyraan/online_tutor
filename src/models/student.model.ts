@@ -214,8 +214,7 @@ END AS is_like
 
     ${where}
 
-    GROUP BY t.tutor_id, ts.subject_id
-
+    GROUP BY t.tutor_id
    
 
 ${having}
