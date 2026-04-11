@@ -201,9 +201,9 @@ class TutorModel {
         const tutor = data[0];
         let is_like = 0;
         if (student_id) {
-            const likeRes = await (0, helper_1.executeQuery)(`SELECT id FROM tutor_likes 
+            const likeRes = await (0, helper_1.executeQuery)(`SELECT id , is_like FROM tutor_likes 
        WHERE tutor_id = ? AND student_id = ?`, [tutor_id, student_id]);
-            is_like = likeRes.length ? 1 : 0;
+            is_like = likeRes[0].is_like === Number(1) ? 1 : 0;
         }
         tutor.is_like = is_like;
         const demoMedia = await (0, helper_1.executeQuery)(`SELECT id, media_type, media_id, title, thumbnail 
