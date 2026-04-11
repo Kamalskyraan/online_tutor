@@ -73,11 +73,6 @@ class StudentModel {
             where += ` AND ts.class_type = ?`;
             params.push(class_type);
         }
-        //     if (class_mode) {
-        //   const modes = class_mode.split(",").map((m: any) => m.trim());
-        //   where += ` AND ts.class_mode IN (${modes.map(() => "?").join(",")})`;
-        //   params.push(...modes);
-        // }
         if (languages && languages.length) {
             where += ` AND (${languages
                 .map(() => `FIND_IN_SET(?, ts.teach_language)`)
@@ -198,7 +193,7 @@ ${having}
         const countResult = await (0, helper_1.executeQuery)(countQuery, params);
         const total = countResult[0]?.total || 0;
         const rows = await (0, helper_1.executeQuery)(query, finalParams);
-        const data = await this.buildTutorFullData(rows);
+        const data = await this.buildTutorFullData(rows, search_subject);
         if (!rows.length)
             return {
                 data: [],
@@ -286,7 +281,7 @@ ${having}
         return result;
     }
     //
-    async buildTutorFullData(rows) {
+    async buildTutorFullData(rows, search_subject) {
         const safeParse = (data) => {
             try {
                 return data ? JSON.parse(data) : [];
@@ -338,6 +333,18 @@ ${having}
                     },
                 ],
             });
+            if (search_subject) {
+                const search = search_subject.toLowerCase();
+                subjectMap.forEach((subjects) => {
+                    subjects.sort((a, b) => {
+                        const aName = a.sub[0].subject_name?.toLowerCase() || "";
+                        const bName = b.sub[0].subject_name?.toLowerCase() || "";
+                        const aMatch = aName.includes(search) ? 1 : 0;
+                        const bMatch = bName.includes(search) ? 1 : 0;
+                        return bMatch - aMatch;
+                    });
+                });
+            }
         });
         //
         const ratingMap = new Map();

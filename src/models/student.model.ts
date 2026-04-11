@@ -116,13 +116,6 @@ export class StudentModel {
       params.push(class_type);
     }
 
-    //     if (class_mode) {
-    //   const modes = class_mode.split(",").map((m: any) => m.trim());
-
-    //   where += ` AND ts.class_mode IN (${modes.map(() => "?").join(",")})`;
-    //   params.push(...modes);
-    // }
-
     if (languages && languages.length) {
       where += ` AND (${languages
         .map(() => `FIND_IN_SET(?, ts.teach_language)`)
@@ -256,7 +249,7 @@ ${having}
 
     const rows: any = await executeQuery(query, finalParams);
 
-    const data = await this.buildTutorFullData(rows);
+    const data = await this.buildTutorFullData(rows, search_subject);
 
     if (!rows.length)
       return {
@@ -375,7 +368,7 @@ ${having}
 
   //
 
-  async buildTutorFullData(rows: any[]) {
+  async buildTutorFullData(rows: any[], search_subject?: string) {
     const safeParse = (data: any) => {
       try {
         return data ? JSON.parse(data) : [];
@@ -437,6 +430,22 @@ ${having}
           },
         ],
       });
+
+      if (search_subject) {
+        const search = search_subject.toLowerCase();
+
+        subjectMap.forEach((subjects: any[]) => {
+          subjects.sort((a, b) => {
+            const aName = a.sub[0].subject_name?.toLowerCase() || "";
+            const bName = b.sub[0].subject_name?.toLowerCase() || "";
+
+            const aMatch = aName.includes(search) ? 1 : 0;
+            const bMatch = bName.includes(search) ? 1 : 0;
+
+            return bMatch - aMatch;
+          });
+        });
+      }
     });
 
     //
@@ -479,6 +488,7 @@ ${having}
 
     return convertNullToString(finalData);
   }
+
   async buildTutorFullDatasForId(rows: any[]) {
     const safeParse = (data: any) => {
       try {
