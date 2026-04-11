@@ -42,9 +42,7 @@ router.post("/search-address", (req, res) => {
         in: 'body',
         required: true,
         schema: {
-        area : "peelamedu",
-        district : "dindigul",
-        
+        query : "peelamedu"
           
         }
       }

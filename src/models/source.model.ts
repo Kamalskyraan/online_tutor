@@ -8,7 +8,11 @@ import {
   PincodeDB,
   PincodeResult,
 } from "../interface/interface";
-import { executeQuery, safeJSONParse } from "../utils/helper";
+import {
+  convertNullToString,
+  executeQuery,
+  safeJSONParse,
+} from "../utils/helper";
 
 export class SourceModel {
   async getLatLngFromPincode(
@@ -254,20 +258,33 @@ export class SourceModel {
     return result;
   }
 
-  async fetchLatLangFromArea(
-    input: LocationInput,
-  ): Promise<LocationResult[] | null> {
+  async fetchLatLangFromQuery(query: string): Promise<LocationResult[] | null> {
     try {
-      const { area, city, state } = input;
-
-      const query = [area, city, state].filter(Boolean).join(", ");
       if (!query) return [];
+
+      const dbResults: any = await executeQuery(
+        `
+      SELECT * FROM pincode_details
+      WHERE 
+        postcode_localities LIKE ? OR
+        city LIKE ? OR
+        district LIKE ? OR
+        state LIKE ? OR
+        formatted_address LIKE ?
+      LIMIT 10
+      `,
+        [`%${query}%`, `%${query}%`, `%${query}%`, `%${query}%`, `%${query}%`],
+      );
+
+      if (dbResults.length > 0) {
+        return convertNullToString(dbResults);
+      }
 
       const apiKey = process.env.GOOGLE_MAPS_API_KEY;
 
       const suggestUrl = `https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${encodeURIComponent(
         query,
-      )}&key=${apiKey}`;
+      )}&components=country:in&key=${apiKey}`;
 
       const suggestResp = await axios.get(suggestUrl);
 
@@ -281,102 +298,84 @@ export class SourceModel {
       const results: LocationResult[] = [];
 
       await Promise.all(
-        suggestResp.data.predictions.map(async (prediction: any) => {
-          const placeId = prediction.place_id;
-          if (!placeId) return;
+        suggestResp.data.predictions
+          .slice(0, 5)
+          .map(async (prediction: any) => {
+            const placeId = prediction.place_id;
+            if (!placeId) return;
 
-          const detailsUrl = `https://maps.googleapis.com/maps/api/place/details/json?place_id=${placeId}&key=${apiKey}`;
-          const detailsResp = await axios.get(detailsUrl);
+            const detailsUrl = `https://maps.googleapis.com/maps/api/place/details/json?place_id=${placeId}&key=${apiKey}`;
+            const detailsResp = await axios.get(detailsUrl);
 
-          if (detailsResp.data.status !== "OK" || !detailsResp.data.result) {
-            return;
-          }
+            if (detailsResp.data.status !== "OK") return;
 
-          const place = detailsResp.data.result;
-          const components = place.address_components || [];
+            const place = detailsResp.data.result;
+            const components = place.address_components || [];
 
-          const getComp = (type: string): string | null =>
-            components.find((c: any) => c.types.includes(type))?.long_name ||
-            null;
+            const getComp = (type: string): string | null =>
+              components.find((c: any) => c.types.includes(type))?.long_name ||
+              null;
 
-          const countryObj = components.find((c: any) =>
-            c.types.includes("country"),
-          );
+            const country = getComp("country");
+            if (!country || country.toLowerCase() !== "india") return;
 
-          const countryLong = countryObj?.long_name || null;
-          const countryShort = countryObj?.short_name || null;
+            const pincode = getComp("postal_code");
 
-          if (
-            !countryObj ||
-            countryLong?.toLowerCase() !== "india" ||
-            countryShort?.toLowerCase() !== "in"
-          ) {
-            return;
-          }
+            const resultObj = {
+              pincode,
+              postcode_localities:
+                getComp("sublocality") || getComp("locality"),
+              city:
+                getComp("locality") || getComp("administrative_area_level_2"),
+              district: getComp("administrative_area_level_2"),
+              state: getComp("administrative_area_level_1"),
+              country,
+              lat: place.geometry?.location?.lat || null,
+              lng: place.geometry?.location?.lng || null,
+              formatted_address: place.formatted_address || null,
+            };
 
-          const pincode = getComp("postal_code");
-
-          const district =
-            getComp("administrative_area_level_2") ||
-            getComp("locality") ||
-            getComp("sublocality");
-
-          const cityName =
-            getComp("locality") ||
-            getComp("administrative_area_level_2") ||
-            city ||
-            null;
-
-          const stateName =
-            getComp("administrative_area_level_1") || state || null;
-
-          const formatted_address = place.formatted_address || null;
-          const lat = place.geometry?.location?.lat || null;
-          const lng = place.geometry?.location?.lng || null;
-
-          if (pincode) {
-            const [existing]: any = await executeQuery(
-              `SELECT id FROM pincode_details WHERE pincode = ? LIMIT 1`,
-              [pincode],
-            );
-
-            if (existing.length === 0) {
-              await executeQuery(
-                `INSERT INTO pincode_details
-              (pincode, postcode_localities, city, district, state, country, lat, lng, formatted_address)
-              VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-                [
-                  pincode,
-                  area || null,
-                  cityName,
-                  district,
-                  stateName,
-                  countryLong,
-                  lat,
-                  lng,
-                  formatted_address,
-                ],
+            if (pincode) {
+              const existing: any = await executeQuery(
+                `SELECT id FROM pincode_details WHERE pincode = ? LIMIT 1`,
+                [pincode],
               );
-            }
-          }
 
-          results.push({
-            pincode,
-            postcode_localities: area || null,
-            city: cityName,
-            district,
-            state: stateName,
-            country: countryLong,
-            lat,
-            lng,
-            formatted_address,
-          });
-        }),
+              if (existing.length === 0) {
+                await executeQuery(
+                  `
+              INSERT INTO pincode_details
+              (pincode, postcode_localities, city, district, state, country, lat, lng, formatted_address)
+              VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+              `,
+                  [
+                    pincode,
+                    resultObj.postcode_localities,
+                    resultObj.city,
+                    resultObj.district,
+                    resultObj.state,
+                    resultObj.country,
+                    resultObj.lat,
+                    resultObj.lng,
+                    resultObj.formatted_address,
+                  ],
+                );
+              }
+            }
+
+            results.push(resultObj);
+          }),
       );
 
-      return results;
+      const uniqueResults = Array.from(
+        new Map(
+          results.map((r) => [r.pincode || r.formatted_address, r]),
+        ).values(),
+      );
+
+      return convertNullToString(uniqueResults);
     } catch (err: any) {
-      console.error("getLatLangFromArea Error:", err.message);
+      console.error("Error:", err.message);
       return null;
     }
   }

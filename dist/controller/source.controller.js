@@ -9,44 +9,24 @@ const sourceModel = new source_model_1.SourceModel();
 class SourceController {
     static async getLatLangFromArea(req, res) {
         try {
-            const { area, city, state } = req.body;
-            if (!area && !city && !state) {
-                return res.status(400).json({
-                    success: false,
-                    message: "At least one of area, city, or state is required",
-                });
+            const { query } = req.body;
+            if (!query) {
+                return (0, helper_1.sendResponse)(res, 200, 0, [], "Query is required", []);
             }
-            const result = await sourceModel.fetchLatLangFromArea({
-                area,
-                city,
-                state,
-            });
+            const result = await sourceModel.fetchLatLangFromQuery(query);
             if (result === null) {
-                return res.status(500).json({
-                    success: false,
-                    message: "Something went wrong while fetching location",
-                });
+                return (0, helper_1.sendResponse)(res, 200, 0, [], "Something Went wrong", []);
             }
             if (!result.length) {
-                return res.status(200).json({
-                    success: true,
-                    message: "No locations found",
-                    data: [],
-                });
+                return (0, helper_1.sendResponse)(res, 200, 0, [], "No location found", []);
             }
-            return res.status(200).json({
-                success: true,
-                message: "Locations fetched successfully",
-                count: result.length,
-                data: result,
-            });
+            (0, helper_1.sendResponse)(res, 200, 1, result, "Data fetched successfully", []);
         }
-        catch (error) {
-            console.error("Controller Error (getLatLangFromArea):", error);
-            return res.status(500).json({
-                success: false,
-                message: "Internal server error",
-            });
+        catch (err) {
+            console.error("Controller Error (getLatLangFromArea):", err);
+            return (0, helper_1.sendResponse)(res, 500, 0, [], "Internal Server Error", [
+                err.errors || err.message || err,
+            ]);
         }
     }
 }

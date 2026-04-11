@@ -211,49 +211,29 @@ export class SourceController {
 
   static async getLatLangFromArea(req: Request, res: Response) {
     try {
-      const { area, city, state } = req.body;
+      const { query } = req.body;
 
-      if (!area && !city && !state) {
-        return res.status(400).json({
-          success: false,
-          message: "At least one of area, city, or state is required",
-        });
+      if (!query) {
+        return sendResponse(res, 200, 0, [], "Query is required", []);
       }
 
-      const result = await sourceModel.fetchLatLangFromArea({
-        area,
-        city,
-        state,
-      });
+      const result = await sourceModel.fetchLatLangFromQuery(query);
 
       if (result === null) {
-        return res.status(500).json({
-          success: false,
-          message: "Something went wrong while fetching location",
-        });
+        return sendResponse(res, 200, 0, [], "Something Went wrong", []);
       }
 
       if (!result.length) {
-        return res.status(200).json({
-          success: true,
-          message: "No locations found",
-          data: [],
-        });
+        return sendResponse(res, 200, 0, [], "No location found", []);
       }
 
-      return res.status(200).json({
-        success: true,
-        message: "Locations fetched successfully",
-        count: result.length,
-        data: result,
-      });
-    } catch (error: any) {
-      console.error("Controller Error (getLatLangFromArea):", error);
+      sendResponse(res, 200, 1, result, "Data fetched successfully", []);
+    } catch (err: any) {
+      console.error("Controller Error (getLatLangFromArea):", err);
 
-      return res.status(500).json({
-        success: false,
-        message: "Internal server error",
-      });
+      return sendResponse(res, 500, 0, [], "Internal Server Error", [
+        err.errors || err.message || err,
+      ]);
     }
   }
 }
