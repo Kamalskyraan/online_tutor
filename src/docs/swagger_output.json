@@ -2337,6 +2337,43 @@
         }
       }
     },
+    "/api/student/student-like-tutorprofile": {
+      "post": {
+        "tags": [
+          "9.Student"
+        ],
+        "summary": "Update Mobile View Profile",
+        "description": "Update View Setup",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": false,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "student_id": {
+                  "type": "string",
+                  "example": "STUDENT_4Gy3VZ_N"
+                },
+                "tutor_id": {
+                  "type": "string",
+                  "example": "TUTOR_A2u50js3"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Liked Successfully"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
     "/api/review/add-update-review": {
       "post": {
         "tags": [

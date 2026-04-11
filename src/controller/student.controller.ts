@@ -148,15 +148,40 @@ export class StudentController {
       ]);
     }
   };
+
+  static updateMovileViewFromTutorById = async (
+    req: Request,
+    res: Response,
+  ) => {
+    try {
+      const { student_id, tutor_id } = req.body;
+
+      if (!student_id || !tutor_id) {
+        return sendResponse(
+          res,
+          200,
+          0,
+          [],
+          "student_id & tutor_id required",
+          [],
+        );
+      }
+      const result = await this.studentModel.setViewMobileForTutorByid(
+        student_id,
+        tutor_id,
+      );
+      return sendResponse(
+        res,
+        200,
+        1,
+        [],
+        "Student Liked tutor Successfully",
+        [],
+      );
+    } catch (err: any) {
+      return sendResponse(res, 500, 0, [], "Internal Server Error", [
+        err.errors || err.message || err,
+      ]);
+    }
+  };
 }
-
-
-
-
-
-
-
-
-
-
-

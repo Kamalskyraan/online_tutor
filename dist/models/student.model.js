@@ -620,6 +620,16 @@ ${having}
         const result = await (0, helper_1.executeQuery)(query, params);
         return result;
     }
+    async setViewMobileForTutorByid(student_id, tutor_id) {
+        const result = await (0, helper_1.executeQuery)(`
+      UPDATE tutor_leads
+      SET is_mobile_view = 1
+      WHERE student_id = ? 
+        AND tutor_id = ?
+        AND is_mobile_view = 0
+      `, [student_id, tutor_id]);
+        return result;
+    }
 }
 exports.StudentModel = StudentModel;
 //# sourceMappingURL=student.model.js.map

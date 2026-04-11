@@ -94,4 +94,19 @@ StudentController.getFees = async (req, res) => {
         ]);
     }
 };
+StudentController.updateMovileViewFromTutorById = async (req, res) => {
+    try {
+        const { student_id, tutor_id } = req.body;
+        if (!student_id || !tutor_id) {
+            return (0, helper_1.sendResponse)(res, 200, 0, [], "student_id & tutor_id required", []);
+        }
+        const result = await _a.studentModel.setViewMobileForTutorByid(student_id, tutor_id);
+        return (0, helper_1.sendResponse)(res, 200, 1, [], "Student Liked tutor Successfully", []);
+    }
+    catch (err) {
+        return (0, helper_1.sendResponse)(res, 500, 0, [], "Internal Server Error", [
+            err.errors || err.message || err,
+        ]);
+    }
+};
 //# sourceMappingURL=student.controller.js.map

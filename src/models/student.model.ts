@@ -816,4 +816,19 @@ ${having}
     const result: any = await executeQuery(query, params);
     return result;
   }
+
+  async setViewMobileForTutorByid(student_id: string, tutor_id: string) {
+    const result: any = await executeQuery(
+      `
+      UPDATE tutor_leads
+      SET is_mobile_view = 1
+      WHERE student_id = ? 
+        AND tutor_id = ?
+        AND is_mobile_view = 0
+      `,
+      [student_id, tutor_id],
+    );
+
+    return result;
+  }
 }

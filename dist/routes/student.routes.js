@@ -151,5 +151,32 @@ router.post("/get-fees", (req, res) => {
     */
     student_controller_1.StudentController.getFees(req, res);
 });
+router.post("/student-like-tutorprofile", (req, res) => {
+    /*
+      #swagger.tags = ['9.Student']
+      #swagger.summary = 'Update Mobile View Profile'
+      #swagger.description = 'Update View Setup'
+  
+      
+      #swagger.parameters['body'] = {
+        in: 'body',
+        required: false,
+        schema: {
+          student_id : "STUDENT_4Gy3VZ_N",
+          tutor_id : "TUTOR_A2u50js3"
+          }
+      }
+  
+  
+      #swagger.responses[200] = {
+        description: "Liked Successfully"
+      }
+  
+      #swagger.responses[500] = {
+        description: "Internal Server Error"
+      }
+    */
+    student_controller_1.StudentController.updateMovileViewFromTutorById(req, res);
+});
 exports.default = router;
 //# sourceMappingURL=student.routes.js.map

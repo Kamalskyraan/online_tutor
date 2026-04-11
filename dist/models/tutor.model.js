@@ -203,9 +203,21 @@ class TutorModel {
         if (student_id) {
             const likeRes = await (0, helper_1.executeQuery)(`SELECT id , is_like FROM tutor_likes 
        WHERE tutor_id = ? AND student_id = ?`, [tutor_id, student_id]);
-            is_like = likeRes[0].is_like === Number(1) ? 1 : 0;
+            is_like = likeRes.length > 0 && likeRes[0].is_like === Number(1) ? 1 : 0;
         }
         tutor.is_like = is_like;
+        let is_mobile_view = 0;
+        if (student_id) {
+            const mobileViewRes = await (0, helper_1.executeQuery)(`SELECT is_mobile_view 
+     FROM tutor_leads
+     WHERE tutor_id = ? AND student_id = ?
+     LIMIT 1`, [tutor_id, student_id]);
+            is_mobile_view =
+                mobileViewRes.length > 0 && mobileViewRes[0].is_mobile_view === 1
+                    ? 1
+                    : 0;
+        }
+        tutor.is_mobile_view = is_mobile_view;
         const demoMedia = await (0, helper_1.executeQuery)(`SELECT id, media_type, media_id, title, thumbnail 
      FROM tutor_demo_media 
      WHERE tutor_id = ?`, [tutor_id]);
@@ -438,6 +450,7 @@ class TutorModel {
         const formattedSubjects = await this.fetchSubjectsFromTutorSubjects(tutorSubjects);
         return formattedSubjects;
     }
+    //for request
     async updateMobileViewStatus(tutor_id, student_id) {
         const result = await (0, helper_1.executeQuery)(`
     UPDATE tutor_student_rel
