@@ -70,6 +70,12 @@ StudentController.bookASession = async (req, res) => {
         ]);
     }
 };
+StudentController.cancelABookSession = async (req, res) => {
+    try {
+        const { booking_id } = req.body;
+    }
+    catch (err) { }
+};
 StudentController.bookSessionStatus = async (req, res) => {
     try {
         const { session_id } = req.body;

@@ -110,7 +110,15 @@ export class ReviewModel {
       rr.id AS reply_id,
       rr.review_id,
       rr.reply_text,
-      DATE_FORMAT(rr.updated_at, '%Y-%m-%d') AS reply_date
+      DATE_FORMAT(rr.updated_at, '%Y-%m-%d') AS reply_date,
+
+
+       (
+    SELECT COUNT(*) 
+    FROM review_likes rl 
+    WHERE rl.review_id = r.id 
+  ) AS like_count
+
 
     ${baseQuery}
     ${whereClause}

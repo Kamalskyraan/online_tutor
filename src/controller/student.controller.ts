@@ -112,6 +112,12 @@ export class StudentController {
     }
   };
 
+  static cancelABookSession = async (req: Request, res: Response) => {
+    try {
+      const { booking_id } = req.body;
+    } catch (err) {}
+  };
+
   static bookSessionStatus = async (req: Request, res: Response) => {
     try {
       const { session_id } = req.body;
