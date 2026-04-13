@@ -107,7 +107,7 @@ export class ReviewModel {
       u.user_role,
       u.profile_img,
       u.mobile,
-      rr.id AS reply_id,
+     IFNULL(rr.id, 0) AS reply_id,
       rr.review_id,
       rr.reply_text,
       DATE_FORMAT(rr.updated_at, '%Y-%m-%d') AS reply_date,
@@ -273,7 +273,9 @@ export class ReviewModel {
   }
 
   async createUpdateReviewReply(data: replyReview) {
-    const { id, review_id, tutor_id, student_id, reply_text } = data;
+    const { id, review_id, tutor_id, reply_text } = data;
+
+    let replyId = id;
 
     if (id) {
       await executeQuery(
@@ -282,17 +284,29 @@ export class ReviewModel {
        WHERE id = ?`,
         [reply_text, id],
       );
+    } else {
+      const result: any = await executeQuery(
+        `INSERT INTO review_reply (review_id, tutor_id, reply_text) 
+       VALUES (?, ?, ?)`,
+        [review_id, tutor_id, reply_text],
+      );
 
-      return { message: "Reply updated successfully" };
+      replyId = result.insertId;
     }
 
-    await executeQuery(
-      `INSERT INTO review_reply (review_id, tutor_id,  reply_text) 
-     VALUES (?, ?, ?)`,
-      [review_id, tutor_id, reply_text],
+    const replyData: any = await executeQuery(
+      `SELECT 
+      id,
+      review_id,
+      tutor_id,
+      reply_text,
+      DATE_FORMAT(updated_at, '%Y-%m-%d %H:%i:%s') AS updated_at
+     FROM review_reply
+     WHERE id = ?`,
+      [replyId],
     );
 
-    return { message: "Reply added successfully" };
+    return replyData[0] || [];
   }
 
   async getReviewSummary(tutor_id: string) {

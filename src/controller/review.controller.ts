@@ -106,7 +106,16 @@ export class ReviewController {
         student_id,
         reply_text,
       });
-      sendResponse(res, 200, 1, [], result.message, []);
+      sendResponse(
+        res,
+        200,
+        1,
+        [result],
+        id
+          ? "Rview Reply added successfully"
+          : "Review reply ipdated succesfully",
+        [],
+      );
     } catch (err: any) {
       sendResponse(
         res,

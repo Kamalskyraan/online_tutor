@@ -52,7 +52,9 @@ class ReviewController {
                 student_id,
                 reply_text,
             });
-            (0, helper_1.sendResponse)(res, 200, 1, [], result.message, []);
+            (0, helper_1.sendResponse)(res, 200, 1, [result], id
+                ? "Rview Reply added successfully"
+                : "Review reply ipdated succesfully", []);
         }
         catch (err) {
             (0, helper_1.sendResponse)(res, 500, 0, "Internal Server Error", err.errors || err.message || err);

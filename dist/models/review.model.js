@@ -75,7 +75,7 @@ class ReviewModel {
       u.user_role,
       u.profile_img,
       u.mobile,
-      rr.id AS reply_id,
+     IFNULL(rr.id, 0) AS reply_id,
       rr.review_id,
       rr.reply_text,
       DATE_FORMAT(rr.updated_at, '%Y-%m-%d') AS reply_date,
@@ -214,16 +214,27 @@ class ReviewModel {
         };
     }
     async createUpdateReviewReply(data) {
-        const { id, review_id, tutor_id, student_id, reply_text } = data;
+        const { id, review_id, tutor_id, reply_text } = data;
+        let replyId = id;
         if (id) {
             await (0, helper_1.executeQuery)(`UPDATE review_reply 
        SET reply_text = ?, updated_at = NOW() 
        WHERE id = ?`, [reply_text, id]);
-            return { message: "Reply updated successfully" };
         }
-        await (0, helper_1.executeQuery)(`INSERT INTO review_reply (review_id, tutor_id,  reply_text) 
-     VALUES (?, ?, ?)`, [review_id, tutor_id, reply_text]);
-        return { message: "Reply added successfully" };
+        else {
+            const result = await (0, helper_1.executeQuery)(`INSERT INTO review_reply (review_id, tutor_id, reply_text) 
+       VALUES (?, ?, ?)`, [review_id, tutor_id, reply_text]);
+            replyId = result.insertId;
+        }
+        const replyData = await (0, helper_1.executeQuery)(`SELECT 
+      id,
+      review_id,
+      tutor_id,
+      reply_text,
+      DATE_FORMAT(updated_at, '%Y-%m-%d %H:%i:%s') AS updated_at
+     FROM review_reply
+     WHERE id = ?`, [replyId]);
+        return replyData[0] || [];
     }
     async getReviewSummary(tutor_id) {
         const avgQuery = `
