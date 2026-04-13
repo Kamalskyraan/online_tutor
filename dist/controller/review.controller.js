@@ -39,6 +39,7 @@ class ReviewController {
             return (0, helper_1.sendResponse)(res, 200, 1, (0, helper_1.convertNullToString)(ReviewData), "Reviews Fetched Successfully", []);
         }
         catch (err) {
+            console.log(err);
             (0, helper_1.sendResponse)(res, 500, 0, [], "Internal Server Error", err.errors || err.message || err);
         }
     }

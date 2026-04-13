@@ -58,6 +58,9 @@ export class ReviewModel {
     LEFT JOIN student s ON s.student_id = r.student_id
     LEFT JOIN users u ON u.user_id = s.user_id
     LEFT JOIN review_reply rr ON rr.review_id = r.id
+      LEFT JOIN review_likes rl 
+    ON rl.review_id = r.id 
+    AND rl.student_id = ?
   `;
 
     const conditions: string[] = [];
@@ -108,16 +111,24 @@ export class ReviewModel {
       u.profile_img,
       u.mobile,
      IFNULL(rr.id, 0) AS reply_id,
-      rr.review_id,
+     IFNULL(rr.review_id, 0) AS review_id,
       rr.reply_text,
-      DATE_FORMAT(rr.updated_at, '%Y-%m-%d') AS reply_date,
+      DATE_FORMAT(rr.updated_at, '%Y-%m-%d %H:%i:%s') AS reply_date,
 
 
        (
     SELECT COUNT(*) 
     FROM review_likes rl 
     WHERE rl.review_id = r.id 
-  ) AS like_count
+  ) AS like_count,
+
+
+    CASE 
+    WHEN rl.id IS NOT NULL THEN 1
+    ELSE 0
+  END AS is_liked
+
+
  ${baseQuery}
     ${whereClause}
    ORDER BY 
@@ -132,9 +143,9 @@ export class ReviewModel {
     const safeStudentId = student_id ?? -1;
 
     const finalParams = [
+      safeStudentId,
       ...params,
       safeStudentId,
-      // safeStudentId,
       limit,
       offset,
     ];
@@ -173,7 +184,10 @@ export class ReviewModel {
     ${whereClause}
   `;
 
-    const countResult: any = await executeQuery(countQuery, params);
+    const countResult: any = await executeQuery(countQuery, [
+      safeStudentId,
+      ...params,
+    ]);
     const total = countResult[0]?.total || 0;
 
     let summary: any = {};

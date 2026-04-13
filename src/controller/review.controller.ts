@@ -83,6 +83,8 @@ export class ReviewController {
         [],
       );
     } catch (err: any) {
+
+      console.log(err)
       sendResponse(
         res,
         500,
