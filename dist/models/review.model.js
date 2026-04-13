@@ -2,26 +2,9 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ReviewModel = void 0;
 const helper_1 = require("../utils/helper");
+const common_model_1 = require("./common.model");
+const cmnMdl = new common_model_1.commonModel();
 class ReviewModel {
-    // async createReview(data: Review): Promise<number> {
-    //   const { id, tutor_id, student_id, rating, review_text } = data;
-    //   if (id) {
-    //     await executeQuery(
-    //       `UPDATE reviews
-    //      SET tutor_id = ?, student_id = ?, rating = ?, review_text = ?
-    //      WHERE id = ?`,
-    //       [tutor_id, student_id, rating, review_text, id],
-    //     );
-    //     return id;
-    //   } else {
-    //     const result: any = await executeQuery(
-    //       `INSERT INTO reviews (tutor_id, student_id, rating, review_text)
-    //      VALUES (?, ?, ?, ?)`,
-    //       [tutor_id, student_id, rating, review_text],
-    //     );
-    //     return result.insertId;
-    //   }
-    // }
     async createReview(data) {
         const { id, tutor_id, student_id, rating, review_text } = data;
         let reviewId = id;
@@ -35,19 +18,15 @@ class ReviewModel {
        VALUES (?, ?, ?, ?)`, [tutor_id, student_id, rating, review_text]);
             reviewId = result.insertId;
         }
-        const [review] = await (0, helper_1.executeQuery)(`SELECT 
-        id,
-        tutor_id,
-        student_id,
-        rating,
-        review_text,
-        created_at
-     FROM reviews
-     WHERE id = ?`, [reviewId]);
-        return review || null;
+        const reviewData = await this.fetchReviews({
+            id: reviewId,
+            page: 1,
+            limit: 1,
+        });
+        return (0, helper_1.convertNullToString)(reviewData.reviews[0]) || [];
     }
     async fetchReviews(data) {
-        const { id, tutor_id, student_id, rating, from_date, to_date, page = 1, limit = 10, } = data;
+        const { id, tutor_id, student_id, rating, from_date, to_date, page = 1, limit = 5, } = data;
         const offset = (page - 1) * limit;
         let baseQuery = `
     FROM reviews r
@@ -88,15 +67,15 @@ class ReviewModel {
         const dataQuery = `
     SELECT 
       r.id, r.tutor_id, r.student_id, r.rating, r.review_text,
-      DATE_FORMAT(r.created_at, '%Y-%m-%d') AS created_at,
-      DATE_FORMAT(r.updated_at, '%Y-%m-%d') AS updated_at,
+     DATE_FORMAT(r.created_at, '%Y-%m-%d %H:%i:%s') AS created_at,
+  DATE_FORMAT(r.updated_at, '%Y-%m-%d %H:%i:%s') AS updated_at,
 
       u.user_name,
       u.user_id,
       u.user_role,
       u.profile_img,
       u.mobile,
-
+      rr.id AS reply_id,
       rr.review_id,
       rr.reply_text,
       DATE_FORMAT(rr.updated_at, '%Y-%m-%d') AS reply_date
@@ -108,6 +87,27 @@ class ReviewModel {
   `;
         const finalParams = [...params, limit, offset];
         const reviews = await (0, helper_1.executeQuery)(dataQuery, finalParams);
+        const imageIds = reviews
+            .map((r) => Number(r.profile_img))
+            .filter(Boolean);
+        let fileMap = new Map();
+        if (imageIds.length > 0) {
+            const files = await cmnMdl.getUploadFiles(imageIds);
+            files.forEach((f) => {
+                fileMap.set(Number(f.id), f);
+            });
+        }
+        const updatedReviews = reviews.map((r) => {
+            const img = fileMap.get(Number(r.profile_img));
+            return {
+                ...r,
+                profile_img: img ? [img] : [],
+            };
+        });
+        const finalReviews = updatedReviews.map((r) => ({
+            ...r,
+            has_reply: r.reply_id ? 1 : 0,
+        }));
         const countQuery = `
     SELECT COUNT(*) as total
     ${baseQuery}
@@ -120,7 +120,7 @@ class ReviewModel {
             summary = await this.getReviewSummary(tutor_id);
         }
         return {
-            reviews,
+            reviews: finalReviews,
             summary,
             pagination: {
                 total,
@@ -253,19 +253,25 @@ class ReviewModel {
         }
         const existing = await (0, helper_1.executeQuery)(`SELECT id FROM review_likes 
      WHERE review_id = ? AND ${userColumn} = ?`, [review_id, userValue]);
+        let action = "";
         if (existing.length > 0) {
             await (0, helper_1.executeQuery)(`DELETE FROM review_likes 
        WHERE review_id = ? AND ${userColumn} = ?`, [review_id, userValue]);
-            return {
-                action: "dislike",
-                message: "Unliked successfully",
-            };
+            action = "dislike";
         }
-        await (0, helper_1.executeQuery)(`INSERT INTO review_likes (review_id, ${userColumn})
-     VALUES (?, ?)`, [review_id, userValue]);
+        else {
+            await (0, helper_1.executeQuery)(`INSERT INTO review_likes (review_id, ${userColumn})
+       VALUES (?, ?)`, [review_id, userValue]);
+            action = "like";
+        }
+        const countResult = await (0, helper_1.executeQuery)(`SELECT COUNT(*) as total_likes 
+     FROM review_likes 
+     WHERE review_id = ?`, [review_id]);
+        const total_likes = countResult[0]?.total_likes || 0;
         return {
-            action: "like",
-            message: "Liked successfully",
+            action,
+            total_likes,
+            message: action === "like" ? "Liked successfully" : "Unliked successfully",
         };
     }
     async removeReview(data) {

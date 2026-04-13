@@ -59,7 +59,7 @@ export class ReviewController {
         from_date,
         to_date,
         page = 1,
-        limit = 10,
+        limit = 5,
       } = await validateRequest(req.body, fetchReviewSchema);
 
       const ReviewData = await rvModel.fetchReviews({
@@ -73,6 +73,8 @@ export class ReviewController {
         limit,
       });
 
+      
+
       return sendResponse(
         res,
         200,
@@ -83,7 +85,6 @@ export class ReviewController {
         [],
       );
     } catch (err: any) {
-      console.log(err);
       sendResponse(
         res,
         500,
@@ -167,7 +168,14 @@ export class ReviewController {
         student_id,
         tutor_id,
       });
-      return sendResponse(res, 200, 1, result.action, result.message, []);
+      return sendResponse(
+        res,
+        200,
+        1,
+        { like_count: result.total_likes, action: result.action },
+        result.message,
+        [],
+      );
     } catch (err: any) {
       sendResponse(res, 500, 0, [], "Internal Server Error");
     }

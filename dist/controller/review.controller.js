@@ -25,7 +25,7 @@ class ReviewController {
     }
     static async getUpdateReview(req, res) {
         try {
-            const { id, tutor_id, student_id, rating, from_date, to_date, page = 1, limit = 10, } = await (0, helper_1.validateRequest)(req.body, validate_1.fetchReviewSchema);
+            const { id, tutor_id, student_id, rating, from_date, to_date, page = 1, limit = 5, } = await (0, helper_1.validateRequest)(req.body, validate_1.fetchReviewSchema);
             const ReviewData = await rvModel.fetchReviews({
                 id,
                 tutor_id,
@@ -39,7 +39,6 @@ class ReviewController {
             return (0, helper_1.sendResponse)(res, 200, 1, (0, helper_1.convertNullToString)(ReviewData), "Reviews Fetched Successfully", []);
         }
         catch (err) {
-            console.log(err);
             (0, helper_1.sendResponse)(res, 500, 0, [], "Internal Server Error", err.errors || err.message || err);
         }
     }
@@ -86,7 +85,7 @@ class ReviewController {
                 student_id,
                 tutor_id,
             });
-            return (0, helper_1.sendResponse)(res, 200, 1, result.action, result.message, []);
+            return (0, helper_1.sendResponse)(res, 200, 1, { like_count: result.total_likes, action: result.action }, result.message, []);
         }
         catch (err) {
             (0, helper_1.sendResponse)(res, 500, 0, [], "Internal Server Error");

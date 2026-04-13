@@ -258,11 +258,11 @@ export interface Review {
 
 export interface fetchReview {
   id?: number;
-  tutor_id: string;
-  student_id: string;
-  rating: string;
-  from_date: string;
-  to_date: string;
+  tutor_id?: string;
+  student_id?: string;
+  rating?: string;
+  from_date?: string;
+  to_date?: string;
   page: number;
   limit: number;
 }

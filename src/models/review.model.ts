@@ -4,30 +4,10 @@ import {
   executeQuery,
   sendResponse,
 } from "../utils/helper";
+import { commonModel } from "./common.model";
 
+const cmnMdl = new commonModel();
 export class ReviewModel {
-  // async createReview(data: Review): Promise<number> {
-  //   const { id, tutor_id, student_id, rating, review_text } = data;
-
-  //   if (id) {
-  //     await executeQuery(
-  //       `UPDATE reviews
-  //      SET tutor_id = ?, student_id = ?, rating = ?, review_text = ?
-  //      WHERE id = ?`,
-  //       [tutor_id, student_id, rating, review_text, id],
-  //     );
-  //     return id;
-  //   } else {
-  //     const result: any = await executeQuery(
-  //       `INSERT INTO reviews (tutor_id, student_id, rating, review_text)
-  //      VALUES (?, ?, ?, ?)`,
-  //       [tutor_id, student_id, rating, review_text],
-  //     );
-
-  //     return result.insertId;
-  //   }
-  // }
-
   async createReview(data: Review): Promise<any> {
     const { id, tutor_id, student_id, rating, review_text } = data;
 
@@ -50,23 +30,14 @@ export class ReviewModel {
       reviewId = result.insertId;
     }
 
-    const [review]: any = await executeQuery(
-      `SELECT 
-        id,
-        tutor_id,
-        student_id,
-        rating,
-        review_text,
-        created_at
-     FROM reviews
-     WHERE id = ?`,
-      [reviewId],
-    );
+    const reviewData = await this.fetchReviews({
+      id: reviewId,
+      page: 1,
+      limit: 1,
+    });
 
-    return review || null;
+    return convertNullToString(reviewData.reviews[0]) || [];
   }
-
-  
 
   async fetchReviews(data: fetchReview) {
     const {
@@ -77,7 +48,7 @@ export class ReviewModel {
       from_date,
       to_date,
       page = 1,
-      limit = 10,
+      limit = 5,
     } = data;
 
     const offset = (page - 1) * limit;
@@ -128,15 +99,15 @@ export class ReviewModel {
     const dataQuery = `
     SELECT 
       r.id, r.tutor_id, r.student_id, r.rating, r.review_text,
-      DATE_FORMAT(r.created_at, '%Y-%m-%d') AS created_at,
-      DATE_FORMAT(r.updated_at, '%Y-%m-%d') AS updated_at,
+     DATE_FORMAT(r.created_at, '%Y-%m-%d %H:%i:%s') AS created_at,
+  DATE_FORMAT(r.updated_at, '%Y-%m-%d %H:%i:%s') AS updated_at,
 
       u.user_name,
       u.user_id,
       u.user_role,
       u.profile_img,
       u.mobile,
-
+      rr.id AS reply_id,
       rr.review_id,
       rr.reply_text,
       DATE_FORMAT(rr.updated_at, '%Y-%m-%d') AS reply_date
@@ -151,6 +122,32 @@ export class ReviewModel {
 
     const reviews = await executeQuery(dataQuery, finalParams);
 
+    const imageIds = reviews
+      .map((r: any) => Number(r.profile_img))
+      .filter(Boolean);
+    let fileMap = new Map();
+
+    if (imageIds.length > 0) {
+      const files = await cmnMdl.getUploadFiles(imageIds);
+
+      files.forEach((f: any) => {
+        fileMap.set(Number(f.id), f);
+      });
+    }
+
+    const updatedReviews = reviews.map((r: any) => {
+      const img = fileMap.get(Number(r.profile_img));
+
+      return {
+        ...r,
+        profile_img: img ? [img] : [],
+      };
+    });
+
+    const finalReviews = updatedReviews.map((r: any) => ({
+      ...r,
+      has_reply: r.reply_id ? 1 : 0,
+    }));
     const countQuery = `
     SELECT COUNT(*) as total
     ${baseQuery}
@@ -166,7 +163,7 @@ export class ReviewModel {
     }
 
     return {
-      reviews,
+      reviews: finalReviews,
       summary,
       pagination: {
         total,
@@ -326,6 +323,7 @@ export class ReviewModel {
     const isStudent = !!student_id;
     const userColumn = isStudent ? "student_id" : "tutor_id";
     const userValue = isStudent ? student_id : tutor_id;
+
     if (!userValue) {
       return {
         message: "Student ID or Tutor ID is required",
@@ -338,6 +336,8 @@ export class ReviewModel {
       [review_id, userValue],
     );
 
+    let action = "";
+
     if (existing.length > 0) {
       await executeQuery(
         `DELETE FROM review_likes 
@@ -345,23 +345,34 @@ export class ReviewModel {
         [review_id, userValue],
       );
 
-      return {
-        action: "dislike",
-        message: "Unliked successfully",
-      };
+      action = "dislike";
+    } else {
+      await executeQuery(
+        `INSERT INTO review_likes (review_id, ${userColumn})
+       VALUES (?, ?)`,
+        [review_id, userValue],
+      );
+
+      action = "like";
     }
 
-    await executeQuery(
-      `INSERT INTO review_likes (review_id, ${userColumn})
-     VALUES (?, ?)`,
-      [review_id, userValue],
+    const countResult: any = await executeQuery(
+      `SELECT COUNT(*) as total_likes 
+     FROM review_likes 
+     WHERE review_id = ?`,
+      [review_id],
     );
 
+    const total_likes = countResult[0]?.total_likes || 0;
+
     return {
-      action: "like",
-      message: "Liked successfully",
+      action,
+      total_likes,
+      message:
+        action === "like" ? "Liked successfully" : "Unliked successfully",
     };
   }
+
   async removeReview(data: any) {
     const { id, student_id } = data;
     const existing: any = await executeQuery(
@@ -490,5 +501,3 @@ export class ReviewModel {
     };
   }
 }
-
-
