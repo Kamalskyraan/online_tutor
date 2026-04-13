@@ -291,6 +291,22 @@ export class TutorModel {
 
     tutor.is_mobile_view = is_mobile_view;
 
+    let has_reviewed = 0;
+
+    if (student_id) {
+      const reviewRes: any = await executeQuery(
+        `SELECT id 
+     FROM reviews 
+     WHERE tutor_id = ? AND student_id = ?
+     LIMIT 1`,
+        [tutor_id, student_id],
+      );
+
+      has_reviewed = reviewRes.length > 0 ? 1 : 0;
+    }
+
+    tutor.has_reviewed = has_reviewed;
+
     const demoMedia = await executeQuery(
       `SELECT id, media_type, media_id, title, thumbnail 
      FROM tutor_demo_media 
