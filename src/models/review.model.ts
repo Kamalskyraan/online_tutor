@@ -73,7 +73,7 @@ export class ReviewModel {
       params.push(tutor_id);
     }
 
-    if (student_id) {
+    if (student_id && !tutor_id) {
       conditions.push(`r.student_id = ?`);
       params.push(student_id);
     }
@@ -118,15 +118,26 @@ export class ReviewModel {
     FROM review_likes rl 
     WHERE rl.review_id = r.id 
   ) AS like_count
-
-
-    ${baseQuery}
+ ${baseQuery}
     ${whereClause}
-    ORDER BY r.id DESC
+   ORDER BY 
+  CASE 
+    WHEN r.student_id = ? THEN 0
+    ELSE 1
+  END,
+  r.created_at DESC
     LIMIT ? OFFSET ?
   `;
 
-    const finalParams = [...params, limit, offset];
+    const safeStudentId = student_id ?? -1;
+
+    const finalParams = [
+      ...params,
+      safeStudentId,
+      // safeStudentId,
+      limit,
+      offset,
+    ];
 
     const reviews = await executeQuery(dataQuery, finalParams);
 
@@ -399,6 +410,26 @@ export class ReviewModel {
     ]);
     return {
       message: "Review deleted successfully",
+    };
+  }
+  async removeReviewReply(data: any) {
+    const { id, tutor_id } = data;
+    const existing: any = await executeQuery(
+      `SELECT id FROM review_reply
+     WHERE id = ? AND tutor_id = ?`,
+      [id, tutor_id],
+    );
+    if (existing.length === 0) {
+      return {
+        message: "Review not found or unauthorized student_id",
+      };
+    }
+    await executeQuery(
+      `DELETE FROM review_reply WHERE id = ? AND tutor_id = ?`,
+      [id, tutor_id],
+    );
+    return {
+      message: "Review Reply deleted successfully",
     };
   }
 

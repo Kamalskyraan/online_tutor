@@ -97,6 +97,32 @@ router.post("/book-session", (req, res) => {
     */
     return student_controller_1.StudentController.bookASession(req, res);
 });
+router.post("/cencel-booking", (req, res) => {
+    /*
+      #swagger.tags = ['9.Student']
+      #swagger.summary = 'cancel a tutor's Subject session'
+      #swagger.description = 'cancel a tutor's Subject session'
+  
+      
+      #swagger.parameters['body'] = {
+        in: 'body',
+        required: true,
+        schema: {
+           booking_id : 1
+          }
+      }
+  
+  
+      #swagger.responses[200] = {
+        description: "Session cancelled Successfully"
+      }
+  
+      #swagger.responses[500] = {
+        description: "Internal Server Error"
+      }
+    */
+    return student_controller_1.StudentController.cancelABookSession(req, res);
+});
 router.post("/get-book-session", (req, res) => {
     /*
       #swagger.tags = ['9.Student']

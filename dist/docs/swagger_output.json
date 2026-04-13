@@ -5,10 +5,10 @@
         "description": "Api Docs",
         "version": "1.0.0"
     },
-    "host": "online-tutor.skyraantech.com/server",
+    "host": "localhost:5012",
     "basePath": "/",
     "schemes": [
-        "https"
+        "http"
     ],
     "paths": {
         "/check": {
@@ -2263,6 +2263,39 @@
                 }
             }
         },
+        "/api/student/cencel-booking": {
+            "post": {
+                "tags": [
+                    "9.Student"
+                ],
+                "summary": "cancel a tutor",
+                "description": "cancel a tutor",
+                "parameters": [
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "booking_id": {
+                                    "type": "number",
+                                    "example": 1
+                                }
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Session cancelled Successfully"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
         "/api/student/get-book-session": {
             "post": {
                 "tags": [
@@ -2458,6 +2491,10 @@
                                     "type": "string",
                                     "example": "5"
                                 },
+                                "page": {
+                                    "type": "number",
+                                    "example": 1
+                                },
                                 "from_date": {
                                     "type": "string",
                                     "example": "2026-03-04"
@@ -2604,6 +2641,43 @@
                 "responses": {
                     "200": {
                         "description": "Review Deleted successfully"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/api/review/remove-review-reply": {
+            "post": {
+                "tags": [
+                    "10.review"
+                ],
+                "summary": "Delete Review reply",
+                "description": "Remove Reviewreply based on tutor",
+                "parameters": [
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "id": {
+                                    "type": "number",
+                                    "example": 1
+                                },
+                                "tutor_id": {
+                                    "type": "string",
+                                    "example": "TUTOR_4w4lwlu0"
+                                }
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Review reply Deleted successfully"
                     },
                     "500": {
                         "description": "Internal Server Error"

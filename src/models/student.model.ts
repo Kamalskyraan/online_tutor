@@ -679,7 +679,7 @@ export class StudentModel {
     return convertNullToString(finalData);
   }
 
-  async buildTutorFullDatasForId(rows: any[]) {
+  async buildTutorFullDatasForId(rows: any[], student_id?: string) {
     const safeParse = (data: any) => {
       try {
         return data ? JSON.parse(data) : [];
@@ -707,15 +707,29 @@ export class StudentModel {
 
     if (tutorIds.length) {
       const placeholders = tutorIds.map(() => "?").join(",");
+      const studentParam = student_id || 0;
       subjectRows = await executeQuery(
         `
-      SELECT ts.*, s.subject_name as db_subject_name 
+      SELECT ts.*, s.subject_name as db_subject_name,
+
+      CASE 
+    WHEN tsr.id IS NULL THEN 'no_booking'
+    ELSE tsr.status
+   END AS booking_status
+  
       FROM tutor_subjects ts
+
       LEFT JOIN subjects s ON s.id = ts.subject_id
+
+      LEFT JOIN tutor_student_rel tsr 
+  ON tsr.tutor_id = ts.tutor_id
+  AND tsr.linked_sub = ts.id
+  AND tsr.student_id = ?
+
       WHERE ts.tutor_id IN (${placeholders})
       AND ts.status = 'active'
       `,
-        tutorIds,
+        [studentParam, ...tutorIds],
       );
     }
 
@@ -806,6 +820,7 @@ export class StudentModel {
           {
             id: sub.subject_id || "",
             subject_name: sub.db_subject_name || sub.subject_name || "",
+            booking_status: sub.booking_status,
             covered_topics: safeParse(sub.covered_topics),
 
             min_fee: sub.min_fee || "",
@@ -991,7 +1006,6 @@ export class StudentModel {
     let where = `WHERE 1=1`;
     let params: any[] = [];
 
-   
     if (student_id) {
       const student: any = await executeQuery(
         `SELECT learn_course FROM student WHERE student_id = ?`,
@@ -1011,7 +1025,6 @@ export class StudentModel {
       }
     }
 
-   
     if (subject_id) {
       where += ` AND subject_id = ?`;
       params.push(subject_id);
@@ -1054,6 +1067,22 @@ export class StudentModel {
       `,
       [student_id, tutor_id],
     );
+
+    return result;
+  }
+
+  async cancelBooking(booking_id?: number) {
+    if (!booking_id) {
+      throw new Error("booking_id is required");
+    }
+
+    const query = `
+    UPDATE tutor_student_rel
+    SET status = 'cancelled'
+    WHERE id = ?
+  `;
+
+    const result: any = await executeQuery(query, [booking_id]);
 
     return result;
   }

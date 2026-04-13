@@ -48,6 +48,7 @@ router.post("/get-reviews", (req, res) => {
           tutor_id : "TUTOR_4w4lwlu0",
           student_id : "STUDENT_UOFswA1y",
           rating: "5",
+          page : 1,
           from_date : "2026-03-04",
           to_date : "2026-03-05"
         }
@@ -149,6 +150,33 @@ router.post("/remove-review", (req, res) => {
       }
     */
     review_controller_1.ReviewController.deleteReview(req, res);
+});
+router.post("/remove-review-reply", (req, res) => {
+    /*
+      #swagger.tags = ['10.review']
+      #swagger.summary = 'Delete Review reply'
+      #swagger.description = 'Remove Reviewreply based on tutor'
+  
+      
+      #swagger.parameters['body'] = {
+        in: 'body',
+        required: true,
+        schema: {
+          id: 1,
+          tutor_id : "TUTOR_4w4lwlu0"
+        }
+      }
+  
+  
+      #swagger.responses[200] = {
+        description: "Review reply Deleted successfully"
+      }
+  
+      #swagger.responses[500] = {
+        description: "Internal Server Error"
+      }
+    */
+    review_controller_1.ReviewController.deleteReviewReply(req, res);
 });
 router.get("/get-report-reasons", (req, res) => {
     /*

@@ -73,8 +73,6 @@ export class ReviewController {
         limit,
       });
 
-      
-
       return sendResponse(
         res,
         200,
@@ -131,6 +129,31 @@ export class ReviewController {
       const result = await rvModel.removeReview({
         id,
         student_id,
+      });
+
+      return sendResponse(res, 200, 1, [], result.message, []);
+    } catch (err: any) {
+      return sendResponse(
+        res,
+        500,
+        0,
+        [],
+        "Internal Server Error",
+        err.message,
+      );
+    }
+  }
+  static async deleteReviewReply(req: Request, res: Response) {
+    try {
+      const { id, tutor_id } = req.body;
+
+      if (!id) {
+        return sendResponse(res, 200, 0, [], "ID is required", []);
+      }
+
+      const result = await rvModel.removeReviewReply({
+        id,
+        tutor_id,
       });
 
       return sendResponse(res, 200, 1, [], result.message, []);

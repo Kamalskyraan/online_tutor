@@ -115,7 +115,14 @@ export class StudentController {
   static cancelABookSession = async (req: Request, res: Response) => {
     try {
       const { booking_id } = req.body;
-    } catch (err) {}
+      await this.studentModel.cancelBooking(booking_id);
+
+      return sendResponse(res, 200, 1, [], "Booking session withdraw", []);
+    } catch (err: any) {
+      return sendResponse(res, 500, 0, [], "Internal Server Error", [
+        err.errors || err.message || err,
+      ]);
+    }
   };
 
   static bookSessionStatus = async (req: Request, res: Response) => {

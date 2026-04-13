@@ -44,7 +44,7 @@ class ReviewModel {
             conditions.push(`r.tutor_id = ?`);
             params.push(tutor_id);
         }
-        if (student_id) {
+        if (student_id && !tutor_id) {
             conditions.push(`r.student_id = ?`);
             params.push(student_id);
         }
@@ -86,14 +86,24 @@ class ReviewModel {
     FROM review_likes rl 
     WHERE rl.review_id = r.id 
   ) AS like_count
-
-
-    ${baseQuery}
+ ${baseQuery}
     ${whereClause}
-    ORDER BY r.id DESC
+   ORDER BY 
+  CASE 
+    WHEN r.student_id = ? THEN 0
+    ELSE 1
+  END,
+  r.created_at DESC
     LIMIT ? OFFSET ?
   `;
-        const finalParams = [...params, limit, offset];
+        const safeStudentId = student_id ?? -1;
+        const finalParams = [
+            ...params,
+            safeStudentId,
+            // safeStudentId,
+            limit,
+            offset,
+        ];
         const reviews = await (0, helper_1.executeQuery)(dataQuery, finalParams);
         const imageIds = reviews
             .map((r) => Number(r.profile_img))
@@ -297,6 +307,20 @@ class ReviewModel {
         ]);
         return {
             message: "Review deleted successfully",
+        };
+    }
+    async removeReviewReply(data) {
+        const { id, tutor_id } = data;
+        const existing = await (0, helper_1.executeQuery)(`SELECT id FROM review_reply
+     WHERE id = ? AND tutor_id = ?`, [id, tutor_id]);
+        if (existing.length === 0) {
+            return {
+                message: "Review not found or unauthorized student_id",
+            };
+        }
+        await (0, helper_1.executeQuery)(`DELETE FROM review_reply WHERE id = ? AND tutor_id = ?`, [id, tutor_id]);
+        return {
+            message: "Review Reply deleted successfully",
         };
     }
     async getActiveReportReasons() {

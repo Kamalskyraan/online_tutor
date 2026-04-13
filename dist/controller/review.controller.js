@@ -74,6 +74,22 @@ class ReviewController {
             return (0, helper_1.sendResponse)(res, 500, 0, [], "Internal Server Error", err.message);
         }
     }
+    static async deleteReviewReply(req, res) {
+        try {
+            const { id, tutor_id } = req.body;
+            if (!id) {
+                return (0, helper_1.sendResponse)(res, 200, 0, [], "ID is required", []);
+            }
+            const result = await rvModel.removeReviewReply({
+                id,
+                tutor_id,
+            });
+            return (0, helper_1.sendResponse)(res, 200, 1, [], result.message, []);
+        }
+        catch (err) {
+            return (0, helper_1.sendResponse)(res, 500, 0, [], "Internal Server Error", err.message);
+        }
+    }
     static async reviewLike(req, res) {
         try {
             const { review_id, student_id, tutor_id } = await (0, helper_1.validateRequest)(req.body, validate_1.reviewLikeSchema);

@@ -256,7 +256,7 @@ export class TutorModel {
     const rows = await executeQuery(query, [tutor_id]);
     if (!rows.length) return null;
 
-    const data = await stuMdl.buildTutorFullDatasForId(rows);
+    const data = await stuMdl.buildTutorFullDatasForId(rows, student_id);
     const tutor = data[0];
     let is_like = 0;
 
@@ -696,4 +696,6 @@ export class TutorModel {
 
     return rows;
   }
+
+ 
 }

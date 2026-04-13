@@ -73,8 +73,14 @@ StudentController.bookASession = async (req, res) => {
 StudentController.cancelABookSession = async (req, res) => {
     try {
         const { booking_id } = req.body;
+        await _a.studentModel.cancelBooking(booking_id);
+        return (0, helper_1.sendResponse)(res, 200, 1, [], "Booking session withdraw", []);
     }
-    catch (err) { }
+    catch (err) {
+        return (0, helper_1.sendResponse)(res, 500, 0, [], "Internal Server Error", [
+            err.errors || err.message || err,
+        ]);
+    }
 };
 StudentController.bookSessionStatus = async (req, res) => {
     try {
