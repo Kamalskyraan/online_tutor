@@ -209,7 +209,14 @@ export class StudentController {
         page,
       });
 
-      return sendResponse(res, 200, 1, result, "Booked classes fetched", []);
+      return sendResponse(
+        res,
+        200,
+        1,
+        convertNullToString(result),
+        "Booked classes fetched",
+        [],
+      );
     } catch (err: any) {
       return sendResponse(res, 500, 0, [], "Internal Server Error", [
         err.errors || err.message || err,
@@ -219,11 +226,9 @@ export class StudentController {
 
   static studentConsumedSubjects = async (req: Request, res: Response) => {
     try {
-      const { student_id, page } = req.body;
-      const responses = await this.studentModel.fetchConsumedSubjects(
-        student_id,
-        page,
-      );
+      const { student_id } = req.body;
+      const responses =
+        await this.studentModel.fetchConsumedSubjects(student_id);
 
       return sendResponse(
         res,

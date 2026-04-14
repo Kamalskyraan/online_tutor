@@ -244,8 +244,7 @@ router.post("/student-suggestion", (req, res) => {
         in: 'body',
         required: false,
         schema: {
-          student_id : "STUDENT_4Gy3VZ_N",
-          page : 1
+          student_id : "STUDENT_4Gy3VZ_N"
       }
   
   }

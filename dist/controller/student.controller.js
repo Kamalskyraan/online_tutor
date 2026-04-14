@@ -130,7 +130,7 @@ StudentController.getBookedClassesForStudent = async (req, res) => {
             subject_name,
             page,
         });
-        return (0, helper_1.sendResponse)(res, 200, 1, result, "Booked classes fetched", []);
+        return (0, helper_1.sendResponse)(res, 200, 1, (0, helper_1.convertNullToString)(result), "Booked classes fetched", []);
     }
     catch (err) {
         return (0, helper_1.sendResponse)(res, 500, 0, [], "Internal Server Error", [
@@ -140,8 +140,8 @@ StudentController.getBookedClassesForStudent = async (req, res) => {
 };
 StudentController.studentConsumedSubjects = async (req, res) => {
     try {
-        const { student_id, page } = req.body;
-        const responses = await _a.studentModel.fetchConsumedSubjects(student_id, page);
+        const { student_id } = req.body;
+        const responses = await _a.studentModel.fetchConsumedSubjects(student_id);
         return (0, helper_1.sendResponse)(res, 200, 1, (0, helper_1.convertNullToString)(responses), "Subjects Fetched successfully", []);
     }
     catch (err) {

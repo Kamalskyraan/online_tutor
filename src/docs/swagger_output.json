@@ -2474,10 +2474,6 @@
                 "student_id": {
                   "type": "string",
                   "example": "STUDENT_4Gy3VZ_N"
-                },
-                "page": {
-                  "type": "number",
-                  "example": 1
                 }
               }
             }
