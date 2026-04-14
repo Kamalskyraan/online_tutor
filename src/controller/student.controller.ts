@@ -215,4 +215,27 @@ export class StudentController {
       ]);
     }
   };
+
+  static studentConsumedSubjects = async (req: Request, res: Response) => {
+    try {
+      const { student_id, page } = req.body;
+      const responses = await this.studentModel.fetchConsumedSubjects(
+        student_id,
+        page,
+      );
+
+      return sendResponse(
+        res,
+        200,
+        1,
+        convertNullToString(responses),
+        "Subjects Fetched successfully",
+        [],
+      );
+    } catch (err: any) {
+      return sendResponse(res, 500, 0, [], "Internal Server Error", [
+        err.errors || err.message || err,
+      ]);
+    }
+  };
 }

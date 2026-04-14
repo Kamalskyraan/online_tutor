@@ -849,7 +849,8 @@ class StudentModel {
         return result;
     }
     async fetchBookedClasses(data) {
-        const { student_id, status, subject_name } = data;
+        const { student_id, status, subject_name, page = 1, limit = 10 } = data;
+        const offset = (page - 1) * limit;
         let where = `WHERE bc.student_id = ?`;
         let params = [student_id];
         if (status) {
@@ -871,11 +872,19 @@ class StudentModel {
       ts.id AS tutor_subject_id,
       ts.subject_id,
 
-  
       COALESCE(s.subject_name, ts.subject_name) AS subject_name,
 
       t.tutor_id,
-      u.user_name AS tutor_name
+      t.user_id,
+
+      u.user_name,
+      u.email,
+      u.mobile,
+      u.profile_img,
+      u.area,
+      u.district,
+      u.state, 
+      u.country
 
     FROM tutor_student_rel bc
 
@@ -893,9 +902,104 @@ class StudentModel {
 
     ${where}
     ORDER BY bc.created_at DESC
+    LIMIT ? OFFSET ?
   `;
-        const rows = await (0, helper_1.executeQuery)(query, params);
-        return rows;
+        const dataParams = [...params, Number(limit), Number(offset)];
+        const rows = await (0, helper_1.executeQuery)(query, dataParams);
+        const countQuery = `
+    SELECT COUNT(*) as total
+    FROM tutor_student_rel bc
+    LEFT JOIN tutor_subjects ts ON ts.id = bc.linked_sub
+    LEFT JOIN subjects s ON s.id = ts.subject_id
+    ${where}
+  `;
+        const countResult = await (0, helper_1.executeQuery)(countQuery, params);
+        const total = countResult[0]?.total || 0;
+        const fileIds = [
+            ...new Set(rows.map((r) => Number(r.profile_img)).filter(Boolean)),
+        ];
+        const files = await cmnMdl.getUploadFiles(fileIds);
+        const fileMap = new Map();
+        files.forEach((f) => {
+            fileMap.set(Number(f.id), f);
+        });
+        const finalData = rows.map((r) => ({
+            ...r,
+            profile_img: r.profile_img
+                ? [fileMap.get(Number(r.profile_img))].filter(Boolean)
+                : [],
+        }));
+        return {
+            data: finalData,
+            pagination: {
+                total,
+                page: Number(page),
+                limit: Number(limit),
+                total_pages: Math.ceil(total / limit),
+            },
+        };
+    }
+    async fetchConsumedSubjects(student_id, page = 1, limit = 10) {
+        const offset = (page - 1) * limit;
+        let params = [student_id];
+        const query = `
+    SELECT 
+      ts.subject_id,
+
+      COALESCE(s.subject_name, ts.subject_name) AS subject_name
+
+    FROM tutor_student_rel bc
+
+    LEFT JOIN tutor_subjects ts 
+      ON ts.id = bc.linked_sub
+
+    LEFT JOIN subjects s 
+      ON s.id = ts.subject_id
+
+    WHERE bc.student_id = ?
+      AND (ts.subject_id IS NOT NULL OR ts.subject_name IS NOT NULL) 
+
+    GROUP BY 
+      ts.subject_id, 
+      COALESCE(s.subject_name, ts.subject_name)
+   ORDER BY subject_name ASC
+    LIMIT ? OFFSET ?
+  `;
+        const dataParams = [...params, Number(limit), Number(offset)];
+        const rows = await (0, helper_1.executeQuery)(query, dataParams);
+        const countQuery = `
+    SELECT COUNT(*) as total FROM (
+      SELECT 
+        ts.subject_id,
+        COALESCE(s.subject_name, ts.subject_name)
+
+      FROM tutor_student_rel bc
+
+      LEFT JOIN tutor_subjects ts 
+        ON ts.id = bc.linked_sub
+
+      LEFT JOIN subjects s 
+        ON s.id = ts.subject_id
+
+      WHERE bc.student_id = ?
+        AND (ts.subject_id IS NOT NULL OR ts.subject_name IS NOT NULL)
+
+      GROUP BY 
+        ts.subject_id, 
+        COALESCE(s.subject_name, ts.subject_name)
+    ) AS grouped_data
+  `;
+        const countResult = await (0, helper_1.executeQuery)(countQuery, params);
+        const total = countResult[0]?.total || 0;
+        return {
+            data: rows,
+            pagination: {
+                total,
+                page: Number(page),
+                limit: Number(limit),
+                total_pages: Math.ceil(total / limit),
+            },
+        };
     }
 }
 exports.StudentModel = StudentModel;

@@ -2437,6 +2437,10 @@
                 "subject_name": {
                   "type": "string",
                   "example": "Tamil"
+                },
+                "page": {
+                  "type": "number",
+                  "example": 1
                 }
               }
             }
@@ -2445,6 +2449,43 @@
         "responses": {
           "200": {
             "description": "Fetched Classes Successfully"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/student/student-suggestion": {
+      "post": {
+        "tags": [
+          "9.Student"
+        ],
+        "summary": "Get Subject suggestion",
+        "description": "Get Subject suggestion",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": false,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "student_id": {
+                  "type": "string",
+                  "example": "STUDENT_4Gy3VZ_N"
+                },
+                "page": {
+                  "type": "number",
+                  "example": 1
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Fetched Subject Successfully"
           },
           "500": {
             "description": "Internal Server Error"

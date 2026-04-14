@@ -218,7 +218,8 @@ router.post("/get-booked-classes", (req, res) => {
         schema: {
           student_id : "STUDENT_4Gy3VZ_N",
           status : "pending or accepted or rejected",
-          subject_name: "Tamil"
+          subject_name: "Tamil",
+          page : 1
       }
   
   }
@@ -231,6 +232,32 @@ router.post("/get-booked-classes", (req, res) => {
       }
     */
     student_controller_1.StudentController.getBookedClassesForStudent(req, res);
+});
+router.post("/student-suggestion", (req, res) => {
+    /*
+      #swagger.tags = ['9.Student']
+      #swagger.summary = 'Get Subject suggestion'
+      #swagger.description = 'Get Subject suggestion'
+  
+      
+      #swagger.parameters['body'] = {
+        in: 'body',
+        required: false,
+        schema: {
+          student_id : "STUDENT_4Gy3VZ_N",
+          page : 1
+      }
+  
+  }
+      #swagger.responses[200] = {
+        description: "Fetched Subject Successfully"
+      }
+  
+      #swagger.responses[500] = {
+        description: "Internal Server Error"
+      }
+    */
+    student_controller_1.StudentController.studentConsumedSubjects(req, res);
 });
 exports.default = router;
 //# sourceMappingURL=student.routes.js.map
