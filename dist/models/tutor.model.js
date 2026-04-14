@@ -188,12 +188,17 @@ class TutorModel {
       t.exp_month as t_exp_month 
     FROM users u
     RIGHT JOIN tutor t ON t.user_id = u.user_id
-    RIGHT JOIN tutor_subjects ts 
-      ON ts.tutor_id = t.tutor_id 
-      AND ts.status = 'active'
     WHERE t.tutor_id = ?
+    AND EXISTS (
+  SELECT 1 FROM tutor_subjects ts
+  WHERE ts.tutor_id = t.tutor_id
+  AND ts.status = 'active'
+)
     LIMIT 1
-  `;
+    `;
+        // RIGHT JOIN tutor_subjects ts
+        //   ON ts.tutor_id = t.tutor_id
+        //   AND ts.status = 'active'
         const rows = await (0, helper_1.executeQuery)(query, [tutor_id]);
         if (!rows.length)
             return null;
