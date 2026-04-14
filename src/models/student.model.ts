@@ -1214,7 +1214,7 @@ export class StudentModel {
       bc.status,
       bc.tutor_id,
       bc.student_id,
-      bc.created_at,
+      DATE_FORMAT(bc.created_at, '%Y-%m-%d %H:%i:%s') AS created_at,
 
       ts.id AS tutor_subject_id,
       ts.subject_id,
