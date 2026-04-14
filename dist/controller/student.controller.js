@@ -149,4 +149,19 @@ StudentController.studentConsumedSubjects = async (req, res) => {
         ]);
     }
 };
+StudentController.getMyFavourites = async (req, res) => {
+    try {
+        const { student_id, page } = req.body;
+        if (!student_id) {
+            return (0, helper_1.sendResponse)(res, 200, 0, [], "Student ID is required", []);
+        }
+        const studentFav = await _a.studentModel.fethFavouritesOfStudent(student_id, page);
+        return (0, helper_1.sendResponse)(res, 200, 1, studentFav, "Favs fetched successfully", []);
+    }
+    catch (err) {
+        return (0, helper_1.sendResponse)(res, 500, 0, [], "Internal Server Error", [
+            err.errors || err.message || err,
+        ]);
+    }
+};
 //# sourceMappingURL=student.controller.js.map

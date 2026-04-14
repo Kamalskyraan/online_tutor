@@ -238,4 +238,28 @@ export class StudentController {
       ]);
     }
   };
+
+  static getMyFavourites = async (req: Request, res: Response) => {
+    try {
+      const { student_id, page } = req.body;
+      if (!student_id) {
+        return sendResponse(res, 200, 0, [], "Student ID is required", []);
+      }
+      const studentFav =
+        await this.studentModel.fethFavouritesOfStudent(student_id , page);
+
+      return sendResponse(
+        res,
+        200,
+        1,
+        studentFav,
+        "Favs fetched successfully",
+        [],
+      );
+    } catch (err: any) {
+      return sendResponse(res, 500, 0, [], "Internal Server Error", [
+        err.errors || err.message || err,
+      ]);
+    }
+  };
 }

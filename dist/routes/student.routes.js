@@ -259,5 +259,31 @@ router.post("/student-suggestion", (req, res) => {
     */
     student_controller_1.StudentController.studentConsumedSubjects(req, res);
 });
+router.post("/student-favs", (req, res) => {
+    /*
+      #swagger.tags = ['9.Student']
+      #swagger.summary = 'Get Favourites of student'
+      #swagger.description = 'Get Favourites of student'
+  
+      
+      #swagger.parameters['body'] = {
+        in: 'body',
+        required: false,
+        schema: {
+          student_id : "STUDENT_4Gy3VZ_N",
+          page : 1
+      }
+  
+  }
+      #swagger.responses[200] = {
+        description: "Fetched Favourites Successfully"
+      }
+  
+      #swagger.responses[500] = {
+        description: "Internal Server Error"
+      }
+    */
+    student_controller_1.StudentController.getMyFavourites(req, res);
+});
 exports.default = router;
 //# sourceMappingURL=student.routes.js.map

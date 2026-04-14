@@ -2493,6 +2493,43 @@
                 }
             }
         },
+        "/api/student/student-favs": {
+            "post": {
+                "tags": [
+                    "9.Student"
+                ],
+                "summary": "Get Favourites of student",
+                "description": "Get Favourites of student",
+                "parameters": [
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "required": false,
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "student_id": {
+                                    "type": "string",
+                                    "example": "STUDENT_4Gy3VZ_N"
+                                },
+                                "page": {
+                                    "type": "number",
+                                    "example": 1
+                                }
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Fetched Favourites Successfully"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
         "/api/review/add-update-review": {
             "post": {
                 "tags": [
