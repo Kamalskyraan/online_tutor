@@ -325,10 +325,13 @@ class StudentModel {
                 fileMap.set(file.id, file);
             });
         }
-        finalData = finalData.map((row) => ({
-            ...row,
-            profile_img: row.profile_img && fileMap.has(row.profile_img) ? [] : [],
-        }));
+        finalData = finalData.map((row) => {
+            const file = fileMap.get(Number(row.profile_img));
+            return {
+                ...row,
+                profile_img: file ? [file] : [],
+            };
+        });
         return (0, helper_1.convertNullToString)(finalData);
     }
     async buildTutorFullDatasForId(rows, student_id) {
@@ -784,11 +787,11 @@ class StudentModel {
 
       t.tutor_id,
       t.represent,
-      t.stream_id
-
+      t.stream_id,
+      tl.is_like
     FROM tutor t
 
-    INNER JOIN tutor_likes tl 
+    LEFT JOIN tutor_likes tl 
       ON tl.tutor_id = t.tutor_id
       AND tl.student_id = ?
       AND tl.is_like = 1

@@ -418,10 +418,14 @@ export class StudentModel {
       });
     }
 
-    finalData = finalData.map((row: any) => ({
-      ...row,
-      profile_img: row.profile_img && fileMap.has(row.profile_img) ? [] : [],
-    }));
+    finalData = finalData.map((row: any) => {
+      const file = fileMap.get(Number(row.profile_img));
+
+      return {
+        ...row,
+        profile_img: file ? [file] : [],
+      };
+    });
 
     return convertNullToString(finalData);
   }
@@ -1003,11 +1007,11 @@ export class StudentModel {
 
       t.tutor_id,
       t.represent,
-      t.stream_id
-
+      t.stream_id,
+      tl.is_like
     FROM tutor t
 
-    INNER JOIN tutor_likes tl 
+    LEFT JOIN tutor_likes tl 
       ON tl.tutor_id = t.tutor_id
       AND tl.student_id = ?
       AND tl.is_like = 1
