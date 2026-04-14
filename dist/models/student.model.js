@@ -804,6 +804,10 @@ class StudentModel {
   `;
         const rows = await (0, helper_1.executeQuery)(query, [student_id, limit, offset]);
         const data = await this.buildTutorFullData(rows);
+        const final = data.map((r) => ({
+            ...r,
+            is_like: Number(r.is_like) || 0,
+        }));
         const countQuery = `
     SELECT COUNT(*) as total
     FROM tutor_likes
@@ -813,7 +817,7 @@ class StudentModel {
         const countRes = await (0, helper_1.executeQuery)(countQuery, [student_id]);
         const total = countRes[0]?.total || 0;
         return {
-            data,
+            data: final,
             pagination: {
                 total,
                 page,
