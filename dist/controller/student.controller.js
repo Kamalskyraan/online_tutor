@@ -121,4 +121,20 @@ StudentController.updateMovileViewFromTutorById = async (req, res) => {
         ]);
     }
 };
+StudentController.getBookedClassesForStudent = async (req, res) => {
+    try {
+        const { student_id, status, subject_name } = req.body;
+        const result = await _a.studentModel.fetchBookedClasses({
+            student_id,
+            status,
+            subject_name,
+        });
+        return (0, helper_1.sendResponse)(res, 200, 1, result, "Booked classes fetched", []);
+    }
+    catch (err) {
+        return (0, helper_1.sendResponse)(res, 500, 0, [], "Internal Server Error", [
+            err.errors || err.message || err,
+        ]);
+    }
+};
 //# sourceMappingURL=student.controller.js.map

@@ -2411,6 +2411,47 @@
         }
       }
     },
+    "/api/student/get-booked-classes": {
+      "post": {
+        "tags": [
+          "9.Student"
+        ],
+        "summary": "Get Booked classes",
+        "description": "Booked class filter also update",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": false,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "student_id": {
+                  "type": "string",
+                  "example": "STUDENT_4Gy3VZ_N"
+                },
+                "status": {
+                  "type": "string",
+                  "example": "pending or accepted or rejected"
+                },
+                "subject_name": {
+                  "type": "string",
+                  "example": "Tamil"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Fetched Classes Successfully"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
     "/api/review/add-update-review": {
       "post": {
         "tags": [

@@ -568,6 +568,7 @@ class StudentModel {
             const studentParam = student_id || 0;
             subjectRows = await (0, helper_1.executeQuery)(`
       SELECT ts.*, s.subject_name as db_subject_name,
+      IFNULL(tsr.id, 0) AS booking_id,
 
       CASE 
     WHEN tsr.id IS NULL THEN 'no_booking'
@@ -657,6 +658,7 @@ class StudentModel {
                         id: sub.subject_id || "",
                         subject_name: sub.db_subject_name || sub.subject_name || "",
                         booking_status: sub.booking_status,
+                        booking_id: sub.booking_id,
                         covered_topics: safeParse(sub.covered_topics),
                         min_fee: sub.min_fee || "",
                         max_fee: sub.max_fee || "",
@@ -845,6 +847,55 @@ class StudentModel {
   `;
         const result = await (0, helper_1.executeQuery)(query, [booking_id]);
         return result;
+    }
+    async fetchBookedClasses(data) {
+        const { student_id, status, subject_name } = data;
+        let where = `WHERE bc.student_id = ?`;
+        let params = [student_id];
+        if (status) {
+            where += ` AND bc.status = ?`;
+            params.push(status);
+        }
+        if (subject_name) {
+            where += ` AND COALESCE(s.subject_name, ts.subject_name) LIKE ?`;
+            params.push(`%${subject_name}%`);
+        }
+        const query = `
+    SELECT 
+      bc.id AS booking_id,
+      bc.status,
+      bc.tutor_id,
+      bc.student_id,
+      bc.created_at,
+
+      ts.id AS tutor_subject_id,
+      ts.subject_id,
+
+  
+      COALESCE(s.subject_name, ts.subject_name) AS subject_name,
+
+      t.tutor_id,
+      u.user_name AS tutor_name
+
+    FROM tutor_student_rel bc
+
+    LEFT JOIN tutor_subjects ts 
+      ON ts.id = bc.linked_sub   
+
+    LEFT JOIN subjects s 
+      ON s.id = ts.subject_id    
+
+    LEFT JOIN tutor t 
+      ON t.tutor_id = bc.tutor_id
+
+    LEFT JOIN users u 
+      ON u.user_id = t.user_id
+
+    ${where}
+    ORDER BY bc.created_at DESC
+  `;
+        const rows = await (0, helper_1.executeQuery)(query, params);
+        return rows;
     }
 }
 exports.StudentModel = StudentModel;

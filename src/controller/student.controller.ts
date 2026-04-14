@@ -199,14 +199,20 @@ export class StudentController {
     }
   };
 
-  // static getBookedClassesForStudent = async (req: Request, res: Response) => {
-  //   try {
-  //     const { student_id } = req.body;
-  //     const result = fetchBookedClasses(student_id)
-  //   } catch (err: any) {
-  //     return sendResponse(res, 500, 0, [], "Internal Server Error", [
-  //       err.errors || err.message || err,
-  //     ]);
-  //   }
-  // };
+  static getBookedClassesForStudent = async (req: Request, res: Response) => {
+    try {
+      const { student_id, status, subject_name } = req.body;
+      const result = await this.studentModel.fetchBookedClasses({
+        student_id,
+        status,
+        subject_name,
+      });
+
+      return sendResponse(res, 200, 1, result, "Booked classes fetched", []);
+    } catch (err: any) {
+      return sendResponse(res, 500, 0, [], "Internal Server Error", [
+        err.errors || err.message || err,
+      ]);
+    }
+  };
 }

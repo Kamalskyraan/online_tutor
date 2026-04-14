@@ -215,4 +215,33 @@ router.post("/student-view-tutorprofile", (req, res) => {
 
   StudentController.updateMovileViewFromTutorById(req, res);
 });
+
+router.post("/get-booked-classes", (req, res) => {
+  /*
+    #swagger.tags = ['9.Student']
+    #swagger.summary = 'Get Booked classes'
+    #swagger.description = 'Booked class filter also update'
+
+    
+    #swagger.parameters['body'] = {
+      in: 'body',
+      required: false,
+      schema: {
+        student_id : "STUDENT_4Gy3VZ_N",
+        status : "pending or accepted or rejected",
+        subject_name: "Tamil"
+    }
+
+}
+    #swagger.responses[200] = {
+      description: "Fetched Classes Successfully"
+    }
+
+    #swagger.responses[500] = {
+      description: "Internal Server Error"
+    }
+  */
+
+  StudentController.getBookedClassesForStudent(req, res);
+});
 export default router;
