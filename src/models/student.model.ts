@@ -838,110 +838,6 @@ export class StudentModel {
     return result;
   }
 
-  // async fetchBookedClasses(data: any) {
-  //   const { student_id, status, subject_name, page = 1, limit = 10 } = data;
-  //   const offset = (page - 1) * limit;
-  //   let where = `WHERE bc.student_id = ?`;
-  //   let params: any[] = [student_id];
-
-  //   if (status) {
-  //     where += ` AND bc.status = ?`;
-  //     params.push(status);
-  //   }
-
-  //   if (subject_name) {
-  //     where += ` AND COALESCE(s.subject_name, ts.subject_name) LIKE ?`;
-  //     params.push(`%${subject_name}%`);
-  //   }
-
-  //   const query = `
-  //   SELECT
-  //     bc.id AS booking_id,
-  //     bc.status,
-  //     bc.tutor_id,
-  //     bc.student_id,
-  //     bc.created_at,
-
-  //     ts.id AS tutor_subject_id,
-  //     ts.subject_id,
-
-  //     COALESCE(s.subject_name, ts.subject_name) AS subject_name,
-
-  //     t.tutor_id,
-  //     t.user_id,
-
-  //     u.user_name,
-  //     u.email,
-  //     u.mobile,
-  //     u.profile_img,
-  //     u.area,
-  //     u.district,
-  //     u.state,
-  //     u.country,
-  //     u.self_about
-
-  //   FROM tutor_student_rel bc
-
-  //   LEFT JOIN tutor_subjects ts
-  //     ON ts.id = bc.linked_sub
-
-  //   LEFT JOIN subjects s
-  //     ON s.id = ts.subject_id
-
-  //   LEFT JOIN tutor t
-  //     ON t.tutor_id = bc.tutor_id
-
-  //   LEFT JOIN users u
-  //     ON u.user_id = t.user_id
-
-  //   ${where}
-  //   ORDER BY bc.created_at DESC
-  //   LIMIT ? OFFSET ?
-  // `;
-
-  //   const dataParams = [...params, Number(limit), Number(offset)];
-  //   const rows: any[] = await executeQuery(query, dataParams);
-
-  //   const countQuery = `
-  //   SELECT COUNT(*) as total
-  //   FROM tutor_student_rel bc
-  //   LEFT JOIN tutor_subjects ts ON ts.id = bc.linked_sub
-  //   LEFT JOIN subjects s ON s.id = ts.subject_id
-  //   ${where}
-  // `;
-
-  //   const countResult: any[] = await executeQuery(countQuery, params);
-  //   const total = countResult[0]?.total || 0;
-
-  //   const fileIds = [
-  //     ...new Set(rows.map((r) => Number(r.profile_img)).filter(Boolean)),
-  //   ];
-
-  //   const files = await cmnMdl.getUploadFiles(fileIds);
-
-  //   const fileMap = new Map();
-  //   files.forEach((f: any) => {
-  //     fileMap.set(Number(f.id), f);
-  //   });
-
-  //   const finalData = rows.map((r) => ({
-  //     ...r,
-  //     profile_img: r.profile_img
-  //       ? [fileMap.get(Number(r.profile_img))].filter(Boolean)
-  //       : [],
-  //   }));
-
-  //   return {
-  //     data: finalData,
-  //     pagination: {
-  //       total,
-  //       page: Number(page),
-  //       limit: Number(limit),
-  //       total_pages: Math.ceil(total / limit),
-  //     },
-  //   };
-  // }
-
   async fetchBookedClasses(data: any) {
     const { student_id, status, subject_name, page = 1, limit = 10 } = data;
 
@@ -1088,36 +984,63 @@ export class StudentModel {
   }
 
   async fethFavouritesOfStudent(student_id: string, page: number = 1) {
+    const limit = 10;
+    const offset = (page - 1) * limit;
+
     const query = `
     SELECT 
-      tl.tutor_id,
-      tl.student_id,
-      tl.is_like,
-
-      t.user_id,
-
+      u.user_id,
       u.user_name,
-      u.email,
-      u.mobile,
+      u.lat,
+      u.lng,
+      u.gender,
       u.profile_img,
-      u.area,
-      u.district,
       u.state,
-      u.country
+      u.district,
+      u.area,
+      u.pincode,
+      u.self_about,
 
-    FROM tutor_likes tl
+      t.tutor_id,
+      t.represent,
+      t.stream_id
 
-    LEFT JOIN tutor t 
-      ON t.tutor_id = tl.tutor_id
+    FROM tutor t
+
+    INNER JOIN tutor_likes tl 
+      ON tl.tutor_id = t.tutor_id
+      AND tl.student_id = ?
+      AND tl.is_like = 1
 
     LEFT JOIN users u 
       ON u.user_id = t.user_id
 
-    WHERE tl.student_id = ?
-      AND tl.is_like = 1
+    ORDER BY tl.id DESC
+    LIMIT ? OFFSET ?
   `;
 
-    const rows = await executeQuery(query, [student_id]);
-    return rows;
+    const rows: any[] = await executeQuery(query, [student_id, limit, offset]);
+
+    const data = await this.buildTutorFullData(rows);
+
+    const countQuery = `
+    SELECT COUNT(*) as total
+    FROM tutor_likes
+    WHERE student_id = ?
+      AND is_like = 1
+  `;
+
+    const countRes: any[] = await executeQuery(countQuery, [student_id]);
+    const total = countRes[0]?.total || 0;
+
+    return {
+      data,
+      pagination: {
+        total,
+        page,
+        limit,
+        total_pages: Math.ceil(total / limit),
+      },
+    };
   }
 }
