@@ -884,7 +884,8 @@ class StudentModel {
       u.area,
       u.district,
       u.state, 
-      u.country
+      u.country,
+      u.self_about
 
     FROM tutor_student_rel bc
 
