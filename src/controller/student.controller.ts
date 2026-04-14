@@ -198,4 +198,15 @@ export class StudentController {
       ]);
     }
   };
+
+  // static getBookedClassesForStudent = async (req: Request, res: Response) => {
+  //   try {
+  //     const { student_id } = req.body;
+  //     const result = fetchBookedClasses(student_id)
+  //   } catch (err: any) {
+  //     return sendResponse(res, 500, 0, [], "Internal Server Error", [
+  //       err.errors || err.message || err,
+  //     ]);
+  //   }
+  // };
 }
