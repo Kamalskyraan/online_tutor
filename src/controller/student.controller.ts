@@ -201,11 +201,12 @@ export class StudentController {
 
   static getBookedClassesForStudent = async (req: Request, res: Response) => {
     try {
-      const { student_id, status, subject_name } = req.body;
+      const { student_id, status, subject_name, page } = req.body;
       const result = await this.studentModel.fetchBookedClasses({
         student_id,
         status,
         subject_name,
+        page,
       });
 
       return sendResponse(res, 200, 1, result, "Booked classes fetched", []);
@@ -245,8 +246,10 @@ export class StudentController {
       if (!student_id) {
         return sendResponse(res, 200, 0, [], "Student ID is required", []);
       }
-      const studentFav =
-        await this.studentModel.fethFavouritesOfStudent(student_id , page);
+      const studentFav = await this.studentModel.fethFavouritesOfStudent(
+        student_id,
+        page,
+      );
 
       return sendResponse(
         res,

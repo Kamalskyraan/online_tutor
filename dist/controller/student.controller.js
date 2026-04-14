@@ -123,11 +123,12 @@ StudentController.updateMovileViewFromTutorById = async (req, res) => {
 };
 StudentController.getBookedClassesForStudent = async (req, res) => {
     try {
-        const { student_id, status, subject_name } = req.body;
+        const { student_id, status, subject_name, page } = req.body;
         const result = await _a.studentModel.fetchBookedClasses({
             student_id,
             status,
             subject_name,
+            page,
         });
         return (0, helper_1.sendResponse)(res, 200, 1, result, "Booked classes fetched", []);
     }

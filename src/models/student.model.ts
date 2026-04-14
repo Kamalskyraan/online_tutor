@@ -1200,7 +1200,6 @@ export class StudentModel {
 
     const offset = (page - 1) * limit;
 
-   
     let baseParams: any[] = [student_id];
 
     let statusFilter = "";
@@ -1209,7 +1208,6 @@ export class StudentModel {
       baseParams.push(status);
     }
 
-    
     let query = `
     SELECT 
       bc.id AS booking_id,
@@ -1260,7 +1258,6 @@ export class StudentModel {
 
     let dataParams: any[] = [...baseParams, Number(limit), Number(offset)];
 
-    
     if (subject_name) {
       query += ` WHERE COALESCE(s.subject_name, ts.subject_name) LIKE ?`;
       dataParams.push(`%${subject_name}%`);
@@ -1270,7 +1267,6 @@ export class StudentModel {
 
     const rows: any[] = await executeQuery(query, dataParams);
 
-    
     const countQuery = `
     SELECT COUNT(*) as total
     FROM tutor_student_rel
