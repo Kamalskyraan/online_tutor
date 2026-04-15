@@ -41,7 +41,6 @@ export const getAllHelp = async (
   let whereSql = " WHERE 1=1 ";
   const params: any[] = [];
 
-
   if (search && search.length >= 3) {
     whereSql += " AND question LIKE ?";
     params.push(`%${search}%`);
@@ -83,5 +82,37 @@ export const getAllHelp = async (
       limit: limitNumber,
       totalPages,
     },
+  };
+};
+
+export const createOrUpdateIssueCategory = async (
+  id?: number,
+  name?: string,
+  status?: string,
+) => {
+  if (id) {
+    const query = `
+      UPDATE issue_category
+      SET name = ?, status = ?
+      WHERE id = ?
+    `;
+
+    await executeQuery(query, [name, status || "active", id]);
+
+    return { id, name, status: status || "active", action: "updated" };
+  }
+
+  const query = `
+    INSERT INTO issue_category (name, status)
+    VALUES (?, ?)
+  `;
+
+  const result: any = await executeQuery(query, [name, status || "active"]);
+
+  return {
+    id: result.insertId,
+    name,
+    status: status || "active",
+    action: "created",
   };
 };

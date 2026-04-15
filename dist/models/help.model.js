@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getAllHelp = exports.saveHelp = void 0;
+exports.createOrUpdateIssueCategory = exports.getAllHelp = exports.saveHelp = void 0;
 const helper_1 = require("../utils/helper");
 const saveHelp = async (help) => {
     if (help.id) {
@@ -71,4 +71,27 @@ const getAllHelp = async (search, status, user_role, page = 1, limit = 10) => {
     };
 };
 exports.getAllHelp = getAllHelp;
+const createOrUpdateIssueCategory = async (id, name, status) => {
+    if (id) {
+        const query = `
+      UPDATE issue_category
+      SET name = ?, status = ?
+      WHERE id = ?
+    `;
+        await (0, helper_1.executeQuery)(query, [name, status || "active", id]);
+        return { id, name, status: status || "active", action: "updated" };
+    }
+    const query = `
+    INSERT INTO issue_category (name, status)
+    VALUES (?, ?)
+  `;
+    const result = await (0, helper_1.executeQuery)(query, [name, status || "active"]);
+    return {
+        id: result.insertId,
+        name,
+        status: status || "active",
+        action: "created",
+    };
+};
+exports.createOrUpdateIssueCategory = createOrUpdateIssueCategory;
 //# sourceMappingURL=help.model.js.map

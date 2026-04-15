@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getHelpSupport = exports.addUpdateHelp = void 0;
+exports.getIssueCategory = exports.addUpdateIssueCategories = exports.getHelpSupport = exports.addUpdateHelp = void 0;
 const helper_1 = require("../utils/helper");
 const validate_1 = require("../validators/validate");
 const help_model_1 = require("../models/help.model");
@@ -45,4 +45,30 @@ const getHelpSupport = async (req, res) => {
     }
 };
 exports.getHelpSupport = getHelpSupport;
+const addUpdateIssueCategories = async (req, res) => {
+    try {
+        const { id, name, status } = req.body;
+        if (!name) {
+            return (0, helper_1.sendResponse)(res, 200, 0, [], "Name is required", []);
+        }
+        const result = await (0, help_model_1.createOrUpdateIssueCategory)(id, name, status);
+        return (0, helper_1.sendResponse)(res, 200, 1, result, "add issue category", []);
+    }
+    catch (err) {
+        return (0, helper_1.sendResponse)(res, 500, 0, [], "Internal Server Error", [
+            err.errors || err.message || err,
+        ]);
+    }
+};
+exports.addUpdateIssueCategories = addUpdateIssueCategories;
+const getIssueCategory = async (req, res) => {
+    try {
+    }
+    catch (err) {
+        return (0, helper_1.sendResponse)(res, 500, 0, [], "Internal Server Error", [
+            err.errors || err.message || err,
+        ]);
+    }
+};
+exports.getIssueCategory = getIssueCategory;
 //# sourceMappingURL=support.controller.js.map
