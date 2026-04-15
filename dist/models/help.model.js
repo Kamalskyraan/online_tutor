@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.fetchIssueCategories = exports.createOrUpdateIssueCategory = exports.getAllHelp = exports.saveHelp = void 0;
+exports.createHelpRequest = exports.fetchIssueCategories = exports.createOrUpdateIssueCategory = exports.getAllHelp = exports.saveHelp = void 0;
 const helper_1 = require("../utils/helper");
 const saveHelp = async (help) => {
     if (help.id) {
@@ -108,4 +108,30 @@ const fetchIssueCategories = async (status) => {
     return await (0, helper_1.executeQuery)(query, params);
 };
 exports.fetchIssueCategories = fetchIssueCategories;
+const createHelpRequest = async (data) => {
+    const { user_name, mobile, email, issue_reason, subject, descp } = data;
+    const query = `
+    INSERT INTO help_requests 
+    (user_name, mobile, email, issue_reason, subject, description)
+    VALUES (?, ?, ?, ?, ?, ?)
+  `;
+    const result = await (0, helper_1.executeQuery)(query, [
+        user_name,
+        mobile,
+        email || null,
+        issue_reason,
+        subject,
+        descp || null,
+    ]);
+    return {
+        id: result.insertId,
+        user_name,
+        mobile,
+        email,
+        issue_reason,
+        subject,
+        descp,
+    };
+};
+exports.createHelpRequest = createHelpRequest;
 //# sourceMappingURL=help.model.js.map

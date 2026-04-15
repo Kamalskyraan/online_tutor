@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { sendResponse, validateRequest } from "../utils/helper";
 import { helpSchema } from "../validators/validate";
 import {
+  createHelpRequest,
   createOrUpdateIssueCategory,
   fetchIssueCategories,
   getAllHelp,
@@ -113,6 +114,31 @@ export const getIssueCategory = async (req: Request, res: Response) => {
     const data = await fetchIssueCategories(status);
 
     return sendResponse(res, 200, 1, data, "Fetched successfully", []);
+  } catch (err: any) {
+    return sendResponse(res, 500, 0, [], "Internal Server Error", [
+      err.errors || err.message || err,
+    ]);
+  }
+};
+
+export const helpRequest = async (req: Request, res: Response) => {
+  try {
+    const { user_name, mobile, email, issue_reason, subject, descp } = req.body;
+
+    if (!user_name || !mobile || !issue_reason || !subject) {
+      return sendResponse(res, 200, 0, [], "Missing required fields");
+    }
+
+    const result = await createHelpRequest({
+      user_name,
+      mobile,
+      email,
+      issue_reason,
+      subject,
+      descp,
+    });
+
+    return sendResponse(res, 200, 1, result, "Request submitted successfully");
   } catch (err: any) {
     return sendResponse(res, 500, 0, [], "Internal Server Error", [
       err.errors || err.message || err,

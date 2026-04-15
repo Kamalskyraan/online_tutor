@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getIssueCategory = exports.addUpdateIssueCategories = exports.getHelpSupport = exports.addUpdateHelp = void 0;
+exports.helpRequest = exports.getIssueCategory = exports.addUpdateIssueCategories = exports.getHelpSupport = exports.addUpdateHelp = void 0;
 const helper_1 = require("../utils/helper");
 const validate_1 = require("../validators/validate");
 const help_model_1 = require("../models/help.model");
@@ -74,4 +74,27 @@ const getIssueCategory = async (req, res) => {
     }
 };
 exports.getIssueCategory = getIssueCategory;
+const helpRequest = async (req, res) => {
+    try {
+        const { user_name, mobile, email, issue_reason, subject, descp } = req.body;
+        if (!user_name || !mobile || !issue_reason || !subject) {
+            return (0, helper_1.sendResponse)(res, 200, 0, [], "Missing required fields");
+        }
+        const result = await (0, help_model_1.createHelpRequest)({
+            user_name,
+            mobile,
+            email,
+            issue_reason,
+            subject,
+            descp,
+        });
+        return (0, helper_1.sendResponse)(res, 200, 1, result, "Request submitted successfully");
+    }
+    catch (err) {
+        return (0, helper_1.sendResponse)(res, 500, 0, [], "Internal Server Error", [
+            err.errors || err.message || err,
+        ]);
+    }
+};
+exports.helpRequest = helpRequest;
 //# sourceMappingURL=support.controller.js.map

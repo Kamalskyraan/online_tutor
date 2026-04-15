@@ -1482,6 +1482,59 @@
         }
       }
     },
+    "/api/help/help-request": {
+      "post": {
+        "tags": [
+          "6.Help & Support"
+        ],
+        "summary": "request help support",
+        "description": "Request Help Support",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": false,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "user_name": {
+                  "type": "string",
+                  "example": "kamalesh"
+                },
+                "mobile": {
+                  "type": "string",
+                  "example": "9876543210"
+                },
+                "email": {
+                  "type": "string",
+                  "example": "kamalesh@gmail.com"
+                },
+                "issue_reason": {
+                  "type": "string",
+                  "example": "invaliddd"
+                },
+                "subject": {
+                  "type": "string",
+                  "example": "this belongs to report"
+                },
+                "descp": {
+                  "type": "string",
+                  "example": "asdfgkcjnsjn dn"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Request Help Support successfully"
+          },
+          "500": {
+            "description": "Something went wrong"
+          }
+        }
+      }
+    },
     "/api/source/get-address-by-pincode": {
       "post": {
         "tags": [

@@ -134,3 +134,32 @@ export const fetchIssueCategories = async (status?: string) => {
 
   return await executeQuery(query, params);
 };
+
+export const createHelpRequest = async (data: any) => {
+  const { user_name, mobile, email, issue_reason, subject, descp } = data;
+
+  const query = `
+    INSERT INTO help_requests 
+    (user_name, mobile, email, issue_reason, subject, description)
+    VALUES (?, ?, ?, ?, ?, ?)
+  `;
+
+  const result: any = await executeQuery(query, [
+    user_name,
+    mobile,
+    email || null,
+    issue_reason,
+    subject,
+    descp || null,
+  ]);
+
+  return {
+    id: result.insertId,
+    user_name,
+    mobile,
+    email,
+    issue_reason,
+    subject,
+    descp,
+  };
+};

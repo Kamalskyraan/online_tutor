@@ -90,5 +90,37 @@ router.post("/get-issue-categories", (req, res) => {
     */
     (0, support_controller_1.getIssueCategory)(req, res);
 });
+router.post("/help-request", (req, res) => {
+    /*
+      #swagger.tags = ['6.Help & Support']
+      #swagger.summary = 'request help support'
+      #swagger.description = 'Request Help Support'
+  
+      #swagger.parameters['body'] = {
+        in: 'body',
+        required: false,
+        schema: {
+         user_name : "kamalesh",
+         mobile : "9876543210",
+         email : "kamalesh@gmail.com",
+         issue_reason : "invaliddd",
+         subject : "this belongs to report",
+         descp : "asdfgkcjnsjn dn"
+        }
+      }
+  
+      #swagger.responses[200] = {
+        description: "Request Help Support successfully",
+       
+      }
+  
+     
+  
+      #swagger.responses[500] = {
+        description: "Something went wrong"
+      }
+    */
+    (0, support_controller_1.helpRequest)(req, res);
+});
 exports.default = router;
 //# sourceMappingURL=support.routes.js.map

@@ -4,6 +4,7 @@ import {
   addUpdateIssueCategories,
   getHelpSupport,
   getIssueCategory,
+  helpRequest,
 } from "../controller/support.controller";
 
 const router = Router();
@@ -99,5 +100,39 @@ router.post("/get-issue-categories", (req, res) => {
   */
 
   getIssueCategory(req, res);
+});
+
+router.post("/help-request", (req, res) => {
+  /*
+    #swagger.tags = ['6.Help & Support']
+    #swagger.summary = 'request help support'
+    #swagger.description = 'Request Help Support'
+
+    #swagger.parameters['body'] = {
+      in: 'body',
+      required: false,
+      schema: {
+       user_name : "kamalesh",
+       mobile : "9876543210",
+       email : "kamalesh@gmail.com",
+       issue_reason : "invaliddd",
+       subject : "this belongs to report",
+       descp : "asdfgkcjnsjn dn"
+      }
+    }
+
+    #swagger.responses[200] = {
+      description: "Request Help Support successfully",
+     
+    }
+
+   
+
+    #swagger.responses[500] = {
+      description: "Something went wrong"
+    }
+  */
+
+  helpRequest(req, res);
 });
 export default router;
