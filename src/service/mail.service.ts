@@ -4,7 +4,7 @@ dotenv.config();
 
 const configOptions = {
   host: process.env.MAIL_HOST,
-  port: 587,
+  port: 465,
   secure: true,
   auth: {
     user: process.env.SENDER_MAIL,
