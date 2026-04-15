@@ -84,7 +84,8 @@ router.post("/book-session", (req, res) => {
       schema: {
         student_id: "STUDENT_4Gy3VZ_N",
         tutor_id : "TUTOR_A2u50js3",
-        linked_sub: "1"
+        linked_sub: "1",
+        booking_id : 2
         }
     }
 

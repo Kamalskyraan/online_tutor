@@ -5,7 +5,7 @@
         "description": "Api Docs",
         "version": "1.0.0"
     },
-    "host": "online-tutor.skyraantech.com/server",
+    "host": "localhost:5012",
     "basePath": "/",
     "schemes": [
         "https"
@@ -2288,6 +2288,10 @@
                                 "linked_sub": {
                                     "type": "string",
                                     "example": "1"
+                                },
+                                "booking_id": {
+                                    "type": "number",
+                                    "example": 2
                                 }
                             }
                         }

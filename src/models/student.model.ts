@@ -1172,7 +1172,6 @@ export class StudentModel {
     reason_id: string,
     other_reason?: string,
   ) {
-   
     let finalOtherReason = null;
 
     if (Number(reason_id) === -1) {
