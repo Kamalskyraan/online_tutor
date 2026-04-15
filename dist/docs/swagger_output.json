@@ -5,10 +5,10 @@
         "description": "Api Docs",
         "version": "1.0.0"
     },
-    "host": "localhost:5012",
+    "host": "online-tutor.skyraantech.com/server",
     "basePath": "/",
     "schemes": [
-        "http"
+        "https"
     ],
     "paths": {
         "/check": {
@@ -2587,9 +2587,9 @@
                                 },
                                 "tutor_id": {
                                     "type": "string",
-                                    "example": ""
+                                    "example": "TUTOR_4w4lwlu0"
                                 },
-                                "reason": {
+                                "reason_id": {
                                     "type": "string",
                                     "example": "1"
                                 },

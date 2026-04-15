@@ -274,7 +274,7 @@ export class StudentController {
 
   static reportTutorProfile = async (req: Request, res: Response) => {
     try {
-      const { tutor_id, student_id, reason } = req.body;
+      const { tutor_id, student_id, reason_id, other_reason } = req.body;
 
       const existing = await this.studentModel.checkExistingReport(
         tutor_id,
@@ -285,16 +285,38 @@ export class StudentController {
         return sendResponse(res, 200, 0, [], "You already reported this tutor");
       }
 
-      await this.studentModel.insertReport(tutor_id, student_id, reason);
+      await this.studentModel.insertReport(
+        tutor_id,
+        student_id,
+        reason_id,
+        other_reason,
+      );
+
       const totalReports = await this.studentModel.getReportCount(tutor_id);
+
+      let isBlocked = false;
+
       if (totalReports >= 1) {
         const user_id = await this.studentModel.getTutorUserId(tutor_id);
 
         if (user_id) {
           await this.studentModel.blockUser(user_id);
+          isBlocked = true;
         }
       }
-      return sendResponse(res, 200, 1, [], "Reported successfully");
+
+      return sendResponse(
+        res,
+        200,
+        1,
+        {
+          total_reports: totalReports,
+          is_blocked: isBlocked,
+        },
+        isBlocked
+          ? "Reported successfully. Tutor has been blocked."
+          : "Reported successfully",
+      );
     } catch (err: any) {
       return sendResponse(res, 500, 0, [], "Internal Server Error", [
         err.errors || err.message || err,

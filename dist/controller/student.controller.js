@@ -168,20 +168,27 @@ StudentController.getMyFavourites = async (req, res) => {
 };
 StudentController.reportTutorProfile = async (req, res) => {
     try {
-        const { tutor_id, student_id, reason } = req.body;
+        const { tutor_id, student_id, reason_id, other_reason } = req.body;
         const existing = await _a.studentModel.checkExistingReport(tutor_id, student_id);
         if (existing.length > 0) {
             return (0, helper_1.sendResponse)(res, 200, 0, [], "You already reported this tutor");
         }
-        await _a.studentModel.insertReport(tutor_id, student_id, reason);
+        await _a.studentModel.insertReport(tutor_id, student_id, reason_id, other_reason);
         const totalReports = await _a.studentModel.getReportCount(tutor_id);
+        let isBlocked = false;
         if (totalReports >= 1) {
             const user_id = await _a.studentModel.getTutorUserId(tutor_id);
             if (user_id) {
                 await _a.studentModel.blockUser(user_id);
+                isBlocked = true;
             }
         }
-        return (0, helper_1.sendResponse)(res, 200, 1, [], "Reported successfully");
+        return (0, helper_1.sendResponse)(res, 200, 1, {
+            total_reports: totalReports,
+            is_blocked: isBlocked,
+        }, isBlocked
+            ? "Reported successfully. Tutor has been blocked."
+            : "Reported successfully");
     }
     catch (err) {
         return (0, helper_1.sendResponse)(res, 500, 0, [], "Internal Server Error", [

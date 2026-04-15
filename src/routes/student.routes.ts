@@ -312,8 +312,8 @@ router.post("/report-tutor-profile", (req, res) => {
       required: false,
       schema: {
         student_id : "STUDENT_4Gy3VZ_N",
-       tutor_id : "",
-       reason : "1",
+       tutor_id : "TUTOR_4w4lwlu0",
+       reason_id : "1",
        other_reason: "abc deefghij"
     }
 

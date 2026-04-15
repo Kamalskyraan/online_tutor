@@ -926,12 +926,22 @@ class StudentModel {
     `;
         return await (0, helper_1.executeQuery)(query, [tutor_id, student_id]);
     }
-    async insertReport(tutor_id, student_id, reason) {
+    async insertReport(tutor_id, student_id, reason_id, other_reason) {
+        let finalOtherReason = null;
+        if (Number(reason_id) === -1) {
+            finalOtherReason = other_reason || null;
+        }
         const query = `
-      INSERT INTO tutor_reports (tutor_id, student_id, reason_id)
-      VALUES (?, ?, ?)
-    `;
-        return await (0, helper_1.executeQuery)(query, [tutor_id, student_id, reason]);
+    INSERT INTO tutor_reports 
+    (tutor_id, student_id, reason_id, other_reason)
+    VALUES (?, ?, ?, ?)
+  `;
+        return await (0, helper_1.executeQuery)(query, [
+            tutor_id,
+            student_id,
+            reason_id,
+            finalOtherReason,
+        ]);
     }
     async getReportCount(tutor_id) {
         const query = `
@@ -944,7 +954,7 @@ class StudentModel {
     }
     async getTutorUserId(tutor_id) {
         const query = `
-      SELECT user_id FROM tutors WHERE tutor_id = ?
+      SELECT user_id FROM tutor WHERE tutor_id = ?
     `;
         const res = await (0, helper_1.executeQuery)(query, [tutor_id]);
         return res.length ? res[0].user_id : null;
