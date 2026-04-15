@@ -2,19 +2,31 @@ import nodemailer from "nodemailer";
 import dotenv from "dotenv";
 dotenv.config();
 
+// const configOptions = {
+//   host: "mail.skyraantech.com",
+//   port: 465,
+//   secure: true,
+//   auth: {
+//     user: "support@skyraantech.com",
+//     pass:"xnfgp6HO=*Dx^U~t",
+//   },
+//   pool: true,
+//   maxConnections: 3,
+//   maxMessages: 20,
+// };
+
 const configOptions = {
-  host: "mail.skyraantech.com",
-  port: 465,
-  secure: true,
+  host: process.env.MAIL_HOST,
+  port: 587,
+  secure: false,
   auth: {
-    user: "support@skyraantech.com",
-    pass:"xnfgp6HO=*Dx^U~t",
+    user: process.env.SENDER_MAIL,
+    pass: process.env.PASSWORD,
   },
   pool: true,
   maxConnections: 3,
   maxMessages: 20,
 };
-
 const transporter = nodemailer.createTransport(configOptions);
 
 export const sendMail = async (
