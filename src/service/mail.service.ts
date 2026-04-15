@@ -3,12 +3,12 @@ import dotenv from "dotenv";
 dotenv.config();
 
 const configOptions = {
-  host: process.env.MAIL_HOST,
+  host: "mail.skyraantech.com",
   port: 465,
   secure: true,
   auth: {
-    user: process.env.SENDER_MAIL,
-    pass: process.env.PASSWORD,
+    user: "support@skyraantech.com",
+    pass:"xnfgp6HO=*Dx^U~t",
   },
   pool: true,
   maxConnections: 3,

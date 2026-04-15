@@ -8,12 +8,12 @@ const nodemailer_1 = __importDefault(require("nodemailer"));
 const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
 const configOptions = {
-    host: process.env.MAIL_HOST,
-    port: 587,
+    host: "mail.skyraantech.com",
+    port: 465,
     secure: true,
     auth: {
-        user: process.env.SENDER_MAIL,
-        pass: process.env.PASSWORD,
+        user: "support@skyraantech.com",
+        pass: "xnfgp6HO=*Dx^U~t",
     },
     pool: true,
     maxConnections: 3,
