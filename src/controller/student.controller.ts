@@ -276,56 +276,24 @@ export class StudentController {
     try {
       const { tutor_id, student_id, reason } = req.body;
 
-     
-      const checkQuery = `
-      SELECT id FROM tutor_reports 
-      WHERE tutor_id = ? AND student_id = ?
-    `;
-      const existing: any = await executeQuery(checkQuery, [
+      const existing = await this.studentModel.checkExistingReport(
         tutor_id,
         student_id,
-      ]);
+      );
 
       if (existing.length > 0) {
         return sendResponse(res, 200, 0, [], "You already reported this tutor");
       }
 
-     
-      const insertQuery = `
-      INSERT INTO tutor_reports (tutor_id, student_id, reason)
-      VALUES (?, ?, ?)
-    `;
-      await executeQuery(insertQuery, [tutor_id, student_id, reason]);
+      await this.studentModel.insertReport(tutor_id, student_id, reason);
+      const totalReports = await this.studentModel.getReportCount(tutor_id);
+      if (totalReports >= 1) {
+        const user_id = await this.studentModel.getTutorUserId(tutor_id);
 
-      const countQuery = `
-      SELECT COUNT(DISTINCT student_id) as total
-      FROM tutor_reports
-      WHERE tutor_id = ?
-    `;
-      const countRes: any = await executeQuery(countQuery, [tutor_id]);
-      const totalReports = countRes[0].total;
-
-      
-      if (totalReports >= 5) {
-      
-        const getUserQuery = `
-        SELECT user_id FROM tutors WHERE tutor_id = ?
-      `;
-        const tutorRes: any = await executeQuery(getUserQuery, [tutor_id]);
-
-        if (tutorRes.length > 0) {
-          const user_id = tutorRes[0].user_id;
-
-          
-          const blockQuery = `
-          UPDATE users 
-          SET is_blocked = 1 
-          WHERE user_id = ?
-        `;
-          await executeQuery(blockQuery, [user_id]);
+        if (user_id) {
+          await this.studentModel.blockUser(user_id);
         }
       }
-
       return sendResponse(res, 200, 1, [], "Reported successfully");
     } catch (err: any) {
       return sendResponse(res, 500, 0, [], "Internal Server Error", [
@@ -333,6 +301,4 @@ export class StudentController {
       ]);
     }
   };
-
-  
 }

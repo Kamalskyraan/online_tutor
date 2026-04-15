@@ -300,4 +300,34 @@ router.post("/student-favs", (req, res) => {
   StudentController.getMyFavourites(req, res);
 });
 
+router.post("/report-tutor-profile", (req, res) => {
+  /*
+    #swagger.tags = ['9.Student']
+    #swagger.summary = 'Report Tutor'
+    #swagger.description = 'Report Tutor Profile'
+
+    
+    #swagger.parameters['body'] = {
+      in: 'body',
+      required: false,
+      schema: {
+        student_id : "STUDENT_4Gy3VZ_N",
+       tutor_id : "",
+       reason : "1",
+       other_reason: "abc deefghij"
+    }
+
+}
+    #swagger.responses[200] = {
+      description: "Report Tutor Profile Successfully"
+    }
+
+    #swagger.responses[500] = {
+      description: "Internal Server Error"
+    }
+  */
+
+  StudentController.reportTutorProfile(req, res);
+});
+
 export default router;

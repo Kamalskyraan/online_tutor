@@ -5,10 +5,10 @@
         "description": "Api Docs",
         "version": "1.0.0"
     },
-    "host": "online-tutor.skyraantech.com/server",
+    "host": "localhost:5012",
     "basePath": "/",
     "schemes": [
-        "https"
+        "http"
     ],
     "paths": {
         "/check": {
@@ -2559,6 +2559,51 @@
                 "responses": {
                     "200": {
                         "description": "Fetched Favourites Successfully"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/api/student/report-tutor-profile": {
+            "post": {
+                "tags": [
+                    "9.Student"
+                ],
+                "summary": "Report Tutor",
+                "description": "Report Tutor Profile",
+                "parameters": [
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "required": false,
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "student_id": {
+                                    "type": "string",
+                                    "example": "STUDENT_4Gy3VZ_N"
+                                },
+                                "tutor_id": {
+                                    "type": "string",
+                                    "example": ""
+                                },
+                                "reason": {
+                                    "type": "string",
+                                    "example": "1"
+                                },
+                                "other_reason": {
+                                    "type": "string",
+                                    "example": "abc deefghij"
+                                }
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Report Tutor Profile Successfully"
                     },
                     "500": {
                         "description": "Internal Server Error"

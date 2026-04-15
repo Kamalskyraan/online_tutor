@@ -587,7 +587,6 @@ class StudentModel {
     // }
     async studentClassBooking(data) {
         const { booking_id, student_id, tutor_id, linked_sub } = data;
-        // ✅ Check subject active
         const subjectCheck = await (0, helper_1.executeQuery)(`
     SELECT id, status 
     FROM tutor_subjects 
@@ -919,6 +918,44 @@ class StudentModel {
                 total_pages: Math.ceil(total / limit),
             },
         };
+    }
+    async checkExistingReport(tutor_id, student_id) {
+        const query = `
+      SELECT id FROM tutor_reports 
+      WHERE tutor_id = ? AND student_id = ?
+    `;
+        return await (0, helper_1.executeQuery)(query, [tutor_id, student_id]);
+    }
+    async insertReport(tutor_id, student_id, reason) {
+        const query = `
+      INSERT INTO tutor_reports (tutor_id, student_id, reason_id)
+      VALUES (?, ?, ?)
+    `;
+        return await (0, helper_1.executeQuery)(query, [tutor_id, student_id, reason]);
+    }
+    async getReportCount(tutor_id) {
+        const query = `
+      SELECT COUNT(DISTINCT student_id) as total
+      FROM tutor_reports
+      WHERE tutor_id = ?
+    `;
+        const res = await (0, helper_1.executeQuery)(query, [tutor_id]);
+        return res[0]?.total || 0;
+    }
+    async getTutorUserId(tutor_id) {
+        const query = `
+      SELECT user_id FROM tutors WHERE tutor_id = ?
+    `;
+        const res = await (0, helper_1.executeQuery)(query, [tutor_id]);
+        return res.length ? res[0].user_id : null;
+    }
+    async blockUser(user_id) {
+        const query = `
+      UPDATE users 
+      SET is_blocked = 1 
+      WHERE user_id = ?
+    `;
+        return await (0, helper_1.executeQuery)(query, [user_id]);
     }
 }
 exports.StudentModel = StudentModel;
