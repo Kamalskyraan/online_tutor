@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.createOrUpdateIssueCategory = exports.getAllHelp = exports.saveHelp = void 0;
+exports.fetchIssueCategories = exports.createOrUpdateIssueCategory = exports.getAllHelp = exports.saveHelp = void 0;
 const helper_1 = require("../utils/helper");
 const saveHelp = async (help) => {
     if (help.id) {
@@ -79,7 +79,7 @@ const createOrUpdateIssueCategory = async (id, name, status) => {
       WHERE id = ?
     `;
         await (0, helper_1.executeQuery)(query, [name, status || "active", id]);
-        return { id, name, status: status || "active", action: "updated" };
+        return { id, name, status: status || "active" };
     }
     const query = `
     INSERT INTO issue_category (name, status)
@@ -90,8 +90,22 @@ const createOrUpdateIssueCategory = async (id, name, status) => {
         id: result.insertId,
         name,
         status: status || "active",
-        action: "created",
     };
 };
 exports.createOrUpdateIssueCategory = createOrUpdateIssueCategory;
+const fetchIssueCategories = async (status) => {
+    let query = `
+    SELECT id, name
+    FROM issue_category
+    WHERE 1=1
+  `;
+    const params = [];
+    if (status) {
+        query += ` AND status = ?`;
+        params.push(status);
+    }
+    query += ` ORDER BY id DESC`;
+    return await (0, helper_1.executeQuery)(query, params);
+};
+exports.fetchIssueCategories = fetchIssueCategories;
 //# sourceMappingURL=help.model.js.map

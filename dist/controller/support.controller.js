@@ -63,6 +63,9 @@ const addUpdateIssueCategories = async (req, res) => {
 exports.addUpdateIssueCategories = addUpdateIssueCategories;
 const getIssueCategory = async (req, res) => {
     try {
+        const { status } = req.body;
+        const data = await (0, help_model_1.fetchIssueCategories)(status);
+        return (0, helper_1.sendResponse)(res, 200, 1, data, "Fetched successfully", []);
     }
     catch (err) {
         return (0, helper_1.sendResponse)(res, 500, 0, [], "Internal Server Error", [

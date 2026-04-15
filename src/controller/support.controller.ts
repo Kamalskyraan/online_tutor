@@ -3,6 +3,7 @@ import { sendResponse, validateRequest } from "../utils/helper";
 import { helpSchema } from "../validators/validate";
 import {
   createOrUpdateIssueCategory,
+  fetchIssueCategories,
   getAllHelp,
   saveHelp,
 } from "../models/help.model";
@@ -107,6 +108,11 @@ export const addUpdateIssueCategories = async (req: Request, res: Response) => {
 
 export const getIssueCategory = async (req: Request, res: Response) => {
   try {
+    const { status } = req.body;
+
+    const data = await fetchIssueCategories(status);
+
+    return sendResponse(res, 200, 1, data, "Fetched successfully", []);
   } catch (err: any) {
     return sendResponse(res, 500, 0, [], "Internal Server Error", [
       err.errors || err.message || err,

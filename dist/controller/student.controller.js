@@ -171,7 +171,7 @@ StudentController.reportTutorProfile = async (req, res) => {
         const { tutor_id, student_id, reason_id, other_reason } = req.body;
         const existing = await _a.studentModel.checkExistingReport(tutor_id, student_id);
         if (existing.length > 0) {
-            return (0, helper_1.sendResponse)(res, 200, 0, [], "You already reported this tutor");
+            return (0, helper_1.sendResponse)(res, 200, 0, [], "You already reported this tutor", []);
         }
         await _a.studentModel.insertReport(tutor_id, student_id, reason_id, other_reason);
         const totalReports = await _a.studentModel.getReportCount(tutor_id);
@@ -183,10 +183,12 @@ StudentController.reportTutorProfile = async (req, res) => {
                 isBlocked = true;
             }
         }
-        return (0, helper_1.sendResponse)(res, 200, 1, {
-            total_reports: totalReports,
-            is_blocked: isBlocked,
-        }, isBlocked
+        return (0, helper_1.sendResponse)(res, 200, 1, [
+            {
+                total_reports: totalReports,
+                is_blocked: isBlocked,
+            },
+        ], isBlocked
             ? "Reported successfully. Tutor has been blocked."
             : "Reported successfully");
     }

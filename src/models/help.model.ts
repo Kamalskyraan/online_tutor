@@ -99,7 +99,7 @@ export const createOrUpdateIssueCategory = async (
 
     await executeQuery(query, [name, status || "active", id]);
 
-    return { id, name, status: status || "active", action: "updated" };
+    return { id, name, status: status || "active" };
   }
 
   const query = `
@@ -113,6 +113,24 @@ export const createOrUpdateIssueCategory = async (
     id: result.insertId,
     name,
     status: status || "active",
-    action: "created",
   };
+};
+
+export const fetchIssueCategories = async (status?: string) => {
+  let query = `
+    SELECT id, name
+    FROM issue_category
+    WHERE 1=1
+  `;
+
+  const params: any[] = [];
+
+  if (status) {
+    query += ` AND status = ?`;
+    params.push(status);
+  }
+
+  query += ` ORDER BY id DESC`;
+
+  return await executeQuery(query, params);
 };

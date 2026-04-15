@@ -282,7 +282,14 @@ export class StudentController {
       );
 
       if (existing.length > 0) {
-        return sendResponse(res, 200, 0, [], "You already reported this tutor");
+        return sendResponse(
+          res,
+          200,
+          0,
+          [],
+          "You already reported this tutor",
+          [],
+        );
       }
 
       await this.studentModel.insertReport(
@@ -309,10 +316,12 @@ export class StudentController {
         res,
         200,
         1,
-        {
-          total_reports: totalReports,
-          is_blocked: isBlocked,
-        },
+        [
+          {
+            total_reports: totalReports,
+            is_blocked: isBlocked,
+          },
+        ],
         isBlocked
           ? "Reported successfully. Tutor has been blocked."
           : "Reported successfully",

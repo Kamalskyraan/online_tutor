@@ -1409,8 +1409,8 @@
         "tags": [
           "6.Help & Support"
         ],
-        "summary": "Get Help and Support List",
-        "description": "Fetch paginated help and support tickets based on search, status and user role.",
+        "summary": "add Issue Category",
+        "description": "Add Issue Category",
         "parameters": [
           {
             "name": "body",
@@ -1419,21 +1419,17 @@
             "schema": {
               "type": "object",
               "properties": {
-                "search": {
+                "id": {
+                  "type": "number",
+                  "example": 1
+                },
+                "name": {
                   "type": "string",
-                  "example": "what to do"
+                  "example": "Technical Problem"
                 },
                 "status": {
                   "type": "string",
                   "example": "active"
-                },
-                "page": {
-                  "type": "number",
-                  "example": 1
-                },
-                "user_id": {
-                  "type": "string",
-                  "example": "user_123"
                 }
               }
             }
@@ -1441,10 +1437,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Help and Support list fetched successfully"
-          },
-          "400": {
-            "description": "Search term must be at least 3 characters"
+            "description": "Add update category successfully"
           },
           "500": {
             "description": "Something went wrong"
@@ -1454,10 +1447,37 @@
     },
     "/api/help/get-issue-categories": {
       "post": {
-        "description": "",
+        "tags": [
+          "6.Help & Support"
+        ],
+        "summary": "Get Issue Category",
+        "description": "Get Issue Category",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": false,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "number",
+                  "example": 1
+                },
+                "status": {
+                  "type": "string",
+                  "example": "active"
+                }
+              }
+            }
+          }
+        ],
         "responses": {
-          "default": {
-            "description": ""
+          "200": {
+            "description": "Get Issue category successfully"
+          },
+          "500": {
+            "description": "Something went wrong"
           }
         }
       }
