@@ -8,7 +8,7 @@ const nodemailer_1 = __importDefault(require("nodemailer"));
 const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
 const configOptions = {
-    host: "smtp.example.com",
+    host: process.env.MAIL_HOST,
     port: 587,
     secure: true,
     auth: {

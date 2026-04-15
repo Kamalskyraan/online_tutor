@@ -3,7 +3,7 @@ import dotenv from "dotenv";
 dotenv.config();
 
 const configOptions = {
-  host: "smtp.example.com",
+  host: process.env.MAIL_HOST,
   port: 587,
   secure: true,
   auth: {

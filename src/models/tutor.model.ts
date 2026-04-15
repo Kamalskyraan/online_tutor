@@ -701,4 +701,161 @@ export class TutorModel {
 
     return rows;
   }
+
+  // Home data
+
+  async getTutorLeadsGraph(
+    tutor_id: string,
+    from_date: string,
+    to_date: string,
+  ) {
+    const leadsQuery = `
+    SELECT DATE(created_at) as date
+    FROM tutor_leads
+    WHERE tutor_id = ?
+    AND lead_type = 'profile'
+    AND created_at BETWEEN ? AND ?
+  `;
+
+    const leadRows: any[] = await executeQuery(leadsQuery, [
+      tutor_id,
+      from_date,
+      to_date,
+    ]);
+
+    const requestQuery = `
+    SELECT DATE(created_at) as date
+    FROM tutor_student_rel
+    WHERE tutor_id = ?
+    AND created_at BETWEEN ? AND ?
+  `;
+
+    const requestRows: any[] = await executeQuery(requestQuery, [
+      tutor_id,
+      from_date,
+      to_date,
+    ]);
+
+    // 🧠 3. DATE RANGE
+    const from = new Date(from_date);
+    const to = new Date(to_date);
+
+    const totalDays =
+      Math.ceil((to.getTime() - from.getTime()) / (1000 * 60 * 60 * 24)) + 1;
+
+    // 🧠 4. BUCKET LOGIC
+    let bucketSize = 1;
+    let labelType = "day";
+
+    if (totalDays <= 7) {
+      bucketSize = 1;
+      labelType = "day";
+    } else if (totalDays <= 30) {
+      bucketSize = 5;
+    } else if (totalDays <= 60) {
+      bucketSize = 10;
+    } else if (totalDays <= 120) {
+      bucketSize = 15;
+    } else if (totalDays <= 365) {
+      bucketSize = 30;
+      labelType = "month";
+    } else {
+      bucketSize = 90;
+      labelType = "quarter";
+    }
+
+    // 🧠 5. CREATE BUCKETS
+    const buckets: any[] = [];
+    let current = new Date(from);
+
+    while (current <= to) {
+      const start = new Date(current);
+      const end = new Date(current);
+      end.setDate(end.getDate() + bucketSize - 1);
+
+      buckets.push({
+        start,
+        end,
+        leads: 0,
+        requests: 0,
+      });
+
+      current.setDate(current.getDate() + bucketSize);
+    }
+
+    // 🧠 6. FILL LEADS
+    leadRows.forEach((row: any) => {
+      const rowDate = new Date(row.date);
+
+      for (let b of buckets) {
+        if (rowDate >= b.start && rowDate <= b.end) {
+          b.leads++;
+          break;
+        }
+      }
+    });
+
+    // 🧠 7. FILL REQUESTS
+    requestRows.forEach((row: any) => {
+      const rowDate = new Date(row.date);
+
+      for (let b of buckets) {
+        if (rowDate >= b.start && rowDate <= b.end) {
+          b.requests++;
+          break;
+        }
+      }
+    });
+
+    // 🧠 8. X AXIS
+    const x_axis = buckets.map((b) => {
+      const s = b.start;
+      const e = b.end;
+
+      if (labelType === "day") {
+        return s.toLocaleDateString("en-IN", {
+          day: "2-digit",
+          month: "short",
+        });
+      }
+
+      if (labelType === "month") {
+        return s.toLocaleDateString("en-IN", {
+          month: "short",
+          year: "numeric",
+        });
+      }
+
+      if (labelType === "quarter") {
+        const sm = s.toLocaleString("en-IN", { month: "short" });
+        const em = e.toLocaleString("en-IN", { month: "short" });
+        return `${sm}-${em}`;
+      }
+
+      return `${s.getDate()}-${e.getDate()}`;
+    });
+
+    // 🧠 9. DATA ARRAYS
+    const leads_data = buckets.map((b) => b.leads);
+    const request_data = buckets.map((b) => b.requests);
+
+    // 🧠 10. Y AXIS SCALE (based on max of both)
+    const max = Math.max(...leads_data, ...request_data, 0);
+
+    const step = Math.ceil(max / 6) || 1;
+
+    const y_axis_scale = Array.from({ length: 7 }, (_, i) => i * step);
+
+    // 🎯 FINAL RESPONSE
+    return {
+      x_axis,
+      leads: leads_data,
+      requests: request_data,
+      y_axis_scale,
+      meta: {
+        total_days: totalDays,
+        bucket_size: bucketSize,
+      },
+    };
+  }
 }

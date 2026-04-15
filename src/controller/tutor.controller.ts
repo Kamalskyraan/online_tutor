@@ -142,7 +142,7 @@ export class TutorController {
         return sendResponse(res, 200, 0, [], "tutor_id is required", []);
       }
 
-      const tutor = await tutModel.getTutorById(tutor_id , student_id);
+      const tutor = await tutModel.getTutorById(tutor_id, student_id);
       if (!tutor) {
         return sendResponse(res, 200, 0, [], "Tutor not found", []);
       }
@@ -375,14 +375,21 @@ export class TutorController {
     }
   };
 
-  
+  static getTutorLeadsGraph = async (req: Request, res: Response) => {
+    try {
+      const { tutor_id, from_date, to_date } = req.body;
+
+      const graph = await tutModel.getTutorLeadsGraph(
+        tutor_id,
+        from_date,
+        to_date,
+      );
+
+      return sendResponse(res, 200, 1, graph, "Graph fetched", []);
+    } catch (err: any) {
+      return sendResponse(res, 500, 0, [], "Internal Server Error", [
+        err.message,
+      ]);
+    }
+  };
 }
-
-
-
-
-
-
-
-
-

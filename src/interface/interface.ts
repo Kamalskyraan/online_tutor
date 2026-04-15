@@ -317,6 +317,7 @@ export interface getDemosBody {
 
 // class book
 export interface studentBookClass {
+  booking_id: string;
   student_id: string;
   tutor_id: string;
   linked_sub: string;

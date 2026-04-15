@@ -236,4 +236,16 @@ TutorController.setViewMobile = async (req, res) => {
         ]);
     }
 };
+TutorController.getTutorLeadsGraph = async (req, res) => {
+    try {
+        const { tutor_id, from_date, to_date } = req.body;
+        const graph = await tutModel.getTutorLeadsGraph(tutor_id, from_date, to_date);
+        return (0, helper_1.sendResponse)(res, 200, 1, graph, "Graph fetched", []);
+    }
+    catch (err) {
+        return (0, helper_1.sendResponse)(res, 500, 0, [], "Internal Server Error", [
+            err.message,
+        ]);
+    }
+};
 //# sourceMappingURL=tutor.controller.js.map

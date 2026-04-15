@@ -342,4 +342,32 @@ router.post("/update-view-status", (req, res) => {
   TutorController.setViewMobile(req, res);
 });
 
+router.post("/get-tutor-graph", (req, res) => {
+  /*
+    #swagger.tags = ['8.Tutor']
+    #swagger.summary = 'Update View Status'
+    #swagger.description = 'Update View Status for mobile view'
+
+   
+    #swagger.parameters['body'] = {
+    in:'body',
+    schema:{ 
+    tutor_id : "TUTOR_A2u50js3",
+     from_date : "2026-04-01",
+     to_date : "2026-06-01"
+        }}
+
+    #swagger.responses[200] = {
+      description: "Tutor set Mobile View Status successfully",
+     
+    }
+
+    #swagger.responses[500] = {
+      description: "Something went wrong"
+    }
+  */
+
+  TutorController.getTutorLeadsGraph(req, res);
+});
+
 export default router;

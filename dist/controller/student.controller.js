@@ -56,8 +56,9 @@ StudentController.getNearbyTutors = async (req, res) => {
 };
 StudentController.bookASession = async (req, res) => {
     try {
-        const { student_id, tutor_id, linked_sub } = req.body;
+        const { booking_id, student_id, tutor_id, linked_sub } = req.body;
         const data = await _a.studentModel.studentClassBooking({
+            booking_id,
             student_id,
             tutor_id,
             linked_sub,
@@ -158,6 +159,55 @@ StudentController.getMyFavourites = async (req, res) => {
         }
         const studentFav = await _a.studentModel.fethFavouritesOfStudent(student_id, page);
         return (0, helper_1.sendResponse)(res, 200, 1, studentFav, "Favs fetched successfully", []);
+    }
+    catch (err) {
+        return (0, helper_1.sendResponse)(res, 500, 0, [], "Internal Server Error", [
+            err.errors || err.message || err,
+        ]);
+    }
+};
+StudentController.reportTutorProfile = async (req, res) => {
+    try {
+        const { tutor_id, student_id, reason } = req.body;
+        const checkQuery = `
+      SELECT id FROM tutor_reports 
+      WHERE tutor_id = ? AND student_id = ?
+    `;
+        const existing = await (0, helper_1.executeQuery)(checkQuery, [
+            tutor_id,
+            student_id,
+        ]);
+        if (existing.length > 0) {
+            return (0, helper_1.sendResponse)(res, 200, 0, [], "You already reported this tutor");
+        }
+        const insertQuery = `
+      INSERT INTO tutor_reports (tutor_id, student_id, reason)
+      VALUES (?, ?, ?)
+    `;
+        await (0, helper_1.executeQuery)(insertQuery, [tutor_id, student_id, reason]);
+        const countQuery = `
+      SELECT COUNT(DISTINCT student_id) as total
+      FROM tutor_reports
+      WHERE tutor_id = ?
+    `;
+        const countRes = await (0, helper_1.executeQuery)(countQuery, [tutor_id]);
+        const totalReports = countRes[0].total;
+        if (totalReports >= 5) {
+            const getUserQuery = `
+        SELECT user_id FROM tutors WHERE tutor_id = ?
+      `;
+            const tutorRes = await (0, helper_1.executeQuery)(getUserQuery, [tutor_id]);
+            if (tutorRes.length > 0) {
+                const user_id = tutorRes[0].user_id;
+                const blockQuery = `
+          UPDATE users 
+          SET is_blocked = 1 
+          WHERE user_id = ?
+        `;
+                await (0, helper_1.executeQuery)(blockQuery, [user_id]);
+            }
+        }
+        return (0, helper_1.sendResponse)(res, 200, 1, [], "Reported successfully");
     }
     catch (err) {
         return (0, helper_1.sendResponse)(res, 500, 0, [], "Internal Server Error", [

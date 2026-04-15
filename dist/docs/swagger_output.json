@@ -2093,6 +2093,46 @@
                 }
             }
         },
+        "/api/tutor/get-tutor-graph": {
+            "post": {
+                "tags": [
+                    "8.Tutor"
+                ],
+                "summary": "Update View Status",
+                "description": "Update View Status for mobile view",
+                "parameters": [
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "tutor_id": {
+                                    "type": "string",
+                                    "example": "TUTOR_A2u50js3"
+                                },
+                                "from_date": {
+                                    "type": "string",
+                                    "example": "2026-04-01"
+                                },
+                                "to_date": {
+                                    "type": "string",
+                                    "example": "2026-06-01"
+                                }
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Tutor set Mobile View Status successfully"
+                    },
+                    "500": {
+                        "description": "Something went wrong"
+                    }
+                }
+            }
+        },
         "/api/student/nearby-tutors": {
             "post": {
                 "tags": [
