@@ -168,6 +168,7 @@ class ReviewModel {
         const { id, tutor_id, student_id, rating, from_date, to_date, page = 1, limit = 5, } = data;
         const offset = (page - 1) * limit;
         const safeStudentId = student_id ?? -1;
+        const safeTutorId = tutor_id ?? -1;
         let baseQuery = `
     FROM reviews r
     LEFT JOIN student s ON s.student_id = r.student_id
@@ -222,22 +223,27 @@ class ReviewModel {
       rr.reply_text,
       DATE_FORMAT(rr.updated_at, '%Y-%m-%d %H:%i:%s') AS reply_date,
 
-      -- ✅ Like Count
       (
         SELECT COUNT(*) 
         FROM review_likes rl 
         WHERE rl.review_id = r.id
       ) AS like_count,
 
-      -- ✅ FIXED is_liked using EXISTS
-      CASE 
-        WHEN EXISTS (
-          SELECT 1 
-          FROM review_likes rl 
-          WHERE rl.review_id = r.id 
-          AND rl.student_id = ?
-        ) THEN 1
-        ELSE 0
+
+     CASE 
+  WHEN EXISTS (
+    SELECT 1 
+    FROM review_likes rl 
+    WHERE rl.review_id = r.id 
+    AND (
+      rl.student_id = ? 
+      OR rl.tutor_id = ?
+    )
+  ) THEN 1
+  ELSE 0
+END AS is_liked
+
+
       END AS is_liked
 
     ${baseQuery}
@@ -253,16 +259,14 @@ class ReviewModel {
     LIMIT ? OFFSET ?
   `;
         const finalParams = [
-            safeStudentId, // for EXISTS
+            safeStudentId,
+            safeTutorId,
             ...params,
-            safeStudentId, // for ORDER BY priority
+            safeStudentId,
             limit,
             offset,
         ];
         const reviews = await (0, helper_1.executeQuery)(dataQuery, finalParams);
-        // ✅ Debug properly
-        console.log(reviews.map((r) => r.is_liked));
-        // 🔽 Image mapping
         const imageIds = reviews
             .map((r) => Number(r.profile_img))
             .filter(Boolean);
