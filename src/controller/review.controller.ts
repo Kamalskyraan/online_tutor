@@ -13,8 +13,12 @@ import {
   signupSchema,
 } from "../validators/validate";
 import { ReviewModel } from "../models/review.model";
+import { NotificationModel } from "../models/notification.model";
+import { sendPushNotification } from "../service/firebase.service";
+import { NotificationTemplates } from "../config/notification.template";
 
 const rvModel = new ReviewModel();
+const noteModel = new NotificationModel();
 export class ReviewController {
   static async addUpdateReview(req: Request, res: Response) {
     try {
@@ -29,6 +33,23 @@ export class ReviewController {
         review_text,
       });
 
+      const userId = await noteModel.getUserIdFromRole({ tutor_id });
+      const tutorUserId = userId.tutor_user_id;
+
+      if (tutorUserId) {
+        const template = NotificationTemplates.review({
+          isUpdate: !!id,
+          tutor_id,
+          rating,
+        });
+        const payload = {
+          sender_id: student_id,
+          receiver_id: tutorUserId,
+          ...template,
+        };
+        await noteModel.createInAppNotification(payload);
+        await sendPushNotification(tutorUserId, template);
+      }
       return sendResponse(
         res,
         200,
@@ -83,8 +104,7 @@ export class ReviewController {
         [],
       );
     } catch (err: any) {
-
-      console.log(err)
+      console.log(err);
       sendResponse(
         res,
         500,

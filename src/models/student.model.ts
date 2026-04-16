@@ -867,6 +867,9 @@ export class StudentModel {
     let where = `WHERE 1=1`;
     let params: any[] = [];
 
+    let courseIds: number[] = [];
+
+    // 🔹 Get student courses
     if (student_id) {
       const student: any = await executeQuery(
         `SELECT learn_course FROM student WHERE student_id = ?`,
@@ -874,21 +877,20 @@ export class StudentModel {
       );
 
       if (student.length && student[0].learn_course) {
-        const courseIds = student[0].learn_course
+        courseIds = student[0].learn_course
           .split(",")
           .map((id: string) => Number(id.trim()))
           .filter(Boolean);
-
-        if (courseIds.length) {
-          where += ` AND subject_id IN (${courseIds.map(() => "?").join(",")})`;
-          params.push(...courseIds);
-        }
       }
     }
 
+    // 🔥 Apply subject filter properly
     if (subject_id) {
       where += ` AND subject_id = ?`;
       params.push(subject_id);
+    } else if (courseIds.length) {
+      where += ` AND subject_id IN (${courseIds.map(() => "?").join(",")})`;
+      params.push(...courseIds);
     }
 
     if (subject_name) {
@@ -903,8 +905,8 @@ export class StudentModel {
 
     const query = `
     SELECT 
-      MIN(min_fee) as min_fee,
-      MAX(max_fee) as max_fee
+      COALESCE(MIN(min_fee), 0) as min_fee,
+      COALESCE(MAX(max_fee), 0) as max_fee
     FROM tutor_subjects
     ${where}
   `;

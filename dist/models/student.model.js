@@ -673,22 +673,25 @@ class StudentModel {
     async fetchFees(subject_id, subject_name, tenure_type, student_id) {
         let where = `WHERE 1=1`;
         let params = [];
+        let courseIds = [];
+        // 🔹 Get student courses
         if (student_id) {
             const student = await (0, helper_1.executeQuery)(`SELECT learn_course FROM student WHERE student_id = ?`, [student_id]);
             if (student.length && student[0].learn_course) {
-                const courseIds = student[0].learn_course
+                courseIds = student[0].learn_course
                     .split(",")
                     .map((id) => Number(id.trim()))
                     .filter(Boolean);
-                if (courseIds.length) {
-                    where += ` AND subject_id IN (${courseIds.map(() => "?").join(",")})`;
-                    params.push(...courseIds);
-                }
             }
         }
+        // 🔥 Apply subject filter properly
         if (subject_id) {
             where += ` AND subject_id = ?`;
             params.push(subject_id);
+        }
+        else if (courseIds.length) {
+            where += ` AND subject_id IN (${courseIds.map(() => "?").join(",")})`;
+            params.push(...courseIds);
         }
         if (subject_name) {
             where += ` AND subject_name LIKE ?`;
@@ -700,8 +703,8 @@ class StudentModel {
         }
         const query = `
     SELECT 
-      MIN(min_fee) as min_fee,
-      MAX(max_fee) as max_fee
+      COALESCE(MIN(min_fee), 0) as min_fee,
+      COALESCE(MAX(max_fee), 0) as max_fee
     FROM tutor_subjects
     ${where}
   `;
