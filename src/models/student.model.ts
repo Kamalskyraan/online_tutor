@@ -1120,7 +1120,7 @@ export class StudentModel {
     LEFT JOIN tutor_likes tl 
       ON tl.tutor_id = t.tutor_id
       AND tl.student_id = ?
-      AND tl.is_like = 1
+      AND tl.is_like != 0
 
     LEFT JOIN users u 
       ON u.user_id = t.user_id
@@ -1134,14 +1134,14 @@ export class StudentModel {
     const data = await this.buildTutorFullData(rows);
     const final = data.map((r: any) => ({
       ...r,
-      is_like: Number(r.is_like) || 0,
+      is_like: Number(r.is_like),
     }));
 
     const countQuery = `
     SELECT COUNT(*) as total
     FROM tutor_likes
     WHERE student_id = ?
-      AND is_like = 1
+      AND is_like != 0
   `;
 
     const countRes: any[] = await executeQuery(countQuery, [student_id]);
