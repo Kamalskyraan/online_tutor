@@ -8,6 +8,39 @@ const cmnMdl = new commonModel();
 const tutMdl = new TutorModel();
 const eduMdl = new EduModel();
 export class LeadsModel {
+  // async insertLead(data: {
+  //   tutor_id?: string;
+  //   student_id?: string;
+  //   lead_type: "search" | "profile";
+  //   search_subject?: string;
+  // }) {
+  //   const {
+  //     tutor_id,
+  //     student_id = null,
+  //     lead_type,
+  //     search_subject = null,
+  //   } = data;
+
+  //   let search_address: string | null = null;
+  //   if (student_id) {
+  //     const studentRes: any = await executeQuery(
+  //       `SELECT u.district
+  //      FROM student s
+  //      LEFT JOIN users u ON u.user_id = s.user_id
+  //      WHERE s.student_id = ?`,
+  //       [student_id],
+  //     );
+
+  //     search_address = studentRes?.[0]?.district || null;
+  //   }
+  //   await executeQuery(
+  //     `INSERT INTO tutor_leads
+  //    (tutor_id, student_id, lead_type, search_subject , search_address )
+  //    VALUES (?, ?, ?, ? , ? )`,
+  //     [tutor_id, student_id, lead_type, search_subject, search_address],
+  //   );
+  // }
+
   async insertLead(data: {
     tutor_id?: string;
     student_id?: string;
@@ -22,6 +55,7 @@ export class LeadsModel {
     } = data;
 
     let search_address: string | null = null;
+
     if (student_id) {
       const studentRes: any = await executeQuery(
         `SELECT u.district
@@ -33,10 +67,29 @@ export class LeadsModel {
 
       search_address = studentRes?.[0]?.district || null;
     }
+
+    const existing: any = await executeQuery(
+      `
+    SELECT id 
+    FROM tutor_leads
+    WHERE tutor_id = ?
+      AND student_id <=> ?   
+      AND lead_type = ?
+      AND search_subject <=> ?
+      AND DATE(created_at) = CURDATE()
+    LIMIT 1
+    `,
+      [tutor_id, student_id, lead_type, search_subject],
+    );
+
+    if (existing.length > 0) {
+      return;
+    }
+
     await executeQuery(
       `INSERT INTO tutor_leads 
-     (tutor_id, student_id, lead_type, search_subject , search_address )
-     VALUES (?, ?, ?, ? , ? )`,
+     (tutor_id, student_id, lead_type, search_subject, search_address)
+     VALUES (?, ?, ?, ?, ?)`,
       [tutor_id, student_id, lead_type, search_subject, search_address],
     );
   }

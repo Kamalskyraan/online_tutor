@@ -9,6 +9,36 @@ const cmnMdl = new common_model_1.commonModel();
 const tutMdl = new tutor_model_1.TutorModel();
 const eduMdl = new education_model_1.EduModel();
 class LeadsModel {
+    // async insertLead(data: {
+    //   tutor_id?: string;
+    //   student_id?: string;
+    //   lead_type: "search" | "profile";
+    //   search_subject?: string;
+    // }) {
+    //   const {
+    //     tutor_id,
+    //     student_id = null,
+    //     lead_type,
+    //     search_subject = null,
+    //   } = data;
+    //   let search_address: string | null = null;
+    //   if (student_id) {
+    //     const studentRes: any = await executeQuery(
+    //       `SELECT u.district
+    //      FROM student s
+    //      LEFT JOIN users u ON u.user_id = s.user_id
+    //      WHERE s.student_id = ?`,
+    //       [student_id],
+    //     );
+    //     search_address = studentRes?.[0]?.district || null;
+    //   }
+    //   await executeQuery(
+    //     `INSERT INTO tutor_leads
+    //    (tutor_id, student_id, lead_type, search_subject , search_address )
+    //    VALUES (?, ?, ?, ? , ? )`,
+    //     [tutor_id, student_id, lead_type, search_subject, search_address],
+    //   );
+    // }
     async insertLead(data) {
         const { tutor_id, student_id = null, lead_type, search_subject = null, } = data;
         let search_address = null;
@@ -19,9 +49,22 @@ class LeadsModel {
        WHERE s.student_id = ?`, [student_id]);
             search_address = studentRes?.[0]?.district || null;
         }
+        const existing = await (0, helper_1.executeQuery)(`
+    SELECT id 
+    FROM tutor_leads
+    WHERE tutor_id = ?
+      AND student_id <=> ?   
+      AND lead_type = ?
+      AND search_subject <=> ?
+      AND DATE(created_at) = CURDATE()
+    LIMIT 1
+    `, [tutor_id, student_id, lead_type, search_subject]);
+        if (existing.length > 0) {
+            return;
+        }
         await (0, helper_1.executeQuery)(`INSERT INTO tutor_leads 
-     (tutor_id, student_id, lead_type, search_subject , search_address )
-     VALUES (?, ?, ?, ? , ? )`, [tutor_id, student_id, lead_type, search_subject, search_address]);
+     (tutor_id, student_id, lead_type, search_subject, search_address)
+     VALUES (?, ?, ?, ?, ?)`, [tutor_id, student_id, lead_type, search_subject, search_address]);
     }
     async fetchLeads(filters) {
         const { tutor_id, lead_id, from_date, to_date, subject_name, locations, leads_type, page = 1, limit = 10, } = filters;
