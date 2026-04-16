@@ -114,8 +114,8 @@ END AS is_liked
   `;
         const safeStudentId = student_id ?? -1;
         const finalParams = [
-            safeStudentId,
             ...params,
+            safeStudentId,
             safeStudentId,
             limit,
             offset,
