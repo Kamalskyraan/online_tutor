@@ -223,27 +223,25 @@ class ReviewModel {
       rr.reply_text,
       DATE_FORMAT(rr.updated_at, '%Y-%m-%d %H:%i:%s') AS reply_date,
 
+      -- like count
       (
         SELECT COUNT(*) 
         FROM review_likes rl 
         WHERE rl.review_id = r.id
       ) AS like_count,
 
-
-     CASE 
-  WHEN EXISTS (
-    SELECT 1 
-    FROM review_likes rl 
-    WHERE rl.review_id = r.id 
-    AND (
-      rl.student_id = ? 
-      OR rl.tutor_id = ?
-    )
-  ) THEN 1
-  ELSE 0
-END AS is_liked
-
-
+      -- ✅ fixed is_liked (student OR tutor)
+      CASE 
+        WHEN EXISTS (
+          SELECT 1 
+          FROM review_likes rl 
+          WHERE rl.review_id = r.id 
+          AND (
+            rl.student_id = ? 
+            OR rl.tutor_id = ?
+          )
+        ) THEN 1
+        ELSE 0
       END AS is_liked
 
     ${baseQuery}
@@ -259,14 +257,15 @@ END AS is_liked
     LIMIT ? OFFSET ?
   `;
         const finalParams = [
-            safeStudentId,
-            safeTutorId,
+            safeStudentId, // for student like check
+            safeTutorId, // for tutor like check
             ...params,
-            safeStudentId,
+            safeStudentId, // for ORDER BY priority
             limit,
             offset,
         ];
         const reviews = await (0, helper_1.executeQuery)(dataQuery, finalParams);
+        // 🔽 Image mapping
         const imageIds = reviews
             .map((r) => Number(r.profile_img))
             .filter(Boolean);
