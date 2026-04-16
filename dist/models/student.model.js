@@ -884,12 +884,12 @@ class StudentModel {
       tl.is_like
     FROM tutor t
 
-    LEFT JOIN tutor_likes tl 
+    RIGHT JOIN tutor_likes tl 
       ON tl.tutor_id = t.tutor_id
       AND tl.student_id = ?
       AND tl.is_like != 0
 
-    LEFT JOIN users u 
+    RIGHT JOIN users u 
       ON u.user_id = t.user_id
 
     ORDER BY tl.id DESC
