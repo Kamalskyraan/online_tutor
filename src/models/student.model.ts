@@ -1117,12 +1117,12 @@ export class StudentModel {
       tl.is_like
     FROM tutor t
 
-    RIGHT JOIN tutor_likes tl 
+    INNER JOIN tutor_likes tl 
       ON tl.tutor_id = t.tutor_id
       AND tl.student_id = ?
       AND tl.is_like != 0
 
-    RIGHT JOIN users u 
+    INNER JOIN users u 
       ON u.user_id = t.user_id
 
     ORDER BY tl.id DESC
