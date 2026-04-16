@@ -143,7 +143,17 @@ AuthController.signup = async (req, res) => {
             });
             return (0, helper_1.sendResponse)(res, 200, 1, [{ user_id }], "Signup successful", []);
         }
-        return (0, helper_1.sendResponse)(res, 200, 1, [{ user_id, token, country, personal_form, sub_form, user_role }], "Signup successful", []);
+        return (0, helper_1.sendResponse)(res, 200, 1, [
+            {
+                user_id,
+                token,
+                country,
+                personal_form,
+                sub_form,
+                user_role,
+                mobile,
+            },
+        ], "Signup successful", []);
     }
     catch (err) {
         return (0, helper_1.sendResponse)(res, err.status || 500, 0, [], "Something went wrong", [err.errors || err.message || err]);

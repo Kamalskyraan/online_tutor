@@ -211,7 +211,17 @@ export class AuthController {
         res,
         200,
         1,
-        [{ user_id, token, country, personal_form, sub_form, user_role }],
+        [
+          {
+            user_id,
+            token,
+            country,
+            personal_form,
+            sub_form,
+            user_role,
+            mobile,
+          },
+        ],
         "Signup successful",
         [],
       );
