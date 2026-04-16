@@ -91,15 +91,10 @@ class ReviewModel {
   ) AS like_count,
 
 
-  CASE 
-  WHEN EXISTS (
-    SELECT 1 
-    FROM review_likes rl 
-    WHERE rl.review_id = r.id 
-      AND rl.student_id = ?
-  ) THEN 1
-  ELSE 0
-END AS is_liked
+    CASE 
+    WHEN rl.id IS NOT NULL THEN 1
+    ELSE 0
+  END AS is_liked
 
 
  ${baseQuery}
@@ -114,13 +109,14 @@ END AS is_liked
   `;
         const safeStudentId = student_id ?? -1;
         const finalParams = [
-            ...params,
             safeStudentId,
+            ...params,
             safeStudentId,
             limit,
             offset,
         ];
         const reviews = await (0, helper_1.executeQuery)(dataQuery, finalParams);
+        console.log(reviews.is_liked);
         const imageIds = reviews
             .map((r) => Number(r.profile_img))
             .filter(Boolean);
