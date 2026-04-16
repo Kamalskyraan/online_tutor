@@ -477,7 +477,7 @@ export class StudentModel {
   ON tsr.tutor_id = ts.tutor_id
   AND tsr.linked_sub = ts.id
   AND tsr.student_id = ?
-   AND (tsr.status NOT IN ('cancelled', 'rejected') OR tsr.id IS NULL)
+   AND (tsr.status NOT IN ('cancelled') OR tsr.id IS NULL)
 
       WHERE ts.tutor_id IN (${placeholders})
       AND ts.status = 'active'
