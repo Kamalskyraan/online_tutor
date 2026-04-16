@@ -237,6 +237,7 @@ export interface Location {
   search_address?: string;
   search_subject?: string;
   rating?: string;
+  page?: string;
 }
 
 export interface TutorLocation {

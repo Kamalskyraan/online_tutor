@@ -230,7 +230,7 @@ class ReviewModel {
         WHERE rl.review_id = r.id
       ) AS like_count,
 
-      -- ✅ fixed is_liked (student OR tutor)
+     
       CASE 
         WHEN EXISTS (
           SELECT 1 
@@ -257,15 +257,14 @@ class ReviewModel {
     LIMIT ? OFFSET ?
   `;
         const finalParams = [
-            safeStudentId, // for student like check
-            safeTutorId, // for tutor like check
+            safeStudentId,
+            safeTutorId,
             ...params,
-            safeStudentId, // for ORDER BY priority
+            safeStudentId,
             limit,
             offset,
         ];
         const reviews = await (0, helper_1.executeQuery)(dataQuery, finalParams);
-        // 🔽 Image mapping
         const imageIds = reviews
             .map((r) => Number(r.profile_img))
             .filter(Boolean);
@@ -287,7 +286,6 @@ class ReviewModel {
             ...r,
             has_reply: r.reply_id ? 1 : 0,
         }));
-        // 🔽 Count Query
         const countQuery = `
     SELECT COUNT(*) as total
     ${baseQuery}
