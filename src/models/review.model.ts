@@ -39,6 +39,171 @@ export class ReviewModel {
     return convertNullToString(reviewData.reviews[0]) || [];
   }
 
+  //   async fetchReviews(data: fetchReview) {
+  //     const {
+  //       id,
+  //       tutor_id,
+  //       student_id,
+  //       rating,
+  //       from_date,
+  //       to_date,
+  //       page = 1,
+  //       limit = 5,
+  //     } = data;
+
+  //     const offset = (page - 1) * limit;
+
+  //     let baseQuery = `
+  //     FROM reviews r
+  //     LEFT JOIN student s ON s.student_id = r.student_id
+  //     LEFT JOIN users u ON u.user_id = s.user_id
+  //     LEFT JOIN review_reply rr ON rr.review_id = r.id
+  //       LEFT JOIN review_likes rl
+  //     ON rl.review_id = r.id
+  //     AND rl.student_id = ?
+  //   `;
+
+  //     const conditions: string[] = [];
+  //     const params: any[] = [];
+
+  //     if (id) {
+  //       conditions.push(`r.id = ?`);
+  //       params.push(id);
+  //     }
+
+  //     if (tutor_id) {
+  //       conditions.push(`r.tutor_id = ?`);
+  //       params.push(tutor_id);
+  //     }
+
+  //     if (student_id && !tutor_id) {
+  //       conditions.push(`r.student_id = ?`);
+  //       params.push(student_id);
+  //     }
+
+  //     if (rating) {
+  //       conditions.push(`FLOOR(r.rating) = ?`);
+  //       params.push(rating);
+  //     }
+
+  //     if (from_date && to_date) {
+  //       conditions.push(`r.created_at BETWEEN ? AND ?`);
+  //       params.push(`${from_date} 00:00:00`, `${to_date} 23:59:59`);
+  //     } else if (from_date) {
+  //       conditions.push(`r.created_at BETWEEN ? AND ?`);
+  //       params.push(`${from_date} 00:00:00`, `${from_date} 23:59:59`);
+  //     }
+
+  //     let whereClause = "";
+  //     if (conditions.length > 0) {
+  //       whereClause = ` WHERE ` + conditions.join(" AND ");
+  //     }
+
+  //     const dataQuery = `
+  //     SELECT
+  //       r.id, r.tutor_id, r.student_id, r.rating, r.review_text,
+  //      DATE_FORMAT(r.created_at, '%Y-%m-%d %H:%i:%s') AS created_at,
+  //   DATE_FORMAT(r.updated_at, '%Y-%m-%d %H:%i:%s') AS updated_at,
+
+  //       u.user_name,
+  //       u.user_id,
+  //       u.user_role,
+  //       u.profile_img,
+  //       u.mobile,
+  //      IFNULL(rr.id, 0) AS reply_id,
+  //      IFNULL(rr.review_id, 0) AS review_id,
+  //       rr.reply_text,
+  //       DATE_FORMAT(rr.updated_at, '%Y-%m-%d %H:%i:%s') AS reply_date,
+
+  //        (
+  //     SELECT COUNT(*)
+  //     FROM review_likes rl
+  //     WHERE rl.review_id = r.id
+  //   ) AS like_count,
+
+  //     CASE
+  //     WHEN rl.id IS NOT NULL THEN 1
+  //     ELSE 0
+  //   END AS is_liked
+
+  //  ${baseQuery}
+  //     ${whereClause}
+  //    ORDER BY
+  //   CASE
+  //     WHEN r.student_id = ? THEN 0
+  //     ELSE 1
+  //   END,
+  //   r.created_at DESC
+  //     LIMIT ? OFFSET ?
+  //   `;
+
+  //     const safeStudentId = student_id ?? -1;
+
+  //     const finalParams = [
+  //       safeStudentId,
+  //       ...params,
+  //       safeStudentId,
+  //       limit,
+  //       offset,
+  //     ];
+
+  //     const reviews = await executeQuery(dataQuery, finalParams);
+  //     console.log(reviews.is_liked);
+
+  //     const imageIds = reviews
+  //       .map((r: any) => Number(r.profile_img))
+  //       .filter(Boolean);
+  //     let fileMap = new Map();
+
+  //     if (imageIds.length > 0) {
+  //       const files = await cmnMdl.getUploadFiles(imageIds);
+
+  //       files.forEach((f: any) => {
+  //         fileMap.set(Number(f.id), f);
+  //       });
+  //     }
+
+  //     const updatedReviews = reviews.map((r: any) => {
+  //       const img = fileMap.get(Number(r.profile_img));
+
+  //       return {
+  //         ...r,
+  //         profile_img: img ? [img] : [],
+  //       };
+  //     });
+
+  //     const finalReviews = updatedReviews.map((r: any) => ({
+  //       ...r,
+  //       has_reply: r.reply_id ? 1 : 0,
+  //     }));
+  //     const countQuery = `
+  //     SELECT COUNT(*) as total
+  //     ${baseQuery}
+  //     ${whereClause}
+  //   `;
+
+  //     const countResult: any = await executeQuery(countQuery, [
+  //       safeStudentId,
+  //       ...params,
+  //     ]);
+  //     const total = countResult[0]?.total || 0;
+
+  //     let summary: any = {};
+  //     if (tutor_id) {
+  //       summary = await this.getReviewSummary(tutor_id);
+  //     }
+
+  //     return {
+  //       reviews: finalReviews,
+  //       summary,
+  //       pagination: {
+  //         total,
+  //         page,
+  //         limit,
+  //         total_pages: Math.ceil(total / limit),
+  //       },
+  //     };
+  //   }
   async fetchReviews(data: fetchReview) {
     const {
       id,
@@ -52,15 +217,13 @@ export class ReviewModel {
     } = data;
 
     const offset = (page - 1) * limit;
+    const safeStudentId = student_id ?? -1;
 
     let baseQuery = `
     FROM reviews r
     LEFT JOIN student s ON s.student_id = r.student_id
     LEFT JOIN users u ON u.user_id = s.user_id
     LEFT JOIN review_reply rr ON rr.review_id = r.id
-      LEFT JOIN review_likes rl 
-    ON rl.review_id = r.id 
-    AND rl.student_id = ?
   `;
 
     const conditions: string[] = [];
@@ -102,60 +265,70 @@ export class ReviewModel {
     const dataQuery = `
     SELECT 
       r.id, r.tutor_id, r.student_id, r.rating, r.review_text,
-     DATE_FORMAT(r.created_at, '%Y-%m-%d %H:%i:%s') AS created_at,
-  DATE_FORMAT(r.updated_at, '%Y-%m-%d %H:%i:%s') AS updated_at,
+
+      DATE_FORMAT(r.created_at, '%Y-%m-%d %H:%i:%s') AS created_at,
+      DATE_FORMAT(r.updated_at, '%Y-%m-%d %H:%i:%s') AS updated_at,
 
       u.user_name,
       u.user_id,
       u.user_role,
       u.profile_img,
       u.mobile,
-     IFNULL(rr.id, 0) AS reply_id,
-     IFNULL(rr.review_id, 0) AS review_id,
+
+      IFNULL(rr.id, 0) AS reply_id,
+      IFNULL(rr.review_id, 0) AS review_id,
       rr.reply_text,
       DATE_FORMAT(rr.updated_at, '%Y-%m-%d %H:%i:%s') AS reply_date,
 
+      -- ✅ Like Count
+      (
+        SELECT COUNT(*) 
+        FROM review_likes rl 
+        WHERE rl.review_id = r.id
+      ) AS like_count,
 
-       (
-    SELECT COUNT(*) 
-    FROM review_likes rl 
-    WHERE rl.review_id = r.id 
-  ) AS like_count,
+      -- ✅ FIXED is_liked using EXISTS
+      CASE 
+        WHEN EXISTS (
+          SELECT 1 
+          FROM review_likes rl 
+          WHERE rl.review_id = r.id 
+          AND rl.student_id = ?
+        ) THEN 1
+        ELSE 0
+      END AS is_liked
 
-
-    CASE 
-    WHEN rl.id IS NOT NULL THEN 1
-    ELSE 0
-  END AS is_liked
-
-
- ${baseQuery}
+    ${baseQuery}
     ${whereClause}
-   ORDER BY 
-  CASE 
-    WHEN r.student_id = ? THEN 0
-    ELSE 1
-  END,
-  r.created_at DESC
+
+    ORDER BY 
+      CASE 
+        WHEN r.student_id = ? THEN 0
+        ELSE 1
+      END,
+      r.created_at DESC
+
     LIMIT ? OFFSET ?
   `;
 
-    const safeStudentId = student_id ?? -1;
-
     const finalParams = [
-      safeStudentId,
+      safeStudentId, // for EXISTS
       ...params,
-      safeStudentId,
+      safeStudentId, // for ORDER BY priority
       limit,
       offset,
     ];
 
-    const reviews = await executeQuery(dataQuery, finalParams);
-    console.log(reviews.is_liked);
+    const reviews: any = await executeQuery(dataQuery, finalParams);
 
+    // ✅ Debug properly
+    console.log(reviews.map((r: any) => r.is_liked));
+
+    // 🔽 Image mapping
     const imageIds = reviews
       .map((r: any) => Number(r.profile_img))
       .filter(Boolean);
+
     let fileMap = new Map();
 
     if (imageIds.length > 0) {
@@ -179,16 +352,16 @@ export class ReviewModel {
       ...r,
       has_reply: r.reply_id ? 1 : 0,
     }));
+
+    // 🔽 Count Query
     const countQuery = `
     SELECT COUNT(*) as total
     ${baseQuery}
     ${whereClause}
   `;
 
-    const countResult: any = await executeQuery(countQuery, [
-      safeStudentId,
-      ...params,
-    ]);
+    const countResult: any = await executeQuery(countQuery, [...params]);
+
     const total = countResult[0]?.total || 0;
 
     let summary: any = {};
@@ -207,7 +380,6 @@ export class ReviewModel {
       },
     };
   }
-
   async fetchReviewsForTutorById(tutor_id: string) {
     let query = `
     SELECT 
