@@ -5,7 +5,6 @@ const helper_1 = require("../utils/helper");
 const validate_1 = require("../validators/validate");
 const review_model_1 = require("../models/review.model");
 const notification_model_1 = require("../models/notification.model");
-const firebase_service_1 = require("../service/firebase.service");
 const notification_template_1 = require("../config/notification.template");
 const rvModel = new review_model_1.ReviewModel();
 const noteModel = new notification_model_1.NotificationModel();
@@ -34,7 +33,7 @@ class ReviewController {
                     ...template,
                 };
                 await noteModel.createInAppNotification(payload);
-                await (0, firebase_service_1.sendPushNotification)(tutorUserId, template);
+                // await sendPushNotification(tutorUserId, template);
             }
             return (0, helper_1.sendResponse)(res, 200, 1, [revData], id ? "Review updated successfully" : "Review added successfully");
         }

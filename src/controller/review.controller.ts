@@ -48,7 +48,7 @@ export class ReviewController {
           ...template,
         };
         await noteModel.createInAppNotification(payload);
-        await sendPushNotification(tutorUserId, template);
+        // await sendPushNotification(tutorUserId, template);
       }
       return sendResponse(
         res,
