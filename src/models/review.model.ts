@@ -58,11 +58,10 @@ export class ReviewModel {
     LEFT JOIN student s ON s.student_id = r.student_id
     LEFT JOIN users u ON u.user_id = s.user_id
     LEFT JOIN review_reply rr ON rr.review_id = r.id
-      
+      LEFT JOIN review_likes rl 
+    ON rl.review_id = r.id 
+    AND rl.student_id = ?
   `;
-    // LEFT JOIN review_likes rl
-    //   ON rl.review_id = r.id
-    //   AND rl.student_id = ?
 
     const conditions: string[] = [];
     const params: any[] = [];
@@ -124,15 +123,10 @@ export class ReviewModel {
   ) AS like_count,
 
 
-  CASE 
-  WHEN EXISTS (
-    SELECT 1 
-    FROM review_likes rl 
-    WHERE rl.review_id = r.id 
-      AND rl.student_id = ?
-  ) THEN 1
-  ELSE 0
-END AS is_liked
+    CASE 
+    WHEN rl.id IS NOT NULL THEN 1
+    ELSE 0
+  END AS is_liked
 
 
  ${baseQuery}
@@ -149,8 +143,8 @@ END AS is_liked
     const safeStudentId = student_id ?? -1;
 
     const finalParams = [
-      ...params,
       safeStudentId,
+      ...params,
       safeStudentId,
       limit,
       offset,
@@ -191,7 +185,10 @@ END AS is_liked
     ${whereClause}
   `;
 
-    const countResult: any = await executeQuery(countQuery, [...params]);
+    const countResult: any = await executeQuery(countQuery, [
+      safeStudentId,
+      ...params,
+    ]);
     const total = countResult[0]?.total || 0;
 
     let summary: any = {};
