@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Help Request</title>
+
+    <style>
+      body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+
+        color: #fff;
+      }
+
+      .container {
+        max-width: 420px;
+        margin: auto;
+        padding: 20px;
+      }
+
+      .icon {
+        width: 80px;
+        height: 80px;
+        background: #2196f3;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 20px auto;
+        font-size: 30px;
+      }
+
+      .desc {
+        text-align: center;
+        font-size: 14px;
+        color: #aaa;
+        margin-bottom: 20px;
+      }
+
+      input,
+      textarea {
+        width: 100%;
+        padding: 14px;
+        margin: 10px 0;
+        border-radius: 6px;
+        border: none;
+        background: #eee;
+        color: #000;
+        font-size: 14px;
+      }
+
+      textarea {
+        height: 120px;
+        resize: none;
+      }
+
+      .optional {
+        text-align: center;
+        color: #aaa;
+        margin-top: 10px;
+      }
+
+      .upload-box {
+        margin: 15px 0;
+        text-align: left;
+        font-size: 13px;
+        color: #aaa;
+      }
+
+      .upload-btn {
+        display: inline-block;
+        margin-top: 10px;
+        padding: 10px 15px;
+        background: #fff;
+        color: #007bff;
+        border-radius: 6px;
+        cursor: pointer;
+      }
+
+      .terms {
+        display: flex;
+        align-items: center;
+        margin: 15px 0;
+        font-size: 13px;
+      }
+
+      .terms input {
+        width: auto;
+        margin-right: 8px;
+      }
+
+      .terms a {
+        color: #4da3ff;
+        text-decoration: underline;
+      }
+
+      .submit-btn {
+        width: 100%;
+        padding: 15px;
+        background: #8ecae6;
+        border: none;
+        border-radius: 30px;
+        font-size: 16px;
+        color: #000;
+        cursor: pointer;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="container">
+      <div style="display: flex; justify-content: center; margin-bottom: 12px">
+        <img
+          src="./public/images/justification.png"
+          alt="Justification"
+          style="width: 60px; height: 60px"
+        />
+      </div>
+
+      <div>
+        <h2 style="color: #000">Your Account has been Suspended</h2>
+
+        <p style="color: #626262; font-size: 16px; text-align: center">
+          Lorem Ipsum is simply dummy text of the printing and typesetting
+          industry. Lorem Ipsum has been the industry's standard dummy text ever
+          since Lorem Ipsum is simply
+        </p>
+      </div>
+
+      <input type="text" placeholder="Enter your Name" value="Christopher N" />
+      <input type="text" placeholder="Mobile Number" value="+91 9384493273" />
+      <input type="email" placeholder="Enter your Email Address" />
+
+      <textarea placeholder="Describe your situation in detail"></textarea>
+
+      <div class="optional">(Optional)</div>
+
+      <div class="upload-box">
+        Upload any documents or screenshots that support your explanation (PDF,
+        JPG, PNG) maximum size 10 MB.
+        <br />
+        <label class="upload-btn">
+          Click to upload
+          <input type="file" hidden />
+        </label>
+      </div>
+
+      <div class="terms">
+        <input type="checkbox" />
+        <span>I agree to <a href="#">terms and conditions</a></span>
+      </div>
+
+      <button class="submit-btn">Submit</button>
+    </div>
+  </body>
+</html>

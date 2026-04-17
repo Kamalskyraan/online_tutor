@@ -33,23 +33,27 @@ export class ReviewController {
         review_text,
       });
 
-      const userId = await noteModel.getUserIdFromRole({ tutor_id });
-      const tutorUserId = userId.tutor_user_id;
+      // const userId = await noteModel.getUserIdFromRole({ tutor_id });
+      // const tutorUserId = userId.tutor_user_id;
 
-      if (tutorUserId) {
-        const template = NotificationTemplates.review({
-          isUpdate: !!id,
-          tutor_id,
-          rating,
-        });
-        const payload = {
-          sender_id: student_id,
-          receiver_id: tutorUserId,
-          ...template,
-        };
-        await noteModel.createInAppNotification(payload);
-        // await sendPushNotification(tutorUserId, template);
-      }
+      // if (tutorUserId) {
+      //   const template = NotificationTemplates.review({
+      //     isUpdate: !!id,
+      //     tutor_id,
+      //     rating,
+      //   });
+      //   const payload = {
+      //     sender_id: student_id,
+      //     receiver_id: tutorUserId,
+      //     ...template,
+      //   };
+      //   await noteModel.createInAppNotification(payload);
+      //   // await sendPushNotification(tutorUserId, template);
+      // }
+
+
+
+
       return sendResponse(
         res,
         200,

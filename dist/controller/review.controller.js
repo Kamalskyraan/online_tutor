@@ -5,7 +5,6 @@ const helper_1 = require("../utils/helper");
 const validate_1 = require("../validators/validate");
 const review_model_1 = require("../models/review.model");
 const notification_model_1 = require("../models/notification.model");
-const notification_template_1 = require("../config/notification.template");
 const rvModel = new review_model_1.ReviewModel();
 const noteModel = new notification_model_1.NotificationModel();
 class ReviewController {
@@ -19,22 +18,22 @@ class ReviewController {
                 rating,
                 review_text,
             });
-            const userId = await noteModel.getUserIdFromRole({ tutor_id });
-            const tutorUserId = userId.tutor_user_id;
-            if (tutorUserId) {
-                const template = notification_template_1.NotificationTemplates.review({
-                    isUpdate: !!id,
-                    tutor_id,
-                    rating,
-                });
-                const payload = {
-                    sender_id: student_id,
-                    receiver_id: tutorUserId,
-                    ...template,
-                };
-                await noteModel.createInAppNotification(payload);
-                // await sendPushNotification(tutorUserId, template);
-            }
+            // const userId = await noteModel.getUserIdFromRole({ tutor_id });
+            // const tutorUserId = userId.tutor_user_id;
+            // if (tutorUserId) {
+            //   const template = NotificationTemplates.review({
+            //     isUpdate: !!id,
+            //     tutor_id,
+            //     rating,
+            //   });
+            //   const payload = {
+            //     sender_id: student_id,
+            //     receiver_id: tutorUserId,
+            //     ...template,
+            //   };
+            //   await noteModel.createInAppNotification(payload);
+            //   // await sendPushNotification(tutorUserId, template);
+            // }
             return (0, helper_1.sendResponse)(res, 200, 1, [revData], id ? "Review updated successfully" : "Review added successfully");
         }
         catch (err) {
