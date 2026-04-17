@@ -313,6 +313,9 @@ class TutorModel {
             where += ` AND tsr.status = ?`;
             params.push(status);
         }
+        else {
+            where += ` AND tsr.status != 'cancelled'`;
+        }
         if (from_date && to_date) {
             if (from_date === to_date) {
                 where += ` AND DATE(tsr.requested_at) = ?`;

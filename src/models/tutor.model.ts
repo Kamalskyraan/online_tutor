@@ -442,6 +442,8 @@ export class TutorModel {
     if (status) {
       where += ` AND tsr.status = ?`;
       params.push(status);
+    } else {
+      where += ` AND tsr.status != 'cancelled'`;
     }
 
     if (from_date && to_date) {
