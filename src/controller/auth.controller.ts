@@ -282,7 +282,9 @@ export class AuthController {
       );
       const users = await userMdl.fetchUserData({ mobile });
 
-      const user_role = users[0].user_role;
+      const user_role = users[0]?.user_role
+        ? convertNullToString(users[0]?.user_role)
+        : "";
       const country = users[0].country;
       const personal_form = users[0].is_form_filled;
 

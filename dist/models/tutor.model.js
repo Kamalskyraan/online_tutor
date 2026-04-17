@@ -530,11 +530,9 @@ class TutorModel {
             from_date,
             to_date,
         ]);
-        // 🧠 3. DATE RANGE
         const from = new Date(from_date);
         const to = new Date(to_date);
         const totalDays = Math.ceil((to.getTime() - from.getTime()) / (1000 * 60 * 60 * 24)) + 1;
-        // 🧠 4. BUCKET LOGIC
         let bucketSize = 1;
         let labelType = "day";
         if (totalDays <= 7) {
@@ -558,7 +556,6 @@ class TutorModel {
             bucketSize = 90;
             labelType = "quarter";
         }
-        // 🧠 5. CREATE BUCKETS
         const buckets = [];
         let current = new Date(from);
         while (current <= to) {
@@ -573,7 +570,6 @@ class TutorModel {
             });
             current.setDate(current.getDate() + bucketSize);
         }
-        // 🧠 6. FILL LEADS
         leadRows.forEach((row) => {
             const rowDate = new Date(row.date);
             for (let b of buckets) {
@@ -583,7 +579,6 @@ class TutorModel {
                 }
             }
         });
-        // 🧠 7. FILL REQUESTS
         requestRows.forEach((row) => {
             const rowDate = new Date(row.date);
             for (let b of buckets) {
@@ -593,7 +588,6 @@ class TutorModel {
                 }
             }
         });
-        // 🧠 8. X AXIS
         const x_axis = buckets.map((b) => {
             const s = b.start;
             const e = b.end;
@@ -616,14 +610,11 @@ class TutorModel {
             }
             return `${s.getDate()}-${e.getDate()}`;
         });
-        // 🧠 9. DATA ARRAYS
         const leads_data = buckets.map((b) => b.leads);
         const request_data = buckets.map((b) => b.requests);
-        // 🧠 10. Y AXIS SCALE (based on max of both)
         const max = Math.max(...leads_data, ...request_data, 0);
         const step = Math.ceil(max / 6) || 1;
         const y_axis_scale = Array.from({ length: 7 }, (_, i) => i * step);
-        // 🎯 FINAL RESPONSE
         return {
             x_axis,
             leads: leads_data,

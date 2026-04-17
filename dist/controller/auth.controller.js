@@ -181,7 +181,9 @@ AuthController.login = async (req, res) => {
         });
         const token = jsonwebtoken_1.default.sign({ user_id: user.user_id, device_id, device_token }, process.env.JWT_SECRET, { expiresIn: "90d" });
         const users = await userMdl.fetchUserData({ mobile });
-        const user_role = users[0].user_role;
+        const user_role = users[0]?.user_role
+            ? (0, helper_1.convertNullToString)(users[0]?.user_role)
+            : "";
         const country = users[0].country;
         const personal_form = users[0].is_form_filled;
         const subForm = await userMdl.fetchSubFormData(user?.user_id);
