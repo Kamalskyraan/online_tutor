@@ -749,18 +749,39 @@ export class TutorModel {
     let buckets: any[] = [];
 
     if (totalDays <= 7) {
+      const sessions = [
+        { name: "Morning", start: 6, end: 12 },
+        { name: "Noon", start: 12, end: 18 },
+        { name: "Night", start: 18, end: 24 },
+      ];
+
       let current = new Date(from);
 
       while (current <= to) {
-        const start = new Date(current);
-        const end = new Date(current);
+        for (const session of sessions) {
+          const start = new Date(current);
+          start.setHours(session.start, 0, 0, 0);
 
-        buckets.push({ start, end, leads: 0, requests: 0 });
+          const end = new Date(current);
+          end.setHours(session.end, 0, 0, 0);
+
+          buckets.push({
+            start,
+            end,
+            label: `${start.toLocaleDateString("en-IN", {
+              day: "2-digit",
+              month: "short",
+            })} ${session.name}`,
+            leads: 0,
+            requests: 0,
+          });
+        }
 
         current.setDate(current.getDate() + 1);
       }
     } else if (totalDays <= 60) {
       let current = new Date(from);
+      let week = 1;
 
       while (current <= to) {
         const start = new Date(current);
@@ -769,44 +790,58 @@ export class TutorModel {
 
         if (end > to) end.setTime(to.getTime());
 
-        buckets.push({ start, end, leads: 0, requests: 0 });
+        buckets.push({
+          start,
+          end,
+          label: `Week ${week}`,
+          leads: 0,
+          requests: 0,
+        });
 
         current.setDate(current.getDate() + 7);
+        week++;
       }
     } else if (totalDays <= 365) {
-      let current = new Date(from);
+      const year = to.getFullYear();
 
-      while (current <= to) {
-        const start = new Date(current);
+      for (let i = 0; i < 12; i++) {
+        const start = new Date(year, i, 1);
+        const end = new Date(year, i + 1, 0);
 
-        const end = new Date(current);
-        end.setMonth(end.getMonth() + 1);
-        end.setDate(0);
-
-        if (end > to) end.setTime(to.getTime());
-
-        buckets.push({ start, end, leads: 0, requests: 0 });
-
-        current.setMonth(current.getMonth() + 1);
+        buckets.push({
+          start,
+          end,
+          label: start.toLocaleString("en-IN", { month: "short" }),
+          leads: 0,
+          requests: 0,
+        });
       }
     } else {
       const totalYears = to.getFullYear() - from.getFullYear() + 1;
       const step = Math.ceil(totalYears / 6);
 
-      let currentYear = from.getFullYear();
+      let year = from.getFullYear();
 
-      while (currentYear <= to.getFullYear()) {
-        const start = new Date(currentYear, 0, 1);
-        const end = new Date(currentYear + step - 1, 11, 31);
+      while (year <= to.getFullYear()) {
+        const start = new Date(year, 0, 1);
+        const end = new Date(year + step - 1, 11, 31);
 
-        if (end > to) end.setTime(to.getTime());
+        buckets.push({
+          start,
+          end,
+          label: `${start.getFullYear()} - ${end.getFullYear()}`,
+          leads: 0,
+          requests: 0,
+        });
 
-        buckets.push({ start, end, leads: 0, requests: 0 });
-
-        currentYear += step;
+        year += step;
       }
     }
 
+    if (totalDays > 7 && buckets.length > 6) {
+      const step = Math.ceil(buckets.length / 6);
+      buckets = buckets.filter((_, i) => i % step === 0).slice(0, 6);
+    }
     for (const row of leadRows) {
       const rowDate = new Date(row.date);
 
@@ -829,47 +864,48 @@ export class TutorModel {
       }
     }
 
-    const x_axis = buckets.map((b) => {
-      const s = b.start;
-      const e = b.end;
+    // const x_axis = buckets.map((b) => {
+    //   const s = b.start;
+    //   const e = b.end;
 
-      if (totalDays <= 7) {
-        return s.toLocaleDateString("en-IN", {
-          day: "2-digit",
-          month: "short",
-        });
-      }
+    //   if (totalDays <= 7) {
+    //     return s.toLocaleDateString("en-IN", {
+    //       day: "2-digit",
+    //       month: "short",
+    //     });
+    //   }
 
-      if (totalDays <= 60) {
-        return `${s.getDate()}-${e.getDate()} ${s.toLocaleString("en-IN", {
-          month: "short",
-          year: "2-digit",
-        })}`;
-      }
+    //   if (totalDays <= 60) {
+    //     return `${s.getDate()}-${e.getDate()} ${s.toLocaleString("en-IN", {
+    //       month: "short",
+    //       year: "2-digit",
+    //     })}`;
+    //   }
 
-      if (totalDays <= 365) {
-        return s.toLocaleDateString("en-IN", {
-          month: "short",
-          year: "2-digit",
-        });
-      }
+    //   if (totalDays <= 365) {
+    //     return s.toLocaleDateString("en-IN", {
+    //       month: "short",
+    //       year: "2-digit",
+    //     });
+    //   }
 
-      return `${s.toLocaleString("en-IN", {
-        month: "short",
-        year: "numeric",
-      })} - ${e.toLocaleString("en-IN", {
-        month: "short",
-        year: "numeric",
-      })}`;
-    });
+    //   return `${s.toLocaleString("en-IN", {
+    //     month: "short",
+    //     year: "numeric",
+    //   })} - ${e.toLocaleString("en-IN", {
+    //     month: "short",
+    //     year: "numeric",
+    //   })}`;
+    // });
 
+    const x_axis = buckets.map((b) => b.label);
     const leads_data = buckets.map((b) => b.leads);
     const request_data = buckets.map((b) => b.requests);
 
     const max = Math.max(...leads_data, ...request_data, 0);
-    const step = Math.ceil(max / 5) || 1;
+    const stepY = Math.ceil(max / 5) || 1;
 
-    const y_axis_scale = Array.from({ length: 6 }, (_, i) => i * step);
+    const y_axis_scale = Array.from({ length: 6 }, (_, i) => i * stepY);
     y_axis_scale[5] = max;
 
     const froms = new Date(from_date);
