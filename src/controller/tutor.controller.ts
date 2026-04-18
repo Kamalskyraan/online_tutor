@@ -385,7 +385,9 @@ export class TutorController {
         to_date,
       );
 
-      return sendResponse(res, 200, 1, graph, "Graph fetched", []);
+      const requests = await tutModel.fetchTutorRequestsFor(tutor_id);
+
+      return sendResponse(res, 200, 1, [graph, requests], "Graph fetched", []);
     } catch (err: any) {
       return sendResponse(res, 500, 0, [], "Internal Server Error", [
         err.message,

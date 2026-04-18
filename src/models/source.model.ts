@@ -60,6 +60,7 @@ export class SourceModel {
       }
 
       const result = resp.data.results[0];
+
       const geometry = result.geometry?.location;
       if (!geometry) return null;
 
