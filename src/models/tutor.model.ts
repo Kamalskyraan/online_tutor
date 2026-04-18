@@ -740,7 +740,6 @@ export class TutorModel {
       [tutor_id, from_date, to_date],
     );
 
-  
     const from = new Date(from_date);
     const to = new Date(to_date);
 
@@ -844,13 +843,14 @@ export class TutorModel {
       if (totalDays <= 60) {
         return `${s.getDate()}-${e.getDate()} ${s.toLocaleString("en-IN", {
           month: "short",
+          year: "2-digit",
         })}`;
       }
 
       if (totalDays <= 365) {
         return s.toLocaleDateString("en-IN", {
           month: "short",
-          year: "numeric",
+          year: "2-digit",
         });
       }
 
