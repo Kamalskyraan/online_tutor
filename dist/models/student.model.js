@@ -157,10 +157,18 @@ class StudentModel {
             }
         });
         const uniqueRows = Array.from(uniqueMap.values());
-        // const data = await this.buildTutorFullData(uniqueRows, search_subject);
-        const total = uniqueMap.size;
-        const paginatedRows = uniqueRows.slice((page - 1) * limit, page * limit);
-        const data = await this.buildTutorFullData(paginatedRows, search_subject);
+        const data = await this.buildTutorFullData(uniqueRows, search_subject);
+        const countQuery = `
+  SELECT COUNT(DISTINCT t.tutor_id) as total
+  FROM users u
+  JOIN tutor t ON t.user_id = u.user_id
+  JOIN tutor_subjects ts ON ts.tutor_id = t.tutor_id
+  LEFT JOIN subjects s ON s.id = ts.subject_id
+  ${where}
+`;
+        const countParams = [...params];
+        const countRes = await (0, helper_1.executeQuery)(countQuery, countParams);
+        const total = countRes[0]?.total || 0;
         return {
             data,
             pagination: {
