@@ -14,7 +14,7 @@ export class StudentModel {
       lng,
       search_address,
       search_subject,
-      page = 1,
+      page,
       limit = 5,
       rating,
       gender,
@@ -667,7 +667,6 @@ export class StudentModel {
     return finalData;
   }
 
- 
   async studentClassBooking(data: studentBookClass) {
     const { booking_id, student_id, tutor_id, linked_sub } = data;
 
@@ -717,7 +716,6 @@ export class StudentModel {
       }
     }
 
-
     const existing: any = await executeQuery(
       `
     SELECT id, status 
@@ -758,7 +756,6 @@ export class StudentModel {
       }
     }
 
-    
     const result: any = await executeQuery(
       `
     INSERT INTO tutor_student_rel 
