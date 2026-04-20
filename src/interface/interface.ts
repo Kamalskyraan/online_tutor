@@ -197,7 +197,7 @@ export interface UpdateUserProfilePayload {
   //
   gender?: "male" | "female" | "others";
   is_show_num?: boolean;
-  about_myself?: string;
+  self_about?: string;
   email?: string;
   mobile?: string;
   add_mobile?: string;
@@ -211,7 +211,7 @@ export interface UpdateUserProfilePayload {
   address?: string;
   area?: string;
   dob?: string;
-  
+
   // 2
 
   represent?: "1" | "2" | "3";
