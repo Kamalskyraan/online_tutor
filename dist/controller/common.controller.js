@@ -115,4 +115,13 @@ CommonController.getUploadFiles = async (req, res) => {
         return (0, helper_1.sendResponse)(res, 500, 0, [], "Internal Server Error", err.errors || err.message || err);
     }
 };
+CommonController.getReportReasonsForChat = async (req, res) => {
+    try {
+        const data = await cmnModel.fetchChatReports();
+        return (0, helper_1.sendResponse)(res, 200, 1, data, "Report fetched successfully", []);
+    }
+    catch (err) {
+        return (0, helper_1.sendResponse)(res, 500, 0, [], "Internal Server Error", []);
+    }
+};
 //# sourceMappingURL=common.controller.js.map

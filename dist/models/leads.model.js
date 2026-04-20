@@ -1,44 +1,17 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.LeadsModel = void 0;
+const notification_template_1 = require("../config/notification.template");
 const helper_1 = require("../utils/helper");
 const common_model_1 = require("./common.model");
 const education_model_1 = require("./education.model");
+const notification_model_1 = require("./notification.model");
 const tutor_model_1 = require("./tutor.model");
 const cmnMdl = new common_model_1.commonModel();
 const tutMdl = new tutor_model_1.TutorModel();
 const eduMdl = new education_model_1.EduModel();
+const notifMdl = new notification_model_1.NotificationModel();
 class LeadsModel {
-    // async insertLead(data: {
-    //   tutor_id?: string;
-    //   student_id?: string;
-    //   lead_type: "search" | "profile";
-    //   search_subject?: string;
-    // }) {
-    //   const {
-    //     tutor_id,
-    //     student_id = null,
-    //     lead_type,
-    //     search_subject = null,
-    //   } = data;
-    //   let search_address: string | null = null;
-    //   if (student_id) {
-    //     const studentRes: any = await executeQuery(
-    //       `SELECT u.district
-    //      FROM student s
-    //      LEFT JOIN users u ON u.user_id = s.user_id
-    //      WHERE s.student_id = ?`,
-    //       [student_id],
-    //     );
-    //     search_address = studentRes?.[0]?.district || null;
-    //   }
-    //   await executeQuery(
-    //     `INSERT INTO tutor_leads
-    //    (tutor_id, student_id, lead_type, search_subject , search_address )
-    //    VALUES (?, ?, ?, ? , ? )`,
-    //     [tutor_id, student_id, lead_type, search_subject, search_address],
-    //   );
-    // }
     async insertLead(data) {
         const { tutor_id, student_id = null, lead_type, search_subject = null, } = data;
         let search_address = null;
@@ -65,6 +38,37 @@ class LeadsModel {
         await (0, helper_1.executeQuery)(`INSERT INTO tutor_leads 
      (tutor_id, student_id, lead_type, search_subject, search_address)
      VALUES (?, ?, ?, ?, ?)`, [tutor_id, student_id, lead_type, search_subject, search_address]);
+        const notif = notification_template_1.NotificationTemplates.lead({
+            lead_type,
+            search_subject,
+        });
+        await notifMdl.insertNOtifcations({
+            sender_id: student_id,
+            receiver_id: tutor_id,
+            title: notif.title,
+            message: notif.message,
+            type: notif.type,
+            extra_data: notif.extra_data,
+            sent_to: "tutor",
+        });
+        // const user_id = await notifMdl.getUserIdFromRole(tutor_id);
+        // const device_type = await notifMdl.getDeviceType(user_id);
+        // if (device?.device_token) {
+        // if (device.device_type === "android") {
+        //   await sendFCMNotification({
+        //     token: device.device_token,
+        //     title: notif.title,
+        //     body: notif.message,
+        //     data: notif.extra_data,
+        //   });
+        // } else if (device.device_type === "ios") {
+        //   await sendAPNSNotification({
+        //     token: device.device_token,
+        //     title: notif.title,
+        //     body: notif.message,
+        //     data: notif.extra_data,
+        //   });
+        // }
     }
     async fetchLeads(filters) {
         const { tutor_id, lead_id, from_date, to_date, subject_name, locations, leads_type, page = 1, limit = 10, } = filters;

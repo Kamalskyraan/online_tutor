@@ -3190,6 +3190,23 @@
                 }
             }
         },
+        "/api/cmn/get-chat-reports": {
+            "get": {
+                "tags": [
+                    "11.Common"
+                ],
+                "summary": "Get Chat Report Reasons ",
+                "description": "Fetch Rrport Data From ",
+                "responses": {
+                    "200": {
+                        "description": "Report data list fetched successfully"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
         "/api/leads/get-tutor-leads": {
             "post": {
                 "tags": [

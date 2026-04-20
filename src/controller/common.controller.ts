@@ -179,4 +179,13 @@ export class CommonController {
       );
     }
   };
+
+  static getReportReasonsForChat = async (req: Request, res: Response) => {
+    try {
+      const data = await cmnModel.fetchChatReports();
+      return sendResponse(res, 200, 1, data, "Report fetched successfully", []);
+    } catch (err: any) {
+      return sendResponse(res, 500, 0, [], "Internal Server Error", []);
+    }
+  };
 }

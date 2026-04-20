@@ -864,39 +864,6 @@ export class TutorModel {
       }
     }
 
-    // const x_axis = buckets.map((b) => {
-    //   const s = b.start;
-    //   const e = b.end;
-
-    //   if (totalDays <= 7) {
-    //     return s.toLocaleDateString("en-IN", {
-    //       day: "2-digit",
-    //       month: "short",
-    //     });
-    //   }
-
-    //   if (totalDays <= 60) {
-    //     return `${s.getDate()}-${e.getDate()} ${s.toLocaleString("en-IN", {
-    //       month: "short",
-    //       year: "2-digit",
-    //     })}`;
-    //   }
-
-    //   if (totalDays <= 365) {
-    //     return s.toLocaleDateString("en-IN", {
-    //       month: "short",
-    //       year: "2-digit",
-    //     });
-    //   }
-
-    //   return `${s.toLocaleString("en-IN", {
-    //     month: "short",
-    //     year: "numeric",
-    //   })} - ${e.toLocaleString("en-IN", {
-    //     month: "short",
-    //     year: "numeric",
-    //   })}`;
-    // });
 
     const x_axis = buckets.map((b) => b.label);
     const leads_data = buckets.map((b) => b.leads);

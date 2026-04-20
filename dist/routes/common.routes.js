@@ -113,5 +113,22 @@ router.post("/get-uploads", (req, res) => {
     */
     return common_controller_1.CommonController.getUploadFiles(req, res);
 });
+router.get("/get-chat-reports", (req, res) => {
+    /*
+      #swagger.tags = ['11.Common']
+      #swagger.summary = 'Get Chat Report Reasons '
+      #swagger.description = 'Fetch Rrport Data From '
+  
+  
+      #swagger.responses[200] = {
+        description: "Report data list fetched successfully",
+       
+      }
+      #swagger.responses[500] = {
+        description: "Internal Server Error"
+      }
+    */
+    return common_controller_1.CommonController.getReportReasonsForChat(req, res);
+});
 exports.default = router;
 //# sourceMappingURL=common.routes.js.map

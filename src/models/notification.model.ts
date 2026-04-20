@@ -48,4 +48,47 @@ export class NotificationModel {
       student_user_id,
     };
   }
+
+  async getDeviceType(user_id?: string) {
+    const userRes: any = await executeQuery(
+      `SELECT device_token, device_type 
+   FROM users 
+   WHERE user_id = ?`,
+      [user_id],
+    );
+
+    const device = userRes?.[0];
+    return device;
+  }
+
+  async insertNOtifcations(data: any) {
+    const {
+      sender_id,
+      receiver_id,
+      title,
+      message,
+      type,
+      extra_data,
+      sent_to,
+    } = data;
+    const result: any = await executeQuery(
+      `
+      INSERT INTO notifications 
+      (sender_id, receiver_id, title, message, type, is_read, extra_data, sent_to)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+      `,
+      [
+        sender_id || null,
+        receiver_id,
+        title,
+        message,
+        type || null,
+        0,
+        extra_data ? JSON.stringify(extra_data) : null,
+        sent_to || null,
+      ],
+    );
+
+    return result;
+  }
 }

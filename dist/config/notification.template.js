@@ -12,6 +12,16 @@ class NotificationTemplates {
             extra_data: { tutor_id, rating },
         };
     }
+    static lead({ lead_type, search_subject }) {
+        return {
+            title: "New Lead Received",
+            message: lead_type === "search"
+                ? `A student searched for ${search_subject || "a subject"}`
+                : "A student viewed your profile",
+            type: "LEAD",
+            extra_data: { lead_type, search_subject },
+        };
+    }
 }
 exports.NotificationTemplates = NotificationTemplates;
 //# sourceMappingURL=notification.template.js.map

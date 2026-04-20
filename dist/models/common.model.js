@@ -60,6 +60,10 @@ class commonModel {
     formatFileSize(bytes) {
         return `${(bytes / (1024 * 1024)).toFixed(4)} MB`;
     }
+    async fetchChatReports() {
+        const result = await (0, helper_1.executeQuery)(`SELECT id , name , status FROM report_reasons_chat`);
+        return result;
+    }
 }
 exports.commonModel = commonModel;
 //# sourceMappingURL=common.model.js.map

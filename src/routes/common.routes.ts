@@ -128,4 +128,21 @@ router.post("/get-uploads", (req, res) => {
   return CommonController.getUploadFiles(req, res);
 });
 
+router.get("/get-chat-reports", (req, res) => {
+  /*
+    #swagger.tags = ['11.Common']
+    #swagger.summary = 'Get Chat Report Reasons '
+    #swagger.description = 'Fetch Rrport Data From '
+
+
+    #swagger.responses[200] = {
+      description: "Report data list fetched successfully",
+     
+    }
+    #swagger.responses[500] = {
+      description: "Internal Server Error"
+    }
+  */
+  return CommonController.getReportReasonsForChat(req, res);
+});
 export default router;

@@ -1,46 +1,16 @@
+import { NotificationTemplates } from "../config/notification.template";
 import { Help } from "../interface/interface";
 import { executeQuery } from "../utils/helper";
 import { commonModel } from "./common.model";
 import { EduModel } from "./education.model";
+import { NotificationModel } from "./notification.model";
 import { TutorModel } from "./tutor.model";
 
 const cmnMdl = new commonModel();
 const tutMdl = new TutorModel();
 const eduMdl = new EduModel();
+const notifMdl = new NotificationModel();
 export class LeadsModel {
-  // async insertLead(data: {
-  //   tutor_id?: string;
-  //   student_id?: string;
-  //   lead_type: "search" | "profile";
-  //   search_subject?: string;
-  // }) {
-  //   const {
-  //     tutor_id,
-  //     student_id = null,
-  //     lead_type,
-  //     search_subject = null,
-  //   } = data;
-
-  //   let search_address: string | null = null;
-  //   if (student_id) {
-  //     const studentRes: any = await executeQuery(
-  //       `SELECT u.district
-  //      FROM student s
-  //      LEFT JOIN users u ON u.user_id = s.user_id
-  //      WHERE s.student_id = ?`,
-  //       [student_id],
-  //     );
-
-  //     search_address = studentRes?.[0]?.district || null;
-  //   }
-  //   await executeQuery(
-  //     `INSERT INTO tutor_leads
-  //    (tutor_id, student_id, lead_type, search_subject , search_address )
-  //    VALUES (?, ?, ?, ? , ? )`,
-  //     [tutor_id, student_id, lead_type, search_subject, search_address],
-  //   );
-  // }
-
   async insertLead(data: {
     tutor_id?: string;
     student_id?: string;
@@ -92,6 +62,41 @@ export class LeadsModel {
      VALUES (?, ?, ?, ?, ?)`,
       [tutor_id, student_id, lead_type, search_subject, search_address],
     );
+
+    const notif = NotificationTemplates.lead({
+      lead_type,
+      search_subject,
+    });
+
+    await notifMdl.insertNOtifcations({
+      sender_id: student_id,
+      receiver_id: tutor_id,
+      title: notif.title,
+      message: notif.message,
+      type: notif.type,
+      extra_data: notif.extra_data,
+      sent_to: "tutor",
+    });
+
+    // const user_id = await notifMdl.getUserIdFromRole(tutor_id);
+    // const device_type = await notifMdl.getDeviceType(user_id);
+
+    // if (device?.device_token) {
+    // if (device.device_type === "android") {
+    //   await sendFCMNotification({
+    //     token: device.device_token,
+    //     title: notif.title,
+    //     body: notif.message,
+    //     data: notif.extra_data,
+    //   });
+    // } else if (device.device_type === "ios") {
+    //   await sendAPNSNotification({
+    //     token: device.device_token,
+    //     title: notif.title,
+    //     body: notif.message,
+    //     data: notif.extra_data,
+    //   });
+    // }
   }
 
   async fetchLeads(filters: any) {
