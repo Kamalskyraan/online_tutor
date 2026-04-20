@@ -67,7 +67,8 @@ router.post(
         self_about : "abc def ghi",
         tutor_exp : "0 or 1",
         exp_year : "1",
-        exp_month: "11"
+        exp_month: "11",
+        dob : "2026-10-11"
 
       }
     }

@@ -196,15 +196,19 @@ export class StudentModel {
 
     const uniqueRows = Array.from(uniqueMap.values());
 
-    const data = await this.buildTutorFullData(uniqueRows, search_subject);
+    // const data = await this.buildTutorFullData(uniqueRows, search_subject);
+    const total = uniqueMap.size;
+    const paginatedRows = uniqueRows.slice((page - 1) * limit, page * limit);
+
+    const data = await this.buildTutorFullData(paginatedRows, search_subject);
 
     return {
       data,
       pagination: {
-        total: uniqueRows.length,
+        total,
         page,
         limit,
-        total_pages: Math.ceil(uniqueRows.length / limit),
+        total_pages: Math.ceil(total / limit),
       },
     };
   }

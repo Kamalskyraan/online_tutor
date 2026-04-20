@@ -10,7 +10,7 @@ const rvMdl = new review_model_1.ReviewModel();
 const cmnMdl = new common_model_1.commonModel();
 class StudentModel {
     async findNearbyTutors(location) {
-        const { lat, lng, search_address, search_subject, page = 1, limit = 5, rating, gender, represent, min_fee, max_fee, tenure_type, class_mode, class_type, languages, student_id, } = location;
+        const { lat, lng, search_address, search_subject, page, limit = 5, rating, gender, represent, min_fee, max_fee, tenure_type, class_mode, class_type, languages, student_id, } = location;
         const offset = (page - 1) * limit;
         let params = [];
         let where = `WHERE u.is_deleted = 0 AND ts.status = 'active'`;
@@ -157,14 +157,17 @@ class StudentModel {
             }
         });
         const uniqueRows = Array.from(uniqueMap.values());
-        const data = await this.buildTutorFullData(uniqueRows, search_subject);
+        // const data = await this.buildTutorFullData(uniqueRows, search_subject);
+        const total = uniqueMap.size;
+        const paginatedRows = uniqueRows.slice((page - 1) * limit, page * limit);
+        const data = await this.buildTutorFullData(paginatedRows, search_subject);
         return {
             data,
             pagination: {
-                total: uniqueRows.length,
+                total,
                 page,
                 limit,
-                total_pages: Math.ceil(uniqueRows.length / limit),
+                total_pages: Math.ceil(total / limit),
             },
         };
     }
