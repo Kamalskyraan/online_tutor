@@ -140,20 +140,32 @@ export class ProfileModel {
       "about_myself",
       "is_show_num",
       "profile_img",
+      "dob",
     ];
 
     const userUpdateData: Record<string, any> = {};
 
+    // userFields.forEach((field) => {
+    //   if (payload[field] !== undefined) {
+    //     if (payload[field] === "" || payload[field] === null) {
+    //       userUpdateData[field] = null;
+    //     } else {
+    //       userUpdateData[field] = payload[field];
+    //     }
+    //   }
+    // });
+
     userFields.forEach((field) => {
       if (payload[field] !== undefined) {
+        const dbField = field === "about_myself" ? "self_about" : field;
+
         if (payload[field] === "" || payload[field] === null) {
-          userUpdateData[field] = null;
+          userUpdateData[dbField] = null;
         } else {
-          userUpdateData[field] = payload[field];
+          userUpdateData[dbField] = payload[field];
         }
       }
     });
-
     await updateTable("users", userUpdateData);
 
     const tutorUpdateData: Record<string, any> = {};

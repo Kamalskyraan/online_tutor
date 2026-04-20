@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import {
   convertNullToString,
+  executeQuery,
   sendResponse,
   validateRequest,
 } from "../utils/helper";
@@ -33,26 +34,27 @@ export class ReviewController {
         review_text,
       });
 
-      // const userId = await noteModel.getUserIdFromRole({ tutor_id });
-      // const tutorUserId = userId.tutor_user_id;
+      const userId = await noteModel.getUserIdFromRole({
+        tutor_id,
+        student_id,
+      });
+      const tutorUserId = userId.tutor_user_id;
+      const studentUserId = userId.student_user_id;
+      const notif = NotificationTemplates.review({
+        isUpdate: !!id,
+        tutor_id,
+        rating,
+      });
 
-      // if (tutorUserId) {
-      //   const template = NotificationTemplates.review({
-      //     isUpdate: !!id,
-      //     tutor_id,
-      //     rating,
-      //   });
-      //   const payload = {
-      //     sender_id: student_id,
-      //     receiver_id: tutorUserId,
-      //     ...template,
-      //   };
-      //   await noteModel.createInAppNotification(payload);
-      //   // await sendPushNotification(tutorUserId, template);
-      // }
-
-
-
+      await noteModel.insertNOtifcations({
+        sender_id: studentUserId,
+        receiver_id: tutorUserId,
+        title: notif.title,
+        message: notif.message,
+        type: notif.type,
+        extra_data: notif.extra_data,
+        sent_to: "tutor",
+      });
 
       return sendResponse(
         res,
@@ -62,7 +64,6 @@ export class ReviewController {
         id ? "Review updated successfully" : "Review added successfully",
       );
     } catch (err: any) {
-      console.log(err);
       return sendResponse(
         res,
         500,
@@ -132,6 +133,27 @@ export class ReviewController {
         student_id,
         reply_text,
       });
+
+      const notif = NotificationTemplates.reviewReply({
+        isUpdate: !!id,
+        tutor_id,
+      });
+      const userId = await noteModel.getUserIdFromRole({
+        tutor_id,
+        student_id,
+      });
+
+      await noteModel.insertNOtifcations({
+        sender_id: userId.tutor_user_id,
+        receiver_id: userId.student_user_id,
+        title: notif.title,
+        message: notif.message,
+        type: notif.type,
+        extra_data: notif.extra_data,
+        sent_to: "student",
+      });
+      // await sendPushNotification(student_id, notif);
+
       sendResponse(
         res,
         200,
@@ -178,6 +200,7 @@ export class ReviewController {
       );
     }
   }
+
   static async deleteReviewReply(req: Request, res: Response) {
     try {
       const { id, tutor_id } = req.body;
@@ -203,6 +226,7 @@ export class ReviewController {
       );
     }
   }
+
   static async reviewLike(req: Request, res: Response) {
     try {
       const { review_id, student_id, tutor_id } = await validateRequest(
@@ -221,11 +245,61 @@ export class ReviewController {
         );
       }
 
+      const sender_id = student_id || tutor_id;
+
+      const reviewRes: any = await executeQuery(
+        `SELECT student_id FROM reviews WHERE id = ?`,
+        [review_id],
+      );
+      if (!reviewRes.length) {
+        return sendResponse(res, 200, 0, [], "Review not found", []);
+      }
+
+      const receiver_id = reviewRes[0].student_id;
+
+      if (sender_id === receiver_id) {
+        const result = await rvModel.toggleReviewLike({
+          review_id,
+          student_id,
+          tutor_id,
+        });
+
+        return sendResponse(
+          res,
+          200,
+          1,
+          { like_count: result.total_likes, action: result.action },
+          result.message,
+          [],
+        );
+      }
+
       const result = await rvModel.toggleReviewLike({
         review_id,
         student_id,
         tutor_id,
       });
+      const userId = await noteModel.getUserIdFromRole({
+        tutor_id: sender_id,
+        student_id: receiver_id,
+      });
+
+      const notif = NotificationTemplates.reviewLike({ review_id });
+      if (result.action === "like") {
+        await noteModel.insertNOtifcations({
+          sender_id: userId.tutor_user_id,
+          receiver_id: userId.student_user_id,
+          title: notif.title,
+          message: notif.message,
+          type: notif.type,
+          extra_data: notif.extra_data,
+          sent_to: "student",
+        });
+
+        // await sendPushNotification(receiver_id, notif);
+      } else if (result.action === "dislike") {
+        await rvModel.removeNotification({ sender_id, receiver_id, review_id });
+      }
       return sendResponse(
         res,
         200,
@@ -235,9 +309,11 @@ export class ReviewController {
         [],
       );
     } catch (err: any) {
+      console.log(err);
       sendResponse(res, 500, 0, [], "Internal Server Error");
     }
   }
+
   static async fetchReportReasons(req: Request, res: Response) {
     try {
       const result = await rvModel.getActiveReportReasons();

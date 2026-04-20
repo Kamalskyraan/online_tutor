@@ -1,5 +1,6 @@
 import { NotificationTemplates } from "../config/notification.template";
 import { Help } from "../interface/interface";
+import { sendPushNotification } from "../service/firebase.service";
 import { executeQuery } from "../utils/helper";
 import { commonModel } from "./common.model";
 import { EduModel } from "./education.model";
@@ -67,10 +68,11 @@ export class LeadsModel {
       lead_type,
       search_subject,
     });
+    const userId = await notifMdl.getUserIdFromRole({ tutor_id, student_id });
 
     await notifMdl.insertNOtifcations({
-      sender_id: student_id,
-      receiver_id: tutor_id,
+      sender_id: userId.student_user_id,
+      receiver_id: userId.tutor_user_id,
       title: notif.title,
       message: notif.message,
       type: notif.type,
@@ -78,25 +80,9 @@ export class LeadsModel {
       sent_to: "tutor",
     });
 
-    // const user_id = await notifMdl.getUserIdFromRole(tutor_id);
-    // const device_type = await notifMdl.getDeviceType(user_id);
-
-    // if (device?.device_token) {
-    // if (device.device_type === "android") {
-    //   await sendFCMNotification({
-    //     token: device.device_token,
-    //     title: notif.title,
-    //     body: notif.message,
-    //     data: notif.extra_data,
-    //   });
-    // } else if (device.device_type === "ios") {
-    //   await sendAPNSNotification({
-    //     token: device.device_token,
-    //     title: notif.title,
-    //     body: notif.message,
-    //     data: notif.extra_data,
-    //   });
-    // }
+    if (!userId?.tutor_user_id) return;
+    const user_id = userId.tutor_user_id;
+    // await sendPushNotification(user_id, notif);
   }
 
   async fetchLeads(filters: any) {

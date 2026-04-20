@@ -21,6 +21,7 @@ export class NotificationModel {
 
   async getUserIdFromRole(data: any) {
     const { tutor_id, student_id } = data;
+    
 
     let tutor_user_id: string | null = null;
     let student_user_id: string | null = null;

@@ -667,82 +667,7 @@ export class StudentModel {
     return finalData;
   }
 
-  //
-  // async studentClassBooking(data: studentBookClass) {
-  //   const { booking_id, student_id, tutor_id, linked_sub } = data;
-
-  //   const subjectCheck: any = await executeQuery(
-  //     `
-  //   SELECT id, status
-  //   FROM tutor_subjects
-  //   WHERE id = ? AND tutor_id = ?
-  //   `,
-  //     [linked_sub, tutor_id],
-  //   );
-
-  //   if (!subjectCheck.length || subjectCheck[0].status !== "active") {
-  //     return {
-  //       status: "failed",
-  //       message: "Tutor deleted this subject",
-  //     };
-  //   }
-
-  //   const existing: any = await executeQuery(
-  //     `
-  //   SELECT id, status
-  //   FROM tutor_student_rel
-  //   WHERE student_id = ?
-  //   AND tutor_id = ?
-  //   AND linked_sub = ?
-  //   ORDER BY id DESC
-  //   LIMIT 1
-  //   `,
-  //     [student_id, tutor_id, linked_sub],
-  //   );
-
-  //   if (existing.length) {
-  //     const current = existing[0];
-
-  //     if (current.status === "approved") {
-  //       return {
-  //         status: "approved",
-  //         message: "Already approved",
-  //       };
-  //     }
-
-  //     if (current.status === "pending") {
-  //       await executeQuery(
-  //         `
-  //       UPDATE tutor_student_rel
-  //       SET status = 'cancelled'
-  //       WHERE id = ?
-  //       `,
-  //         [current.id],
-  //       );
-
-  //       return {
-  //         status: "cancelled",
-  //         message: "Booking cancelled",
-  //       };
-  //     }
-  //   }
-
-  //   const result: any = await executeQuery(
-  //     `
-  //   INSERT INTO tutor_student_rel
-  //   (student_id, tutor_id, linked_sub, status, requested_at)
-  //   VALUES (?, ?, ?, 'pending', NOW())
-  //   `,
-  //     [student_id, tutor_id, linked_sub],
-  //   );
-
-  //   return {
-  //     booking_id: result.insertId,
-  //     status: "pending",
-  //     message: "Request sent",
-  //   };
-  // }
-
+ 
   async studentClassBooking(data: studentBookClass) {
     const { booking_id, student_id, tutor_id, linked_sub } = data;
 
@@ -792,7 +717,7 @@ export class StudentModel {
       }
     }
 
-    // ✅ Existing check (same as before)
+
     const existing: any = await executeQuery(
       `
     SELECT id, status 
@@ -833,7 +758,7 @@ export class StudentModel {
       }
     }
 
-    // ✅ Insert new
+    
     const result: any = await executeQuery(
       `
     INSERT INTO tutor_student_rel 

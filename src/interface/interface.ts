@@ -210,6 +210,8 @@ export interface UpdateUserProfilePayload {
   district?: string;
   address?: string;
   area?: string;
+  dob?: string;
+  
   // 2
 
   represent?: "1" | "2" | "3";

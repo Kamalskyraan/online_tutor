@@ -317,17 +317,16 @@ export class ReviewModel {
   `;
 
     const finalParams = [
-      safeStudentId, 
-      safeTutorId, 
+      safeStudentId,
+      safeTutorId,
       ...params,
-      safeStudentId, 
+      safeStudentId,
       limit,
       offset,
     ];
 
     const reviews: any = await executeQuery(dataQuery, finalParams);
 
-   
     const imageIds = reviews
       .map((r: any) => Number(r.profile_img))
       .filter(Boolean);
@@ -356,7 +355,6 @@ export class ReviewModel {
       has_reply: r.reply_id ? 1 : 0,
     }));
 
-    
     const countQuery = `
     SELECT COUNT(*) as total
     ${baseQuery}
@@ -742,5 +740,17 @@ export class ReviewModel {
       message: "Reported successfully",
       total_reports: totalReports,
     };
+  }
+
+  async removeNotification(data: any) {
+    const { sender_id, receiver_id, review_id } = data;
+    await executeQuery(
+      `DELETE FROM notifications 
+         WHERE type = 'REVIEW_LIKE'
+           AND sender_id = ?
+           AND receiver_id = ?
+           AND JSON_EXTRACT(extra_data, '$.review_id') = ?`,
+      [sender_id, receiver_id, review_id],
+    );
   }
 }

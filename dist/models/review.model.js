@@ -566,6 +566,14 @@ class ReviewModel {
             total_reports: totalReports,
         };
     }
+    async removeNotification(data) {
+        const { sender_id, receiver_id, review_id } = data;
+        await (0, helper_1.executeQuery)(`DELETE FROM notifications 
+         WHERE type = 'REVIEW_LIKE'
+           AND sender_id = ?
+           AND receiver_id = ?
+           AND JSON_EXTRACT(extra_data, '$.review_id') = ?`, [sender_id, receiver_id, review_id]);
+    }
 }
 exports.ReviewModel = ReviewModel;
 //# sourceMappingURL=review.model.js.map

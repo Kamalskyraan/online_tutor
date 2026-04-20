@@ -22,6 +22,24 @@ class NotificationTemplates {
             extra_data: { lead_type, search_subject },
         };
     }
+    static reviewReply({ tutor_id, isUpdate }) {
+        return {
+            title: isUpdate ? "Reply Updated" : "Tutor Replied",
+            message: isUpdate
+                ? "Reply updated by tutor"
+                : "Tutor replied to your review",
+            type: "REVIEW_REPLY",
+            extra_data: { tutor_id },
+        };
+    }
+    static reviewLike({ review_id }) {
+        return {
+            title: "New Like",
+            message: "liked your review",
+            type: "REVIEW_LIKE",
+            extra_data: { review_id },
+        };
+    }
 }
 exports.NotificationTemplates = NotificationTemplates;
 //# sourceMappingURL=notification.template.js.map
