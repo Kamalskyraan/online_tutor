@@ -34,8 +34,6 @@ export const authMiddleware = (
 
     const token = authHeader.split(" ")[1];
 
-  
-
     const decoded: any = jwt.verify(token, JWT_SECRET);
 
     req.user = {
@@ -80,4 +78,3 @@ export const blockCheckMiddleware = async (
     return sendResponse(res, 500, 0, [], "Internal Server Error", []);
   }
 };
-

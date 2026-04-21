@@ -7,7 +7,7 @@ import swaggerFile from "./docs/swagger_output.json";
 import router from "./routes";
 import db, { connectDB } from "./config/db";
 import { startDeleteCron } from "./config/cron";
-import { generateUserId } from "./utils/helper";
+
 
 
 const app = express();
@@ -28,5 +28,5 @@ const data = JSON.parse(fs.readFileSync("./public/country.json", "utf8"));
 connectDB();
 startDeleteCron();
 app.listen(PORT, () => {
-  console.log(`Server swimming on portttttttttttt ${PORT}`);
+  console.log(`Server swimming on port ${PORT}`);
 });

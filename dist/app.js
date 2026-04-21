@@ -22,6 +22,6 @@ const data = JSON.parse(fs_1.default.readFileSync("./public/country.json", "utf8
 (0, db_1.connectDB)();
 (0, cron_1.startDeleteCron)();
 app.listen(PORT, () => {
-    console.log(`Server swimming on portttttttttttt ${PORT}`);
+    console.log(`Server swimming on port ${PORT}`);
 });
 //# sourceMappingURL=app.js.map
