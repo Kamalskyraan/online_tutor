@@ -46,6 +46,39 @@ export const authMiddleware = (
     return sendResponse(res, 500, 0, [], "Internal Server Error", []);
   }
 };
+export const authMiddlewareForDemos = (
+  req: AuthRequest,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const authHeader = req.headers.authorization;
+
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+      return sendResponse(
+        res,
+        200,
+        2,
+        {},
+        "Access denied. No token provided",
+        [],
+      );
+    }
+
+    const token = authHeader.split(" ")[1];
+
+    const decoded: any = jwt.verify(token, JWT_SECRET);
+
+    req.user = {
+      user_id: decoded.user_id,
+      role: decoded.role,
+    };
+
+    next();
+  } catch (err) {
+    return sendResponse(res, 500, 0, [], "Internal Server Error", []);
+  }
+};
 
 export const blockCheckMiddleware = async (
   req: AuthRequest,
@@ -78,5 +111,3 @@ export const blockCheckMiddleware = async (
     return sendResponse(res, 500, 0, [], "Internal Server Error", []);
   }
 };
-
-

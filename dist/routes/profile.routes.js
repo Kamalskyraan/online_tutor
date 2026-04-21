@@ -2,8 +2,9 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const profile_controller_1 = require("../controller/profile.controller");
+const middleware_1 = require("../config/middleware");
 const router = (0, express_1.Router)();
-router.post("/get-profiledata", (req, res) => {
+router.post("/get-profiledata", middleware_1.authMiddleware, (req, res) => {
     /*
       #swagger.tags = ['3.Profile']
       #swagger.summary = 'get user data'
