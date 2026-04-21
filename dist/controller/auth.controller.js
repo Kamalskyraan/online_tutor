@@ -4,7 +4,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 var _a;
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.AuthController = void 0;
+exports.submitJustification = exports.AuthController = void 0;
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const auth_model_1 = require("../models/auth.model");
@@ -296,4 +296,29 @@ AuthController.reactivateAccount = async (req, res) => {
         ]);
     }
 };
+const submitJustification = async (req, res) => {
+    try {
+        const user_id = req.user?.user_id;
+        const { reason, evidence, email } = req.body;
+        if (!user_id) {
+            return (0, helper_1.sendResponse)(res, 200, 0, [], "Un Authorized", []);
+        }
+        if (!reason || reason.trim().length < 10) {
+            return (0, helper_1.sendResponse)(res, 200, 0, [], "Please enter a valid justification (min 10 chars)", []);
+        }
+        const existing = await (0, helper_1.executeQuery)(`SELECT id FROM user_justifications 
+       WHERE user_id = ? AND status = 'pending'`, [user_id]);
+        if (existing.length > 0) {
+            return (0, helper_1.sendResponse)(res, 200, 0, [], "You already have a pending request", []);
+        }
+        await (0, helper_1.executeQuery)(`INSERT INTO user_justifications (user_id, message, evidence , email)
+       VALUES (?, ?, ? , ?)`, [user_id, reason, evidence, email]);
+        return (0, helper_1.sendResponse)(res, 200, 1, [], "Submitted Successfully", []);
+    }
+    catch (err) {
+        console.error(err);
+        return (0, helper_1.sendResponse)(res, 500, 0, [], "Internal Server Error", []);
+    }
+};
+exports.submitJustification = submitJustification;
 //# sourceMappingURL=auth.controller.js.map

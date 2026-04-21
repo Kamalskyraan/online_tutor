@@ -25,6 +25,7 @@ import {
 import { sendMail } from "../service/mail.service";
 import { UserModel } from "../models/user.model";
 import { TutorModel } from "../models/tutor.model";
+import { AuthRequest } from "../config/middleware";
 
 //
 const authModel = new AuthModel();
@@ -490,3 +491,53 @@ export class AuthController {
     }
   };
 }
+
+export const submitJustification = async (req: AuthRequest, res: Response) => {
+  try {
+    const user_id = req.user?.user_id;
+    const { reason, evidence, email } = req.body;
+
+    if (!user_id) {
+      return sendResponse(res, 200, 0, [], "Un Authorized", []);
+    }
+
+    if (!reason || reason.trim().length < 10) {
+      return sendResponse(
+        res,
+        200,
+        0,
+        [],
+        "Please enter a valid justification (min 10 chars)",
+        [],
+      );
+    }
+
+    const existing: any = await executeQuery(
+      `SELECT id FROM user_justifications 
+       WHERE user_id = ? AND status = 'pending'`,
+      [user_id],
+    );
+
+    if (existing.length > 0) {
+      return sendResponse(
+        res,
+        200,
+        0,
+        [],
+        "You already have a pending request",
+        [],
+      );
+    }
+
+    await executeQuery(
+      `INSERT INTO user_justifications (user_id, message, evidence , email)
+       VALUES (?, ?, ? , ?)`,
+      [user_id, reason, evidence, email],
+    );
+
+    return sendResponse(res, 200, 1, [], "Submitted Successfully", []);
+  } catch (err) {
+    console.error(err);
+    return sendResponse(res, 500, 0, [], "Internal Server Error", []);
+  }
+};

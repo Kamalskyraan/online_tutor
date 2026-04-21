@@ -3,7 +3,7 @@ import { CommonController } from "../controller/common.controller";
 import { upload } from "../config/multer";
 import { uploadLoc } from "../config/multerloc";
 
-const router = Router();
+  const router = Router();
 
 router.get(
   "/get-country-data",

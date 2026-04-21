@@ -10,22 +10,21 @@ import { startDeleteCron } from "./config/cron";
 import { generateUserId } from "./utils/helper";
 import { authMiddleware, blockCheckMiddleware } from "./config/middleware";
 import authRoutes from "./routes/auth.routes";
+import justificationRoutes from "./routes/justification.routes";
 const app = express();
 
 const PORT = process.env.PORT || 5000;
 
 app.use(express.json());
 
-app.use("/api", authMiddleware, blockCheckMiddleware, router);
+// authMiddleware, blockCheckMiddleware,
+app.use("/api", router);
 
-router.use("/api/auth", authRoutes);
+app.use("/api/auth", authRoutes);
+app.use("/api/justification", authMiddleware, justificationRoutes);
 app.use("/uploads", express.static("uploads"));
 
 app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerFile));
-
-app.get("/check", (req, res) => {
-  res.send("hiii");
-});
 
 const data = JSON.parse(fs.readFileSync("./public/country.json", "utf8"));
 

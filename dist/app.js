@@ -14,16 +14,16 @@ const db_1 = require("./config/db");
 const cron_1 = require("./config/cron");
 const middleware_1 = require("./config/middleware");
 const auth_routes_1 = __importDefault(require("./routes/auth.routes"));
+const justification_routes_1 = __importDefault(require("./routes/justification.routes"));
 const app = (0, express_1.default)();
 const PORT = process.env.PORT || 5000;
 app.use(express_1.default.json());
-app.use("/api", middleware_1.authMiddleware, middleware_1.blockCheckMiddleware, routes_1.default);
-routes_1.default.use("/api/auth", auth_routes_1.default);
+// authMiddleware, blockCheckMiddleware,
+app.use("/api", routes_1.default);
+app.use("/api/auth", auth_routes_1.default);
+app.use("/api/justification", middleware_1.authMiddleware, justification_routes_1.default);
 app.use("/uploads", express_1.default.static("uploads"));
 app.use("/docs", swagger_ui_express_1.default.serve, swagger_ui_express_1.default.setup(swagger_output_json_1.default));
-app.get("/check", (req, res) => {
-    res.send("hiii");
-});
 const data = JSON.parse(fs_1.default.readFileSync("./public/country.json", "utf8"));
 (0, db_1.connectDB)();
 (0, cron_1.startDeleteCron)();
