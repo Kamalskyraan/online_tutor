@@ -54,7 +54,6 @@ export class NotificationController {
       const result = await notifyMdl.getNotifications({
         receiver_id,
         page,
-       
       });
 
       return sendResponse(
@@ -65,6 +64,16 @@ export class NotificationController {
         "Notification Fetched Successfully",
         [],
       );
+    } catch (err: any) {
+      return sendResponse(res, 500, 0, [], "Internal Server Error", [
+        err.errors || err.message || err,
+      ]);
+    }
+  }
+
+  static async removeNotifications(req: Request, res: Response) {
+    
+    try {
     } catch (err: any) {
       return sendResponse(res, 500, 0, [], "Internal Server Error", [
         err.errors || err.message || err,

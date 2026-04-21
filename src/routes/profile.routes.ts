@@ -4,7 +4,7 @@ import { authMiddleware } from "../config/middleware";
 
 const router = Router();
 
-router.post("/get-profiledata", authMiddleware, (req, res) => {
+router.post("/get-profiledata",  (req, res) => {
   /*
     #swagger.tags = ['3.Profile']
     #swagger.summary = 'get user data'

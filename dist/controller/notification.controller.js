@@ -24,6 +24,15 @@ class NotificationController {
             ]);
         }
     }
+    static async removeNotifications(req, res) {
+        try {
+        }
+        catch (err) {
+            return (0, helper_1.sendResponse)(res, 500, 0, [], "Internal Server Error", [
+                err.errors || err.message || err,
+            ]);
+        }
+    }
 }
 exports.NotificationController = NotificationController;
 _a = NotificationController;
