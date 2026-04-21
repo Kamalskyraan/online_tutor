@@ -5,22 +5,12 @@
         "description": "Api Docs",
         "version": "1.0.0"
     },
-    "host": "online-tutor.skyraantech.com/server",
+    "host": "localhost:5012",
     "basePath": "/",
     "schemes": [
-        "https"
+        "http"
     ],
     "paths": {
-        "/check": {
-            "get": {
-                "description": "",
-                "responses": {
-                    "200": {
-                        "description": "OK"
-                    }
-                }
-            }
-        },
         "/api/upload": {
             "post": {
                 "description": "",
@@ -37,341 +27,6 @@
                 "responses": {
                     "200": {
                         "description": "OK"
-                    }
-                }
-            }
-        },
-        "/api/auth/request-otp": {
-            "post": {
-                "tags": [
-                    "1.Auth"
-                ],
-                "summary": "Request OTP",
-                "description": "Send OTP to mobile(0->no check in DB || 1-> check DB)",
-                "parameters": [
-                    {
-                        "name": "body",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "type": "object",
-                            "properties": {
-                                "mobile": {
-                                    "type": "string",
-                                    "example": "9876543210"
-                                },
-                                "country_code": {
-                                    "type": "string",
-                                    "example": "+91"
-                                },
-                                "type": {
-                                    "type": "string",
-                                    "example": "0 or 1 or 2"
-                                },
-                                "email": {
-                                    "type": "string",
-                                    "example": "abc@gmail.com"
-                                }
-                            }
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OTP sent successfully"
-                    },
-                    "400": {
-                        "description": "Invalid mobile number"
-                    }
-                }
-            }
-        },
-        "/api/auth/verify-otp": {
-            "post": {
-                "tags": [
-                    "1.Auth"
-                ],
-                "summary": "Verify OTP",
-                "description": "Verify OTP to mobile",
-                "parameters": [
-                    {
-                        "name": "body",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "type": "object",
-                            "properties": {
-                                "mobile": {
-                                    "type": "string",
-                                    "example": "9876543210"
-                                },
-                                "country_code": {
-                                    "type": "string",
-                                    "example": "+91"
-                                },
-                                "otp": {
-                                    "type": "string",
-                                    "example": "1234"
-                                },
-                                "email": {
-                                    "type": "string",
-                                    "example": "abc@gmail.com"
-                                }
-                            }
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OTP verify successfully"
-                    },
-                    "500": {
-                        "description": "Internal Server Error"
-                    }
-                }
-            }
-        },
-        "/api/auth/signup": {
-            "post": {
-                "tags": [
-                    "1.Auth"
-                ],
-                "summary": "Signup",
-                "description": "Signup",
-                "parameters": [
-                    {
-                        "name": "body",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "type": "object",
-                            "properties": {
-                                "mobile": {
-                                    "type": "string",
-                                    "example": "9876543210"
-                                },
-                                "country_code": {
-                                    "type": "string",
-                                    "example": "+91"
-                                },
-                                "otp": {
-                                    "type": "string",
-                                    "example": "12345678"
-                                },
-                                "user_name": {
-                                    "type": "string",
-                                    "example": "kamalesh"
-                                },
-                                "password": {
-                                    "type": "string",
-                                    "example": "12345678"
-                                },
-                                "device_id": {
-                                    "type": "string",
-                                    "example": "abc_123"
-                                },
-                                "device_type": {
-                                    "type": "string",
-                                    "example": "ios"
-                                },
-                                "device_token": {
-                                    "type": "string",
-                                    "example": "xyz123"
-                                },
-                                "email": {
-                                    "type": "string",
-                                    "example": "abc@gmail.com"
-                                }
-                            }
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OTP verify successfully"
-                    },
-                    "500": {
-                        "description": "Internal Server Error"
-                    }
-                }
-            }
-        },
-        "/api/auth/login": {
-            "post": {
-                "tags": [
-                    "1.Auth"
-                ],
-                "summary": "Login",
-                "description": "Login with mobile number and password",
-                "parameters": [
-                    {
-                        "name": "body",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "type": "object",
-                            "properties": {
-                                "mobile": {
-                                    "type": "string",
-                                    "example": "9876543210"
-                                },
-                                "country_code": {
-                                    "type": "string",
-                                    "example": "+91"
-                                },
-                                "password": {
-                                    "type": "string",
-                                    "example": "12345678"
-                                },
-                                "device_id": {
-                                    "type": "string",
-                                    "example": "abc_123"
-                                },
-                                "device_type": {
-                                    "type": "string",
-                                    "example": "ios"
-                                },
-                                "device_token": {
-                                    "type": "string",
-                                    "example": "xyz123"
-                                }
-                            }
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Login successfull"
-                    },
-                    "500": {
-                        "description": "Internal Server Error"
-                    }
-                }
-            }
-        },
-        "/api/auth/reset-password": {
-            "post": {
-                "tags": [
-                    "1.Auth"
-                ],
-                "summary": "reset password",
-                "description": "Reset Pawword with user ID",
-                "parameters": [
-                    {
-                        "name": "body",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "type": "object",
-                            "properties": {
-                                "country_code": {
-                                    "type": "string",
-                                    "example": "+91"
-                                },
-                                "mobile": {
-                                    "type": "string",
-                                    "example": "9876543210"
-                                },
-                                "new_password": {
-                                    "type": "string",
-                                    "example": "123456789"
-                                },
-                                "confirm_password": {
-                                    "type": "string",
-                                    "example": "123456789"
-                                },
-                                "user_id": {
-                                    "type": "string",
-                                    "example": "USER_59xhKU0B"
-                                }
-                            }
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Password updated successfully"
-                    },
-                    "500": {
-                        "description": "Internal Server Error"
-                    }
-                }
-            }
-        },
-        "/api/auth/logout": {
-            "post": {
-                "tags": [
-                    "1.Auth"
-                ],
-                "summary": "Logout",
-                "description": "Logout with user ID",
-                "parameters": [
-                    {
-                        "name": "body",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "type": "object",
-                            "properties": {
-                                "user_id": {
-                                    "type": "string",
-                                    "example": "USER_7wbjv2wt"
-                                },
-                                "device_id": {
-                                    "type": "string",
-                                    "example": "abc123"
-                                },
-                                "device_token": {
-                                    "type": "string",
-                                    "example": "abc123"
-                                },
-                                "device_type": {
-                                    "type": "string",
-                                    "example": "ios"
-                                }
-                            }
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Password updated successfully"
-                    },
-                    "500": {
-                        "description": "Internal Server Error"
-                    }
-                }
-            }
-        },
-        "/api/auth/reactive-account": {
-            "post": {
-                "tags": [
-                    "1.Auth"
-                ],
-                "summary": "Reactive Account",
-                "description": "Reactive Account with user ID",
-                "parameters": [
-                    {
-                        "name": "body",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "type": "object",
-                            "properties": {
-                                "user_id": {
-                                    "type": "string",
-                                    "example": "USER_7wbjv2wt"
-                                }
-                            }
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Account Reactive successfully"
-                    },
-                    "500": {
-                        "description": "Internal Server Error"
                     }
                 }
             }
@@ -642,6 +297,11 @@
                 "summary": "get user data",
                 "description": "fetch user",
                 "parameters": [
+                    {
+                        "name": "authorization",
+                        "in": "header",
+                        "type": "string"
+                    },
                     {
                         "name": "body",
                         "in": "body",
@@ -1853,6 +1513,11 @@
                 "summary": "get Demo videos or Images",
                 "description": "Get image and videos",
                 "parameters": [
+                    {
+                        "name": "authorization",
+                        "in": "header",
+                        "type": "string"
+                    },
                     {
                         "name": "body",
                         "in": "body",
@@ -3425,6 +3090,358 @@
                 "responses": {
                     "200": {
                         "description": "Get Notifcations successfully"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/api/auth/request-otp": {
+            "post": {
+                "tags": [
+                    "1.Auth"
+                ],
+                "summary": "Request OTP",
+                "description": "Send OTP to mobile(0->no check in DB || 1-> check DB)",
+                "parameters": [
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "mobile": {
+                                    "type": "string",
+                                    "example": "9876543210"
+                                },
+                                "country_code": {
+                                    "type": "string",
+                                    "example": "+91"
+                                },
+                                "type": {
+                                    "type": "string",
+                                    "example": "0 or 1 or 2"
+                                },
+                                "email": {
+                                    "type": "string",
+                                    "example": "abc@gmail.com"
+                                }
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OTP sent successfully"
+                    },
+                    "400": {
+                        "description": "Invalid mobile number"
+                    }
+                }
+            }
+        },
+        "/api/auth/verify-otp": {
+            "post": {
+                "tags": [
+                    "1.Auth"
+                ],
+                "summary": "Verify OTP",
+                "description": "Verify OTP to mobile",
+                "parameters": [
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "mobile": {
+                                    "type": "string",
+                                    "example": "9876543210"
+                                },
+                                "country_code": {
+                                    "type": "string",
+                                    "example": "+91"
+                                },
+                                "otp": {
+                                    "type": "string",
+                                    "example": "1234"
+                                },
+                                "email": {
+                                    "type": "string",
+                                    "example": "abc@gmail.com"
+                                }
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OTP verify successfully"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/api/auth/signup": {
+            "post": {
+                "tags": [
+                    "1.Auth"
+                ],
+                "summary": "Signup",
+                "description": "Signup",
+                "parameters": [
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "mobile": {
+                                    "type": "string",
+                                    "example": "9876543210"
+                                },
+                                "country_code": {
+                                    "type": "string",
+                                    "example": "+91"
+                                },
+                                "otp": {
+                                    "type": "string",
+                                    "example": "12345678"
+                                },
+                                "user_name": {
+                                    "type": "string",
+                                    "example": "kamalesh"
+                                },
+                                "password": {
+                                    "type": "string",
+                                    "example": "12345678"
+                                },
+                                "device_id": {
+                                    "type": "string",
+                                    "example": "abc_123"
+                                },
+                                "device_type": {
+                                    "type": "string",
+                                    "example": "ios"
+                                },
+                                "device_token": {
+                                    "type": "string",
+                                    "example": "xyz123"
+                                },
+                                "email": {
+                                    "type": "string",
+                                    "example": "abc@gmail.com"
+                                }
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OTP verify successfully"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/api/auth/login": {
+            "post": {
+                "tags": [
+                    "1.Auth"
+                ],
+                "summary": "Login",
+                "description": "Login with mobile number and password",
+                "parameters": [
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "mobile": {
+                                    "type": "string",
+                                    "example": "9876543210"
+                                },
+                                "country_code": {
+                                    "type": "string",
+                                    "example": "+91"
+                                },
+                                "password": {
+                                    "type": "string",
+                                    "example": "12345678"
+                                },
+                                "device_id": {
+                                    "type": "string",
+                                    "example": "abc_123"
+                                },
+                                "device_type": {
+                                    "type": "string",
+                                    "example": "ios"
+                                },
+                                "device_token": {
+                                    "type": "string",
+                                    "example": "xyz123"
+                                }
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Login successfull"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/api/auth/reset-password": {
+            "post": {
+                "tags": [
+                    "1.Auth"
+                ],
+                "summary": "reset password",
+                "description": "Reset Pawword with user ID",
+                "parameters": [
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "country_code": {
+                                    "type": "string",
+                                    "example": "+91"
+                                },
+                                "mobile": {
+                                    "type": "string",
+                                    "example": "9876543210"
+                                },
+                                "new_password": {
+                                    "type": "string",
+                                    "example": "123456789"
+                                },
+                                "confirm_password": {
+                                    "type": "string",
+                                    "example": "123456789"
+                                },
+                                "user_id": {
+                                    "type": "string",
+                                    "example": "USER_59xhKU0B"
+                                }
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Password updated successfully"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/api/auth/logout": {
+            "post": {
+                "tags": [
+                    "1.Auth"
+                ],
+                "summary": "Logout",
+                "description": "Logout with user ID",
+                "parameters": [
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "user_id": {
+                                    "type": "string",
+                                    "example": "USER_7wbjv2wt"
+                                },
+                                "device_id": {
+                                    "type": "string",
+                                    "example": "abc123"
+                                },
+                                "device_token": {
+                                    "type": "string",
+                                    "example": "abc123"
+                                },
+                                "device_type": {
+                                    "type": "string",
+                                    "example": "ios"
+                                }
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Password updated successfully"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/api/auth/reactive-account": {
+            "post": {
+                "tags": [
+                    "1.Auth"
+                ],
+                "summary": "Reactive Account",
+                "description": "Reactive Account with user ID",
+                "parameters": [
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "user_id": {
+                                    "type": "string",
+                                    "example": "USER_7wbjv2wt"
+                                }
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Account Reactive successfully"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/api/justification/submit-justification": {
+            "post": {
+                "tags": [
+                    "14.Justify"
+                ],
+                "summary": "submit justification",
+                "description": "Submit Justification for blocked users",
+                "responses": {
+                    "200": {
+                        "description": "Country data list fetched successfully"
                     },
                     "500": {
                         "description": "Internal Server Error"

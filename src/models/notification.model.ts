@@ -1,5 +1,7 @@
 import { convertNullToString, executeQuery } from "../utils/helper";
+import { commonModel } from "./common.model";
 
+const cmnMdl = new commonModel();
 export class NotificationModel {
   async createInAppNotification(data: any) {
     await executeQuery(
@@ -131,11 +133,31 @@ export class NotificationModel {
 
     const total = totalResult[0]?.total || 0;
 
+    const formattedData = await Promise.all(
+      notifications.map(async (n: any) => {
+        let profileImg: any[] = [];
+
+        if (n.profile_img) {
+          const ids = String(n.profile_img)
+            .split(",")
+            .map((id: string) => Number(id.trim()))
+            .filter(Boolean);
+
+          if (ids.length > 0) {
+            profileImg = await cmnMdl.getUploadFiles(ids);
+          }
+        }
+
+        return {
+          ...n,
+          extra_data: n.extra_data ? JSON.parse(n.extra_data) : null,
+          profile_img: profileImg,
+        };
+      }),
+    );
+
     return {
-      data: notifications.map((n: any) => ({
-        ...n,
-        extra_data: n.extra_data ? JSON.parse(n.extra_data) : null,
-      })),
+      data: formattedData,
       pagination: {
         total,
         page: Number(page),

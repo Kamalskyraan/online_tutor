@@ -2,6 +2,8 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.NotificationModel = void 0;
 const helper_1 = require("../utils/helper");
+const common_model_1 = require("./common.model");
+const cmnMdl = new common_model_1.commonModel();
 class NotificationModel {
     async createInAppNotification(data) {
         await (0, helper_1.executeQuery)(`
@@ -87,11 +89,25 @@ class NotificationModel {
     `, [receiver_id, Number(limit), Number(offset)]);
         const totalResult = await (0, helper_1.executeQuery)(`SELECT COUNT(*) as total FROM notifications WHERE receiver_id = ?`, [receiver_id]);
         const total = totalResult[0]?.total || 0;
-        return {
-            data: notifications.map((n) => ({
+        const formattedData = await Promise.all(notifications.map(async (n) => {
+            let profileImg = [];
+            if (n.profile_img) {
+                const ids = String(n.profile_img)
+                    .split(",")
+                    .map((id) => Number(id.trim()))
+                    .filter(Boolean);
+                if (ids.length > 0) {
+                    profileImg = await cmnMdl.getUploadFiles(ids);
+                }
+            }
+            return {
                 ...n,
                 extra_data: n.extra_data ? JSON.parse(n.extra_data) : null,
-            })),
+                profile_img: profileImg,
+            };
+        }));
+        return {
+            data: formattedData,
             pagination: {
                 total,
                 page: Number(page),

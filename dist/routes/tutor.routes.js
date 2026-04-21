@@ -4,7 +4,6 @@ const express_1 = require("express");
 const tutor_controller_1 = require("../controller/tutor.controller");
 const middleware_1 = require("../config/middleware");
 const router = (0, express_1.Router)();
-// router.post('/add-update-tutor',addUpdateTutorPersonal)
 router.post("/add-update-demos", (req, res) => {
     /*
       #swagger.tags = ['8.Tutor']
