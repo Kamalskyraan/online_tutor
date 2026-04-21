@@ -15,10 +15,11 @@ const PORT = process.env.PORT || 5000;
 
 app.use(express.json());
 
-app.use("/api", authMiddleware, blockCheckMiddleware, router);
+//  authMiddleware, blockCheckMiddleware,
+app.use("/api", router);
 app.use("/uploads", express.static("uploads"));
 
-// connectDB();
+
 app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerFile));
 
 app.get("/check", (req, res) => {
