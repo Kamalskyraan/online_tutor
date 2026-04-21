@@ -21,7 +21,7 @@ app.use(express.json());
 app.use("/api", router);
 
 app.use("/api/auth", authRoutes);
-// app.use("/api/justification", authMiddleware, justificationRoutes);
+
 app.use("/uploads", express.static("uploads"));
 
 app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerFile));
@@ -31,5 +31,5 @@ const data = JSON.parse(fs.readFileSync("./public/country.json", "utf8"));
 connectDB();
 startDeleteCron();
 app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+  console.log(`Server swimming on portttttttttttt ${PORT}`);
 });
