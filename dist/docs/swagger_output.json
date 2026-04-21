@@ -1799,11 +1799,6 @@
                 "description": "Get image and videos",
                 "parameters": [
                     {
-                        "name": "authorization",
-                        "in": "header",
-                        "type": "string"
-                    },
-                    {
                         "name": "body",
                         "in": "body",
                         "required": false,
