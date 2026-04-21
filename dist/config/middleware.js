@@ -41,7 +41,7 @@ const blockCheckMiddleware = async (req, res, next) => {
             return next();
         const result = await (0, helper_1.executeQuery)(`SELECT is_blocked FROM users WHERE user_id = ?`, [user_id]);
         if (result[0]?.is_blocked === 1) {
-            return (0, helper_1.sendResponse)(res, 200, 2, [], "Your account is blocked. Please submit justification.", []);
+            return (0, helper_1.sendResponse)(res, 200, 3, [], "Your account is blocked. Please submit justification.", []);
         }
         next();
     }

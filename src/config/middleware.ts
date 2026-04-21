@@ -52,7 +52,7 @@ export const blockCheckMiddleware = async (
   next: NextFunction,
 ) => {
   try {
-    const user_id = req.user?.user_id; 
+    const user_id = req.user?.user_id;
 
     if (!user_id) return next();
 
@@ -65,7 +65,7 @@ export const blockCheckMiddleware = async (
       return sendResponse(
         res,
         200,
-        2,
+        3,
         [],
         "Your account is blocked. Please submit justification.",
         [],
