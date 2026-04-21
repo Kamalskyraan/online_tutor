@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { TutorController } from "../controller/tutor.controller";
-import { authMiddlewareForDemos } from "../config/middleware";
+import { authMiddleware, authMiddlewareForDemos } from "../config/middleware";
 
 const router = Router();
 // router.post('/add-update-tutor',addUpdateTutorPersonal)
@@ -61,7 +61,7 @@ router.post("/remove-demos", (req, res) => {
   TutorController.removeDemos(req, res);
 });
 
-router.post("/get-demos", authMiddlewareForDemos, (req, res) => {
+router.post("/get-demos", authMiddleware, (req, res) => {
   /*
     #swagger.tags = ['8.Tutor']
     #swagger.summary = 'get Demo videos or Images'

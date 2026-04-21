@@ -60,7 +60,7 @@ router.post("/remove-demos", (req, res) => {
     */
     tutor_controller_1.TutorController.removeDemos(req, res);
 });
-router.post("/get-demos", middleware_1.authMiddlewareForDemos, (req, res) => {
+router.post("/get-demos", middleware_1.authMiddleware, (req, res) => {
     /*
       #swagger.tags = ['8.Tutor']
       #swagger.summary = 'get Demo videos or Images'

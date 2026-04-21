@@ -26,7 +26,7 @@ export const authMiddleware = (
         res,
         200,
         2,
-        [],
+        {},
         "Access denied. No token provided",
         [],
       );

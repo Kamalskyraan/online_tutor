@@ -13,7 +13,7 @@ const authMiddleware = (req, res, next) => {
     try {
         const authHeader = req.headers.authorization;
         if (!authHeader || !authHeader.startsWith("Bearer ")) {
-            return (0, helper_1.sendResponse)(res, 200, 2, [], "Access denied. No token provided", []);
+            return (0, helper_1.sendResponse)(res, 200, 2, {}, "Access denied. No token provided", []);
         }
         const token = authHeader.split(" ")[1];
         const decoded = jsonwebtoken_1.default.verify(token, JWT_SECRET);
