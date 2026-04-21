@@ -3,7 +3,7 @@ import { TutorController } from "../controller/tutor.controller";
 import { authMiddleware } from "../config/middleware";
 
 const router = Router();
-// router.post('/add-update-tutor',addUpdateTutorPersonal)
+
 router.post("/add-update-demos", (req, res) => {
   /*
     #swagger.tags = ['8.Tutor']

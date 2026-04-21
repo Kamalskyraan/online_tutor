@@ -34,6 +34,8 @@ export const authMiddleware = (
 
     const token = authHeader.split(" ")[1];
 
+    console.log(token, "tok");
+
     const decoded: any = jwt.verify(token, JWT_SECRET);
 
     req.user = {
