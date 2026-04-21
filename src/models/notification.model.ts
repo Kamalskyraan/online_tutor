@@ -21,7 +21,6 @@ export class NotificationModel {
 
   async getUserIdFromRole(data: any) {
     const { tutor_id, student_id } = data;
-    
 
     let tutor_user_id: string | null = null;
     let student_user_id: string | null = null;
@@ -91,5 +90,58 @@ export class NotificationModel {
     );
 
     return result;
+  }
+
+  async getNotifications(data: any) {
+    const { receiver_id, page = 1, limit = 10 } = data;
+
+    const offset = (page - 1) * limit;
+
+    const notifications = await executeQuery(
+      `
+    SELECT 
+      n.id,
+      n.sender_id,
+      n.receiver_id,
+      n.title,
+      n.message,
+      n.type,
+      n.is_read,
+      n.extra_data,
+      n.sent_to,
+      n.created_at,
+
+      u.user_name,
+      u.profile_img
+
+    FROM notifications n
+    LEFT JOIN users u ON u.user_id = n.sender_id
+
+    WHERE n.receiver_id = ?
+    ORDER BY n.id DESC
+    LIMIT ? OFFSET ?
+    `,
+      [receiver_id, Number(limit), Number(offset)],
+    );
+
+    const totalResult: any = await executeQuery(
+      `SELECT COUNT(*) as total FROM notifications WHERE receiver_id = ?`,
+      [receiver_id],
+    );
+
+    const total = totalResult[0]?.total || 0;
+
+    return {
+      data: notifications.map((n: any) => ({
+        ...n,
+        extra_data: n.extra_data ? JSON.parse(n.extra_data) : null,
+      })),
+      pagination: {
+        total,
+        page: Number(page),
+        limit: Number(limit),
+        totalPages: Math.ceil(total / limit),
+      },
+    };
   }
 }

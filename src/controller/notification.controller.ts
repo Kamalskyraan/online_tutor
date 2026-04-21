@@ -43,4 +43,32 @@ export class NotificationController {
       ]);
     }
   };
+
+  static async getNotifications(req: Request, res: Response) {
+    try {
+      const { receiver_id, page } = req.body;
+
+      if (!receiver_id) {
+        return sendResponse(res, 200, 0, [], "Receiver ID is required", []);
+      }
+      const result = await notifyMdl.getNotifications({
+        receiver_id,
+        page,
+       
+      });
+
+      return sendResponse(
+        res,
+        200,
+        1,
+        result,
+        "Notification Fetched Successfully",
+        [],
+      );
+    } catch (err: any) {
+      return sendResponse(res, 500, 0, [], "Internal Server Error", [
+        err.errors || err.message || err,
+      ]);
+    }
+  }
 }

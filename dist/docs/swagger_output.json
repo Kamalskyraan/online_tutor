@@ -777,6 +777,10 @@
                                 "exp_month": {
                                     "type": "string",
                                     "example": "11"
+                                },
+                                "dob": {
+                                    "type": "string",
+                                    "example": "2026-10-11"
                                 }
                             }
                         }
@@ -3387,6 +3391,43 @@
                     },
                     "500": {
                         "description": "Something went wrong"
+                    }
+                }
+            }
+        },
+        "/api/notify/get-notifications": {
+            "post": {
+                "tags": [
+                    "13.Notification"
+                ],
+                "summary": "GET notifications",
+                "description": "GET notifications",
+                "parameters": [
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "receiver_id": {
+                                    "type": "string",
+                                    "example": "USER_eFzOtN1M"
+                                },
+                                "page": {
+                                    "type": "number",
+                                    "example": 1
+                                }
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Get Notifcations successfully"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
                     }
                 }
             }

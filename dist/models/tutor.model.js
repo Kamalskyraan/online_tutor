@@ -656,11 +656,19 @@ class TutorModel {
     }
     async fetchTutorRequestsFor(tutor_id) {
         const result = await (0, helper_1.executeQuery)(`
-  SELECT status, COUNT(*) as count
-  FROM tutor_student_rel
-  WHERE tutor_id = ?
-  GROUP BY status
-  `, [tutor_id]);
+    SELECT s.status, COUNT(r.status) as count
+    FROM (
+      SELECT 'pending' as status
+      UNION ALL SELECT 'accepted'
+      UNION ALL SELECT 'rejected'
+     
+    ) s
+    LEFT JOIN tutor_student_rel r
+      ON r.status = s.status
+      AND r.tutor_id = ?
+    GROUP BY s.status
+    ORDER BY s.status
+    `, [tutor_id]);
         return {
             requests: result,
         };

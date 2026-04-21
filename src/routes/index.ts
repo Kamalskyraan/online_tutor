@@ -9,6 +9,7 @@ import profileRoutes from "./profile.routes";
 import studentRoutes from "./student.routes";
 import reviewRoutes from "./review.routes";
 import commonRoutes from "./common.routes";
+import noteRoutes from "./notification.routes";
 import tutorRoutes from "./tutor.routes";
 import { startMultipartUpload } from "../config/upload";
 import { upload } from "../config/multer";
@@ -27,7 +28,7 @@ router.use("/student", studentRoutes);
 router.use("/review", reviewRoutes);
 router.use("/cmn", commonRoutes);
 router.use("/leads", leadsRoutes);
-
+router.use("/notify", noteRoutes);
 // common
 
 router.post("/upload", upload.single("file"), (req: Request, res: Response) => {
@@ -43,6 +44,5 @@ router.post("/upload-multiple", upload.array("files", 5), (req, res) => {
     // files: req.files,
   });
 });
-
 
 export default router;
