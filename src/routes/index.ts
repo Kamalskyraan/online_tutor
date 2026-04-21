@@ -17,7 +17,7 @@ import leadsRoutes from "./leads.routes";
 
 const router = Router();
 
-router.use("/auth", authRoutes);
+// router.use("/auth", authRoutes);
 router.use("/user", userRoutes);
 router.use("/profile", profileRoutes);
 router.use("/edu", eduRoutes);

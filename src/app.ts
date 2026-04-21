@@ -9,6 +9,7 @@ import db, { connectDB } from "./config/db";
 import { startDeleteCron } from "./config/cron";
 import { generateUserId } from "./utils/helper";
 import { authMiddleware, blockCheckMiddleware } from "./config/middleware";
+import authRoutes from "./routes/auth.routes";
 const app = express();
 
 const PORT = process.env.PORT || 5000;
@@ -16,6 +17,8 @@ const PORT = process.env.PORT || 5000;
 app.use(express.json());
 
 app.use("/api", authMiddleware, blockCheckMiddleware, router);
+
+router.use("/api/auth", authRoutes);
 app.use("/uploads", express.static("uploads"));
 
 app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerFile));

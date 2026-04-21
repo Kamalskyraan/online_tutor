@@ -4,7 +4,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
-const auth_routes_1 = __importDefault(require("./auth.routes"));
 const support_routes_1 = __importDefault(require("./support.routes"));
 const source_routes_1 = __importDefault(require("./source.routes"));
 const user_routes_1 = __importDefault(require("./user.routes"));
@@ -19,7 +18,7 @@ const tutor_routes_1 = __importDefault(require("./tutor.routes"));
 const multer_1 = require("../config/multer");
 const leads_routes_1 = __importDefault(require("./leads.routes"));
 const router = (0, express_1.Router)();
-router.use("/auth", auth_routes_1.default);
+// router.use("/auth", authRoutes);
 router.use("/user", user_routes_1.default);
 router.use("/profile", profile_routes_1.default);
 router.use("/edu", education_routes_1.default);
