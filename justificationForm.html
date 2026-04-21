@@ -3,155 +3,702 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Help Request</title>
-
+    <title>Business Account Appeal Form</title>
     <style>
       body {
-        margin: 0;
         font-family: Arial, sans-serif;
-
-        color: #fff;
+        display: flex;
+        justify-content: center;
       }
 
       .container {
-        max-width: 420px;
-        margin: auto;
-        padding: 20px;
+        width: 100% !important;
+        background: #fff;
+        border-radius: 8px;
+        padding: 10px;
       }
 
-      .icon {
-        width: 80px;
-        height: 80px;
-        background: #2196f3;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        margin: 20px auto;
-        font-size: 30px;
+      h2 {
+        font-size: 18px;
+        margin-bottom: 8px;
       }
 
-      .desc {
-        text-align: center;
-        font-size: 14px;
-        color: #aaa;
-        margin-bottom: 20px;
+      p {
+        font-size: 13px;
+        color: #555;
+        margin-bottom: 12px;
+      }
+
+      label {
+        display: block;
+        font-size: 13px;
+        font-weight: bold;
+        margin: 10px 0 5px;
       }
 
       input,
-      textarea {
-        width: 100%;
-        padding: 14px;
-        margin: 10px 0;
-        border-radius: 6px;
-        border: none;
-        background: #eee;
-        color: #000;
-        font-size: 14px;
+      textarea,
+      select {
+        width: 94%;
+        padding: 8px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        font-size: 13px;
       }
 
       textarea {
-        height: 120px;
         resize: none;
       }
 
-      .optional {
+      .section {
+        margin-bottom: 25px;
+      }
+
+      .attachments {
+        margin-top: 10px;
+      }
+
+      .file-box {
+        background: #f1f3f5;
+        border: 1px dashed #ccc;
+        padding: 10px;
         text-align: center;
-        color: #aaa;
-        margin-top: 10px;
-      }
-
-      .upload-box {
-        margin: 15px 0;
-        text-align: left;
-        font-size: 13px;
-        color: #aaa;
-      }
-
-      .upload-btn {
-        display: inline-block;
-        margin-top: 10px;
-        padding: 10px 15px;
-        background: #fff;
-        color: #007bff;
         border-radius: 6px;
         cursor: pointer;
-      }
-
-      .terms {
+        font-size: 13px;
         display: flex;
         align-items: center;
-        margin: 15px 0;
+        gap: 7px;
+        justify-content: center;
+      }
+
+      .checkbox {
+        display: flex;
+        align-items: center;
+        justify-content: start;
         font-size: 13px;
+        margin-top: 12px;
+        accent-color: black !important;
+      }
+      .checkbox label {
+        width: 85%;
+        font-weight: 500;
       }
 
-      .terms input {
-        width: auto;
-        margin-right: 8px;
+      .checkbox input {
+        width: 10% !important;
       }
 
-      .terms a {
-        color: #4da3ff;
-        text-decoration: underline;
-      }
-
-      .submit-btn {
+      button {
         width: 100%;
-        padding: 15px;
-        background: #8ecae6;
+        padding: 10px;
+        background: #000;
         border: none;
-        border-radius: 30px;
-        font-size: 16px;
-        color: #000;
+        border-radius: 2px;
+        color: #fff;
+        font-size: 15px;
+        font-weight: bold;
         cursor: pointer;
+        margin-top: 15px;
+      }
+
+      .business_infos img {
+        width: 42px;
+      }
+      .business_infos {
+        display: flex;
+        align-items: center;
+        gap: 7px;
+      }
+      .business_infos span {
+        font-size: 13px;
+        opacity: 0.7;
+      }
+      .business_infos #businessName {
+        font-size: 15px;
+        opacity: 1;
+      }
+      .input-wrapper {
+        position: relative;
+        display: flex;
+        align-items: center;
+        background: #f8f9fa;
+        border-bottom: 2px solid #222;
+        padding: 12px 10px 6px 10px;
+      }
+
+      .input-wrapper .icon {
+        position: absolute;
+        left: 10px;
+        font-size: 18px;
+        color: #555;
+      }
+
+      .input-wrapper input {
+        border: none;
+        outline: none;
+        background: transparent;
+        font-size: 16px;
+        flex: 1;
+        padding-left: 22px;
+        padding-top: 8px;
+        padding-bottom: 2px;
+      }
+
+      .input-wrapper label {
+        position: absolute;
+        left: 43px; /* align after icon */
+        top: 37%;
+        transform: translateY(-50%);
+        color: #777;
+        font-size: 14px;
+        transition: 0.2s ease all;
+        pointer-events: none;
+        font-weight: 500;
+      }
+
+      .input-wrapper input:focus + label,
+      .input-wrapper input:not(:placeholder-shown) + label {
+        top: 0;
+        font-size: 12px;
+      }
+
+      .required {
+        color: red;
+        margin-left: 2px;
+      }
+      .mobile-input {
+        display: flex;
+        align-items: stretch;
+        width: 100%;
+        border-bottom: 2px solid #222;
+        background: #f8f9fa;
+        margin: 20px 0;
+      }
+
+      .prefix {
+        background: #e5e5e5;
+        color: #222;
+        font-size: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0 12px;
+        font-weight: 500;
+      }
+      .mobile-input .input-wrapper {
+        position: relative;
+        display: flex;
+        align-items: center;
+        background: #f8f9fa;
+        border-bottom: 2px solid #222;
+        padding: 12px 10px 6px 10px;
+      }
+
+      .mobile-input .input-wrapper .icon {
+        position: absolute;
+        left: 10px;
+        font-size: 18px;
+        color: #555;
+      }
+
+      .mobile-input .input-wrapper input {
+        border: none;
+        outline: none;
+        background: transparent;
+        font-size: 16px;
+        flex: 1;
+        padding-left: 10px !important;
+        padding-top: 8px;
+        padding-bottom: 2px;
+      }
+
+      .mobile-input .input-wrapper label {
+        position: absolute;
+        left: 16px; /* align after icon */
+        top: 37%;
+        transform: translateY(-50%);
+        color: #777;
+        font-size: 14px;
+        transition: 0.2s ease all;
+        pointer-events: none;
+        font-weight: 500;
+      }
+
+      .mobile-input .input-wrapper input:focus + label,
+      .mobile-input .input-wrapper input:not(:placeholder-shown) + label {
+        top: 0;
+        font-size: 12px;
+      }
+      .mob-input {
+        border: none !important;
+      }
+      .textarea-section {
+        margin-top: 20px;
+      }
+      .textarea-wrapper {
+        position: relative;
+        background: #f8f9fa;
+        border-bottom: 2px solid #222;
+        padding: 12px 10px 6px 10px;
+      }
+
+      .textarea-wrapper textarea {
+        width: 100%;
+        border: none;
+        outline: none;
+        background: transparent;
+        font-size: 16px;
+        resize: none;
+        line-height: 1.4;
+        padding-top: 18px; /* space for floating label */
+      }
+
+      .textarea-wrapper label {
+        position: absolute;
+        top: 12px;
+        left: 10px;
+        color: #777;
+        font-size: 14px;
+        transition: 0.2s ease all;
+        pointer-events: none;
+        font-weight: 500;
+      }
+
+      .textarea-wrapper textarea:focus + label,
+      .textarea-wrapper textarea:not(:placeholder-shown) + label {
+        top: 0;
+        font-size: 12px;
+      }
+
+      .char-limit {
+        position: absolute;
+        bottom: -20px;
+        right: 0;
+        font-size: 12px;
+        color: #777;
+      }
+
+      .required {
+        color: red;
+        margin-left: 2px;
+      }
+      .file-box {
+        border: 1px solid #000;
+        padding: 11px;
+        background: none !important;
+        width: 34%;
+        text-align: center;
+        cursor: pointer;
+        margin: 10px 0;
+        border-radius: 2px;
+        transition: 0.2s ease;
+      }
+
+      .file-box:hover {
+        background: #f1f1f1;
+        border-color: #444;
+      }
+
+      .file-list {
+        margin: 5px 0 10px;
+        padding: 0;
+        list-style: none;
+      }
+
+      .file-list li {
+        font-size: 14px;
+        color: #222;
+        padding: 6px 8px;
+        border-bottom: 1px solid #eee;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .file-list li.error {
+        color: red;
+      }
+
+      .file-list button {
+        background: none;
+        border: none;
+        color: red;
+        cursor: pointer;
+        font-size: 14px;
       }
     </style>
   </head>
-
   <body>
-    <div class="container">
-      <div style="display: flex; justify-content: center; margin-bottom: 12px">
-        <img
-          src="./public/images/justification.png"
-          alt="Justification"
-          style="width: 60px; height: 60px"
-        />
-      </div>
-
-      <div>
-        <h2 style="color: #000">Your Account has been Suspended</h2>
-
-        <p style="color: #626262; font-size: 16px; text-align: center">
-          Lorem Ipsum is simply dummy text of the printing and typesetting
-          industry. Lorem Ipsum has been the industry's standard dummy text ever
-          since Lorem Ipsum is simply
+    <div class="container" style="width: 100%">
+      <div
+        style="
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          width: 100%;
+        "
+      >
+        <div style="width: 50px; height: 50px">
+          <img
+            src="./public/images/justification.png"
+            alt="recycke"
+            style="width: 100%"
+          />
+        </div>
+        <h2>Your Account has been Suspended</h2>
+        <p>
+          Your business account is temporarily disabled due to multiple reports.
+          You cannot create a new account until issue is resolved.
         </p>
       </div>
 
-      <input type="text" placeholder="Enter your Name" value="Christopher N" />
-      <input type="text" placeholder="Mobile Number" value="+91 9384493273" />
-      <input type="email" placeholder="Enter your Email Address" />
-
-      <textarea placeholder="Describe your situation in detail"></textarea>
-
-      <div class="optional">(Optional)</div>
-
-      <div class="upload-box">
-        Upload any documents or screenshots that support your explanation (PDF,
-        JPG, PNG) maximum size 10 MB.
-        <br />
-        <label class="upload-btn">
-          Click to upload
-          <input type="file" hidden />
-        </label>
+      <div class="section">
+        <p>
+          <strong
+            >Please fill out the form below if you would like to try your
+            account again.</strong
+          >
+        </p>
       </div>
 
-      <div class="terms">
-        <input type="checkbox" />
-        <span>I agree to <a href="#">terms and conditions</a></span>
+      <!-- <div class="section">
+        <label for="fullName">Name *</label>
+        <input type="text" id="fullName" placeholder="Enter your full name" />
+      </div> -->
+      <div class="input-section">
+        <div class="input-wrapper">
+          <img src="./user.png" alt="" />
+          <input type="text" id="fullName" placeholder=" " required />
+          <label for="fullName">Full Name<span class="required">*</span></label>
+        </div>
       </div>
 
-      <button class="submit-btn">Submit</button>
+      <div class="mobile-input">
+        <div class="prefix">+91</div>
+        <div class="input-wrapper mob-input">
+          <input type="tel" id="mobile" value="9877654481" placeholder=" " />
+          <label for="mobile"
+            >Mobile Number<span class="required">*</span></label
+          >
+        </div>
+      </div>
+
+      <!-- <div class="section">
+        <label for="email">Email Address</label>
+        <input type="email" id="email" placeholder="Enter your email" />
+      </div> -->
+      <div class="input-section">
+        <div class="input-wrapper">
+          <img src="./Mail.png" alt="" />
+          <input type="email" id="email" placeholder="" />
+          <label for="email">Email Address</label>
+        </div>
+      </div>
+
+      <!-- <div class="section">
+        <label for="reason">Reason for the Appeal *</label>
+        <textarea
+          id="reason"
+          rows="5"
+          maxlength="250"
+          placeholder="Write your appeal..."
+        ></textarea>
+      </div> -->
+      <div class="textarea-section">
+        <div class="textarea-wrapper">
+          <textarea
+            id="reason"
+            rows="5"
+            maxlength="250"
+            placeholder=" "
+          ></textarea>
+          <label for="reason"
+            >Reason for the Appeal<span class="required">*</span></label
+          >
+          <div class="char-limit">max 250 characters</div>
+        </div>
+      </div>
+
+      <!-- <div class="section attachments">
+        <label>Supporting Attachments</label>
+        <div class="file-box">Click to upload</div>
+        <p style="font-size: 12px; color: #777">
+          Please upload PNG, JPEG, or PDF that support your appeal. Maximum file
+          allowed is 10 MB.
+        </p>
+      </div> -->
+      <div class="section attachments">
+        <label>Supporting Attachments</label>
+        <p class="hint">
+          Please upload PNG, JPEG, or PDF that support your appeal. Maximum file
+          allowed is 10 MB.
+        </p>
+        <input
+          type="file"
+          id="fileUpload"
+          accept=".png,.jpg,.jpeg,.pdf"
+          hidden
+        />
+        <div
+          class="file-box"
+          onclick="document.getElementById('fileUpload').click()"
+        >
+          <img src="./Upload.svg" alt="" />
+          <span>Click to upload</span>
+        </div>
+
+        <ul id="fileList" class="file-list"></ul>
+      </div>
+
+      <div class="checkbox">
+        <input type="checkbox" id="agree" />
+        <label for="agree"
+          >I understand that false or repeated appeals may lead to further
+          restrictions.</label
+        >
+      </div>
+
+      <button type="button" id="submitBtn">Submit Appeal</button>
     </div>
+    <div
+      id="successModal"
+      style="
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        z-index: 9999;
+      "
+    >
+      <div
+        style="
+          background: #fff;
+          border-radius: 8px;
+          padding: 30px 20px;
+          max-width: 360px;
+          text-align: center;
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        "
+      >
+        <img
+          src="./image/suc.png"
+          alt="success"
+          style="width: 100px; margin-bottom: 15px"
+        />
+        <h3 style="margin: 0 0 10px; font-size: 18px">
+          You’ll hear from us shortly.
+        </h3>
+        <p style="font-size: 14px; color: #555; margin: 0 0 20px">
+          Your appeal has been submitted successfully.<br />
+          Our team is reviewing your details and will contact you shortly.
+        </p>
+        <button
+          id="model-close"
+          style="
+            padding: 10px 20px;
+            background: #000;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+          "
+        >
+          Okay
+        </button>
+      </div>
+    </div>
+
+    <script>
+      function getQueryParam(key) {
+        const params = new URLSearchParams(window.location.search);
+        return params.get(key);
+      }
+      const user_id = getQueryParam("user_id");
+      let business_id = 0;
+
+      async function fetchData() {
+        try {
+          const businessRes = await fetch(
+            `https://constructionapp.skyraantech.com/backend/api/appeal-form-info/${user_id}`,
+          );
+          const formInfos = await businessRes.json();
+          business_id = formInfos?.data?.id;
+          document.getElementById("businessName").innerText =
+            formInfos?.data?.company_name || "N/A";
+          document.getElementById("reasonBlocked").innerText =
+            formInfos?.data.reason ||
+            "Due to multiple reports. We have blocked your business.";
+          document.getElementById("fullName").value =
+            formInfos?.data?.name || "";
+          document.getElementById("mobile").value =
+            formInfos?.data?.mobile || "";
+          if (formInfos?.data?.business_img) {
+            document.getElementById("bus_pro").src =
+              `https://constructionapp.skyraantech.com/backend/uploads/${formInfos?.data?.business_img}`;
+          }
+        } catch (error) {
+          console.error("Error loading data:", error);
+        }
+      }
+
+      fetchData();
+      const fileInput = document.getElementById("fileUpload");
+      const fileList = document.getElementById("fileList");
+
+      let uploadedFiles = [];
+
+      fileInput.addEventListener("change", function (e) {
+        const newFile = e.target.files[0]; // single file upload
+        if (!newFile) return;
+
+        // size check
+        if (newFile.size > 10 * 1024 * 1024) {
+          alert("File too large! Maximum 10 MB allowed.");
+          return;
+        }
+
+        // add to list
+        uploadedFiles.push(newFile);
+        renderFileList();
+
+        // reset input (so same file can be re-selected if needed)
+        fileInput.value = "";
+      });
+
+      function renderFileList() {
+        fileList.innerHTML = "";
+
+        uploadedFiles.forEach((file, index) => {
+          const li = document.createElement("li");
+          const div = document.createElement("div");
+          div.style.display = "flex";
+          div.style.alignItems = "center";
+          div.style.gap = "6px";
+          const span = document.createElement("span");
+          const img = document.createElement("img");
+          img.src = "./attach.svg";
+          div.append(img);
+          div.append(span);
+          li.append(div);
+          span.textContent = file.name;
+
+          const delBtn = document.createElement("img");
+          delBtn.src = "./close.png";
+          delBtn.style.cursor = "pointer";
+          delBtn.onclick = () => {
+            uploadedFiles.splice(index, 1);
+            renderFileList();
+          };
+
+          li.appendChild(delBtn);
+          fileList.appendChild(li);
+        });
+      }
+
+      const reason = document.getElementById("reason");
+
+      reason.addEventListener("input", (e) => {
+        // Prevent leading spaces
+        if (e.target.value.startsWith(" ")) {
+          e.target.value = e.target.value.trimStart();
+        }
+      });
+
+      function showSuccessModal() {
+        document.getElementById("successModal").style.display = "flex";
+      }
+
+      document
+        .getElementById("model-close")
+        .addEventListener("click", function () {
+          AndroidInterface.onImageClick("333");
+        });
+
+      document
+        .getElementById("submitBtn")
+        .addEventListener("click", async () => {
+          const name = document.getElementById("fullName").value.trim();
+          const mobile = document.getElementById("mobile").value.trim();
+          const email = document.getElementById("email").value.trim();
+          const reason = document.getElementById("reason").value.trim();
+          const agree = document.getElementById("agree").checked;
+
+          const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+          if (!name || !mobile || !reason) {
+            alert("Please fill all required fields.");
+            return;
+          }
+          if (email && !emailRegex.test(email)) {
+            alert("Please enter a valid email address.");
+            return;
+          }
+          if (!agree) {
+            alert("You must agree before submitting.");
+            return;
+          }
+
+          try {
+            const imageIds = [];
+            for (const file of uploadedFiles) {
+              const formData = new FormData();
+              formData.append("image", file);
+
+              const res = await fetch(
+                `https://constructionapp.skyraantech.com/backend/api/add-image`,
+                {
+                  method: "POST",
+                  body: formData,
+                },
+              );
+
+              const data = await res.json();
+              console.log("data", data);
+              if (data.status === 0) {
+                imageIds.push(data?.data?.id);
+              }
+            }
+
+            // return console.log("imageIds", imageIds);
+
+            const appealPayload = {
+              user_id,
+              business_id,
+              name,
+              mobile,
+              email,
+              reason,
+              attachments: imageIds?.join(","),
+            };
+
+            const appealRes = await fetch(
+              `https://constructionapp.skyraantech.com/backend/api/add-appeal`,
+              {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(appealPayload),
+              },
+            );
+
+            const appealData = await appealRes.json();
+
+            if (appealData.status === 0) {
+              showSuccessModal();
+            } else {
+              alert("Something went wrong. Please try again.");
+            }
+            // AndroidInterface.onImageClick("333");
+          } catch (error) {
+            console.error("Error:", error);
+            alert("Something went wrong. Please try again.");
+          }
+        });
+    </script>
   </body>
 </html>
