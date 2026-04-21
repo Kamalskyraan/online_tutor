@@ -13,10 +13,7 @@ const authMiddleware = (req, res, next) => {
     try {
         const authHeader = req.headers.authorization;
         if (!authHeader || !authHeader.startsWith("Bearer ")) {
-            return res.status(200).json({
-                status: 2,
-                message: "Access denied. No token provided.",
-            });
+            return (0, helper_1.sendResponse)(res, 200, 2, [], "Access denied. No token provided", []);
         }
         const token = authHeader.split(" ")[1];
         const decoded = jsonwebtoken_1.default.verify(token, JWT_SECRET);
@@ -27,10 +24,7 @@ const authMiddleware = (req, res, next) => {
         next();
     }
     catch (err) {
-        return res.status(200).json({
-            status: 0,
-            message: "Invalid or expired token",
-        });
+        return (0, helper_1.sendResponse)(res, 500, 0, [], "Internal Server Error", []);
     }
 };
 exports.authMiddleware = authMiddleware;
@@ -46,8 +40,7 @@ const blockCheckMiddleware = async (req, res, next) => {
         next();
     }
     catch (err) {
-        console.error(err);
-        return res.status(500).json({ message: "Server error" });
+        return (0, helper_1.sendResponse)(res, 500, 0, [], "Internal Server Error", []);
     }
 };
 exports.blockCheckMiddleware = blockCheckMiddleware;
