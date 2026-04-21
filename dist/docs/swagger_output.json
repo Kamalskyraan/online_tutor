@@ -5,10 +5,10 @@
         "description": "Api Docs",
         "version": "1.0.0"
     },
-    "host": "online-tutor.skyraantech.com/server",
+    "host": "localhost:5012",
     "basePath": "/",
     "schemes": [
-        "https"
+        "http"
     ],
     "paths": {
         "/api/upload": {
@@ -3420,23 +3420,6 @@
                 "responses": {
                     "200": {
                         "description": "Account Reactive successfully"
-                    },
-                    "500": {
-                        "description": "Internal Server Error"
-                    }
-                }
-            }
-        },
-        "/api/justification/submit-justification": {
-            "post": {
-                "tags": [
-                    "14.Justify"
-                ],
-                "summary": "submit justification",
-                "description": "Submit Justification for blocked users",
-                "responses": {
-                    "200": {
-                        "description": "Country data list fetched successfully"
                     },
                     "500": {
                         "description": "Internal Server Error"
