@@ -3092,51 +3092,6 @@
                 }
             }
         },
-        "/api/auth/request-otp": {
-            "post": {
-                "tags": [
-                    "1.Auth"
-                ],
-                "summary": "Request OTP",
-                "description": "Send OTP to mobile(0->no check in DB || 1-> check DB)",
-                "parameters": [
-                    {
-                        "name": "body",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "type": "object",
-                            "properties": {
-                                "mobile": {
-                                    "type": "string",
-                                    "example": "9876543210"
-                                },
-                                "country_code": {
-                                    "type": "string",
-                                    "example": "+91"
-                                },
-                                "type": {
-                                    "type": "string",
-                                    "example": "0 or 1 or 2"
-                                },
-                                "email": {
-                                    "type": "string",
-                                    "example": "abc@gmail.com"
-                                }
-                            }
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OTP sent successfully"
-                    },
-                    "400": {
-                        "description": "Invalid mobile number"
-                    }
-                }
-            }
-        },
         "/api/auth/verify-otp": {
             "post": {
                 "tags": [

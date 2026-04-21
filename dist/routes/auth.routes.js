@@ -3,35 +3,30 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const auth_controller_1 = require("../controller/auth.controller");
 const router = (0, express_1.Router)();
-router.post("/request-otp", (req, res) => {
-    /*
-      #swagger.tags = ['1.Auth']
-      #swagger.summary = 'Request OTP'
-      #swagger.description = 'Send OTP to mobile(0->no check in DB || 1-> check DB)'
-  
-      
-      #swagger.parameters['body'] = {
-        in: 'body',
-        required: true,
-        schema: {
-          mobile: '9876543210',
-          country_code : '+91',
-          type : "0 or 1 or 2",
-          email : "abc@gmail.com"
-        }
-      }
-  
-  
-      #swagger.responses[200] = {
-        description: "OTP sent successfully"
-      }
-  
-      #swagger.responses[400] = {
-        description: "Invalid mobile number"
-      }
-    */
-    return auth_controller_1.AuthController.RequestOtp(req, res);
-});
+// router.post("/request-otp", (req, res) => {
+//   /*
+//     #swagger.tags = ['1.Auth']
+//     #swagger.summary = 'Request OTP'
+//     #swagger.description = 'Send OTP to mobile(0->no check in DB || 1-> check DB)'
+//     #swagger.parameters['body'] = {
+//       in: 'body',
+//       required: true,
+//       schema: {
+//         mobile: '9876543210',
+//         country_code : '+91',
+//         type : "0 or 1 or 2",
+//         email : "abc@gmail.com"
+//       }
+//     }
+//     #swagger.responses[200] = {
+//       description: "OTP sent successfully"
+//     }
+//     #swagger.responses[400] = {
+//       description: "Invalid mobile number"
+//     }
+//   */
+//   return AuthController.RequestOtp(req, res);
+// });
 router.post("/verify-otp", (req, res) => {
     /*
       #swagger.tags = ['1.Auth']
