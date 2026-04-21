@@ -8,13 +8,14 @@ import router from "./routes";
 import db, { connectDB } from "./config/db";
 import { startDeleteCron } from "./config/cron";
 import { generateUserId } from "./utils/helper";
+import { authMiddleware, blockCheckMiddleware } from "./config/middleware";
 const app = express();
 
 const PORT = process.env.PORT || 5000;
 
 app.use(express.json());
 
-app.use("/api", router);
+app.use("/api", authMiddleware, blockCheckMiddleware, router);
 app.use("/uploads", express.static("uploads"));
 
 // connectDB();
@@ -23,7 +24,6 @@ app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerFile));
 app.get("/check", (req, res) => {
   res.send("hiii");
 });
-
 
 const data = JSON.parse(fs.readFileSync("./public/country.json", "utf8"));
 

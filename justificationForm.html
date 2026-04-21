@@ -367,20 +367,18 @@
         <input type="text" id="fullName" placeholder="Enter your full name" />
       </div> -->
       <div class="input-section">
+        <label for="fullName">Full Name<span class="required"></span></label>
         <div class="input-wrapper">
           <img src="./user.png" alt="" />
           <input type="text" id="fullName" placeholder=" " required />
-          <label for="fullName">Full Name<span class="required">*</span></label>
         </div>
       </div>
 
+      <label for="mobile">Mobile Number<span class="required">*</span></label>
       <div class="mobile-input">
         <div class="prefix">+91</div>
         <div class="input-wrapper mob-input">
           <input type="tel" id="mobile" value="9877654481" placeholder=" " />
-          <label for="mobile"
-            >Mobile Number<span class="required">*</span></label
-          >
         </div>
       </div>
 
@@ -389,10 +387,10 @@
         <input type="email" id="email" placeholder="Enter your email" />
       </div> -->
       <div class="input-section">
+        <label for="email">Email Address</label>
         <div class="input-wrapper">
           <img src="./Mail.png" alt="" />
           <input type="email" id="email" placeholder="" />
-          <label for="email">Email Address</label>
         </div>
       </div>
 
@@ -406,6 +404,9 @@
         ></textarea>
       </div> -->
       <div class="textarea-section">
+         <label for="reason"
+            >Reason for Exceeding Report Limit</span></label
+          >
         <div class="textarea-wrapper">
           <textarea
             id="reason"
@@ -413,9 +414,7 @@
             maxlength="250"
             placeholder=" "
           ></textarea>
-          <label for="reason"
-            >Reason for the Appeal<span class="required">*</span></label
-          >
+         
           <div class="char-limit">max 250 characters</div>
         </div>
       </div>
@@ -429,7 +428,7 @@
         </p>
       </div> -->
       <div class="section attachments">
-        <label>Supporting Attachments</label>
+        <label>Supporting Evidence</label>
         <p class="hint">
           Please upload PNG, JPEG, or PDF that support your appeal. Maximum file
           allowed is 10 MB.
