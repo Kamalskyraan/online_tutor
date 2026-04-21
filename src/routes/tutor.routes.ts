@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { TutorController } from "../controller/tutor.controller";
-import { authMiddleware, authMiddlewareForDemos } from "../config/middleware";
+import { authMiddleware } from "../config/middleware";
 
 const router = Router();
 // router.post('/add-update-tutor',addUpdateTutorPersonal)
