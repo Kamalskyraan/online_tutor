@@ -1,6 +1,5 @@
 import { Router } from "express";
 import { TutorController } from "../controller/tutor.controller";
-import { authMiddleware } from "../config/middleware";
 
 const router = Router();
 
@@ -61,7 +60,7 @@ router.post("/remove-demos", (req, res) => {
   TutorController.removeDemos(req, res);
 });
 
-router.post("/get-demos", authMiddleware, (req, res) => {
+router.post("/get-demos", (req, res) => {
   /*
     #swagger.tags = ['8.Tutor']
     #swagger.summary = 'get Demo videos or Images'

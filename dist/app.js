@@ -15,7 +15,6 @@ const cron_1 = require("./config/cron");
 const app = (0, express_1.default)();
 const PORT = process.env.PORT || 5000;
 app.use(express_1.default.json());
-// authMiddleware, blockCheckMiddleware,
 app.use("/api", routes_1.default);
 app.use("/uploads", express_1.default.static("uploads"));
 app.use("/docs", swagger_ui_express_1.default.serve, swagger_ui_express_1.default.setup(swagger_output_json_1.default));
