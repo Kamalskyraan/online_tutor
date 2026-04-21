@@ -298,11 +298,6 @@
                 "description": "fetch user",
                 "parameters": [
                     {
-                        "name": "authorization",
-                        "in": "header",
-                        "type": "string"
-                    },
-                    {
                         "name": "body",
                         "in": "body",
                         "required": true,
