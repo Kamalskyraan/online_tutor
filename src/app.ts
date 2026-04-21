@@ -20,8 +20,6 @@ app.use(express.json());
 // authMiddleware, blockCheckMiddleware,
 app.use("/api", router);
 
-app.use("/api/auth", authRoutes);
-
 app.use("/uploads", express.static("uploads"));
 
 app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerFile));
