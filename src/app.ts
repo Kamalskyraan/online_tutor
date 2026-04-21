@@ -21,7 +21,7 @@ app.use(express.json());
 app.use("/api", router);
 
 app.use("/api/auth", authRoutes);
-app.use("/api/justification", authMiddleware, justificationRoutes);
+// app.use("/api/justification", authMiddleware, justificationRoutes);
 app.use("/uploads", express.static("uploads"));
 
 app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerFile));
