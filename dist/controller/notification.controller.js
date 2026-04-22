@@ -30,8 +30,12 @@ class NotificationController {
             if (!receiver_id) {
                 return (0, helper_1.sendResponse)(res, 200, 0, [], "receiver_id is required", []);
             }
-            const result = await notifyMdl.removeAllNotify({ receiver_id, ids });
-            return (0, helper_1.sendResponse)(res, 200, 1, [], action === "undo"
+            const result = await notifyMdl.removeAllNotify({
+                receiver_id,
+                ids,
+                action,
+            });
+            return (0, helper_1.sendResponse)(res, 200, 1, action === "undo" ? [result] : [], action === "undo"
                 ? "Last notification restored successfully"
                 : "Notification action completed", []);
         }

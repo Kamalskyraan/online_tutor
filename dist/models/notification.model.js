@@ -120,7 +120,7 @@ class NotificationModel {
         const { ids, receiver_id, action } = data;
         if (action === "undo") {
             const rows = await (0, helper_1.executeQuery)(`
-      SELECT id
+      SELECT *
       FROM notifications
       WHERE receiver_id = ? AND is_deleted = 1
       ORDER BY updated_at DESC
@@ -129,7 +129,7 @@ class NotificationModel {
             if (!rows.length) {
                 throw new Error("No deleted notifications found");
             }
-            return await (0, helper_1.executeQuery)(`
+            await (0, helper_1.executeQuery)(`
       UPDATE notifications
       SET is_deleted = 0
       WHERE id = ? AND receiver_id = ?
