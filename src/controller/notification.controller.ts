@@ -89,7 +89,7 @@ export class NotificationController {
         res,
         200,
         1,
-        action === "undo" ? [result] : [],
+        [],
         action === "undo"
           ? "Last notification restored successfully"
           : "Notification action completed",

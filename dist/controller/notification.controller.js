@@ -35,7 +35,7 @@ class NotificationController {
                 ids,
                 action,
             });
-            return (0, helper_1.sendResponse)(res, 200, 1, action === "undo" ? [result] : [], action === "undo"
+            return (0, helper_1.sendResponse)(res, 200, 1, [], action === "undo"
                 ? "Last notification restored successfully"
                 : "Notification action completed", []);
         }
