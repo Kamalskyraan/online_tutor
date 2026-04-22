@@ -840,10 +840,8 @@ class TutorModel {
     //   };
     // }
     async getTutorLeadsGraph(tutor_id, from_date, to_date) {
-        // ✅ Date Fix (all time till to_date)
-        const finalFromDate = from_date || "2000-01-01 00:00:00";
+        const finalFromDate = from_date || "2026-01-01 00:00:00";
         const finalToDate = to_date || new Date().toISOString().slice(0, 19).replace("T", " ");
-        // ✅ Fetch data
         const [leadRows, requestRows] = await Promise.all([
             (0, helper_1.executeQuery)(`SELECT created_at FROM tutor_leads 
        WHERE tutor_id=? AND lead_type='profile' 
@@ -857,7 +855,7 @@ class TutorModel {
      AND created_at BETWEEN ? AND ?`, [tutor_id, finalFromDate, finalToDate]);
         const requestCount = await (0, helper_1.executeQuery)(`SELECT COUNT(*) as req FROM tutor_student_rel 
      WHERE tutor_id = ? AND status='pending' 
-     AND created_at BETWEEN ? AND ?`, [tutor_id, finalFromDate, finalToDate]);
+     AND requested_at BETWEEN ? AND ?`, [tutor_id, finalFromDate, finalToDate]);
         const from = new Date(finalFromDate);
         const to = new Date(finalToDate);
         const totalDays = Math.ceil((to.getTime() - from.getTime()) / (1000 * 60 * 60 * 24)) + 1;

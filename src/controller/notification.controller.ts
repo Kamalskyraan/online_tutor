@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { sendResponse } from "../utils/helper";
+import { convertNullToString, sendResponse } from "../utils/helper";
 import { NotificationModel } from "../models/notification.model";
 
 const notifyMdl = new NotificationModel();
@@ -56,11 +56,13 @@ export class NotificationController {
         page,
       });
 
+      const results = await convertNullToString(result);
+
       return sendResponse(
         res,
         200,
         1,
-        result,
+        results,
         "Notification Fetched Successfully",
         [],
       );

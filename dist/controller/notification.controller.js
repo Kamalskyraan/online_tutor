@@ -16,7 +16,8 @@ class NotificationController {
                 receiver_id,
                 page,
             });
-            return (0, helper_1.sendResponse)(res, 200, 1, result, "Notification Fetched Successfully", []);
+            const results = await (0, helper_1.convertNullToString)(result);
+            return (0, helper_1.sendResponse)(res, 200, 1, results, "Notification Fetched Successfully", []);
         }
         catch (err) {
             return (0, helper_1.sendResponse)(res, 500, 0, [], "Internal Server Error", [

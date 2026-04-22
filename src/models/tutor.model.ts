@@ -1113,12 +1113,10 @@ export class TutorModel {
     from_date?: string,
     to_date?: string,
   ) {
-    // ✅ Date Fix (all time till to_date)
-    const finalFromDate = from_date || "2000-01-01 00:00:00";
+    const finalFromDate = from_date || "2026-01-01 00:00:00";
     const finalToDate =
       to_date || new Date().toISOString().slice(0, 19).replace("T", " ");
 
-    // ✅ Fetch data
     const [leadRows, requestRows]: any = await Promise.all([
       executeQuery(
         `SELECT created_at FROM tutor_leads 
@@ -1144,7 +1142,7 @@ export class TutorModel {
     const requestCount: any = await executeQuery(
       `SELECT COUNT(*) as req FROM tutor_student_rel 
      WHERE tutor_id = ? AND status='pending' 
-     AND created_at BETWEEN ? AND ?`,
+     AND requested_at BETWEEN ? AND ?`,
       [tutor_id, finalFromDate, finalToDate],
     );
 
@@ -1156,7 +1154,6 @@ export class TutorModel {
 
     let buckets: any[] = [];
 
-    
     if (totalDays <= 7) {
       let current = new Date(from);
       const isSameDay = from.toDateString() === to.toDateString();
@@ -1209,7 +1206,6 @@ export class TutorModel {
         current.setDate(current.getDate() + 1);
       }
 
-   
       for (const row of leadRows) {
         const d = new Date(row.created_at);
         for (const b of buckets) {
@@ -1229,10 +1225,7 @@ export class TutorModel {
           }
         }
       }
-    }
-
-    
-    else {
+    } else {
       let temp: any[] = [];
       let current = new Date(from);
 
@@ -1303,7 +1296,10 @@ export class TutorModel {
     // ✅ FINAL GRAPH DATA
     // =========================================================
     const x_axis = buckets.map((b) => b.label);
+
+
     const leads_data = buckets.map((b) => b.leads);
+    
     const request_data = buckets.map((b) => b.requests);
 
     const max = Math.max(...leads_data, ...request_data, 0);
@@ -1318,8 +1314,6 @@ export class TutorModel {
     const all_time = Array.from({ length: endYear - startYear + 1 }, (_, i) =>
       String(startYear + i),
     );
-
-    
 
     return {
       tutor_graph: {
