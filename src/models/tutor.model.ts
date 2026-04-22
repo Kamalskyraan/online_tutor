@@ -907,7 +907,6 @@ export class TutorModel {
 
     let finalFromDate = from_date;
 
-    
     if (!from_date && to_date) {
       const minDateRes: any = await executeQuery(
         `
@@ -919,12 +918,11 @@ export class TutorModel {
         [tutor_id, tutor_id],
       );
 
-      finalFromDate = minDateRes[0]?.first_date || "1970-01-01";
+      finalFromDate = minDateRes[0]?.first_date || "2026-01-01";
     }
 
-    if (!finalFromDate) finalFromDate = "1970-01-01";
+    if (!finalFromDate) finalFromDate = "2026-01-01";
 
-   
     const [leadRows, requestRows]: any = await Promise.all([
       executeQuery(
         `SELECT created_at FROM tutor_leads WHERE tutor_id=? AND lead_type='profile' AND created_at BETWEEN ? AND ?`,
@@ -1090,7 +1088,7 @@ export class TutorModel {
     const y_axis_scale = Array.from({ length: 6 }, (_, i) => i * stepY);
     y_axis_scale[5] = max;
 
-    const startYear = from.getFullYear();
+    const startYear = Math.max(from.getFullYear(), 2026);
     const endYear = to.getFullYear();
 
     const all_time = Array.from({ length: endYear - startYear + 1 }, (_, i) =>
