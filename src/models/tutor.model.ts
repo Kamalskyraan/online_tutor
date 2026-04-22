@@ -923,6 +923,9 @@ export class TutorModel {
 
     if (!finalFromDate) finalFromDate = "2026-01-01";
 
+
+    
+
     const [leadRows, requestRows]: any = await Promise.all([
       executeQuery(
         `SELECT created_at FROM tutor_leads WHERE tutor_id=? AND lead_type='profile' AND created_at BETWEEN ? AND ?`,

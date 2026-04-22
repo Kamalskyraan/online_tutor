@@ -168,7 +168,7 @@ export class NotificationModel {
   }
 
   async removeAllNotify(data: any) {
-    const { id, receiver_id, action } = data;
+    const { ids, receiver_id, action } = data;
 
     if (action === "undo") {
       const rows: any = await executeQuery(
@@ -204,29 +204,35 @@ export class NotificationModel {
       [receiver_id],
     );
 
-    let result;
+    if (ids && ids.length > 0) {
+      if (ids.length === 1) {
+        return await executeQuery(
+          `
+        UPDATE notifications
+        SET is_deleted = 1, updated_at = NOW()
+        WHERE id = ? AND receiver_id = ?
+        `,
+          [ids[0], receiver_id],
+        );
+      }
 
-    if (id) {
-      result = await executeQuery(
+      return await executeQuery(
         `
-      UPDATE notifications
-      SET is_deleted = 1, updated_at = NOW()
-      WHERE id = ? AND receiver_id = ?
+      DELETE FROM notifications
+      WHERE id IN (?) AND receiver_id = ?
       `,
-        [id, receiver_id],
-      );
-    } else {
-      result = await executeQuery(
-        `
-      UPDATE notifications
-      SET is_deleted = 1, updated_at = NOW()
-      WHERE receiver_id = ? AND is_deleted = 0
-      `,
-        [receiver_id],
+        [ids, receiver_id],
       );
     }
 
-    return result;
+    return await executeQuery(
+      `
+    UPDATE notifications
+    SET is_deleted = 1, updated_at = NOW()
+    WHERE receiver_id = ? AND is_deleted = 0
+    `,
+      [receiver_id],
+    );
   }
 
   async checkLastNotification(receiver_id: string) {

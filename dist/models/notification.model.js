@@ -117,7 +117,7 @@ class NotificationModel {
         };
     }
     async removeAllNotify(data) {
-        const { id, receiver_id, action } = data;
+        const { ids, receiver_id, action } = data;
         if (action === "undo") {
             const rows = await (0, helper_1.executeQuery)(`
       SELECT id
@@ -139,22 +139,24 @@ class NotificationModel {
     DELETE FROM notifications
     WHERE receiver_id = ? AND is_deleted = 1
     `, [receiver_id]);
-        let result;
-        if (id) {
-            result = await (0, helper_1.executeQuery)(`
-      UPDATE notifications
-      SET is_deleted = 1, updated_at = NOW()
-      WHERE id = ? AND receiver_id = ?
-      `, [id, receiver_id]);
+        if (ids && ids.length > 0) {
+            if (ids.length === 1) {
+                return await (0, helper_1.executeQuery)(`
+        UPDATE notifications
+        SET is_deleted = 1, updated_at = NOW()
+        WHERE id = ? AND receiver_id = ?
+        `, [ids[0], receiver_id]);
+            }
+            return await (0, helper_1.executeQuery)(`
+      DELETE FROM notifications
+      WHERE id IN (?) AND receiver_id = ?
+      `, [ids, receiver_id]);
         }
-        else {
-            result = await (0, helper_1.executeQuery)(`
-      UPDATE notifications
-      SET is_deleted = 1, updated_at = NOW()
-      WHERE receiver_id = ? AND is_deleted = 0
-      `, [receiver_id]);
-        }
-        return result;
+        return await (0, helper_1.executeQuery)(`
+    UPDATE notifications
+    SET is_deleted = 1, updated_at = NOW()
+    WHERE receiver_id = ? AND is_deleted = 0
+    `, [receiver_id]);
     }
     async checkLastNotification(receiver_id) {
         const rows = await (0, helper_1.executeQuery)(`

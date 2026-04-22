@@ -3460,8 +3460,14 @@
                                     "example": "USER_eFzOtN1M"
                                 },
                                 "id": {
-                                    "type": "number",
-                                    "example": 1
+                                    "type": "array",
+                                    "example": [
+                                        "1",
+                                        "2"
+                                    ],
+                                    "items": {
+                                        "type": "string"
+                                    }
                                 },
                                 "action": {
                                     "type": "string",

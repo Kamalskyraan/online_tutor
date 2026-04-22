@@ -73,13 +73,13 @@ export class NotificationController {
 
   static async removeNotifications(req: Request, res: Response) {
     try {
-      const { id, receiver_id, action } = req.body;
+      const { ids, receiver_id, action } = req.body;
 
       if (!receiver_id) {
         return sendResponse(res, 200, 0, [], "receiver_id is required", []);
       }
 
-      const result = await notifyMdl.removeAllNotify({ receiver_id, id });
+      const result = await notifyMdl.removeAllNotify({ receiver_id, ids });
 
       return sendResponse(
         res,

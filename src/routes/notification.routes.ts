@@ -43,7 +43,7 @@ router.post("/remove-all-notify", (req, res) => {
       required: true,
       schema: {  
        receiver_id : "USER_eFzOtN1M",
-       id : 1,
+       id : ["1","2"],
        action : "undo"
       }
     }
