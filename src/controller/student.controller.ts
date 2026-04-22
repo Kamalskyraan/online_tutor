@@ -7,11 +7,13 @@ import {
 } from "../utils/helper";
 import { Location } from "../interface/interface";
 import { LeadsModel } from "../models/leads.model";
+import { NotificationModel } from "../models/notification.model";
+import { NotificationTemplates } from "../config/notification.template";
 
 export class StudentController {
   private static studentModel = new StudentModel();
   private static leadsMdl = new LeadsModel();
-
+  private static noteModel = new NotificationModel();
   static getStudentData = async (req: Request, res: Response) => {
     try {
       const { student_id } = req.body;
@@ -91,11 +93,30 @@ export class StudentController {
   static bookASession = async (req: Request, res: Response) => {
     try {
       const { booking_id, student_id, tutor_id, linked_sub } = req.body;
+
       const data = await this.studentModel.studentClassBooking({
         booking_id,
         student_id,
         tutor_id,
         linked_sub,
+      });
+
+      const userId = await this.noteModel.getUserIdFromRole({
+        tutor_id,
+        student_id,
+      });
+      const tutorUserId = userId.tutor_user_id;
+      const studentUserId = userId.student_user_id;
+      const notif = NotificationTemplates.studentRequest({});
+
+      await this.noteModel.insertNOtifcations({
+        sender_id: studentUserId,
+        receiver_id: tutorUserId,
+        title: notif.title,
+        message: notif.message,
+        type: notif.type,
+        extra_data: notif.extra_data,
+        sent_to: "tutor",
       });
 
       return sendResponse(

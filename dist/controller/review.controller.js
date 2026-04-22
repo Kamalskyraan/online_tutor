@@ -145,38 +145,36 @@ class ReviewController {
                 return (0, helper_1.sendResponse)(res, 200, 0, [], "Review not found", []);
             }
             const receiver_id = reviewRes[0].student_id;
-            if (sender_id === receiver_id) {
-                const result = await rvModel.toggleReviewLike({
-                    review_id,
-                    student_id,
-                    tutor_id,
-                });
-                return (0, helper_1.sendResponse)(res, 200, 1, { like_count: result.total_likes, action: result.action }, result.message, []);
-            }
             const result = await rvModel.toggleReviewLike({
                 review_id,
                 student_id,
                 tutor_id,
             });
-            const userId = await noteModel.getUserIdFromRole({
-                tutor_id: sender_id,
-                student_id: receiver_id,
-            });
-            const notif = notification_template_1.NotificationTemplates.reviewLike({ review_id });
-            if (result.action === "like") {
-                await noteModel.insertNOtifcations({
-                    sender_id: userId.tutor_user_id,
-                    receiver_id: userId.student_user_id,
-                    title: notif.title,
-                    message: notif.message,
-                    type: notif.type,
-                    extra_data: notif.extra_data,
-                    sent_to: "student",
+            if (sender_id !== receiver_id) {
+                const userId = await noteModel.getUserIdFromRole({
+                    tutor_id: sender_id,
+                    student_id: receiver_id,
                 });
-                // await sendPushNotification(receiver_id, notif);
-            }
-            else if (result.action === "dislike") {
-                await rvModel.removeNotification({ sender_id, receiver_id, review_id });
+                const notif = notification_template_1.NotificationTemplates.reviewLike({ review_id });
+                if (result.action === "like") {
+                    await noteModel.insertNOtifcations({
+                        sender_id: userId.tutor_user_id,
+                        receiver_id: userId.student_user_id,
+                        title: notif.title,
+                        message: notif.message,
+                        type: notif.type,
+                        extra_data: notif.extra_data,
+                        sent_to: "student",
+                    });
+                    // await sendPushNotification(receiver_id, notif);
+                }
+                else if (result.action === "dislike") {
+                    await rvModel.removeNotification({
+                        sender_id: userId.tutor_user_id,
+                        receiver_id: userId.student_user_id,
+                        review_id,
+                    });
+                }
             }
             return (0, helper_1.sendResponse)(res, 200, 1, { like_count: result.total_likes, action: result.action }, result.message, []);
         }

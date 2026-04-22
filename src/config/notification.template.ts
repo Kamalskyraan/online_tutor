@@ -41,4 +41,15 @@ export class NotificationTemplates {
       extra_data: { review_id },
     };
   }
+
+  static studentRequest({ subject, student_name }: any) {
+    return {
+      title: "New Request Received",
+      message: `student requested to your subject`,
+      type: "STUDENT_REQUEST",
+      extra_data: { subject, student_name },
+    };
+  }
+
+  
 }

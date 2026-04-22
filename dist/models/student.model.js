@@ -60,9 +60,14 @@ class StudentModel {
             where += ` AND ts.tenure_type = ?`;
             params.push(tenure_type);
         }
+        // if (class_mode) {
+        //   where += ` AND ts.class_mode = ?`;
+        //   params.push(class_mode);
+        // }
         if (class_mode) {
-            where += ` AND ts.class_mode = ?`;
-            params.push(class_mode);
+            const modes = class_mode.split(",").map((m) => m.trim());
+            where += ` AND ts.class_mode IN (${modes.map(() => "?").join(",")})`;
+            params.push(...modes);
         }
         if (class_type) {
             where += ` AND ts.class_type = ?`;

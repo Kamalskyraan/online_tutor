@@ -7,8 +7,7 @@ import swaggerFile from "./docs/swagger_output.json";
 import router from "./routes";
 import db, { connectDB } from "./config/db";
 import { startDeleteCron } from "./config/cron";
-
-
+import cors from "cors";
 
 const app = express();
 
@@ -16,6 +15,13 @@ const PORT = process.env.PORT || 5000;
 
 app.use(express.json());
 
+app.use(
+  cors({
+    origin: "http://127.0.0.1:5500",
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    credentials: true,
+  }),
+);
 
 app.use("/api", router);
 

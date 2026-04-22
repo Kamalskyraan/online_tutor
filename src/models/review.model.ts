@@ -743,14 +743,15 @@ export class ReviewModel {
   }
 
   async removeNotification(data: any) {
-    const { sender_id, receiver_id, review_id } = data;
+    const { sender_id, receiver_id } = data;
+
+  
     await executeQuery(
       `DELETE FROM notifications 
          WHERE type = 'REVIEW_LIKE'
            AND sender_id = ?
-           AND receiver_id = ?
-           AND JSON_EXTRACT(extra_data, '$.review_id') = ?`,
-      [sender_id, receiver_id, review_id],
+           AND receiver_id = ?`,
+      [sender_id, receiver_id],
     );
   }
 }

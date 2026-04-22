@@ -83,7 +83,7 @@ class NotificationModel {
     FROM notifications n
     LEFT JOIN users u ON u.user_id = n.sender_id
 
-    WHERE n.receiver_id = ?
+    WHERE n.receiver_id = ? AND is_deleted = 0
     ORDER BY n.id DESC
     LIMIT ? OFFSET ?
     `, [receiver_id, Number(limit), Number(offset)]);
@@ -115,6 +115,65 @@ class NotificationModel {
                 totalPages: Math.ceil(total / limit),
             },
         };
+    }
+    async removeAllNotify(data) {
+        const { id, receiver_id, action } = data;
+        if (action === "undo") {
+            const rows = await (0, helper_1.executeQuery)(`
+      SELECT id
+      FROM notifications
+      WHERE receiver_id = ? AND is_deleted = 1
+      ORDER BY updated_at DESC
+      LIMIT 1
+      `, [receiver_id]);
+            if (!rows.length) {
+                throw new Error("No deleted notifications found");
+            }
+            return await (0, helper_1.executeQuery)(`
+      UPDATE notifications
+      SET is_deleted = 0
+      WHERE id = ? AND receiver_id = ?
+      `, [rows[0].id, receiver_id]);
+        }
+        await (0, helper_1.executeQuery)(`
+    DELETE FROM notifications
+    WHERE receiver_id = ? AND is_deleted = 1
+    `, [receiver_id]);
+        let result;
+        if (id) {
+            result = await (0, helper_1.executeQuery)(`
+      UPDATE notifications
+      SET is_deleted = 1, updated_at = NOW()
+      WHERE id = ? AND receiver_id = ?
+      `, [id, receiver_id]);
+        }
+        else {
+            result = await (0, helper_1.executeQuery)(`
+      UPDATE notifications
+      SET is_deleted = 1, updated_at = NOW()
+      WHERE receiver_id = ? AND is_deleted = 0
+      `, [receiver_id]);
+        }
+        return result;
+    }
+    async checkLastNotification(receiver_id) {
+        const rows = await (0, helper_1.executeQuery)(`
+    SELECT is_view
+    FROM notifications
+    WHERE receiver_id = ? AND is_deleted = 0
+    ORDER BY created_at DESC
+    LIMIT 1
+    `, [receiver_id]);
+        if (!rows.length)
+            return 1;
+        return rows[0].is_view === 1 ? 1 : 0;
+    }
+    async updateAllView(receiver_id) {
+        return await (0, helper_1.executeQuery)(`
+    UPDATE notifications
+    SET is_view = 1
+    WHERE receiver_id = ? AND is_deleted = 0
+    `, [receiver_id]);
     }
 }
 exports.NotificationModel = NotificationModel;

@@ -490,6 +490,118 @@ export class AuthController {
       ]);
     }
   };
+
+  static appealFormInfo = async (req: Request, res: Response) => {
+    try {
+      let { user_id } = req.params;
+
+      if (!user_id) {
+        sendResponse(res, 200, 1, [], "User Id is required", []);
+        return;
+      }
+
+      let findQuery = `SELECT mobile,user_name FROM users WHERE user_id = ?`;
+
+      let userInfo = await executeQuery(findQuery, [user_id]);
+
+      const resp = {
+        mobile: userInfo[0].mobile,
+        name: userInfo[0].user_name,
+      };
+
+      sendResponse(res, 200, 1, resp, "Appeal form infos", []);
+    } catch (error) {
+      sendResponse(
+        res,
+        500,
+        1,
+        [],
+        "Please contact admin or try again later",
+        error,
+      );
+    }
+  };
+
+  // static addAppeal = async (req: Request, res: Response) => {
+  //   try {
+  //     const { user_id } = req.body;
+
+  //     if (!user_id) {
+  //       return sendResponse(res, 200, 0, [], "User ID is required", []);
+  //     }
+
+  //     const userQuery = `
+  //     SELECT id, device_token,  device_type 
+  //     FROM users 
+  //     WHERE user_id = ?
+  //   `;
+  //     const userResp: any = await executeQuery(userQuery, [user_id]);
+
+  //     if (!userResp.length) {
+  //       return sendResponse(res, 200, 0, [], "User not found", []);
+  //     }
+
+  //     let fields: any[] = [];
+  //     let values: any[] = [];
+
+  //     Object.entries(req.body).forEach(([key, value]) => {
+  //       if (value !== undefined && value !== null && value !== "") {
+  //         fields.push(key);
+  //         values.push(value);
+  //       }
+  //     });
+
+  //     const placeholders = fields.map(() => "?");
+
+  //     const insertQuery = `
+  //     INSERT INTO appeals (${fields.join(",")})
+  //     VALUES (${placeholders.join(",")})
+  //   `;
+
+  //     await executeQuery(insertQuery, values);
+
+  //     await executeQuery(
+  //       `DELETE FROM notifications WHERE user_id = ? AND type = ?`,
+  //       [user_id, 5],
+  //     );
+
+  //     const user = userResp[0];
+
+  //     if (user?.device_token && user?.isLogin) {
+  //       if (user.device_type === "Android") {
+  //         const payload = {
+  //           tokens: [user.device_token],
+  //           data: {
+  //             title: "Success",
+  //             body: "Appeal sent successfully",
+  //             type: "5",
+  //           },
+  //         };
+  //         await admin.messaging().sendEachForMulticast(payload);
+  //       } else if (user.device_type === "Ios") {
+  //         const payload = {
+  //           deviceToken: user.device_token,
+  //           title: "Success",
+  //           body: "Appeal sent successfully",
+  //           payload: { type: "5" },
+  //           isProduction: process.env.MODE !== "local",
+  //         };
+  //         await sendIOSPushNotification(payload);
+  //       }
+  //     }
+
+  //     return sendResponse(res, 200, 0, [], "Appeal added successfully");
+  //   } catch (error: any) {
+  //     return sendResponse(
+  //       res,
+  //       500,
+  //       1,
+  //       [],
+  //       "Please contact admin or try again later",
+  //       [error.message],
+  //     );
+  //   }
+  // };
 }
 
 export const submitJustification = async (req: AuthRequest, res: Response) => {

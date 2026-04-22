@@ -5,12 +5,15 @@ exports.StudentController = void 0;
 const student_model_1 = require("../models/student.model");
 const helper_1 = require("../utils/helper");
 const leads_model_1 = require("../models/leads.model");
+const notification_model_1 = require("../models/notification.model");
+const notification_template_1 = require("../config/notification.template");
 class StudentController {
 }
 exports.StudentController = StudentController;
 _a = StudentController;
 StudentController.studentModel = new student_model_1.StudentModel();
 StudentController.leadsMdl = new leads_model_1.LeadsModel();
+StudentController.noteModel = new notification_model_1.NotificationModel();
 StudentController.getStudentData = async (req, res) => {
     try {
         const { student_id } = req.body;
@@ -62,6 +65,22 @@ StudentController.bookASession = async (req, res) => {
             student_id,
             tutor_id,
             linked_sub,
+        });
+        const userId = await _a.noteModel.getUserIdFromRole({
+            tutor_id,
+            student_id,
+        });
+        const tutorUserId = userId.tutor_user_id;
+        const studentUserId = userId.student_user_id;
+        const notif = notification_template_1.NotificationTemplates.studentRequest({});
+        await _a.noteModel.insertNOtifcations({
+            sender_id: studentUserId,
+            receiver_id: tutorUserId,
+            title: notif.title,
+            message: notif.message,
+            type: notif.type,
+            extra_data: notif.extra_data,
+            sent_to: "tutor",
         });
         return (0, helper_1.sendResponse)(res, 200, 1, data, "Booking request sent (Pending)", []);
     }

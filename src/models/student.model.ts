@@ -88,11 +88,17 @@ export class StudentModel {
       params.push(tenure_type);
     }
 
-    if (class_mode) {
-      where += ` AND ts.class_mode = ?`;
-      params.push(class_mode);
-    }
+    // if (class_mode) {
+    //   where += ` AND ts.class_mode = ?`;
+    //   params.push(class_mode);
+    // }
 
+    if (class_mode) {
+      const modes = class_mode.split(",").map((m: string) => m.trim());
+
+      where += ` AND ts.class_mode IN (${modes.map(() => "?").join(",")})`;
+      params.push(...modes);
+    }
     if (class_type) {
       where += ` AND ts.class_type = ?`;
       params.push(class_type);

@@ -296,6 +296,25 @@ AuthController.reactivateAccount = async (req, res) => {
         ]);
     }
 };
+AuthController.appealFormInfo = async (req, res) => {
+    try {
+        let { user_id } = req.params;
+        if (!user_id) {
+            (0, helper_1.sendResponse)(res, 200, 1, [], "User Id is required", []);
+            return;
+        }
+        let findQuery = `SELECT mobile,user_name FROM users WHERE user_id = ?`;
+        let userInfo = await (0, helper_1.executeQuery)(findQuery, [user_id]);
+        const resp = {
+            mobile: userInfo[0].mobile,
+            name: userInfo[0].user_name,
+        };
+        (0, helper_1.sendResponse)(res, 200, 1, resp, "Appeal form infos", []);
+    }
+    catch (error) {
+        (0, helper_1.sendResponse)(res, 500, 1, [], "Please contact admin or try again later", error);
+    }
+};
 const submitJustification = async (req, res) => {
     try {
         const user_id = req.user?.user_id;

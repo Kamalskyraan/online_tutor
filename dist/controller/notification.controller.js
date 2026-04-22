@@ -26,6 +26,42 @@ class NotificationController {
     }
     static async removeNotifications(req, res) {
         try {
+            const { id, receiver_id, action } = req.body;
+            if (!receiver_id) {
+                return (0, helper_1.sendResponse)(res, 200, 0, [], "receiver_id is required", []);
+            }
+            const result = await notifyMdl.removeAllNotify({ receiver_id, id });
+            return (0, helper_1.sendResponse)(res, 200, 1, [], action === "undo"
+                ? "Last notification restored successfully"
+                : "Notification action completed", []);
+        }
+        catch (err) {
+            return (0, helper_1.sendResponse)(res, 500, 0, [], "Internal Server Error", [
+                err.errors || err.message || err,
+            ]);
+        }
+    }
+    static async checkNotifyExists(req, res) {
+        try {
+            const { receiver_id } = req.body;
+            const data = await notifyMdl.checkLastNotification(receiver_id);
+            console.log(data);
+            return (0, helper_1.sendResponse)(res, 200, 1, data, "notification staus fetched successfully", []);
+        }
+        catch (err) {
+            return (0, helper_1.sendResponse)(res, 500, 0, [], "Internal Server Error", [
+                err.errors || err.message || err,
+            ]);
+        }
+    }
+    static async updateNotifyView(req, res) {
+        try {
+            const { receiver_id } = req.body;
+            if (!receiver_id) {
+                return (0, helper_1.sendResponse)(res, 200, 0, [], "receiver_id is required", []);
+            }
+            const result = await notifyMdl.updateAllView(receiver_id);
+            return (0, helper_1.sendResponse)(res, 200, 1, [], "All notifications marked as read", []);
         }
         catch (err) {
             return (0, helper_1.sendResponse)(res, 500, 0, [], "Internal Server Error", [

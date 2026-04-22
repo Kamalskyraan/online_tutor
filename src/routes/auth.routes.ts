@@ -3,35 +3,35 @@ import { AuthController } from "../controller/auth.controller";
 
 const router = Router();
 
-// router.post("/request-otp", (req, res) => {
-//   /*
-//     #swagger.tags = ['1.Auth']
-//     #swagger.summary = 'Request OTP'
-//     #swagger.description = 'Send OTP to mobile(0->no check in DB || 1-> check DB)'
+router.post("/request-otp", (req, res) => {
+  /*
+    #swagger.tags = ['1.Auth']
+    #swagger.summary = 'Request OTP'
+    #swagger.description = 'Send OTP to mobile(0->no check in DB || 1-> check DB)'
 
     
-//     #swagger.parameters['body'] = {
-//       in: 'body',
-//       required: true,
-//       schema: {
-//         mobile: '9876543210',
-//         country_code : '+91',
-//         type : "0 or 1 or 2",
-//         email : "abc@gmail.com"
-//       }
-//     }
+    #swagger.parameters['body'] = {
+      in: 'body',
+      required: true,
+      schema: {
+        mobile: '9876543210',
+        country_code : '+91',
+        type : "0 or 1 or 2",
+        email : "abc@gmail.com"
+      }
+    }
 
 
-//     #swagger.responses[200] = {
-//       description: "OTP sent successfully"
-//     }
+    #swagger.responses[200] = {
+      description: "OTP sent successfully"
+    }
 
-//     #swagger.responses[400] = {
-//       description: "Invalid mobile number"
-//     }
-//   */
-//   return AuthController.RequestOtp(req, res);
-// });
+    #swagger.responses[400] = {
+      description: "Invalid mobile number"
+    }
+  */
+  return AuthController.RequestOtp(req, res);
+});
 
 router.post("/verify-otp", (req, res) => {
   /*
@@ -221,5 +221,8 @@ router.post("/reactive-account", (req, res) => {
   */
   return AuthController.reactivateAccount(req, res);
 });
+
+router.get("/appeal-form-info/:user_id", AuthController.appealFormInfo);
+// router.post("/")
 
 export default router;

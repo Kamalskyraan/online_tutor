@@ -40,6 +40,14 @@ class NotificationTemplates {
             extra_data: { review_id },
         };
     }
+    static studentRequest({ subject, student_name }) {
+        return {
+            title: "New Request Received",
+            message: `student requested to your subject`,
+            type: "STUDENT_REQUEST",
+            extra_data: { subject, student_name },
+        };
+    }
 }
 exports.NotificationTemplates = NotificationTemplates;
 //# sourceMappingURL=notification.template.js.map

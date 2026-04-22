@@ -31,6 +31,51 @@
         }
       }
     },
+    "/api/auth/request-otp": {
+      "post": {
+        "tags": [
+          "1.Auth"
+        ],
+        "summary": "Request OTP",
+        "description": "Send OTP to mobile(0->no check in DB || 1-> check DB)",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "mobile": {
+                  "type": "string",
+                  "example": "9876543210"
+                },
+                "country_code": {
+                  "type": "string",
+                  "example": "+91"
+                },
+                "type": {
+                  "type": "string",
+                  "example": "0 or 1 or 2"
+                },
+                "email": {
+                  "type": "string",
+                  "example": "abc@gmail.com"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OTP sent successfully"
+          },
+          "400": {
+            "description": "Invalid mobile number"
+          }
+        }
+      }
+    },
     "/api/auth/verify-otp": {
       "post": {
         "tags": [
@@ -317,6 +362,24 @@
           },
           "500": {
             "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/auth/appeal-form-info/{user_id}": {
+      "get": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": ""
           }
         }
       }
@@ -3370,6 +3433,113 @@
         "responses": {
           "200": {
             "description": "Get Notifcations successfully"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/notify/remove-all-notify": {
+      "post": {
+        "tags": [
+          "13.Notification"
+        ],
+        "summary": "remove single or all notifications",
+        "description": "remove single or all notification",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "receiver_id": {
+                  "type": "string",
+                  "example": "USER_eFzOtN1M"
+                },
+                "id": {
+                  "type": "number",
+                  "example": 1
+                },
+                "action": {
+                  "type": "string",
+                  "example": "undo"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": " Notifcations deleted successfully"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/notify/check-last-notif": {
+      "post": {
+        "tags": [
+          "13.Notification"
+        ],
+        "summary": "FInd last notify status",
+        "description": "FInd last notify status",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "receiver_id": {
+                  "type": "string",
+                  "example": "USER_eFzOtN1M"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Find Notifcations status successfully"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/notify/update-view-notify": {
+      "post": {
+        "tags": [
+          "13.Notification"
+        ],
+        "summary": "Update notify View status",
+        "description": "Update notify View status",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "receiver_id": {
+                  "type": "string",
+                  "example": "USER_eFzOtN1M"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Notification View Update successfully"
           },
           "500": {
             "description": "Internal Server Error"
