@@ -51,5 +51,9 @@ export class NotificationTemplates {
     };
   }
 
+  //  type: "REQUEST_ACCEPTED"
+  //  type: "REQUEST_REJECTED"
+  
+
   
 }

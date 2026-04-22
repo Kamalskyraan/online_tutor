@@ -110,5 +110,31 @@ router.post("/update-view-notify", (req, res) => {
     */
     notification_controller_1.NotificationController.updateNotifyView(req, res);
 });
+router.post("/notify-read-status", (req, res) => {
+    /*
+      #swagger.tags = ['13.Notification']
+      #swagger.summary = 'Notify Read status'
+      #swagger.description = 'Notify Read status'
+  
+      
+      #swagger.parameters['body'] = {
+        in: 'body',
+        required: true,
+        schema: {
+        id: 1
+        }
+      }
+  
+  
+      #swagger.responses[200] = {
+        description: "Notification Read Update successfully"
+      }
+  
+      #swagger.responses[500] = {
+        description: "Internal Server Error"
+      }
+    */
+    notification_controller_1.NotificationController.updateNotifyView(req, res);
+});
 exports.default = router;
 //# sourceMappingURL=notification.routes.js.map

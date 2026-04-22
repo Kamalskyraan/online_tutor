@@ -3552,6 +3552,39 @@
                     }
                 }
             }
+        },
+        "/api/notify/notify-read-status": {
+            "post": {
+                "tags": [
+                    "13.Notification"
+                ],
+                "summary": "Notify Read status",
+                "description": "Notify Read status",
+                "parameters": [
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "id": {
+                                    "type": "number",
+                                    "example": 1
+                                }
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Notification Read Update successfully"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
         }
     }
 }

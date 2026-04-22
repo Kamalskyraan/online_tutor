@@ -261,4 +261,11 @@ export class NotificationModel {
       [receiver_id],
     );
   }
+  async setNotificationRead(id?: number) {
+    const [result]: any = await executeQuery(
+      `UPDATE notifications SET is_read = 1 WHERE id = ?`,
+      [id],
+    );
+    return result;
+  }
 }

@@ -149,4 +149,24 @@ export class NotificationController {
       ]);
     }
   }
+
+  static async notificationReadStatus(req: Request, res: Response) {
+    try {
+      const { id } = req.body;
+      const result = await notifyMdl.setNotificationRead(id);
+      return sendResponse(
+        res,
+        200,
+        1,
+        result,
+        "Notification Read Successfully",
+        [],
+      );
+    } catch (err: any) {
+      return sendResponse(res, 500, 0, [], "Internal Server Error", [
+        err.errors,
+        err.message || err,
+      ]);
+    }
+  }
 }

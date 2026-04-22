@@ -74,6 +74,19 @@ class NotificationController {
             ]);
         }
     }
+    static async notificationReadStatus(req, res) {
+        try {
+            const { id } = req.body;
+            const result = await notifyMdl.setNotificationRead(id);
+            return (0, helper_1.sendResponse)(res, 200, 1, result, "Notification Read Successfully", []);
+        }
+        catch (err) {
+            return (0, helper_1.sendResponse)(res, 500, 0, [], "Internal Server Error", [
+                err.errors,
+                err.message || err,
+            ]);
+        }
+    }
 }
 exports.NotificationController = NotificationController;
 _a = NotificationController;

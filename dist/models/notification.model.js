@@ -177,6 +177,10 @@ class NotificationModel {
     WHERE receiver_id = ? AND is_deleted = 0
     `, [receiver_id]);
     }
+    async setNotificationRead(id) {
+        const [result] = await (0, helper_1.executeQuery)(`UPDATE notifications SET is_read = 1 WHERE id = ?`, [id]);
+        return result;
+    }
 }
 exports.NotificationModel = NotificationModel;
 //# sourceMappingURL=notification.model.js.map
