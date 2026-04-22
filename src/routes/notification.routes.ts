@@ -126,7 +126,7 @@ router.post("/notify-read-status", (req, res) => {
       in: 'body',
       required: true,
       schema: {  
-      id: 1
+         id: 1
       }
     }
 
@@ -139,6 +139,6 @@ router.post("/notify-read-status", (req, res) => {
       description: "Internal Server Error"
     }
   */
-  NotificationController.updateNotifyView(req, res);
+  NotificationController.notificationReadStatus(req, res);
 });
 export default router;
