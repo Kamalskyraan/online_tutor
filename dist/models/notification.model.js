@@ -75,7 +75,7 @@ class NotificationModel {
       n.is_read,
       n.extra_data,
       n.sent_to,
-      n.created_at,
+      DATE_FORMAT(n.created_at, '%Y-%m-%d %H:%i:%s') AS created_at,
 
       u.user_name,
       u.profile_img
