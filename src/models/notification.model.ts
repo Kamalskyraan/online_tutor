@@ -119,7 +119,7 @@ export class NotificationModel {
     FROM notifications n
     LEFT JOIN users u ON u.user_id = n.sender_id
 
-    WHERE n.receiver_id = ? AND is_deleted = 0
+    WHERE n.receiver_id = ? AND n.is_deleted = 0
     ORDER BY n.id DESC
     LIMIT ? OFFSET ?
     `,
