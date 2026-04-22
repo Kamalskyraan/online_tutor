@@ -178,7 +178,7 @@ class NotificationModel {
     `, [receiver_id]);
     }
     async setNotificationRead(id) {
-        const [result] = await (0, helper_1.executeQuery)(`UPDATE notifications SET is_read = 1 WHERE id = ?`, [id]);
+        const result = await (0, helper_1.executeQuery)(`UPDATE notifications SET is_read = 1 WHERE id = ?`, [id]);
         return result;
     }
 }
