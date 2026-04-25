@@ -514,7 +514,7 @@ async function fetchData() {
     const user_id = "USER_eFzOtN1M";
 
     const res = await fetch(
-      `http://localhost:5012/api/auth/appeal-form-info/${user_id}`
+      `https://tutoraan.com/server/api/auth/appeal-form-info/${user_id}`
     );
 
     const formInfos = await res.json();
@@ -636,7 +636,7 @@ function setupSubmit() {
 
           formData.append("category", category); 
           const res = await fetch(
-            `http://localhost:5012/api/cmn/upload`,
+            `https://tutoraan.com/server/api/cmn/upload`,
             {
               method: "POST",
               body: formData,
@@ -665,7 +665,7 @@ function setupSubmit() {
         };
 
         const appealRes = await fetch(
-          `http://localhost:5012/api/add-appeal`,
+          `https://tutoraan.com/server/api/add-appeal`,
           {
             method: "POST",
             headers: { "Content-Type": "application/json" },
