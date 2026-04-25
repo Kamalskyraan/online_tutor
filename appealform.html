@@ -509,12 +509,16 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 // ================= FETCH USER DATA =================
+
+function getUserIdFromURL() {
+  const params = new URLSearchParams(window.location.search);
+  return params.get("user_id");
+}
 async function fetchData() {
   try {
-    const user_id = "USER_eFzOtN1M";
-
+    const user_id = getUserIdFromURL();
     const res = await fetch(
-      `https://tutoraan.com/server/api/auth/appeal-form-info/${user_id}`
+      `c`
     );
 
     const formInfos = await res.json();
