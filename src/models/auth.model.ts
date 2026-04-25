@@ -164,4 +164,27 @@ export class AuthModel {
 
     return Array.isArray(rows) ? rows[0] : rows;
   }
+
+  //
+
+  async checkAlreadySubmitted(user_id: string) {
+    const rows: any = await executeQuery(
+      `SELECT id FROM user_justifications WHERE user_id = ? LIMIT 1`,
+      [user_id],
+    );
+    return rows.length > 0;
+  }
+
+  async createJustification(data: any) {
+    const { user_id, name, mobile, email, reason, attachments } = data;
+
+    const result: any = await executeQuery(
+      `INSERT INTO user_justifications 
+    (user_id, user_name, mobile, email, reason, evidence)
+    VALUES (?, ?, ?, ?, ?, ?)`,
+      [user_id, name, mobile, email, reason, attachments],
+    );
+
+    return result.insertId;
+  }
 }

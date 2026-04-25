@@ -18,6 +18,7 @@ const notification_routes_1 = __importDefault(require("./notification.routes"));
 const tutor_routes_1 = __importDefault(require("./tutor.routes"));
 const multer_1 = require("../config/multer");
 const leads_routes_1 = __importDefault(require("./leads.routes"));
+const auth_controller_1 = require("../controller/auth.controller");
 const router = (0, express_1.Router)();
 router.use("/auth", auth_routes_1.default);
 router.use("/user", user_routes_1.default);
@@ -45,5 +46,7 @@ router.post("/upload-multiple", multer_1.upload.array("files", 5), (req, res) =>
         // files: req.files,
     });
 });
+// justify
+router.post("/add-appeal", auth_controller_1.AuthController.addAppeal);
 exports.default = router;
 //# sourceMappingURL=index.js.map

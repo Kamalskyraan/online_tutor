@@ -212,6 +212,5 @@ router.post("/reactive-account", (req, res) => {
     return auth_controller_1.AuthController.reactivateAccount(req, res);
 });
 router.get("/appeal-form-info/:user_id", auth_controller_1.AuthController.appealFormInfo);
-// router.post("/")
 exports.default = router;
 //# sourceMappingURL=auth.routes.js.map

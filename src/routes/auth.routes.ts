@@ -223,6 +223,6 @@ router.post("/reactive-account", (req, res) => {
 });
 
 router.get("/appeal-form-info/:user_id", AuthController.appealFormInfo);
-// router.post("/")
+
 
 export default router;

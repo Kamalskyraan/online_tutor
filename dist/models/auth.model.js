@@ -110,6 +110,18 @@ class AuthModel {
         const rows = await (0, helper_1.executeQuery)(`SELECT * FROM users WHERE user_id = ?`, [user_id]);
         return Array.isArray(rows) ? rows[0] : rows;
     }
+    //
+    async checkAlreadySubmitted(user_id) {
+        const rows = await (0, helper_1.executeQuery)(`SELECT id FROM user_justifications WHERE user_id = ? LIMIT 1`, [user_id]);
+        return rows.length > 0;
+    }
+    async createJustification(data) {
+        const { user_id, name, mobile, email, reason, attachments } = data;
+        const result = await (0, helper_1.executeQuery)(`INSERT INTO user_justifications 
+    (user_id, user_name, mobile, email, reason, evidence)
+    VALUES (?, ?, ?, ?, ?, ?)`, [user_id, name, mobile, email, reason, attachments]);
+        return result.insertId;
+    }
 }
 exports.AuthModel = AuthModel;
 //# sourceMappingURL=auth.model.js.map

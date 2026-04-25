@@ -522,134 +522,58 @@ export class AuthController {
     }
   };
 
-  // static addAppeal = async (req: Request, res: Response) => {
-  //   try {
-  //     const { user_id } = req.body;
+  static addAppeal = async (req: Request, res: Response) => {
+    try {
+      const { user_id, name, mobile, email, reason, attachments } = req.body;
 
-  //     if (!user_id) {
-  //       return sendResponse(res, 200, 0, [], "User ID is required", []);
-  //     }
+      if (!user_id || !name || !mobile || !reason) {
+        return sendResponse(res, 400, 0, [], "Required fields missing", []);
+      }
 
-  //     const userQuery = `
-  //     SELECT id, device_token,  device_type 
-  //     FROM users 
-  //     WHERE user_id = ?
-  //   `;
-  //     const userResp: any = await executeQuery(userQuery, [user_id]);
+      const already = await authModel.checkAlreadySubmitted(user_id);
 
-  //     if (!userResp.length) {
-  //       return sendResponse(res, 200, 0, [], "User not found", []);
-  //     }
+      if (already) {
+        return sendResponse(
+          res,
+          200,
+          0,
+          { already_submit: 1 },
+          "You have already submitted appeal",
+          [],
+        );
+      }
 
-  //     let fields: any[] = [];
-  //     let values: any[] = [];
+      const id = await authModel.createJustification({
+        user_id,
+        name,
+        mobile,
+        email,
+        reason,
+        attachments,
+      });
 
-  //     Object.entries(req.body).forEach(([key, value]) => {
-  //       if (value !== undefined && value !== null && value !== "") {
-  //         fields.push(key);
-  //         values.push(value);
-  //       }
-  //     });
+      return sendResponse(
+        res,
+        200,
+        1,
+        {
+          id,
+          already_submit: 0,
+        },
+        "Appeal submitted successfully",
+        [],
+      );
+    } catch (err: any) {
+      console.error(err);
 
-  //     const placeholders = fields.map(() => "?");
-
-  //     const insertQuery = `
-  //     INSERT INTO appeals (${fields.join(",")})
-  //     VALUES (${placeholders.join(",")})
-  //   `;
-
-  //     await executeQuery(insertQuery, values);
-
-  //     await executeQuery(
-  //       `DELETE FROM notifications WHERE user_id = ? AND type = ?`,
-  //       [user_id, 5],
-  //     );
-
-  //     const user = userResp[0];
-
-  //     if (user?.device_token && user?.isLogin) {
-  //       if (user.device_type === "Android") {
-  //         const payload = {
-  //           tokens: [user.device_token],
-  //           data: {
-  //             title: "Success",
-  //             body: "Appeal sent successfully",
-  //             type: "5",
-  //           },
-  //         };
-  //         await admin.messaging().sendEachForMulticast(payload);
-  //       } else if (user.device_type === "Ios") {
-  //         const payload = {
-  //           deviceToken: user.device_token,
-  //           title: "Success",
-  //           body: "Appeal sent successfully",
-  //           payload: { type: "5" },
-  //           isProduction: process.env.MODE !== "local",
-  //         };
-  //         await sendIOSPushNotification(payload);
-  //       }
-  //     }
-
-  //     return sendResponse(res, 200, 0, [], "Appeal added successfully");
-  //   } catch (error: any) {
-  //     return sendResponse(
-  //       res,
-  //       500,
-  //       1,
-  //       [],
-  //       "Please contact admin or try again later",
-  //       [error.message],
-  //     );
-  //   }
-  // };
+      return sendResponse(
+        res,
+        500,
+        0,
+        [],
+        "Something went wrong",
+        err.message || err,
+      );
+    }
+  };
 }
-
-export const submitJustification = async (req: AuthRequest, res: Response) => {
-  try {
-    const user_id = req.user?.user_id;
-    const { reason, evidence, email } = req.body;
-
-    if (!user_id) {
-      return sendResponse(res, 200, 0, [], "Un Authorized", []);
-    }
-
-    if (!reason || reason.trim().length < 10) {
-      return sendResponse(
-        res,
-        200,
-        0,
-        [],
-        "Please enter a valid justification (min 10 chars)",
-        [],
-      );
-    }
-
-    const existing: any = await executeQuery(
-      `SELECT id FROM user_justifications 
-       WHERE user_id = ? AND status = 'pending'`,
-      [user_id],
-    );
-
-    if (existing.length > 0) {
-      return sendResponse(
-        res,
-        200,
-        0,
-        [],
-        "You already have a pending request",
-        [],
-      );
-    }
-
-    await executeQuery(
-      `INSERT INTO user_justifications (user_id, message, evidence , email)
-       VALUES (?, ?, ? , ?)`,
-      [user_id, reason, evidence, email],
-    );
-
-    return sendResponse(res, 200, 1, [], "Submitted Successfully", []);
-  } catch (err) {
-    console.error(err);
-    return sendResponse(res, 500, 0, [], "Internal Server Error", []);
-  }
-};

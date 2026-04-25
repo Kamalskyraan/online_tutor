@@ -14,6 +14,7 @@ import tutorRoutes from "./tutor.routes";
 import { startMultipartUpload } from "../config/upload";
 import { upload } from "../config/multer";
 import leadsRoutes from "./leads.routes";
+import { AuthController } from "../controller/auth.controller";
 
 const router = Router();
 
@@ -45,5 +46,9 @@ router.post("/upload-multiple", upload.array("files", 5), (req, res) => {
     // files: req.files,
   });
 });
+
+// justify
+
+router.post("/add-appeal", AuthController.addAppeal);
 
 export default router;

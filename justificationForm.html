@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Business Account Appeal Form</title>
+    <title>User Account Appeal Form</title>
     <style>
       body {
         font-family: Arial, sans-serif;
@@ -405,28 +405,31 @@
         </div>
       </div>
 
-      <div class="section attachments">
-        <label>Supporting Evidence</label>
-        <p class="hint">
-          Please upload PNG, JPEG, or PDF that support your appeal. Maximum file
-          allowed is 10 MB.
-        </p>
-        <input
-          type="file"
-          id="fileUpload"
-          accept=".png,.jpg,.jpeg,.pdf"
-          hidden
-        />
-        <div
-          class="file-box"
-          onclick="document.getElementById('fileUpload').click()"
-        >
-          <img src="./Upload.svg" alt="" />
-          <span>Click to upload</span>
-        </div>
+     <div class="section attachments">
+  <label>Supporting Evidence</label>
+  <p class="hint">
+    Please upload PNG, JPEG, or PDF. Max 10MB.
+  </p>
 
-        <ul id="fileList" class="file-list"></ul>
-      </div>
+  <input  
+    type="file"
+    id="fileUpload"
+    accept=".png,.jpg,.jpeg,.pdf"
+    multiple
+    hidden
+  />
+
+  <div
+    class="file-box"
+    onclick="document.getElementById('fileUpload').click()"
+  >
+    <img src="./Upload.svg" alt="" />
+    <span>Click to upload</span>
+  </div>
+
+  <ul id="fileList" class="file-list"></ul>
+  
+</div>
 
       <div class="checkbox">
         <input type="checkbox" id="agree" />
@@ -438,6 +441,8 @@
 
       <button type="button" id="submitBtn">Submit Appeal</button>
     </div>
+
+
     <div
       id="successModal"
       style="
@@ -491,204 +496,7 @@
       </div>
     </div>
 
-    <!-- <script>
-      function getQueryParam(key) {
-        const params = new URLSearchParams(window.location.search);
-        return params.get(key);
-      }
-      const user_id = getQueryParam("user_id");
-      let business_id = 0;
-
-     async function fetchData() {
-  try {
-    const user_id = `USER_eFzOtN1M`
-    const res = await fetch(
-      `http://localhost:5012/api/auth/appeal-form-info/${user_id}`
-    );
-
-    const formInfos = await res.json();
-
-    if (formInfos.status !== 1) {
-      console.error("API Error:", formInfos.message);
-      return;
-    }
-
-    const data = formInfos.data;
-
-    // ✅ auto fill
-    document.getElementById("fullName").value = data?.name || "";
-    document.getElementById("mobile").value = data?.mobile || "";
-
-    // ✅ optional: lock fields (user edit panna mudiyadhu)
-    document.getElementById("fullName").readOnly = true;
-    document.getElementById("mobile").readOnly = true;
-
-  } catch (error) {
-    console.error("Error loading data:", error);
-  }
-}
-
-fetchData();
-
-
-      const fileInput = document.getElementById("fileUpload");
-      const fileList = document.getElementById("fileList");
-
-      let uploadedFiles = [];
-
-      fileInput.addEventListener("change", function (e) {
-        const newFile = e.target.files[0]; // single file upload
-        if (!newFile) return;
-
-        // size check
-        if (newFile.size > 10 * 1024 * 1024) {
-          alert("File too large! Maximum 10 MB allowed.");
-          return;
-        }
-
-        // add to list
-        uploadedFiles.push(newFile);
-        renderFileList();
-
-        // reset input (so same file can be re-selected if needed)
-        fileInput.value = "";
-      });
-
-      function renderFileList() {
-        fileList.innerHTML = "";
-
-        uploadedFiles.forEach((file, index) => {
-          const li = document.createElement("li");
-          const div = document.createElement("div");
-          div.style.display = "flex";
-          div.style.alignItems = "center";
-          div.style.gap = "6px";
-          const span = document.createElement("span");
-          const img = document.createElement("img");
-          img.src = "./attach.svg";
-          div.append(img);
-          div.append(span);
-          li.append(div);
-          span.textContent = file.name;
-
-          const delBtn = document.createElement("img");
-          delBtn.src = "./close.png";
-          delBtn.style.cursor = "pointer";
-          delBtn.onclick = () => {
-            uploadedFiles.splice(index, 1);
-            renderFileList();
-          };
-
-          li.appendChild(delBtn);
-          fileList.appendChild(li);
-        });
-      }
-
-      const reason = document.getElementById("reason");
-
-      reason.addEventListener("input", (e) => {
-        // Prevent leading spaces
-        if (e.target.value.startsWith(" ")) {
-          e.target.value = e.target.value.trimStart();
-        }
-      });
-
-      function showSuccessModal() {
-        document.getElementById("successModal").style.display = "flex";
-      }
-
-
-
-
-      document
-        .getElementById("model-close")
-        .addEventListener("click", function () {
-          AndroidInterface.onImageClick("333");
-        });
-
-
-
-      document
-        .getElementById("submitBtn")
-        .addEventListener("click", async () => {
-          const name = document.getElementById("fullName").value.trim();
-          const mobile = document.getElementById("mobile").value.trim();
-          const email = document.getElementById("email").value.trim();
-          const reason = document.getElementById("reason").value.trim();
-          const agree = document.getElementById("agree").checked;
-
-          const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-          if (!name || !mobile || !reason) {
-            alert("Please fill all required fields.");
-            return;
-          }
-          if (email && !emailRegex.test(email)) {
-            alert("Please enter a valid email address.");
-            return;
-          }
-          if (!agree) {
-            alert("You must agree before submitting.");
-            return;
-          }
-
-          try {
-            const imageIds = [];
-            for (const file of uploadedFiles) {
-              const formData = new FormData();
-              formData.append("image", file);
-
-              const res = await fetch(
-                `https://constructionapp.skyraantech.com/backend/api/add-image`,
-                {
-                  method: "POST",
-                  body: formData,
-                },
-              );
-
-              const data = await res.json();
-              console.log("data", data);
-              if (data.status === 0) {
-                imageIds.push(data?.data?.id);
-              }
-            }
-
-            // return console.log("imageIds", imageIds);
-
-            const appealPayload = {
-              user_id,
-              business_id,
-              name,
-              mobile,
-              email,
-              reason,
-              attachments: imageIds?.join(","),
-            };
-
-            const appealRes = await fetch(
-              `https://constructionapp.skyraantech.com/backend/api/add-appeal`,
-              {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(appealPayload),
-              },
-            );
-
-            const appealData = await appealRes.json();
-
-            if (appealData.status === 0) {
-              showSuccessModal();
-            } else {
-              alert("Something went wrong. Please try again.");
-            }
-            // AndroidInterface.onImageClick("333");
-          } catch (error) {
-            console.error("Error:", error);
-            alert("Something went wrong. Please try again.");
-          }
-        });
-    </script> -->
-  
+   
   
   
   
@@ -699,8 +507,6 @@ document.addEventListener("DOMContentLoaded", () => {
   setupFileUpload();
   setupSubmit();
 });
-
-let uploadedFiles = [];
 
 // ================= FETCH USER DATA =================
 async function fetchData() {
@@ -713,7 +519,7 @@ async function fetchData() {
 
     const formInfos = await res.json();
 
-    if (formInfos.status !== 1) {
+    if (formInfos.success !== 1) {
       console.error("API Error:", formInfos.message);
       return;
     }
@@ -723,15 +529,12 @@ async function fetchData() {
     const nameInput = document.getElementById("fullName");
     const mobileInput = document.getElementById("mobile");
 
-    // ✅ set values
     nameInput.value = data?.name || "";
     mobileInput.value = data?.mobile || "";
 
-    // ✅ force label float
     if (nameInput.value) nameInput.classList.add("filled");
     if (mobileInput.value) mobileInput.classList.add("filled");
 
-    // ✅ readonly
     nameInput.readOnly = true;
     mobileInput.readOnly = true;
 
@@ -740,23 +543,32 @@ async function fetchData() {
   }
 }
 
-// ================= FILE UPLOAD =================
+
+let uploadedFiles = [];
+
 function setupFileUpload() {
   const fileInput = document.getElementById("fileUpload");
   const fileList = document.getElementById("fileList");
 
+  if (!fileInput || !fileList) return;
+
   fileInput.addEventListener("change", function (e) {
-    const file = e.target.files[0];
-    if (!file) return;
+    const files = Array.from(e.target.files);
 
-    if (file.size > 10 * 1024 * 1024) {
-      alert("File too large! Max 10MB.");
-      return;
-    }
+    files.forEach((file) => {
+      // size check
+      if (file.size > 10 * 1024 * 1024) {
+        alert(`${file.name} too large (max 10MB)`);
+        return;
+      }
 
-    uploadedFiles.push(file);
+      // duplicate check
+      if (uploadedFiles.some(f => f.name === file.name)) return;
+
+      uploadedFiles.push(file);
+    });
+
     renderFileList();
-
     fileInput.value = "";
   });
 
@@ -766,28 +578,16 @@ function setupFileUpload() {
     uploadedFiles.forEach((file, index) => {
       const li = document.createElement("li");
 
-      const left = document.createElement("div");
-      left.style.display = "flex";
-      left.style.alignItems = "center";
-      left.style.gap = "6px";
+      li.innerHTML = `
+        <span>${file.name}</span>
+        <button type="button">X</button>
+      `;
 
-      const icon = document.createElement("img");
-      icon.src = "./attach.svg";
-
-      const name = document.createElement("span");
-      name.textContent = file.name;
-
-      left.append(icon, name);
-
-      const del = document.createElement("img");
-      del.src = "./close.png";
-      del.style.cursor = "pointer";
-      del.onclick = () => {
+      li.querySelector("button").onclick = () => {
         uploadedFiles.splice(index, 1);
         renderFileList();
       };
 
-      li.append(left, del);
       fileList.appendChild(li);
     });
   }
@@ -828,8 +628,13 @@ function setupSubmit() {
 
         for (const file of uploadedFiles) {
           const formData = new FormData();
-          formData.append("image", file);
 
+          formData.append("file", file); 
+
+          let category = "image";
+          if (file.type.includes("pdf")) category = "pdf";
+
+          formData.append("category", category); 
           const res = await fetch(
             `http://localhost:5012/api/cmn/upload`,
             {
@@ -839,9 +644,13 @@ function setupSubmit() {
           );
 
           const data = await res.json();
+  
 
-          if (data.status === 0) {
+          if (data.success === 1) { 
             imageIds.push(data?.data?.id);
+          } else {
+            alert(data.message || "Upload failed");
+            return;
           }
         }
 
@@ -856,7 +665,7 @@ function setupSubmit() {
         };
 
         const appealRes = await fetch(
-          `https://constructionapp.skyraantech.com/backend/api/add-appeal`,
+          `http://localhost:5012/api/add-appeal`,
           {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -866,14 +675,18 @@ function setupSubmit() {
 
         const result = await appealRes.json();
 
-        if (result.status === 0) {
+        if (result.success === 1) {
           showSuccessModal();
+
+    
+          uploadedFiles = [];
+          document.getElementById("fileList").innerHTML = "";
         } else {
           alert("Submit failed.");
         }
 
       } catch (err) {
-        console.error(err);
+
         alert("Something went wrong.");
       }
     });
