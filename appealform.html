@@ -518,7 +518,7 @@ async function fetchData() {
   try {
     const user_id = getUserIdFromURL();
     const res = await fetch(
-      `c`
+      `https://tutoraan.com/server/api/auth/appeal-form-info/${user_id}`
     );
 
     const formInfos = await res.json();
@@ -660,7 +660,7 @@ function setupSubmit() {
 
         // ===== Submit appeal =====
         const payload = {
-          user_id: "USER_eFzOtN1M",
+          user_id,
           name,
           mobile,
           email,
