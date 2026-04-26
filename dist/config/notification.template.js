@@ -48,6 +48,30 @@ class NotificationTemplates {
             extra_data: { subject, student_name },
         };
     }
+    static requestAccepted({ subject, student_name }) {
+        return {
+            title: "Request Accepted",
+            message: `You requested has been accepted`,
+            type: "REQUEST_ACCEPTED",
+            extra_data: { subject },
+        };
+    }
+    static requestRejected({ subject, student_name }) {
+        return {
+            title: "Request Rejected",
+            message: `Your request has been rejected`,
+            type: "REQUEST_REJECTED",
+            extra_data: { subject },
+        };
+    }
+    static mobileViewed() {
+        return {
+            title: "Profile Viewed",
+            message: "Your contact details were viewed by the tutor",
+            type: "MOBILE_VIEWED",
+            extra_data: {},
+        };
+    }
 }
 exports.NotificationTemplates = NotificationTemplates;
 //# sourceMappingURL=notification.template.js.map

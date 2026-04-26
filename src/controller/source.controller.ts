@@ -236,4 +236,51 @@ export class SourceController {
       ]);
     }
   }
+
+  static async reportAUser(req: Request, res: Response) {
+    try {
+      const { reporter_id, reported_id } = req.body;
+
+      if (!reporter_id || !reported_id) {
+        return sendResponse(res, 200, 0, [], "Missing fields", []);
+      }
+
+      const result = await sourceModel.reportUser(reporter_id, reported_id);
+
+      return sendResponse(
+        res,
+        200,
+        1,
+        result,
+        result.is_reported === 1 ? "User reported" : "Report removed",
+        [],
+      );
+    } catch (err: any) {
+      return sendResponse(res, 500, 0, [], "Internal Server Error", [
+        err.message || err,
+      ]);
+    }
+  }
+
+  static async getReportStatus(req: Request, res: Response) {
+    try {
+      const { reporter_id, reported_id } = req.body;
+
+      if (!reporter_id || !reported_id) {
+        return sendResponse(res, 200, 0, [], "Reporter_id is required", []);
+      }
+
+      const result = await sourceModel.getReportStatus(
+        reporter_id,
+        reported_id
+      );
+    
+
+      return sendResponse(res, 200, 1, result, "Report status fetched", []);
+    } catch (err: any) {
+      return sendResponse(res, 500, 0, [], "Internal Server Error", [
+        err.message || err,
+      ]);
+    }
+  }
 }

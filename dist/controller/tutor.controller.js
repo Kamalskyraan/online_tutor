@@ -7,9 +7,12 @@ const tutor_model_1 = require("../models/tutor.model");
 const validate_1 = require("../validators/validate");
 const review_model_1 = require("../models/review.model");
 const leads_model_1 = require("../models/leads.model");
+const notification_template_1 = require("../config/notification.template");
+const notification_model_1 = require("../models/notification.model");
 const tutModel = new tutor_model_1.TutorModel();
 const rvMdl = new review_model_1.ReviewModel();
 const leadsMdl = new leads_model_1.LeadsModel();
+const noteModel = new notification_model_1.NotificationModel();
 class TutorController {
 }
 exports.TutorController = TutorController;
@@ -197,6 +200,34 @@ TutorController.requestAcceptRejectFlow = async (req, res) => {
             return (0, helper_1.sendResponse)(res, 200, 0, [], "Request Id is required", []);
         }
         await tutModel.acceptOrRejectRequest(req_id, status);
+        const requestData = await tutModel.getRequestUsers(req_id);
+        const tutor_id = requestData.tutor_id;
+        const student_id = requestData.student_id;
+        const userId = await noteModel.getUserIdFromRole({
+            tutor_id,
+            student_id,
+        });
+        const tutorUserId = userId.tutor_user_id;
+        const studentUserId = userId.student_user_id;
+        if (!requestData) {
+            return (0, helper_1.sendResponse)(res, 200, 0, [], "Request not found", []);
+        }
+        let notification;
+        if (status === "accepted") {
+            notification = notification_template_1.NotificationTemplates.requestAccepted({
+                subject: "subject",
+            });
+        }
+        else {
+            notification = notification_template_1.NotificationTemplates.requestRejected({
+                subject: "subject",
+            });
+        }
+        await noteModel.insertNOtifcations({
+            sender_id: tutorUserId,
+            receiver_id: studentUserId,
+            ...notification,
+        });
         const respStatus = status === "accepted" ? "accepted" : "rejected";
         return (0, helper_1.sendResponse)(res, 200, 1, [], `Tutor ${respStatus} successfully`, []);
     }
@@ -228,6 +259,21 @@ TutorController.setViewMobile = async (req, res) => {
         if (result.affectedRows === 0) {
             return (0, helper_1.sendResponse)(res, 200, 0, [], "No record found to update", []);
         }
+        const userId = await noteModel.getUserIdFromRole({
+            tutor_id,
+            student_id,
+        });
+        const tutorUserId = userId?.tutor_user_id;
+        const studentUserId = userId?.student_user_id;
+        if (!tutorUserId || !studentUserId) {
+            return (0, helper_1.sendResponse)(res, 200, 0, [], "User mapping failed", []);
+        }
+        const notification = notification_template_1.NotificationTemplates.mobileViewed();
+        await noteModel.insertNOtifcations({
+            sender_id: tutorUserId,
+            receiver_id: studentUserId,
+            ...notification,
+        });
         return (0, helper_1.sendResponse)(res, 200, 1, [], "Mobile view status updated successfully", []);
     }
     catch (err) {

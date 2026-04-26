@@ -126,5 +126,60 @@ router.post("/get-languages", (req, res) => {
   SourceController.getLanguages(req, res);
 });
 
+router.post("/add-chat-report", (req, res) => {
+  /*
+    #swagger.tags = ['7.Source']
+    #swagger.summary = 'Add  and Update Chat Report'
+    #swagger.description = 'Add and Update Chat Report'
 
+    
+    #swagger.parameters['body'] = {
+      in: 'body',
+      required: true,
+      schema: {
+        reporter_id : "USER_eFzOtN1M",
+        reported_id : "USER_CN8S7SGp"
+      }
+    }
+
+
+    #swagger.responses[200] = {
+      description: "Add chat Report successfully"
+    }
+
+    #swagger.responses[500] = {
+      description: "Internal Server Error"
+    }
+  */
+  SourceController.reportAUser(req, res);
+});
+
+router.post("/get-report-status", (req, res) => {
+  /*
+    #swagger.tags = ['7.Source']
+    #swagger.summary = 'Get Chat Report'
+    #swagger.description = 'Get Chat Report'
+
+    
+    #swagger.parameters['body'] = {
+      in: 'body',
+      required: true,
+      schema: {
+        reporter_id : "USER_eFzOtN1M",
+        reported_id : "USER_CN8S7SGp"
+      }
+    }
+
+
+    #swagger.responses[200] = {
+      description: "Get Report successfully"
+    }
+
+    #swagger.responses[500] = {
+      description: "Internal Server Error"
+    }
+  */
+
+  return SourceController.getReportStatus(req, res);
+});
 export default router;

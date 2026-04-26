@@ -11,7 +11,6 @@ import reviewRoutes from "./review.routes";
 import commonRoutes from "./common.routes";
 import noteRoutes from "./notification.routes";
 import tutorRoutes from "./tutor.routes";
-import { startMultipartUpload } from "../config/upload";
 import { upload } from "../config/multer";
 import leadsRoutes from "./leads.routes";
 import { AuthController } from "../controller/auth.controller";

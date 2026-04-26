@@ -708,197 +708,6 @@ export class TutorModel {
 
   // async getTutorLeadsGraph(
   //   tutor_id: string,
-  //   from_date: string,
-  //   to_date: string,
-  // ) {
-  //   const leadsQuery = `
-  //   SELECT DATE(created_at) as date
-  //   FROM tutor_leads
-  //   WHERE tutor_id = ?
-  //   AND lead_type = 'profile'
-  //   AND created_at BETWEEN ? AND ?
-  // `;
-
-  //   const requestQuery = `
-  //   SELECT DATE(created_at) as date
-  //   FROM tutor_student_rel
-  //   WHERE tutor_id = ?
-  //   AND created_at BETWEEN ? AND ?
-  // `;
-
-  //   const [leadRows, requestRows]: any = await Promise.all([
-  //     executeQuery(leadsQuery, [tutor_id, from_date, to_date]),
-  //     executeQuery(requestQuery, [tutor_id, from_date, to_date]),
-  //   ]);
-
-  //   const leadsCount = await executeQuery(
-  //     `SELECT COUNT(*) as lead FROM tutor_leads WHERE lead_type = 'profile' AND tutor_id = ? AND created_at BETWEEN ? AND ?`,
-  //     [tutor_id, from_date, to_date],
-  //   );
-  //   const requestCount = await executeQuery(
-  //     `SELECT COUNT(*) as req FROM tutor_student_rel WHERE status = 'pending' AND  tutor_id = ? AND created_at BETWEEN ? AND ?`,
-  //     [tutor_id, from_date, to_date],
-  //   );
-
-  //   const from = new Date(from_date);
-  //   const to = new Date(to_date);
-
-  //   const totalDays =
-  //     Math.ceil((to.getTime() - from.getTime()) / (1000 * 60 * 60 * 24)) + 1;
-
-  //   let buckets: any[] = [];
-
-  //   if (totalDays <= 7) {
-  //     const sessions = [
-  //       { name: "Morning", start: 6, end: 12 },
-  //       { name: "Noon", start: 12, end: 18 },
-  //       { name: "Night", start: 18, end: 24 },
-  //     ];
-
-  //     let current = new Date(from);
-
-  //     while (current <= to) {
-  //       for (const session of sessions) {
-  //         const start = new Date(current);
-  //         start.setHours(session.start, 0, 0, 0);
-
-  //         const end = new Date(current);
-  //         end.setHours(session.end, 0, 0, 0);
-
-  //         buckets.push({
-  //           start,
-  //           end,
-  //           label: `${start.toLocaleDateString("en-IN", {
-  //             day: "2-digit",
-  //             month: "short",
-  //           })} ${session.name}`,
-  //           leads: 0,
-  //           requests: 0,
-  //         });
-  //       }
-
-  //       current.setDate(current.getDate() + 1);
-  //     }
-  //   } else if (totalDays <= 60) {
-  //     let current = new Date(from);
-  //     let week = 1;
-
-  //     while (current <= to) {
-  //       const start = new Date(current);
-  //       const end = new Date(current);
-  //       end.setDate(end.getDate() + 6);
-
-  //       if (end > to) end.setTime(to.getTime());
-
-  //       buckets.push({
-  //         start,
-  //         end,
-  //         label: `Week ${week}`,
-  //         leads: 0,
-  //         requests: 0,
-  //       });
-
-  //       current.setDate(current.getDate() + 7);
-  //       week++;
-  //     }
-  //   } else if (totalDays <= 365) {
-  //     const year = to.getFullYear();
-
-  //     for (let i = 0; i < 12; i++) {
-  //       const start = new Date(year, i, 1);
-  //       const end = new Date(year, i + 1, 0);
-
-  //       buckets.push({
-  //         start,
-  //         end,
-  //         label: start.toLocaleString("en-IN", { month: "short" }),
-  //         leads: 0,
-  //         requests: 0,
-  //       });
-  //     }
-  //   } else {
-  //     const totalYears = to.getFullYear() - from.getFullYear() + 1;
-  //     const step = Math.ceil(totalYears / 6);
-
-  //     let year = from.getFullYear();
-
-  //     while (year <= to.getFullYear()) {
-  //       const start = new Date(year, 0, 1);
-  //       const end = new Date(year + step - 1, 11, 31);
-
-  //       buckets.push({
-  //         start,
-  //         end,
-  //         label: `${start.getFullYear()} - ${end.getFullYear()}`,
-  //         leads: 0,
-  //         requests: 0,
-  //       });
-
-  //       year += step;
-  //     }
-  //   }
-
-  //   if (totalDays > 7 && buckets.length > 6) {
-  //     const step = Math.ceil(buckets.length / 6);
-  //     buckets = buckets.filter((_, i) => i % step === 0).slice(0, 6);
-  //   }
-  //   for (const row of leadRows) {
-  //     const rowDate = new Date(row.date);
-
-  //     for (const b of buckets) {
-  //       if (rowDate >= b.start && rowDate <= b.end) {
-  //         b.leads++;
-  //         break;
-  //       }
-  //     }
-  //   }
-
-  //   for (const row of requestRows) {
-  //     const rowDate = new Date(row.date);
-
-  //     for (const b of buckets) {
-  //       if (rowDate >= b.start && rowDate <= b.end) {
-  //         b.requests++;
-  //         break;
-  //       }
-  //     }
-  //   }
-
-  //   const x_axis = buckets.map((b) => b.label);
-  //   const leads_data = buckets.map((b) => b.leads);
-  //   const request_data = buckets.map((b) => b.requests);
-
-  //   const max = Math.max(...leads_data, ...request_data, 0);
-  //   const stepY = Math.ceil(max / 5) || 1;
-
-  //   const y_axis_scale = Array.from({ length: 6 }, (_, i) => i * stepY);
-  //   y_axis_scale[5] = max;
-
-  //   const froms = new Date(from_date);
-  //   const tos = new Date(to_date);
-
-  //   const startYear = froms.getFullYear();
-  //   const endYear = tos.getFullYear();
-
-  //   const all_time = Array.from({ length: endYear - startYear + 1 }, (_, i) =>
-  //     String(startYear + i),
-  //   );
-
-  //   return {
-  //     tutor_graph: {
-  //       x_axis,
-  //       leads: leads_data,
-  //       requests: request_data,
-  //       y_axis_scale,
-  //       all_time,
-  //       request_count: requestCount[0].req,
-  //       leads_count: leadsCount[0].lead,
-  //     },
-  //   };
-  // }
-
-  // async getTutorLeadsGraph(
-  //   tutor_id: string,
   //   from_date?: string,
   //   to_date?: string,
   // ) {
@@ -1297,9 +1106,8 @@ export class TutorModel {
     // =========================================================
     const x_axis = buckets.map((b) => b.label);
 
-
     const leads_data = buckets.map((b) => b.leads);
-    
+
     const request_data = buckets.map((b) => b.requests);
 
     const max = Math.max(...leads_data, ...request_data, 0);
@@ -1350,5 +1158,20 @@ export class TutorModel {
     return {
       requests: result,
     };
+  }
+
+  async getRequestUsers(req_id: number) {
+    const res: any = await executeQuery(
+      `
+    SELECT 
+      tutor_id,
+      student_id
+    FROM tutor_student_rel
+    WHERE id = ?
+    `,
+      [req_id],
+    );
+
+    return res?.[0] || null;
   }
 }

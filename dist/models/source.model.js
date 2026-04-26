@@ -268,6 +268,38 @@ class SourceModel {
             return null;
         }
     }
+    async reportUser(reporter_id, reported_id) {
+        const existing = await (0, helper_1.executeQuery)(`
+    SELECT id, is_reported
+    FROM chat_reports 
+    WHERE reporter_id = ? AND reported_id = ?
+    `, [reporter_id, reported_id]);
+        if (!existing.length) {
+            await (0, helper_1.executeQuery)(`
+      INSERT INTO chat_reports (reporter_id, reported_id, is_reported)
+      VALUES (?, ?, 1)
+      `, [reporter_id, reported_id]);
+            return { is_reported: 1 };
+        }
+        const newStatus = existing[0].is_reported === 1 ? 0 : 1;
+        await (0, helper_1.executeQuery)(`
+    UPDATE chat_reports 
+    SET is_reported = ? 
+    WHERE reporter_id = ? AND reported_id = ?
+    `, [newStatus, reporter_id, reported_id]);
+        return { is_reported: newStatus };
+    }
+    async getReportStatus(reporter_id, reported_id) {
+        const res = await (0, helper_1.executeQuery)(`
+    SELECT is_reported 
+    FROM chat_reports
+    WHERE reporter_id = ? AND reported_id = ?
+    `, [reporter_id, reported_id]);
+        if (!res.length) {
+            return { is_reported: 0 };
+        }
+        return { is_reported: Number(res[0].is_reported) };
+    }
 }
 exports.SourceModel = SourceModel;
 //# sourceMappingURL=source.model.js.map

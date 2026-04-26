@@ -1806,6 +1806,80 @@
         }
       }
     },
+    "/api/source/add-chat-report": {
+      "post": {
+        "tags": [
+          "7.Source"
+        ],
+        "summary": "Add and Update Chat Report",
+        "description": "Add and Update Chat Report",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "reporter_id": {
+                  "type": "string",
+                  "example": "USER_eFzOtN1M"
+                },
+                "reported_id": {
+                  "type": "string",
+                  "example": "USER_CN8S7SGp"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Add chat Report successfully"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/source/get-report-status": {
+      "post": {
+        "tags": [
+          "7.Source"
+        ],
+        "summary": "Get Chat Report",
+        "description": "Get Chat Report",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "reporter_id": {
+                  "type": "string",
+                  "example": "USER_eFzOtN1M"
+                },
+                "reported_id": {
+                  "type": "string",
+                  "example": "USER_CN8S7SGp"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Get Report successfully"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
     "/api/tutor/add-update-demos": {
       "post": {
         "tags": [

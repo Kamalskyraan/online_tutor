@@ -4,10 +4,13 @@ import { TutorModel } from "../models/tutor.model";
 import { addUpdateDemosSchema, getDemosSchema } from "../validators/validate";
 import { ReviewModel } from "../models/review.model";
 import { LeadsModel } from "../models/leads.model";
+import { NotificationTemplates } from "../config/notification.template";
+import { NotificationModel } from "../models/notification.model";
 
 const tutModel = new TutorModel();
 const rvMdl = new ReviewModel();
 const leadsMdl = new LeadsModel();
+const noteModel = new NotificationModel();
 export class TutorController {
   static addUpdateDemos = async (req: Request, res: Response) => {
     try {
@@ -301,6 +304,38 @@ export class TutorController {
 
       await tutModel.acceptOrRejectRequest(req_id, status);
 
+      const requestData = await tutModel.getRequestUsers(req_id);
+      const tutor_id = requestData.tutor_id;
+      const student_id = requestData.student_id;
+      const userId = await noteModel.getUserIdFromRole({
+        tutor_id,
+        student_id,
+      });
+
+      const tutorUserId = userId.tutor_user_id;
+      const studentUserId = userId.student_user_id;
+      if (!requestData) {
+        return sendResponse(res, 200, 0, [], "Request not found", []);
+      }
+
+      let notification;
+
+      if (status === "accepted") {
+        notification = NotificationTemplates.requestAccepted({
+          subject: "subject",
+        });
+      } else {
+        notification = NotificationTemplates.requestRejected({
+          subject: "subject",
+        });
+      }
+
+      await noteModel.insertNOtifcations({
+        sender_id: tutorUserId,
+        receiver_id: studentUserId,
+        ...notification,
+      });
+
       const respStatus = status === "accepted" ? "accepted" : "rejected";
       return sendResponse(
         res,
@@ -359,7 +394,23 @@ export class TutorController {
       if (result.affectedRows === 0) {
         return sendResponse(res, 200, 0, [], "No record found to update", []);
       }
+      const userId = await noteModel.getUserIdFromRole({
+        tutor_id,
+        student_id,
+      });
 
+      const tutorUserId = userId?.tutor_user_id;
+      const studentUserId = userId?.student_user_id;
+      if (!tutorUserId || !studentUserId) {
+        return sendResponse(res, 200, 0, [], "User mapping failed", []);
+      }
+      const notification = NotificationTemplates.mobileViewed();
+
+      await noteModel.insertNOtifcations({
+        sender_id: tutorUserId,
+        receiver_id: studentUserId,
+        ...notification,
+      });
       return sendResponse(
         res,
         200,

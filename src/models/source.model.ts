@@ -380,4 +380,57 @@ export class SourceModel {
       return null;
     }
   }
+
+  async reportUser(reporter_id: string, reported_id: string) {
+    const existing: any = await executeQuery(
+      `
+    SELECT id, is_reported
+    FROM chat_reports 
+    WHERE reporter_id = ? AND reported_id = ?
+    `,
+      [reporter_id, reported_id],
+    );
+
+    if (!existing.length) {
+      await executeQuery(
+        `
+      INSERT INTO chat_reports (reporter_id, reported_id, is_reported)
+      VALUES (?, ?, 1)
+      `,
+        [reporter_id, reported_id],
+      );
+
+      return { is_reported: 1 };
+    }
+
+    const newStatus = existing[0].is_reported === 1 ? 0 : 1;
+
+    await executeQuery(
+      `
+    UPDATE chat_reports 
+    SET is_reported = ? 
+    WHERE reporter_id = ? AND reported_id = ?
+    `,
+      [newStatus, reporter_id, reported_id],
+    );
+
+    return { is_reported: newStatus };
+  }
+
+  async getReportStatus(reporter_id: string, reported_id: string) {
+    const res: any = await executeQuery(
+      `
+    SELECT is_reported 
+    FROM chat_reports
+    WHERE reporter_id = ? AND reported_id = ?
+    `,
+      [reporter_id, reported_id],
+    );
+
+    if (!res.length) {
+      return { is_reported: 0 };
+    }
+
+    return { is_reported: Number(res[0].is_reported) };
+  }
 }

@@ -51,9 +51,28 @@ export class NotificationTemplates {
     };
   }
 
-  //  type: "REQUEST_ACCEPTED"
-  //  type: "REQUEST_REJECTED"
-  
-
-  
+  static requestAccepted({ subject, student_name }: any) {
+    return {
+      title: "Request Accepted",
+      message: `You requested has been accepted`,
+      type: "REQUEST_ACCEPTED",
+      extra_data: { subject },
+    };
+  }
+  static requestRejected({ subject, student_name }: any) {
+    return {
+      title: "Request Rejected",
+      message: `Your request has been rejected`,
+      type: "REQUEST_REJECTED",
+      extra_data: { subject },
+    };
+  }
+  static mobileViewed() {
+    return {
+      title: "Profile Viewed",
+      message: "Your contact details were viewed by the tutor",
+      type: "MOBILE_VIEWED",
+      extra_data: {},
+    };
+  }
 }

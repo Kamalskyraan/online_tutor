@@ -513,10 +513,15 @@ document.addEventListener("DOMContentLoaded", () => {
 function getUserIdFromURL() {
   const params = new URLSearchParams(window.location.search);
   return params.get("user_id");
-}
+} 
+
+
+
 async function fetchData() {
   try {
     const user_id = getUserIdFromURL();
+
+  
     const res = await fetch(
       `https://tutoraan.com/server/api/auth/appeal-form-info/${user_id}`
     );
@@ -663,7 +668,7 @@ function setupSubmit() {
           user_id,
           name,
           mobile,
-          email,
+          email,  
           reason,
           attachments: imageIds.join(","),
         };
