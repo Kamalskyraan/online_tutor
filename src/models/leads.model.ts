@@ -79,8 +79,9 @@ export class LeadsModel {
       extra_data: notif.extra_data,
       sent_to: "tutor",
     });
+    
     await sendPushNotification({
-      user_id: String(userId.tutor_user_id),
+      user_id: String(userId?.tutor_user_id),
       payload: {
         title: notif.title,
         message: notif.message,

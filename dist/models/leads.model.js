@@ -54,7 +54,7 @@ class LeadsModel {
             sent_to: "tutor",
         });
         await (0, firebase_service_1.sendPushNotification)({
-            user_id: String(userId.tutor_user_id),
+            user_id: String(userId?.tutor_user_id),
             payload: {
                 title: notif.title,
                 message: notif.message,
