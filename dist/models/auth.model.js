@@ -122,6 +122,14 @@ class AuthModel {
     VALUES (?, ?, ?, ?, ?, ?)`, [user_id, name, mobile, email, reason, attachments]);
         return result.insertId;
     }
+    async findUserDevice(data) {
+        const { user_id, device_id, device_token } = data;
+        const result = await (0, helper_1.executeQuery)(`SELECT * FROM user_devices 
+     WHERE user_id = ? 
+     AND device_id = ? 
+     AND device_token = ?`, [user_id, device_id, device_token]);
+        return result[0];
+    }
 }
 exports.AuthModel = AuthModel;
 //# sourceMappingURL=auth.model.js.map

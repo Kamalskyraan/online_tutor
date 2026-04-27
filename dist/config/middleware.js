@@ -10,7 +10,7 @@ const dotenv_1 = __importDefault(require("dotenv"));
 const auth_model_1 = require("../models/auth.model");
 dotenv_1.default.config();
 var JWT_SECRET = process.env.JWT_SECRET || "abc@1234";
-const authMdl = new auth_model_1.AuthModel();
+const authModel = new auth_model_1.AuthModel();
 const authMiddleware = async (req, res, next) => {
     try {
         const authHeader = req.headers.authorization;
@@ -23,7 +23,14 @@ const authMiddleware = async (req, res, next) => {
         const token = authHeader.split(" ")[1];
         // 3. Verify token
         const decoded = jsonwebtoken_1.default.verify(token, process.env.JWT_SECRET);
-        // 4. Attach user
+        const device = await authModel.findUserDevice({
+            user_id: decoded.user_id,
+            device_id: decoded.device_id,
+            device_token: decoded.device_token,
+        });
+        if (!device) {
+            return (0, helper_1.sendResponse)(res, 200, 3, [], "Session expired. Please login again", []);
+        }
         req.user = {
             user_id: decoded.user_id,
             role: decoded.device_id,

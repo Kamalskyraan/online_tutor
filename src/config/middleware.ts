@@ -6,7 +6,7 @@ import { AuthModel } from "../models/auth.model";
 dotenv.config();
 
 var JWT_SECRET = process.env.JWT_SECRET || "abc@1234";
-const authMdl = new AuthModel();
+const authModel = new AuthModel();
 export interface AuthRequest extends Request {
   user?: {
     user_id: string;
@@ -22,7 +22,6 @@ export const authMiddleware = async (
   try {
     const authHeader = req.headers.authorization;
 
-   
     if (!authHeader) {
       return sendResponse(
         res,
@@ -43,7 +42,22 @@ export const authMiddleware = async (
     // 3. Verify token
     const decoded: any = jwt.verify(token, process.env.JWT_SECRET!);
 
-    // 4. Attach user
+    const device = await authModel.findUserDevice({
+      user_id: decoded.user_id,
+      device_id: decoded.device_id,
+      device_token: decoded.device_token,
+    });
+
+    if (!device) {
+      return sendResponse(
+        res,
+        200,
+        3,
+        [],
+        "Session expired. Please login again",
+        [],
+      );
+    }
     req.user = {
       user_id: decoded.user_id,
       role: decoded.device_id,

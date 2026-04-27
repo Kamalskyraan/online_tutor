@@ -100,7 +100,13 @@ class ReviewController {
                 extra_data: notif.extra_data,
                 sent_to: "student",
             });
-            // await sendPushNotification(student_id, notif);
+            await (0, firebase_service_1.sendPushNotification)({
+                user_id: String(userId.student_user_id),
+                payload: {
+                    title: notif.title,
+                    message: notif.message,
+                },
+            });
             (0, helper_1.sendResponse)(res, 200, 1, [result], id
                 ? "Rview Reply added successfully"
                 : "Review reply ipdated succesfully", []);
@@ -188,7 +194,13 @@ class ReviewController {
                         extra_data: notif.extra_data,
                         sent_to: "student",
                     });
-                    // await sendPushNotification(receiver_id, notif);
+                    await (0, firebase_service_1.sendPushNotification)({
+                        user_id: String(receiver_user_id),
+                        payload: {
+                            title: notif.title,
+                            message: notif.message,
+                        },
+                    });
                 }
                 else if (result.action === "dislike") {
                     await rvModel.removeNotification({

@@ -160,8 +160,14 @@ export class ReviewController {
         extra_data: notif.extra_data,
         sent_to: "student",
       });
-      // await sendPushNotification(student_id, notif);
 
+      await sendPushNotification({
+        user_id: String(userId.student_user_id),
+        payload: {
+          title: notif.title,
+          message: notif.message,
+        },
+      });
       sendResponse(
         res,
         200,
@@ -305,7 +311,13 @@ export class ReviewController {
             sent_to: "student",
           });
 
-          // await sendPushNotification(receiver_id, notif);
+          await sendPushNotification({
+            user_id: String(receiver_user_id),
+            payload: {
+              title: notif.title,
+              message: notif.message,
+            },
+          });
         } else if (result.action === "dislike") {
           await rvModel.removeNotification({
             sender_id: sender_user_id,
