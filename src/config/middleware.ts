@@ -2,10 +2,11 @@ import { Request, Response, NextFunction } from "express";
 import { executeQuery, sendResponse } from "../utils/helper";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
+import { AuthModel } from "../models/auth.model";
 dotenv.config();
 
 var JWT_SECRET = process.env.JWT_SECRET || "abc@1234";
-
+const authMdl = new AuthModel();
 export interface AuthRequest extends Request {
   user?: {
     user_id: string;
@@ -13,7 +14,7 @@ export interface AuthRequest extends Request {
   };
 }
 
-export const authMiddleware = (
+export const authMiddleware = async (
   req: AuthRequest,
   res: Response,
   next: NextFunction,
@@ -33,7 +34,6 @@ export const authMiddleware = (
       );
     }
 
-    // 2. Check Bearer format
     if (!authHeader.startsWith("Bearer ")) {
       return sendResponse(res, 200, 3, {}, "Invalid token format", []);
     }
@@ -41,12 +41,12 @@ export const authMiddleware = (
     const token = authHeader.split(" ")[1];
 
     // 3. Verify token
-    const decoded: any = jwt.verify(token, JWT_SECRET);
+    const decoded: any = jwt.verify(token, process.env.JWT_SECRET!);
 
     // 4. Attach user
     req.user = {
       user_id: decoded.user_id,
-      role: decoded.role,
+      role: decoded.device_id,
     };
 
     next();

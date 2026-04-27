@@ -7,26 +7,27 @@ exports.blockCheckMiddleware = exports.authMiddleware = void 0;
 const helper_1 = require("../utils/helper");
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const dotenv_1 = __importDefault(require("dotenv"));
+const auth_model_1 = require("../models/auth.model");
 dotenv_1.default.config();
 var JWT_SECRET = process.env.JWT_SECRET || "abc@1234";
-const authMiddleware = (req, res, next) => {
+const authMdl = new auth_model_1.AuthModel();
+const authMiddleware = async (req, res, next) => {
     try {
         const authHeader = req.headers.authorization;
         // 1. Check header exists
         if (!authHeader) {
             return (0, helper_1.sendResponse)(res, 200, 3, {}, "Access denied. No token provided", []);
         }
-        // 2. Check Bearer format
         if (!authHeader.startsWith("Bearer ")) {
             return (0, helper_1.sendResponse)(res, 200, 3, {}, "Invalid token format", []);
         }
         const token = authHeader.split(" ")[1];
         // 3. Verify token
-        const decoded = jsonwebtoken_1.default.verify(token, JWT_SECRET);
+        const decoded = jsonwebtoken_1.default.verify(token, process.env.JWT_SECRET);
         // 4. Attach user
         req.user = {
             user_id: decoded.user_id,
-            role: decoded.role,
+            role: decoded.device_id,
         };
         next();
     }

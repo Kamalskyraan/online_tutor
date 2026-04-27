@@ -79,6 +79,8 @@ export const sendAPNSNotification = async ({ tokens, title, body }: any) => {
   try {
     const notification = new apn.Notification();
 
+    
+
     notification.alert = {
       title,
       body,
