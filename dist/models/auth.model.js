@@ -123,11 +123,11 @@ class AuthModel {
         return result.insertId;
     }
     async findUserDevice(data) {
-        const { user_id, device_id, device_token } = data;
+        const { user_id, device_id } = data;
         const result = await (0, helper_1.executeQuery)(`SELECT * FROM user_devices 
      WHERE user_id = ? 
      AND device_id = ? 
-     AND device_token = ?`, [user_id, device_id, device_token]);
+    `, [user_id, device_id]);
         return result[0];
     }
 }

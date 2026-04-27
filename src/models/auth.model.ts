@@ -189,13 +189,13 @@ export class AuthModel {
   }
 
   async findUserDevice(data: any) {
-    const { user_id, device_id, device_token } = data;
+    const { user_id, device_id } = data;
     const result = await executeQuery(
       `SELECT * FROM user_devices 
      WHERE user_id = ? 
      AND device_id = ? 
-     AND device_token = ?`,
-      [user_id, device_id, device_token],
+    `,
+      [user_id, device_id],
     );
 
     return result[0];
