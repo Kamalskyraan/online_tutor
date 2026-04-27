@@ -5,6 +5,7 @@ const helper_1 = require("../utils/helper");
 const validate_1 = require("../validators/validate");
 const review_model_1 = require("../models/review.model");
 const notification_model_1 = require("../models/notification.model");
+const firebase_service_1 = require("../service/firebase.service");
 const notification_template_1 = require("../config/notification.template");
 const rvModel = new review_model_1.ReviewModel();
 const noteModel = new notification_model_1.NotificationModel();
@@ -23,7 +24,7 @@ class ReviewController {
                 tutor_id,
                 student_id,
             });
-            const tutorUserId = userId.tutor_user_id;
+            const tutorUserId = userId?.tutor_user_id;
             const studentUserId = userId.student_user_id;
             const notif = notification_template_1.NotificationTemplates.review({
                 isUpdate: !!id,
@@ -38,6 +39,13 @@ class ReviewController {
                 type: notif.type,
                 extra_data: notif.extra_data,
                 sent_to: "tutor",
+            });
+            await (0, firebase_service_1.sendPushNotification)({
+                user_id: String(tutorUserId),
+                payload: {
+                    title: notif.title,
+                    message: notif.message,
+                },
             });
             return (0, helper_1.sendResponse)(res, 200, 1, [revData], id ? "Review updated successfully" : "Review added successfully");
         }

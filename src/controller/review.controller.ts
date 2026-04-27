@@ -38,7 +38,7 @@ export class ReviewController {
         tutor_id,
         student_id,
       });
-      const tutorUserId = userId.tutor_user_id;
+      const tutorUserId = userId?.tutor_user_id;
       const studentUserId = userId.student_user_id;
       const notif = NotificationTemplates.review({
         isUpdate: !!id,
@@ -54,6 +54,14 @@ export class ReviewController {
         type: notif.type,
         extra_data: notif.extra_data,
         sent_to: "tutor",
+      });
+
+      await sendPushNotification({
+        user_id: String(tutorUserId),
+        payload: {
+          title: notif.title,
+          message: notif.message,
+        },
       });
 
       return sendResponse(
@@ -103,7 +111,7 @@ export class ReviewController {
         res,
         200,
         1,
-       [ convertNullToString(ReviewData)],
+        [convertNullToString(ReviewData)],
 
         "Reviews Fetched Successfully",
         [],

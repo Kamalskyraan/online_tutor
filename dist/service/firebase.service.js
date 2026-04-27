@@ -7,19 +7,19 @@ exports.sendAPNSNotification = exports.sendFCMNotification = exports.sendPushNot
 const firebase_admin_1 = __importDefault(require("firebase-admin"));
 const helper_1 = require("../utils/helper");
 const node_apn_1 = __importDefault(require("@parse/node-apn"));
+const apnprovider_1 = require("./apnprovider");
 firebase_admin_1.default.initializeApp({
 //   credential: admin.credential.cert(require("./firebase-service.json")),
 });
-const sendPushNotification = async (user_id, payload) => {
+const sendPushNotification = async ({ user_id, payload, }) => {
     try {
         const devices = await (0, helper_1.executeQuery)(`SELECT device_token, device_type 
-       FROM users 
+       FROM user_devices
        WHERE user_id = ? AND device_token IS NOT NULL`, [user_id]);
         if (!devices.length)
             return;
         const androidTokens = [];
         const iosTokens = [];
-        // ✅ Split tokens by device type
         for (const d of devices) {
             if (d.device_type === "android") {
                 androidTokens.push(d.device_token);
@@ -28,7 +28,6 @@ const sendPushNotification = async (user_id, payload) => {
                 iosTokens.push(d.device_token);
             }
         }
-        // ✅ Send FCM (Android)
         if (androidTokens.length) {
             await firebase_admin_1.default.messaging().sendEachForMulticast({
                 tokens: androidTokens,
@@ -36,19 +35,14 @@ const sendPushNotification = async (user_id, payload) => {
                     title: payload.title,
                     body: payload.message,
                 },
-                data: {
-                    type: payload.type,
-                    extra_data: JSON.stringify(payload.extra_data || {}),
-                },
             });
         }
-        // ✅ Send APNS (iOS)
-        for (const token of iosTokens) {
+        // ✅ iOS (FIXED)
+        if (iosTokens.length) {
             await (0, exports.sendAPNSNotification)({
-                token,
+                tokens: iosTokens,
                 title: payload.title,
                 body: payload.message,
-                data: payload.extra_data,
             });
         }
     }
@@ -70,15 +64,21 @@ const sendFCMNotification = async ({ token, title, body, data, }) => {
     });
 };
 exports.sendFCMNotification = sendFCMNotification;
-const sendAPNSNotification = async ({ token, title, body, data, }) => {
-    const notification = new node_apn_1.default.Notification();
-    notification.alert = {
-        title,
-        body,
-    };
-    notification.payload = data;
-    // notification.topic = process.env.BUNDLE_ID;
-    // await apnProvider.send(notification, token);
+const sendAPNSNotification = async ({ tokens, title, body }) => {
+    try {
+        const notification = new node_apn_1.default.Notification();
+        notification.alert = {
+            title,
+            body,
+        };
+        notification.topic = process.env.IOS_BUNDLE_ID;
+        const result = await apnprovider_1.apnProvider.send(notification, tokens);
+        console.log("APNS sent:", result.sent.length);
+        console.log("APNS failed:", result.failed.length);
+    }
+    catch (err) {
+        console.error("APNS Error:", err);
+    }
 };
 exports.sendAPNSNotification = sendAPNSNotification;
 //# sourceMappingURL=firebase.service.js.map
