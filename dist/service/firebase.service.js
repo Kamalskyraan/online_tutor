@@ -64,17 +64,34 @@ const sendFCMNotification = async ({ token, title, body, data, }) => {
     });
 };
 exports.sendFCMNotification = sendFCMNotification;
+// export const sendAPNSNotification = async ({ tokens, title, body }: any) => {
+//   try {
+//     const notification = new apn.Notification();
+//     notification.alert = {
+//       title,
+//       body,
+//     };
+//     notification.topic = process.env.IOS_BUNDLE_ID!;
+//     const result = await apnProvider.send(notification, tokens);
+//     console.log("APNS sent:", result.sent.length);
+//     console.log("APNS failed:", result.failed.length);
+//   } catch (err) {
+//     console.error("APNS Error:", err);
+//   }
+// };
 const sendAPNSNotification = async ({ tokens, title, body }) => {
     try {
         const notification = new node_apn_1.default.Notification();
-        notification.alert = {
-            title,
-            body,
-        };
+        notification.alert = { title, body };
         notification.topic = process.env.IOS_BUNDLE_ID;
         const result = await apnprovider_1.apnProvider.send(notification, tokens);
         console.log("APNS sent:", result.sent.length);
         console.log("APNS failed:", result.failed.length);
+        result.failed.forEach((f) => {
+            console.error("❌ Token:", f.device);
+            console.error("❌ Error:", f.response?.reason || f.error);
+        });
+        return result;
     }
     catch (err) {
         console.error("APNS Error:", err);
