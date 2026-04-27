@@ -8,6 +8,8 @@ const firebase_admin_1 = __importDefault(require("firebase-admin"));
 const helper_1 = require("../utils/helper");
 const node_apn_1 = __importDefault(require("@parse/node-apn"));
 const apnprovider_1 = require("./apnprovider");
+const dotenv_1 = __importDefault(require("dotenv"));
+dotenv_1.default.config();
 firebase_admin_1.default.initializeApp({
 //   credential: admin.credential.cert(require("./firebase-service.json")),
 });
@@ -83,7 +85,7 @@ const sendAPNSNotification = async ({ tokens, title, body }) => {
     try {
         const notification = new node_apn_1.default.Notification();
         notification.alert = { title, body };
-        notification.topic = process.env.IOS_BUNDLE_ID;
+        notification.topic = process.env.PACKAGE_NAME;
         const result = await apnprovider_1.apnProvider.send(notification, tokens);
         console.log("APNS sent:", result.sent.length);
         console.log("APNS failed:", result.failed.length);

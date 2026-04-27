@@ -2,6 +2,8 @@ import admin from "firebase-admin";
 import { executeQuery } from "../utils/helper";
 import apn from "@parse/node-apn";
 import { apnProvider } from "./apnprovider";
+import dotenv from "dotenv";
+dotenv.config();
 admin.initializeApp({
   //   credential: admin.credential.cert(require("./firebase-service.json")),
 });
@@ -100,7 +102,7 @@ export const sendAPNSNotification = async ({ tokens, title, body }: any) => {
     const notification = new apn.Notification();
 
     notification.alert = { title, body };
-    notification.topic = process.env.IOS_BUNDLE_ID!;
+    notification.topic = process.env.PACKAGE_NAME!;
 
     const result = await apnProvider.send(notification, tokens);
 
