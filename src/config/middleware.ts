@@ -51,8 +51,14 @@ export const authMiddleware = async (
 
     next();
   } catch (err: any) {
-    // Unknown error
-    return sendResponse(res, 500, 0, {}, "Internal Server Error", []);
+    if (err.name === "TokenExpiredError") {
+      return sendResponse(res, 200, 3, [], "Token expired", []);
+    }
+
+    if (err.name === "JsonWebTokenError") {
+      return sendResponse(res, 200, 3, [], "Invalid token", []);
+    }
+    return sendResponse(res, 500, 0, [], "Internal Server Error", []);
   }
 };
 
