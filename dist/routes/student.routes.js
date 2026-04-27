@@ -2,8 +2,9 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const student_controller_1 = require("../controller/student.controller");
+const middleware_1 = require("../config/middleware");
 const router = (0, express_1.Router)();
-router.post("/nearby-tutors", (req, res) => {
+router.post("/nearby-tutors", middleware_1.authMiddleware, (req, res) => {
     /*
       #swagger.tags = ['9.Student']
       #swagger.summary = 'Get Near By Tutor's Data'
@@ -69,7 +70,7 @@ router.post("/get-student-data", (req, res) => {
     */
     student_controller_1.StudentController.getStudentData(req, res);
 });
-router.post("/book-session", (req, res) => {
+router.post("/book-session", middleware_1.authMiddleware, (req, res) => {
     /*
       #swagger.tags = ['9.Student']
       #swagger.summary = 'Book a tutor's Subject session'

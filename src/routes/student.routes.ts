@@ -1,9 +1,10 @@
 import { Router } from "express";
 import { StudentController } from "../controller/student.controller";
+import { authMiddleware } from "../config/middleware";
 
 const router = Router();
 
-router.post("/nearby-tutors", (req, res) => {
+router.post("/nearby-tutors", authMiddleware,(req, res) => {
   /*
     #swagger.tags = ['9.Student']
     #swagger.summary = 'Get Near By Tutor's Data'
@@ -71,7 +72,7 @@ router.post("/get-student-data", (req, res) => {
   StudentController.getStudentData(req, res);
 });
 
-router.post("/book-session", (req, res) => {
+router.post("/book-session", authMiddleware , (req, res) => {
   /*
     #swagger.tags = ['9.Student']
     #swagger.summary = 'Book a tutor's Subject session'

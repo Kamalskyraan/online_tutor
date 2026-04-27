@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const subject_controller_1 = require("../controller/subject.controller");
+const middleware_1 = require("../config/middleware");
 const router = (0, express_1.Router)();
 router.post("/add-update-subject", (req, res) => {
     subject_controller_1.SubjectController.addUpdateSubjects(req, res);
@@ -34,7 +35,7 @@ router.post("/get-subjects", (req, res) => {
     */
     return subject_controller_1.SubjectController.getSubjects(req, res);
 });
-router.post("/update-tutor-subjects", (req, res) => {
+router.post("/update-tutor-subjects", middleware_1.authMiddleware, (req, res) => {
     /*
       #swagger.tags = ['5.Subject']
       #swagger.summary = 'Add Update subjects to Tutor'
@@ -75,7 +76,7 @@ router.post("/update-tutor-subjects", (req, res) => {
     */
     subject_controller_1.SubjectController.addUpdateSubjectsToTutor(req, res);
 });
-router.post("/get-tutor-subjetcs", (req, res) => {
+router.post("/get-tutor-subjetcs", middleware_1.authMiddleware, (req, res) => {
     /*
       #swagger.tags = ['5.Subject']
       #swagger.summary = 'Get subjects belongs to tutor'

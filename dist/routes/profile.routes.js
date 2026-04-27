@@ -30,7 +30,7 @@ router.post("/get-profiledata", middleware_1.authMiddleware, (req, res) => {
     */
     return profile_controller_1.ProfileController.getUserData(req, res);
 });
-router.post("/add-update-userdata", (req, res) => {
+router.post("/add-update-userdata", middleware_1.authMiddleware, (req, res) => {
     /*
     #swagger.tags = ['3.Profile']
     #swagger.summary = 'add Update user data'

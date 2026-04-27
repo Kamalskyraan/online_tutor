@@ -33,7 +33,7 @@ router.post("/get-profiledata", authMiddleware, (req, res) => {
 
 router.post(
   "/add-update-userdata",
-
+  authMiddleware,
   (req, res) => {
     /*
     #swagger.tags = ['3.Profile']
@@ -86,6 +86,8 @@ router.post(
     ProfileController.addUpdateUserData(req, res);
   },
 );
+
+
 router.post("/change-primary", ProfileController.changePrimary);
 router.post(
   "/add-update-additional-number",

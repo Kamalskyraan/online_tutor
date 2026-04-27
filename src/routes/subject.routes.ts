@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { SubjectController } from "../controller/subject.controller";
+import { authMiddleware } from "../config/middleware";
 
 const router = Router();
 
@@ -36,7 +37,7 @@ router.post("/get-subjects", (req, res) => {
   return SubjectController.getSubjects(req, res);
 });
 
-router.post("/update-tutor-subjects", (req, res) => {
+router.post("/update-tutor-subjects",authMiddleware, (req, res) => {
   /*
     #swagger.tags = ['5.Subject']
     #swagger.summary = 'Add Update subjects to Tutor'
@@ -78,7 +79,7 @@ router.post("/update-tutor-subjects", (req, res) => {
   SubjectController.addUpdateSubjectsToTutor(req, res);
 });
 
-router.post("/get-tutor-subjetcs", (req, res) => {
+router.post("/get-tutor-subjetcs",authMiddleware, (req, res) => {
   /*
     #swagger.tags = ['5.Subject']
     #swagger.summary = 'Get subjects belongs to tutor'

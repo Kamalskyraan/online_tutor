@@ -2,10 +2,10 @@ import { Request, Response } from "express";
 import { sendResponse } from "../utils/helper";
 import { nanoid } from "nanoid";
 import { PutObjectCommand } from "@aws-sdk/client-s3";
-import { s3 } from "../service/s3";
+
 import fs from "fs/promises";
 import { commonModel } from "../models/common.model";
-import { Upload } from "@aws-sdk/lib-storage";
+
 
 const cmnModel = new commonModel();
 
