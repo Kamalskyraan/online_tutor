@@ -79,10 +79,17 @@ export class LeadsModel {
       extra_data: notif.extra_data,
       sent_to: "tutor",
     });
+    await sendPushNotification({
+      user_id: String(userId.tutor_user_id),
+      payload: {
+        title: notif.title,
+        message: notif.message,
+      },
+    });
 
     if (!userId?.tutor_user_id) return;
     const user_id = userId.tutor_user_id;
-    // await sendPushNotification(user_id, notif);
+    
   }
 
   async fetchLeads(filters: any) {

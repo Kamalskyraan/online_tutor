@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.LeadsModel = void 0;
 const notification_template_1 = require("../config/notification.template");
+const firebase_service_1 = require("../service/firebase.service");
 const helper_1 = require("../utils/helper");
 const common_model_1 = require("./common.model");
 const education_model_1 = require("./education.model");
@@ -52,10 +53,16 @@ class LeadsModel {
             extra_data: notif.extra_data,
             sent_to: "tutor",
         });
+        await (0, firebase_service_1.sendPushNotification)({
+            user_id: String(userId.tutor_user_id),
+            payload: {
+                title: notif.title,
+                message: notif.message,
+            },
+        });
         if (!userId?.tutor_user_id)
             return;
         const user_id = userId.tutor_user_id;
-        // await sendPushNotification(user_id, notif);
     }
     async fetchLeads(filters) {
         const { tutor_id, lead_id, from_date, to_date, subject_name, locations, leads_type, page = 1, limit = 10, } = filters;
