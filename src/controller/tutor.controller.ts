@@ -6,6 +6,7 @@ import { ReviewModel } from "../models/review.model";
 import { LeadsModel } from "../models/leads.model";
 import { NotificationTemplates } from "../config/notification.template";
 import { NotificationModel } from "../models/notification.model";
+import { sendPushNotification } from "../service/firebase.service";
 
 const tutModel = new TutorModel();
 const rvMdl = new ReviewModel();
@@ -336,6 +337,13 @@ export class TutorController {
         ...notification,
       });
 
+      await sendPushNotification({
+        user_id: String(studentUserId),
+        payload: {
+          title: notification.title,
+          message: notification.message,
+        },
+      });
       const respStatus = status === "accepted" ? "accepted" : "rejected";
       return sendResponse(
         res,
@@ -410,6 +418,14 @@ export class TutorController {
         sender_id: tutorUserId,
         receiver_id: studentUserId,
         ...notification,
+      });
+
+      await sendPushNotification({
+        user_id: String(studentUserId),
+        payload: {
+          title: notification.title,
+          message: notification.message,
+        },
       });
       return sendResponse(
         res,

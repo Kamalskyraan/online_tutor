@@ -7,6 +7,7 @@ const helper_1 = require("../utils/helper");
 const leads_model_1 = require("../models/leads.model");
 const notification_model_1 = require("../models/notification.model");
 const notification_template_1 = require("../config/notification.template");
+const firebase_service_1 = require("../service/firebase.service");
 class StudentController {
 }
 exports.StudentController = StudentController;
@@ -80,6 +81,13 @@ StudentController.bookASession = async (req, res) => {
             type: notif.type,
             extra_data: notif.extra_data,
             sent_to: "tutor",
+        });
+        await (0, firebase_service_1.sendPushNotification)({
+            user_id: String(tutorUserId),
+            payload: {
+                title: notif.title,
+                message: notif.message,
+            },
         });
         return (0, helper_1.sendResponse)(res, 200, 1, data, "Booking request sent (Pending)", []);
     }

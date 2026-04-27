@@ -9,6 +9,7 @@ import { Location } from "../interface/interface";
 import { LeadsModel } from "../models/leads.model";
 import { NotificationModel } from "../models/notification.model";
 import { NotificationTemplates } from "../config/notification.template";
+import { sendPushNotification } from "../service/firebase.service";
 
 export class StudentController {
   private static studentModel = new StudentModel();
@@ -124,7 +125,13 @@ export class StudentController {
         extra_data: notif.extra_data,
         sent_to: "tutor",
       });
-
+      await sendPushNotification({
+        user_id: String(tutorUserId),
+        payload: {
+          title: notif.title,
+          message: notif.message,
+        },
+      });
       return sendResponse(
         res,
         200,
@@ -241,7 +248,7 @@ export class StudentController {
         res,
         200,
         1,
-       [ convertNullToString(result)],
+        [convertNullToString(result)],
         "Booked classes fetched",
         [],
       );

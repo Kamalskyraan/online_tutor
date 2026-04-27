@@ -9,6 +9,7 @@ const review_model_1 = require("../models/review.model");
 const leads_model_1 = require("../models/leads.model");
 const notification_template_1 = require("../config/notification.template");
 const notification_model_1 = require("../models/notification.model");
+const firebase_service_1 = require("../service/firebase.service");
 const tutModel = new tutor_model_1.TutorModel();
 const rvMdl = new review_model_1.ReviewModel();
 const leadsMdl = new leads_model_1.LeadsModel();
@@ -228,6 +229,13 @@ TutorController.requestAcceptRejectFlow = async (req, res) => {
             receiver_id: studentUserId,
             ...notification,
         });
+        await (0, firebase_service_1.sendPushNotification)({
+            user_id: String(studentUserId),
+            payload: {
+                title: notification.title,
+                message: notification.message,
+            },
+        });
         const respStatus = status === "accepted" ? "accepted" : "rejected";
         return (0, helper_1.sendResponse)(res, 200, 1, [], `Tutor ${respStatus} successfully`, []);
     }
@@ -273,6 +281,13 @@ TutorController.setViewMobile = async (req, res) => {
             sender_id: tutorUserId,
             receiver_id: studentUserId,
             ...notification,
+        });
+        await (0, firebase_service_1.sendPushNotification)({
+            user_id: String(studentUserId),
+            payload: {
+                title: notification.title,
+                message: notification.message,
+            },
         });
         return (0, helper_1.sendResponse)(res, 200, 1, [], "Mobile view status updated successfully", []);
     }
