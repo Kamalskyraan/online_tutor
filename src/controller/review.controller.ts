@@ -103,7 +103,7 @@ export class ReviewController {
         res,
         200,
         1,
-        convertNullToString(ReviewData),
+       [ convertNullToString(ReviewData)],
 
         "Reviews Fetched Successfully",
         [],

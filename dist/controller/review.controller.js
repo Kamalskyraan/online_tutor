@@ -58,7 +58,7 @@ class ReviewController {
                 page,
                 limit,
             });
-            return (0, helper_1.sendResponse)(res, 200, 1, (0, helper_1.convertNullToString)(ReviewData), "Reviews Fetched Successfully", []);
+            return (0, helper_1.sendResponse)(res, 200, 1, [(0, helper_1.convertNullToString)(ReviewData)], "Reviews Fetched Successfully", []);
         }
         catch (err) {
             console.log(err);

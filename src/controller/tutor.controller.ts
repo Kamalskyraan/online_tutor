@@ -94,7 +94,7 @@ export class TutorController {
         res,
         200,
         1,
-        result,
+        [result],
         "Demos Fetched Successfully",
         [],
       );
@@ -404,7 +404,7 @@ export class TutorController {
       if (!tutorUserId || !studentUserId) {
         return sendResponse(res, 200, 0, [], "User mapping failed", []);
       }
-      const notification = NotificationTemplates.mobileViewed();
+      const notification = NotificationTemplates.mobileViewed(tutor_id);
 
       await noteModel.insertNOtifcations({
         sender_id: tutorUserId,

@@ -76,9 +76,15 @@ export class StudentController {
         }
       }
 
-      sendResponse(res, 200, 1, tutors, "Tutor Data Fetched successfully", []);
+      sendResponse(
+        res,
+        200,
+        1,
+        [tutors],
+        "Tutor Data Fetched successfully",
+        [],
+      );
     } catch (err: any) {
-      console.log(err);
       sendResponse(
         res,
         200,
@@ -235,7 +241,7 @@ export class StudentController {
         res,
         200,
         1,
-        convertNullToString(result),
+       [ convertNullToString(result)],
         "Booked classes fetched",
         [],
       );

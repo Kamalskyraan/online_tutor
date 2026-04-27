@@ -92,7 +92,7 @@ export class NotificationModel {
     );
 
     return result;
-  }
+  } 
 
   async getNotifications(data: any) {
     const { receiver_id, page = 1, limit = 10 } = data;

@@ -67,12 +67,12 @@ export class NotificationTemplates {
       extra_data: { subject },
     };
   }
-  static mobileViewed() {
+  static mobileViewed(tutor_id: string) {
     return {
       title: "Profile Viewed",
       message: "Your contact details were viewed by the tutor",
       type: "MOBILE_VIEWED",
-      extra_data: {},
+      extra_data: { tutor_id },
     };
   }
 }

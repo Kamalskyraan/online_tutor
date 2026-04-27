@@ -39,11 +39,11 @@ ProfileController.getUserData = async (req, res) => {
             streams = await eduModl.fetchStreamsForAll(streamId.toString());
         }
         const stringData = await cmnModel.convertNullObjectToString(data);
-        return (0, helper_1.sendResponse)(res, 200, 1, {
-            role: result.role,
-            ...stringData,
-            streams,
-        }, "User Profile Data Fetched successfully", []);
+        return (0, helper_1.sendResponse)(res, 200, 1, [{
+                role: result.role,
+                ...stringData,
+                streams,
+            }], "User Profile Data Fetched successfully", []);
     }
     catch (err) {
         return (0, helper_1.sendResponse)(res, 500, 0, [], "something went wrong", err.errors || err.message || err);

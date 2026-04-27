@@ -50,10 +50,9 @@ StudentController.getNearbyTutors = async (req, res) => {
                 }
             }
         }
-        (0, helper_1.sendResponse)(res, 200, 1, tutors, "Tutor Data Fetched successfully", []);
+        (0, helper_1.sendResponse)(res, 200, 1, [tutors], "Tutor Data Fetched successfully", []);
     }
     catch (err) {
-        console.log(err);
         (0, helper_1.sendResponse)(res, 200, 0, [], "Internal Server error", err.errors || err.message || err);
     }
 };
@@ -150,7 +149,7 @@ StudentController.getBookedClassesForStudent = async (req, res) => {
             subject_name,
             page,
         });
-        return (0, helper_1.sendResponse)(res, 200, 1, (0, helper_1.convertNullToString)(result), "Booked classes fetched", []);
+        return (0, helper_1.sendResponse)(res, 200, 1, [(0, helper_1.convertNullToString)(result)], "Booked classes fetched", []);
     }
     catch (err) {
         return (0, helper_1.sendResponse)(res, 500, 0, [], "Internal Server Error", [

@@ -45,11 +45,11 @@ export class ProfileController {
         res,
         200,
         1,
-        {
+        [{
           role: result.role,
           ...stringData,
           streams,
-        },
+        }],
         "User Profile Data Fetched successfully",
         [],
       );

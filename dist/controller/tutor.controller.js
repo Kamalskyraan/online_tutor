@@ -71,7 +71,7 @@ TutorController.getDemos = async (req, res) => {
             media_type,
             id,
         });
-        return (0, helper_1.sendResponse)(res, 200, 1, result, "Demos Fetched Successfully", []);
+        return (0, helper_1.sendResponse)(res, 200, 1, [result], "Demos Fetched Successfully", []);
     }
     catch (err) {
         return (0, helper_1.sendResponse)(res, 500, 0, [], "Internal Server Error", err.errors || err.message || err);
@@ -268,7 +268,7 @@ TutorController.setViewMobile = async (req, res) => {
         if (!tutorUserId || !studentUserId) {
             return (0, helper_1.sendResponse)(res, 200, 0, [], "User mapping failed", []);
         }
-        const notification = notification_template_1.NotificationTemplates.mobileViewed();
+        const notification = notification_template_1.NotificationTemplates.mobileViewed(tutor_id);
         await noteModel.insertNOtifcations({
             sender_id: tutorUserId,
             receiver_id: studentUserId,
