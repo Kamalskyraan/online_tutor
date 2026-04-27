@@ -253,7 +253,8 @@ export class ReviewController {
         );
       }
 
-      const sender_id = student_id || tutor_id;
+      const isTutor = !!tutor_id;
+      const sender_id = tutor_id || student_id;
 
       const reviewRes: any = await executeQuery(
         `SELECT student_id FROM reviews WHERE id = ?`,
@@ -272,17 +273,31 @@ export class ReviewController {
       });
 
       if (sender_id !== receiver_id) {
-        const userId = await noteModel.getUserIdFromRole({
-          tutor_id: sender_id,
-          student_id: receiver_id,
-        });
+        let sender_user_id: any;
+        let receiver_user_id: any;
+        if (isTutor) {
+          const userMap = await noteModel.getUserIdFromRole({
+            tutor_id: sender_id,
+            student_id: receiver_id,
+          });
+
+          sender_user_id = userMap.tutor_user_id;
+          receiver_user_id = userMap.student_user_id;
+        } else {
+          const userMap = await noteModel.getUserIdFromRole({
+            student_id: sender_id,
+          });
+
+          sender_user_id = userMap.student_user_id;
+          receiver_user_id = receiver_id;
+        }
 
         const notif = NotificationTemplates.reviewLike({ review_id });
 
         if (result.action === "like") {
           await noteModel.insertNOtifcations({
-            sender_id: userId.tutor_user_id,
-            receiver_id: userId.student_user_id,
+            sender_id: sender_user_id,
+            receiver_id: receiver_user_id,
             title: notif.title,
             message: notif.message,
             type: notif.type,
@@ -293,8 +308,8 @@ export class ReviewController {
           // await sendPushNotification(receiver_id, notif);
         } else if (result.action === "dislike") {
           await rvModel.removeNotification({
-            sender_id: userId.tutor_user_id,
-            receiver_id: userId.student_user_id,
+            sender_id: sender_user_id,
+            receiver_id: receiver_user_id,
             review_id,
           });
         }

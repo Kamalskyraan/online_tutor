@@ -14,12 +14,11 @@ const authMdl = new auth_model_1.AuthModel();
 const authMiddleware = async (req, res, next) => {
     try {
         const authHeader = req.headers.authorization;
-        // 1. Check header exists
         if (!authHeader) {
-            return (0, helper_1.sendResponse)(res, 200, 3, {}, "Access denied. No token provided", []);
+            return (0, helper_1.sendResponse)(res, 200, 3, [], "Access denied. No token provided", []);
         }
         if (!authHeader.startsWith("Bearer ")) {
-            return (0, helper_1.sendResponse)(res, 200, 3, {}, "Invalid token format", []);
+            return (0, helper_1.sendResponse)(res, 200, 3, [], "Invalid token format", []);
         }
         const token = authHeader.split(" ")[1];
         // 3. Verify token

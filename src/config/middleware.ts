@@ -22,20 +22,20 @@ export const authMiddleware = async (
   try {
     const authHeader = req.headers.authorization;
 
-    // 1. Check header exists
+   
     if (!authHeader) {
       return sendResponse(
         res,
         200,
         3,
-        {},
+        [],
         "Access denied. No token provided",
         [],
       );
     }
 
     if (!authHeader.startsWith("Bearer ")) {
-      return sendResponse(res, 200, 3, {}, "Invalid token format", []);
+      return sendResponse(res, 200, 3, [], "Invalid token format", []);
     }
 
     const token = authHeader.split(" ")[1];

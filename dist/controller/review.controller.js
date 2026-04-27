@@ -147,7 +147,8 @@ class ReviewController {
             if (!student_id && !tutor_id) {
                 return (0, helper_1.sendResponse)(res, 200, 0, [], "student_id or tutor_id required", []);
             }
-            const sender_id = student_id || tutor_id;
+            const isTutor = !!tutor_id;
+            const sender_id = tutor_id || student_id;
             const reviewRes = await (0, helper_1.executeQuery)(`SELECT student_id FROM reviews WHERE id = ?`, [review_id]);
             if (!reviewRes.length) {
                 return (0, helper_1.sendResponse)(res, 200, 0, [], "Review not found", []);
@@ -159,15 +160,28 @@ class ReviewController {
                 tutor_id,
             });
             if (sender_id !== receiver_id) {
-                const userId = await noteModel.getUserIdFromRole({
-                    tutor_id: sender_id,
-                    student_id: receiver_id,
-                });
+                let sender_user_id;
+                let receiver_user_id;
+                if (isTutor) {
+                    const userMap = await noteModel.getUserIdFromRole({
+                        tutor_id: sender_id,
+                        student_id: receiver_id,
+                    });
+                    sender_user_id = userMap.tutor_user_id;
+                    receiver_user_id = userMap.student_user_id;
+                }
+                else {
+                    const userMap = await noteModel.getUserIdFromRole({
+                        student_id: sender_id,
+                    });
+                    sender_user_id = userMap.student_user_id;
+                    receiver_user_id = receiver_id;
+                }
                 const notif = notification_template_1.NotificationTemplates.reviewLike({ review_id });
                 if (result.action === "like") {
                     await noteModel.insertNOtifcations({
-                        sender_id: userId.tutor_user_id,
-                        receiver_id: userId.student_user_id,
+                        sender_id: sender_user_id,
+                        receiver_id: receiver_user_id,
                         title: notif.title,
                         message: notif.message,
                         type: notif.type,
@@ -178,8 +192,8 @@ class ReviewController {
                 }
                 else if (result.action === "dislike") {
                     await rvModel.removeNotification({
-                        sender_id: userId.tutor_user_id,
-                        receiver_id: userId.student_user_id,
+                        sender_id: sender_user_id,
+                        receiver_id: receiver_user_id,
                         review_id,
                     });
                 }
