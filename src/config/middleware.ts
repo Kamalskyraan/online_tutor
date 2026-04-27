@@ -21,7 +21,8 @@ export const authMiddleware = (
   try {
     const authHeader = req.headers.authorization;
 
-    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+    // 1. Check header exists
+    if (!authHeader) {
       return sendResponse(
         res,
         200,
@@ -32,18 +33,26 @@ export const authMiddleware = (
       );
     }
 
+    // 2. Check Bearer format
+    if (!authHeader.startsWith("Bearer ")) {
+      return sendResponse(res, 200, 3, {}, "Invalid token format", []);
+    }
+
     const token = authHeader.split(" ")[1];
 
+    // 3. Verify token
     const decoded: any = jwt.verify(token, JWT_SECRET);
 
+    // 4. Attach user
     req.user = {
       user_id: decoded.user_id,
       role: decoded.role,
     };
 
     next();
-  } catch (err) {
-    return sendResponse(res, 500, 0, [], "Internal Server Error", []);
+  } catch (err: any) {
+    // Unknown error
+    return sendResponse(res, 500, 0, {}, "Internal Server Error", []);
   }
 };
 

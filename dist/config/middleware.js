@@ -12,11 +12,18 @@ var JWT_SECRET = process.env.JWT_SECRET || "abc@1234";
 const authMiddleware = (req, res, next) => {
     try {
         const authHeader = req.headers.authorization;
-        if (!authHeader || !authHeader.startsWith("Bearer ")) {
+        // 1. Check header exists
+        if (!authHeader) {
             return (0, helper_1.sendResponse)(res, 200, 3, {}, "Access denied. No token provided", []);
         }
+        // 2. Check Bearer format
+        if (!authHeader.startsWith("Bearer ")) {
+            return (0, helper_1.sendResponse)(res, 200, 3, {}, "Invalid token format", []);
+        }
         const token = authHeader.split(" ")[1];
+        // 3. Verify token
         const decoded = jsonwebtoken_1.default.verify(token, JWT_SECRET);
+        // 4. Attach user
         req.user = {
             user_id: decoded.user_id,
             role: decoded.role,
@@ -24,7 +31,8 @@ const authMiddleware = (req, res, next) => {
         next();
     }
     catch (err) {
-        return (0, helper_1.sendResponse)(res, 500, 0, [], "Internal Server Error", []);
+        // Unknown error
+        return (0, helper_1.sendResponse)(res, 500, 0, {}, "Internal Server Error", []);
     }
 };
 exports.authMiddleware = authMiddleware;
