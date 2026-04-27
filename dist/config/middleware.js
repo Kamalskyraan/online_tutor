@@ -21,19 +21,17 @@ const authMiddleware = async (req, res, next) => {
             return (0, helper_1.sendResponse)(res, 200, 3, [], "Invalid token format", []);
         }
         const token = authHeader.split(" ")[1];
-        // 3. Verify token
-        const decoded = jsonwebtoken_1.default.verify(token, process.env.JWT_SECRET);
+        const decoded = jsonwebtoken_1.default.verify(token, JWT_SECRET);
         const device = await authModel.findUserDevice({
             user_id: decoded.user_id,
             device_id: decoded.device_id,
-            device_token: decoded.device_token,
         });
         if (!device) {
             return (0, helper_1.sendResponse)(res, 200, 3, [], "Session expired. Please login again", []);
         }
         req.user = {
             user_id: decoded.user_id,
-            role: decoded.device_id,
+            role: decoded.role,
         };
         next();
     }

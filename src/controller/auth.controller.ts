@@ -176,11 +176,9 @@ export class AuthController {
         device_token,
         device_type,
       });
-      const token = jwt.sign(
-        { user_id, device_id, device_token },
-        process.env.JWT_SECRET!,
-        { expiresIn: "90d" },
-      );
+      const token = jwt.sign({ user_id, device_id }, process.env.JWT_SECRET!, {
+        expiresIn: "90d",
+      });
 
       const users = await userMdl.fetchUserData(mobile);
       const country = users[0].country;
@@ -277,7 +275,7 @@ export class AuthController {
         device_type: device_type,
       });
       const token = jwt.sign(
-        { user_id: user.user_id, device_id, device_token },
+        { user_id: user.user_id, device_id },
         process.env.JWT_SECRET!,
         { expiresIn: "90d" },
       );

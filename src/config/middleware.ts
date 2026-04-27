@@ -39,13 +39,11 @@ export const authMiddleware = async (
 
     const token = authHeader.split(" ")[1];
 
-    // 3. Verify token
-    const decoded: any = jwt.verify(token, process.env.JWT_SECRET!);
+    const decoded: any = jwt.verify(token, JWT_SECRET);
 
     const device = await authModel.findUserDevice({
       user_id: decoded.user_id,
       device_id: decoded.device_id,
-      device_token: decoded.device_token,
     });
 
     if (!device) {
@@ -60,7 +58,7 @@ export const authMiddleware = async (
     }
     req.user = {
       user_id: decoded.user_id,
-      role: decoded.device_id,
+      role: decoded.role,
     };
 
     next();
