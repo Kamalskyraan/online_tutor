@@ -200,4 +200,12 @@ export class AuthModel {
 
     return result[0];
   }
+
+  async removeUserDevicedec(user_id: string, device_id: string) {
+    const sql = `
+    DELETE FROM user_devices 
+    WHERE user_id = ? AND device_id = ?
+  `;
+    return await executeQuery(sql, [user_id, device_id]);
+  }
 }

@@ -130,6 +130,13 @@ class AuthModel {
     `, [user_id, device_id]);
         return result[0];
     }
+    async removeUserDevicedec(user_id, device_id) {
+        const sql = `
+    DELETE FROM user_devices 
+    WHERE user_id = ? AND device_id = ?
+  `;
+        return await (0, helper_1.executeQuery)(sql, [user_id, device_id]);
+    }
 }
 exports.AuthModel = AuthModel;
 //# sourceMappingURL=auth.model.js.map

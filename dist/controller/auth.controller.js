@@ -244,23 +244,29 @@ AuthController.resetPassword = async (req, res) => {
         return (0, helper_1.sendResponse)(res, err.status || 500, 0, [], "Something went wrong", [err.errors || err.message || err]);
     }
 };
-AuthController.logout = async (req, res) => {
-    try {
-        const { user_id } = req.body;
-        if (!user_id) {
-            return (0, helper_1.sendResponse)(res, 400, 0, [], "User Id is required", []);
-        }
-        await authModel.clearExistUserDevice(user_id);
-        res.clearCookie("token", {
-            httpOnly: true,
-            secure: process.env.NODE_ENV === "production",
-        });
-        return (0, helper_1.sendResponse)(res, 200, 1, [], "Logout successful", []);
-    }
-    catch (err) {
-        return (0, helper_1.sendResponse)(res, err.status || 500, 0, [], "Something went wrong", [err.errors || err.message || err]);
-    }
-};
+// static logout = async (req: Request, res: Response) => {
+//   try {
+//     const { user_id } = req.body;
+//     if (!user_id) {
+//       return sendResponse(res, 200, 0, [], "User Id is required", []);
+//     }
+//     await authModel.clearExistUserDevice(user_id);
+//     res.clearCookie("token", {
+//       httpOnly: true,
+//       secure: process.env.NODE_ENV === "production",
+//     });
+//     return sendResponse(res, 200, 1, [], "Logout successful", []);
+//   } catch (err: any) {
+//     return sendResponse(
+//       res,
+//       err.status || 500,
+//       0,
+//       [],
+//       "Something went wrong",
+//       [err.errors || err.message || err],
+//     );
+//   }
+// };
 AuthController.reactivateAccount = async (req, res) => {
     try {
         const { user_id } = req.body;
@@ -295,6 +301,38 @@ AuthController.reactivateAccount = async (req, res) => {
     catch (err) {
         return (0, helper_1.sendResponse)(res, 500, 0, [], "Internal Server Error", [
             err.errors || err.message || err,
+        ]);
+    }
+};
+AuthController.logout = async (req, res) => {
+    try {
+        const authHeader = req.headers.authorization;
+        if (!authHeader || !authHeader.startsWith("Bearer ")) {
+            return (0, helper_1.sendResponse)(res, 200, 3, [], "Unauthorized", []);
+        }
+        const token = authHeader.split(" ")[1];
+        const decoded = jsonwebtoken_1.default.verify(token, process.env.JWT_SECRET);
+        const user_id = decoded.user_id;
+        const device_id = decoded.device_id;
+        if (!user_id || !device_id) {
+            return (0, helper_1.sendResponse)(res, 200, 3, [], "Invalid token data", []);
+        }
+        await authModel.removeUserDevicedec(user_id, device_id);
+        res.clearCookie("token", {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
+        });
+        return (0, helper_1.sendResponse)(res, 200, 1, [], "Logout successful", []);
+    }
+    catch (err) {
+        if (err.name === "TokenExpiredError") {
+            return (0, helper_1.sendResponse)(res, 200, 3, [], "Token expired", []);
+        }
+        if (err.name === "JsonWebTokenError") {
+            return (0, helper_1.sendResponse)(res, 401, 3, [], "Invalid token", []);
+        }
+        return (0, helper_1.sendResponse)(res, 500, 3, [], "Something went wrong", [
+            err.message || err,
         ]);
     }
 };
