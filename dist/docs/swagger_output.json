@@ -3271,7 +3271,7 @@
             }
         },
         "/api/review/get-report-reasons": {
-            "get": {
+            "post": {
                 "tags": [
                     "10.review"
                 ],
