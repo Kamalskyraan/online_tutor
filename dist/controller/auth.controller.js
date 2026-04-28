@@ -201,6 +201,21 @@ AuthController.login = async (req, res) => {
             });
             return (0, helper_1.sendResponse)(res, 200, 1, [{ user_id: user.user_id }], "Login successful", []);
         }
+        if (user.is_blocked === 1) {
+            return (0, helper_1.sendResponse)(res, 200, 2, [
+                {
+                    user_id: user.user_id,
+                    token: "",
+                    country: "",
+                    personal_form: "",
+                    sub_form: "",
+                    user_role: "",
+                    tutor_id: "",
+                    student_id,
+                    first_sub: 0,
+                },
+            ], "Need Justification for this ID", []);
+        }
         return (0, helper_1.sendResponse)(res, 200, 1, [
             {
                 user_id: user.user_id,

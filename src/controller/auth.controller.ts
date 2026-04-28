@@ -284,6 +284,7 @@ export class AuthController {
       const user_role = users[0]?.user_role
         ? convertNullToString(users[0]?.user_role)
         : "";
+
       const country = users[0].country;
       const personal_form = users[0].is_form_filled;
 
@@ -302,12 +303,36 @@ export class AuthController {
           secure: process.env.NODE_ENV === "production",
           maxAge: 90 * 24 * 60 * 60 * 1000,
         });
+
         return sendResponse(
           res,
           200,
           1,
           [{ user_id: user.user_id }],
           "Login successful",
+          [],
+        );
+      }
+
+      if (user.is_blocked === 1) {
+        return sendResponse(
+          res,
+          200,
+          2,
+          [
+            {
+              user_id: user.user_id,
+              token: "",
+              country: "",
+              personal_form: "",
+              sub_form: "",
+              user_role: "",
+              tutor_id: "",
+              student_id,
+              first_sub: 0,
+            },
+          ],
+          "Need Justification for this ID",
           [],
         );
       }
