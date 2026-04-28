@@ -88,6 +88,7 @@ const sendAPNSNotification = async ({ tokens, title, body }) => {
         notification.alert = { title, body };
         notification.topic = process.env.IOS_BUNDLE_ID;
         const result = await apnprovider_1.apnProvider.send(notification, tokens);
+        console.log(tokens, "---");
         console.log("APNS sent:", result.sent.length);
         console.log("APNS failed:", result.failed.length);
         result.failed.forEach((f) => {

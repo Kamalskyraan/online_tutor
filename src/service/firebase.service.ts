@@ -107,6 +107,9 @@ export const sendAPNSNotification = async ({ tokens, title, body }: any) => {
 
     const result = await apnProvider.send(notification, tokens);
 
+
+    console.log(tokens , "---")
+
     console.log("APNS sent:", result.sent.length);
     console.log("APNS failed:", result.failed.length);
 
