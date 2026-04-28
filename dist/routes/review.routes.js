@@ -179,7 +179,7 @@ router.post("/remove-review-reply", (req, res) => {
     */
     review_controller_1.ReviewController.deleteReviewReply(req, res);
 });
-router.get("/get-report-reasons", (req, res) => {
+router.post("/get-report-reasons", (req, res) => {
     /*
       #swagger.tags = ['10.review']
       #swagger.summary = 'Get Report Reasons'
