@@ -371,7 +371,7 @@
 
       <div class="input-section">
        <div class="input-wrapper">
-  <img src="./user.png" alt="" />
+  <!-- <img src="./user.png" alt="" /> -->
   <input type="text" id="fullName" placeholder=" " required />
   <label for="fullName">Full Name</label>
   
@@ -392,7 +392,7 @@
       <div class="input-section">
         <label for="email">Email Address</label>
         <div class="input-wrapper">
-          <img src="./Mail.png" alt="" />
+          <!-- <img src="./Mail.png" alt="" /> -->
           <input type="email" id="email" placeholder="" />
         </div>
          <small class="error" id="emailError"></small>
@@ -436,7 +436,7 @@
     class="file-box"
     onclick="document.getElementById('fileUpload').click()"
   >
-    <img src="./Upload.svg" alt="" />
+    <!-- <img src="./Upload.svg" alt="" /> -->
     <span>Click to upload</span>
   </div>
 
@@ -663,7 +663,10 @@ function setupSubmit() {
       setError("emailError", "Invalid email");
       isValid = false;
     }
-
+    if(!email){
+      setError("Email is Required");
+      isValid = false;
+    }
     if (!reason) {
       setError("reasonError", "Reason is required");
       isValid = false;
