@@ -7,30 +7,30 @@ exports.sendMail = void 0;
 const nodemailer_1 = __importDefault(require("nodemailer"));
 const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
-// const configOptions = {
-//   host: "mail.skyraantech.com",
-//   port: 465,
-//   secure: true,
-//   auth: {
-//     user: "support@skyraantech.com",
-//     pass:"xnfgp6HO=*Dx^U~t",
-//   },
-//   pool: true,
-//   maxConnections: 3,
-//   maxMessages: 20,
-// };
 const configOptions = {
-    host: process.env.MAIL_HOST,
-    port: 587,
-    secure: false,
+    host: "mail.tutoraan.com",
+    port: 465,
+    secure: true,
     auth: {
-        user: process.env.SENDER_MAIL,
-        pass: process.env.PASSWORD,
+        user: "contact@tutoraan.com",
+        pass: "9Q3VvX{*npV-Sz@C",
     },
     pool: true,
     maxConnections: 3,
     maxMessages: 20,
 };
+// const configOptions = {
+//   host: process.env.MAIL_HOST,
+//   port: 587,
+//   secure: false,
+//   auth: {
+//     user: process.env.SENDER_MAIL,
+//     pass: process.env.PASSWORD,
+//   },
+//   pool: true,
+//   maxConnections: 3,
+//   maxMessages: 20,
+// };
 const transporter = nodemailer_1.default.createTransport(configOptions);
 const sendMail = async (email, otp) => {
     try {
