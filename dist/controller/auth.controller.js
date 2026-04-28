@@ -374,7 +374,7 @@ AuthController.addAppeal = async (req, res) => {
     try {
         const { user_id, name, mobile, email, reason, attachments } = req.body;
         if (!user_id || !name || !mobile || !reason) {
-            return (0, helper_1.sendResponse)(res, 400, 0, [], "Required fields missing", []);
+            return (0, helper_1.sendResponse)(res, 200, 0, [], "Required fields missing", []);
         }
         const already = await authModel.checkAlreadySubmitted(user_id);
         if (already) {

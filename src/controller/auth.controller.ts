@@ -592,7 +592,7 @@ export class AuthController {
       const { user_id, name, mobile, email, reason, attachments } = req.body;
 
       if (!user_id || !name || !mobile || !reason) {
-        return sendResponse(res, 400, 0, [], "Required fields missing", []);
+        return sendResponse(res, 200, 0, [], "Required fields missing", []);
       }
 
       const already = await authModel.checkAlreadySubmitted(user_id);
