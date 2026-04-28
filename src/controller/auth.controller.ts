@@ -641,4 +641,31 @@ export class AuthController {
       );
     }
   };
+
+  static checkAlreadyAppeal = async (req: Request, res: Response) => {
+    try {
+      const { user_id } = req.body;
+
+      if (!user_id) {
+        return sendResponse(res, 200, 0, [], "User id required", []);
+      }
+
+      const already = await authModel.checkAlreadySubmitted(user_id);
+
+      return sendResponse(
+        res,
+        200,
+        1,
+        {
+          already_submit: already ? 1 : 0,
+        },
+        already ? "Already submitted" : "Not submitted",
+        [],
+      );
+    } catch (err: any) {
+      return sendResponse(res, 500, 0, [], "Internal Server Error", [
+        err.message || err,
+      ]);
+    }
+  };
 }

@@ -49,5 +49,5 @@ router.post("/upload-multiple", upload.array("files", 5), (req, res) => {
 // justify
 
 router.post("/add-appeal", AuthController.addAppeal);
-
+router.post("/check-appeal", AuthController.checkAlreadyAppeal);
 export default router;

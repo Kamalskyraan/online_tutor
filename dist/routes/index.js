@@ -48,5 +48,6 @@ router.post("/upload-multiple", multer_1.upload.array("files", 5), (req, res) =>
 });
 // justify
 router.post("/add-appeal", auth_controller_1.AuthController.addAppeal);
+router.post("/check-appeal", auth_controller_1.AuthController.checkAlreadyAppeal);
 exports.default = router;
 //# sourceMappingURL=index.js.map

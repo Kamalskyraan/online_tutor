@@ -631,6 +631,30 @@ async function fetchData() {
   try {
     const user_id = getUserIdFromURL();
 
+    // ✅ STEP 1: call check API (POST with body)
+    const checkRes = await fetch(
+      `https://tutoraan.com/server/api/check-appeal`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ user_id }),
+      }
+    );
+
+    const checkData = await checkRes.json();
+
+    // ✅ already submitted → white screen
+    if (checkData?.data?.already_submit === 1) {
+      showFullScreenMessage(
+        "Already Submitted",
+        checkData.message || "You have already submitted an appeal."
+      );
+      return;
+    }
+
+    // ✅ STEP 2: load form data
     const res = await fetch(
       `https://tutoraan.com/server/api/auth/appeal-form-info/${user_id}`
     );
@@ -644,24 +668,11 @@ async function fetchData() {
 
     const data = formInfos.data;
 
-    // 🔥 CHECK HERE
-    if (data?.already_submit === 1) {
-      showFullScreenMessage(
-        "Already Submitted",
-        "You have already submitted an appeal."
-      );
-      return; 
-    }
-
-    // ✅ Normal flow
     const nameInput = document.getElementById("fullName");
     const mobileInput = document.getElementById("mobile");
 
     nameInput.value = data?.name || "";
     mobileInput.value = data?.mobile || "";
-
-    if (nameInput.value) nameInput.classList.add("filled");
-    if (mobileInput.value) mobileInput.classList.add("filled");
 
     nameInput.readOnly = true;
     mobileInput.readOnly = true;
@@ -670,7 +681,6 @@ async function fetchData() {
     console.error("Error loading data:", error);
   }
 }
-
 let uploadedFiles = [];
 
 function setupFileUpload() {
@@ -734,7 +744,7 @@ function setupSubmit() {
     clearErrors();
     showMessage("", "");
 
-    const user_id = getUserIdFromURL(); // ✅ FIX
+    const user_id = getUserIdFromURL(); 
 
     const name = document.getElementById("fullName").value.trim();
     const mobile = document.getElementById("mobile").value.trim();

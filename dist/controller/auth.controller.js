@@ -398,4 +398,21 @@ AuthController.addAppeal = async (req, res) => {
         return (0, helper_1.sendResponse)(res, 500, 0, [], "Something went wrong", err.message || err);
     }
 };
+AuthController.checkAlreadyAppeal = async (req, res) => {
+    try {
+        const { user_id } = req.body;
+        if (!user_id) {
+            return (0, helper_1.sendResponse)(res, 200, 0, [], "User id required", []);
+        }
+        const already = await authModel.checkAlreadySubmitted(user_id);
+        return (0, helper_1.sendResponse)(res, 200, 1, {
+            already_submit: already ? 1 : 0,
+        }, already ? "Already submitted" : "Not submitted", []);
+    }
+    catch (err) {
+        return (0, helper_1.sendResponse)(res, 500, 0, [], "Internal Server Error", [
+            err.message || err,
+        ]);
+    }
+};
 //# sourceMappingURL=auth.controller.js.map
