@@ -355,6 +355,7 @@
     </style>
   </head>
   <body>
+    <div id="formMessage" class="form-message"></div>
     <div class="container" style="width: 100%">
       <div
         style="
@@ -569,11 +570,16 @@ function clearErrors() {
 
 function showMessage(message, type = "success") {
   const box = document.getElementById("formMessage");
+
+  if (!box) {
+    console.error("❌ formMessage element NOT FOUND in DOM");
+    return;
+  }
+
   box.innerText = message;
   box.className = "form-message " + type;
-  box.style.display = "block";
+  box.style.display = message ? "block" : "none";
 }
-
 
 async function fetchData() {
   try {
