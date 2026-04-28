@@ -284,7 +284,7 @@ router.post("/student-suggestion", (req, res) => {
 
   StudentController.studentConsumedSubjects(req, res);
 });
-router.post("/student-favs", (req, res) => {
+router.post("/student-favs", authMiddleware, (req, res) => {
   /*
     #swagger.tags = ['9.Student']
     #swagger.summary = 'Get Favourites of student'

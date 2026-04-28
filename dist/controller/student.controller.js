@@ -187,7 +187,7 @@ StudentController.getMyFavourites = async (req, res) => {
             return (0, helper_1.sendResponse)(res, 200, 0, [], "Student ID is required", []);
         }
         const studentFav = await _a.studentModel.fethFavouritesOfStudent(student_id, page);
-        return (0, helper_1.sendResponse)(res, 200, 1, studentFav, "Favs fetched successfully", []);
+        return (0, helper_1.sendResponse)(res, 200, 1, [studentFav], "Favs fetched successfully", []);
     }
     catch (err) {
         return (0, helper_1.sendResponse)(res, 500, 0, [], "Internal Server Error", [

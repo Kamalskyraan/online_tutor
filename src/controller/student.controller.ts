@@ -300,7 +300,7 @@ export class StudentController {
         res,
         200,
         1,
-        studentFav,
+        [studentFav],
         "Favs fetched successfully",
         [],
       );
