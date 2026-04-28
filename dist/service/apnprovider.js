@@ -15,6 +15,6 @@ exports.apnProvider = new node_apn_1.default.Provider({
         teamId: process.env.IOS_TEAM_ID,
     },
     // production: process.env.NODE_ENV === "production",
-    production: true,
+    production: false,
 });
 //# sourceMappingURL=apnprovider.js.map
