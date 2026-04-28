@@ -1,11 +1,15 @@
 import { Router } from "express";
 import { StudentController } from "../controller/student.controller";
-import { authMiddleware } from "../config/middleware";
+import { authMiddleware, blockCheckMiddleware } from "../config/middleware";
 
 const router = Router();
 
-router.post("/nearby-tutors", authMiddleware,(req, res) => {
-  /*
+router.post(
+  "/nearby-tutors",
+  authMiddleware,
+  blockCheckMiddleware,
+  (req, res) => {
+    /*
     #swagger.tags = ['9.Student']
     #swagger.summary = 'Get Near By Tutor's Data'
     #swagger.description = 'Get Tutor's data using lat,lng'
@@ -43,8 +47,9 @@ router.post("/nearby-tutors", authMiddleware,(req, res) => {
     }
   */
 
-  StudentController.getNearbyTutors(req, res);
-});
+    StudentController.getNearbyTutors(req, res);
+  },
+);
 router.post("/get-student-data", (req, res) => {
   /*
     #swagger.tags = ['9.Student']
@@ -72,8 +77,12 @@ router.post("/get-student-data", (req, res) => {
   StudentController.getStudentData(req, res);
 });
 
-router.post("/book-session", authMiddleware , (req, res) => {
-  /*
+router.post(
+  "/book-session",
+  authMiddleware,
+  blockCheckMiddleware,
+  (req, res) => {
+    /*
     #swagger.tags = ['9.Student']
     #swagger.summary = 'Book a tutor's Subject session'
     #swagger.description = 'Book a tutor's Subject session'
@@ -99,8 +108,9 @@ router.post("/book-session", authMiddleware , (req, res) => {
       description: "Internal Server Error"
     }
   */
-  return StudentController.bookASession(req, res);
-});
+    return StudentController.bookASession(req, res);
+  },
+);
 
 router.post("/cencel-booking", (req, res) => {
   /*

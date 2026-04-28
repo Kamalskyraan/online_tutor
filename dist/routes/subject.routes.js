@@ -35,7 +35,7 @@ router.post("/get-subjects", (req, res) => {
     */
     return subject_controller_1.SubjectController.getSubjects(req, res);
 });
-router.post("/update-tutor-subjects", middleware_1.authMiddleware, (req, res) => {
+router.post("/update-tutor-subjects", middleware_1.authMiddleware, middleware_1.blockCheckMiddleware, (req, res) => {
     /*
       #swagger.tags = ['5.Subject']
       #swagger.summary = 'Add Update subjects to Tutor'
@@ -76,7 +76,7 @@ router.post("/update-tutor-subjects", middleware_1.authMiddleware, (req, res) =>
     */
     subject_controller_1.SubjectController.addUpdateSubjectsToTutor(req, res);
 });
-router.post("/get-tutor-subjetcs", middleware_1.authMiddleware, (req, res) => {
+router.post("/get-tutor-subjetcs", middleware_1.authMiddleware, middleware_1.blockCheckMiddleware, (req, res) => {
     /*
       #swagger.tags = ['5.Subject']
       #swagger.summary = 'Get subjects belongs to tutor'

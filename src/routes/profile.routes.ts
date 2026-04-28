@@ -1,10 +1,10 @@
 import { Router } from "express";
 import { ProfileController } from "../controller/profile.controller";
-import { authMiddleware } from "../config/middleware";
+import { authMiddleware, blockCheckMiddleware } from "../config/middleware";
 
 const router = Router();
 
-router.post("/get-profiledata", authMiddleware, (req, res) => {
+router.post("/get-profiledata", authMiddleware,blockCheckMiddleware, (req, res) => {
   /*
     #swagger.tags = ['3.Profile']
     #swagger.summary = 'get user data'
@@ -34,6 +34,7 @@ router.post("/get-profiledata", authMiddleware, (req, res) => {
 router.post(
   "/add-update-userdata",
   authMiddleware,
+  blockCheckMiddleware,
   (req, res) => {
     /*
     #swagger.tags = ['3.Profile']

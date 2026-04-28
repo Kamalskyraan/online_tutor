@@ -4,7 +4,7 @@ const express_1 = require("express");
 const tutor_controller_1 = require("../controller/tutor.controller");
 const middleware_1 = require("../config/middleware");
 const router = (0, express_1.Router)();
-router.post("/add-update-demos", middleware_1.authMiddleware, (req, res) => {
+router.post("/add-update-demos", middleware_1.authMiddleware, middleware_1.blockCheckMiddleware, (req, res) => {
     /*
       #swagger.tags = ['8.Tutor']
       #swagger.summary = 'Add Update Demo videos or Images'
@@ -59,7 +59,7 @@ router.post("/remove-demos", (req, res) => {
     */
     tutor_controller_1.TutorController.removeDemos(req, res);
 });
-router.post("/get-demos", middleware_1.authMiddleware, (req, res) => {
+router.post("/get-demos", middleware_1.authMiddleware, middleware_1.blockCheckMiddleware, (req, res) => {
     /*
       #swagger.tags = ['8.Tutor']
       #swagger.summary = 'get Demo videos or Images'
