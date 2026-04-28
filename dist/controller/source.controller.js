@@ -81,6 +81,7 @@ class SourceController {
                     message: message,
                 },
             });
+            return (0, helper_1.sendResponse)(res, 200, 1, [], "Chat Message sent successfully", []);
         }
         catch (err) {
             return (0, helper_1.sendResponse)(res, 500, 0, [], "Internal Server Error", [
