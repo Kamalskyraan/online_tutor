@@ -15,7 +15,6 @@ firebase_admin_1.default.initializeApp({
 });
 const sendPushNotification = async ({ user_id, payload, }) => {
     try {
-        console.log(user_id);
         const devices = await (0, helper_1.executeQuery)(`SELECT device_token, device_type 
        FROM user_devices
        WHERE user_id = ? AND device_token IS NOT NULL`, [user_id]);

@@ -117,6 +117,7 @@ class AuthModel {
     }
     async createJustification(data) {
         const { user_id, name, mobile, email, reason, attachments } = data;
+        console.log(data);
         const result = await (0, helper_1.executeQuery)(`INSERT INTO user_justifications 
     (user_id, user_name, mobile, email, reason, evidence)
     VALUES (?, ?, ?, ?, ?, ?)`, [user_id, name, mobile, email, reason, attachments]);
