@@ -16,7 +16,7 @@ export const sendPushNotification = async ({
   payload: { title: string; message: string };
 }) => {
   try {
-    console.log(user_id, payload);
+  
     const devices: any[] = await executeQuery(
       `SELECT device_token, device_type 
        FROM user_devices
@@ -47,7 +47,7 @@ export const sendPushNotification = async ({
       });
     }
 
-    // ✅ iOS (FIXED)
+
     if (iosTokens.length) {
       await sendAPNSNotification({
         tokens: iosTokens,
@@ -108,10 +108,10 @@ export const sendAPNSNotification = async ({ tokens, title, body }: any) => {
     const result = await apnProvider.send(notification, tokens);
 
 
-    console.log(tokens , "---")
+    console.log("Project ID:", admin.app().options.projectId);
 
-    console.log("APNS sent:", result.sent.length);
-    console.log("APNS failed:", result.failed.length);
+    // console.log("APNS sent:", result.sent.length);
+    // console.log("APNS failed:", result.failed.length);
 
     result.failed.forEach((f: any) => {
       console.error("❌ Token:", f.device);

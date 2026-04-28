@@ -15,7 +15,6 @@ firebase_admin_1.default.initializeApp({
 });
 const sendPushNotification = async ({ user_id, payload, }) => {
     try {
-        console.log(user_id, payload);
         const devices = await (0, helper_1.executeQuery)(`SELECT device_token, device_type 
        FROM user_devices
        WHERE user_id = ? AND device_token IS NOT NULL`, [user_id]);
@@ -40,7 +39,6 @@ const sendPushNotification = async ({ user_id, payload, }) => {
                 },
             });
         }
-        // ✅ iOS (FIXED)
         if (iosTokens.length) {
             await (0, exports.sendAPNSNotification)({
                 tokens: iosTokens,
@@ -88,9 +86,9 @@ const sendAPNSNotification = async ({ tokens, title, body }) => {
         notification.alert = { title, body };
         notification.topic = process.env.IOS_BUNDLE_ID;
         const result = await apnprovider_1.apnProvider.send(notification, tokens);
-        console.log(tokens, "---");
-        console.log("APNS sent:", result.sent.length);
-        console.log("APNS failed:", result.failed.length);
+        console.log("Project ID:", firebase_admin_1.default.app().options.projectId);
+        // console.log("APNS sent:", result.sent.length);
+        // console.log("APNS failed:", result.failed.length);
         result.failed.forEach((f) => {
             console.error("❌ Token:", f.device);
             console.error("❌ Error:", f.response?.reason || f.error);
