@@ -390,7 +390,7 @@
 
       <div class="input-section">
        <div class="input-wrapper">
-  <img src="./user.png" alt="" />
+ 
   <input type="text" id="fullName" placeholder=" " required />
   <label for="fullName">Full Name</label>
 
@@ -411,7 +411,7 @@
       <div class="input-section">
         <label for="email">Email Address</label>
         <div class="input-wrapper">
-          <!-- <img src="./Mail.png" alt="" /> -->
+          
           <input type="email" id="email" placeholder="" />
         </div>
         <small class="error" id="emailError"></small>
@@ -666,7 +666,9 @@ function setupFileUpload() {
 function setupSubmit() {
   document.getElementById("submitBtn").addEventListener("click", async () => {
     clearErrors();
-    showMessage("", ""); // clear top message
+    showMessage("", "");
+
+    const user_id = getUserIdFromURL(); // ✅ FIX
 
     const name = document.getElementById("fullName").value.trim();
     const mobile = document.getElementById("mobile").value.trim();
@@ -678,7 +680,6 @@ function setupSubmit() {
 
     let isValid = true;
 
-    // ✅ validation
     if (!name) {
       setError("fullNameError", "Full name is required");
       isValid = false;
@@ -705,7 +706,7 @@ function setupSubmit() {
       isValid = false;
     }
 
-    if (!uploadedFiles || uploadedFiles.length === 0) {
+    if (!uploadedFiles.length) {
       setError("fileError", "Please upload at least one file");
       isValid = false;
     }
@@ -720,7 +721,6 @@ function setupSubmit() {
     try {
       const imageIds = [];
 
-      // upload files
       for (const file of uploadedFiles) {
         const formData = new FormData();
         formData.append("file", file);
@@ -771,7 +771,7 @@ function setupSubmit() {
 
       // ✅ success
       if (result.success === 1) {
-        showSuccessModal(); // your popup
+        showSuccessModal();
         showMessage(result.message, "success");
 
         uploadedFiles = [];
@@ -785,6 +785,7 @@ function setupSubmit() {
     }
   });
 }
+
 // ================= MODAL =================
 function showSuccessModal() {
   document.getElementById("successModal").style.display = "flex";
@@ -795,6 +796,10 @@ document.getElementById("reason").addEventListener("input", (e) => {
   if (e.target.value.startsWith(" ")) {
     e.target.value = e.target.value.trimStart();
   }
+});
+
+document.getElementById("model-close").addEventListener("click", () => {
+  document.getElementById("successModal").style.display = "none";
 });
 </script>
   
