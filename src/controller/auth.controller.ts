@@ -525,17 +525,17 @@ export class AuthController {
       const token = authHeader.split(" ")[1];
 
       const decoded: any = jwt.verify(token, process.env.JWT_SECRET!);
-      console.log(decoded);
+
       const user_id = decoded.user_id;
       const device_id = decoded.device_id;
-      console.log(device_id);
+
       if (!user_id || !device_id) {
         return sendResponse(res, 200, 3, [], "Invalid token data", []);
       }
 
       await authModel.removeUserDevicedec(user_id, device_id);
 
-      res.clearCookie("token", {
+       res.clearCookie("token", {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
       });

@@ -223,7 +223,11 @@ class ReviewController {
     }
     static async fetchReportReasons(req, res) {
         try {
-            const result = await rvModel.getActiveReportReasons();
+            const { report_for } = req.body;
+            if (!report_for) {
+                return (0, helper_1.sendResponse)(res, 200, 0, [], "report_for is required", []);
+            }
+            const result = await rvModel.getActiveReportReasons(report_for);
             return (0, helper_1.sendResponse)(res, 200, 1, result, "Report reasons fetched successfully", []);
         }
         catch (err) {

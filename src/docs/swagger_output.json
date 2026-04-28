@@ -70,6 +70,30 @@
         }
       }
     },
+    "/api/check-appeal": {
+      "post": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "user_id": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
     "/api/auth/request-otp": {
       "post": {
         "tags": [
@@ -2884,6 +2908,11 @@
         "description": "Get Favourites of student",
         "parameters": [
           {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          },
+          {
             "name": "body",
             "in": "body",
             "required": false,
@@ -3247,7 +3276,23 @@
           "10.review"
         ],
         "summary": "Get Report Reasons",
-        "description": "Fetch Report Reasons From country.json",
+        "description": "Fetch Report Reasons",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "report_for": {
+                  "type": "string",
+                  "example": "profile or review"
+                }
+              }
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "Report Reasons fetched successfully"

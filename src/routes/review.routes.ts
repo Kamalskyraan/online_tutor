@@ -4,8 +4,12 @@ import { authMiddleware, blockCheckMiddleware } from "../config/middleware";
 
 const router = Router();
 
-router.post("/add-update-review", authMiddleware,blockCheckMiddleware,(req, res) => {
-  /*
+router.post(
+  "/add-update-review",
+  authMiddleware,
+  blockCheckMiddleware,
+  (req, res) => {
+    /*
     #swagger.tags = ['10.review']
     #swagger.summary = 'Add Update Review'
     #swagger.description = 'Add Review and Update Review'
@@ -32,10 +36,15 @@ router.post("/add-update-review", authMiddleware,blockCheckMiddleware,(req, res)
       description: "Internal Server Error"
     }
   */
-  ReviewController.addUpdateReview(req, res);
-});
-router.post("/get-reviews",authMiddleware, blockCheckMiddleware,(req, res) => {
-  /*
+    ReviewController.addUpdateReview(req, res);
+  },
+);
+router.post(
+  "/get-reviews",
+  authMiddleware,
+  blockCheckMiddleware,
+  (req, res) => {
+    /*
     #swagger.tags = ['10.review']
     #swagger.summary = 'Add Update Review'
     #swagger.description = 'Add Review and Update Review'
@@ -64,8 +73,9 @@ router.post("/get-reviews",authMiddleware, blockCheckMiddleware,(req, res) => {
       description: "Internal Server Error"
     }
   */
-  ReviewController.getUpdateReview(req, res);
-});
+    ReviewController.getUpdateReview(req, res);
+  },
+);
 router.post("/reply-review", (req, res) => {
   /*
     #swagger.tags = ['10.review']
@@ -188,8 +198,16 @@ router.get("/get-report-reasons", (req, res) => {
   /*
     #swagger.tags = ['10.review']
     #swagger.summary = 'Get Report Reasons'
-    #swagger.description = 'Fetch Report Reasons From country.json'
+    #swagger.description = 'Fetch Report Reasons'
 
+
+     #swagger.parameters['body'] = {
+      in: 'body',
+      required: true,
+      schema: {
+        report_for : "profile or review"
+      }
+    }
 
     #swagger.responses[200] = {
       description: "Report Reasons fetched successfully",

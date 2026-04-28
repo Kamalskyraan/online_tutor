@@ -494,19 +494,19 @@ class ReviewModel {
             message: "Review Reply deleted successfully",
         };
     }
-    async getActiveReportReasons() {
+    async getActiveReportReasons(report_for) {
         const query = `
     SELECT id, reason
     FROM report_reasons
     WHERE status = 'active'
-
+    AND reason_for
     UNION ALL
     SELECT -1 AS id, 'Other Reasons' AS reason_text
     ORDER BY 
       CASE WHEN id = -1 THEN 1 ELSE 0 END,
     id ASC
   `;
-        const result = await (0, helper_1.executeQuery)(query);
+        const result = await (0, helper_1.executeQuery)(query, [report_for]);
         return result;
     }
     async reportReview(data) {

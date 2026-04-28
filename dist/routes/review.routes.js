@@ -6,64 +6,64 @@ const middleware_1 = require("../config/middleware");
 const router = (0, express_1.Router)();
 router.post("/add-update-review", middleware_1.authMiddleware, middleware_1.blockCheckMiddleware, (req, res) => {
     /*
-      #swagger.tags = ['10.review']
-      #swagger.summary = 'Add Update Review'
-      #swagger.description = 'Add Review and Update Review'
-  
-      
-      #swagger.parameters['body'] = {
-        in: 'body',
-        required: true,
-        schema: {
-          id: 1,
-          tutor_id : "TUTOR_4w4lwlu0",
-          student_id : "STUDENT_UOFswA1y",
-          rating: "5",
-          review_text: "abcd efgh ijklmn opqrst"
-        }
+    #swagger.tags = ['10.review']
+    #swagger.summary = 'Add Update Review'
+    #swagger.description = 'Add Review and Update Review'
+
+    
+    #swagger.parameters['body'] = {
+      in: 'body',
+      required: true,
+      schema: {
+        id: 1,
+        tutor_id : "TUTOR_4w4lwlu0",
+        student_id : "STUDENT_UOFswA1y",
+        rating: "5",
+        review_text: "abcd efgh ijklmn opqrst"
       }
-  
-  
-      #swagger.responses[200] = {
-        description: "Add or Update Review successfully"
-      }
-  
-      #swagger.responses[500] = {
-        description: "Internal Server Error"
-      }
-    */
+    }
+
+
+    #swagger.responses[200] = {
+      description: "Add or Update Review successfully"
+    }
+
+    #swagger.responses[500] = {
+      description: "Internal Server Error"
+    }
+  */
     review_controller_1.ReviewController.addUpdateReview(req, res);
 });
 router.post("/get-reviews", middleware_1.authMiddleware, middleware_1.blockCheckMiddleware, (req, res) => {
     /*
-      #swagger.tags = ['10.review']
-      #swagger.summary = 'Add Update Review'
-      #swagger.description = 'Add Review and Update Review'
-  
-      
-      #swagger.parameters['body'] = {
-        in: 'body',
-        required: true,
-        schema: {
-          id: 1,
-          tutor_id : "TUTOR_4w4lwlu0",
-          student_id : "STUDENT_UOFswA1y",
-          rating: "5",
-          page : 1,
-          from_date : "2026-03-04",
-          to_date : "2026-03-05"
-        }
+    #swagger.tags = ['10.review']
+    #swagger.summary = 'Add Update Review'
+    #swagger.description = 'Add Review and Update Review'
+
+    
+    #swagger.parameters['body'] = {
+      in: 'body',
+      required: true,
+      schema: {
+        id: 1,
+        tutor_id : "TUTOR_4w4lwlu0",
+        student_id : "STUDENT_UOFswA1y",
+        rating: "5",
+        page : 1,
+        from_date : "2026-03-04",
+        to_date : "2026-03-05"
       }
-  
-  
-      #swagger.responses[200] = {
-        description: "Review Fetched successfully"
-      }
-  
-      #swagger.responses[500] = {
-        description: "Internal Server Error"
-      }
-    */
+    }
+
+
+    #swagger.responses[200] = {
+      description: "Review Fetched successfully"
+    }
+
+    #swagger.responses[500] = {
+      description: "Internal Server Error"
+    }
+  */
     review_controller_1.ReviewController.getUpdateReview(req, res);
 });
 router.post("/reply-review", (req, res) => {
@@ -183,8 +183,16 @@ router.get("/get-report-reasons", (req, res) => {
     /*
       #swagger.tags = ['10.review']
       #swagger.summary = 'Get Report Reasons'
-      #swagger.description = 'Fetch Report Reasons From country.json'
+      #swagger.description = 'Fetch Report Reasons'
   
+  
+       #swagger.parameters['body'] = {
+        in: 'body',
+        required: true,
+        schema: {
+          report_for : "profile or review"
+        }
+      }
   
       #swagger.responses[200] = {
         description: "Report Reasons fetched successfully",

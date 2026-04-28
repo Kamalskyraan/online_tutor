@@ -635,12 +635,12 @@ export class ReviewModel {
     };
   }
 
-  async getActiveReportReasons() {
+  async getActiveReportReasons(report_for: string) {
     const query = `
     SELECT id, reason
     FROM report_reasons
     WHERE status = 'active'
-
+    AND reason_for
     UNION ALL
     SELECT -1 AS id, 'Other Reasons' AS reason_text
     ORDER BY 
@@ -648,7 +648,7 @@ export class ReviewModel {
     id ASC
   `;
 
-    const result = await executeQuery(query);
+    const result = await executeQuery(query, [report_for]);
     return result;
   }
 
@@ -745,7 +745,6 @@ export class ReviewModel {
   async removeNotification(data: any) {
     const { sender_id, receiver_id } = data;
 
-  
     await executeQuery(
       `DELETE FROM notifications 
          WHERE type = 'REVIEW_LIKE'
