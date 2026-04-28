@@ -327,8 +327,10 @@ AuthController.logout = async (req, res) => {
         }
         const token = authHeader.split(" ")[1];
         const decoded = jsonwebtoken_1.default.verify(token, process.env.JWT_SECRET);
+        console.log(decoded);
         const user_id = decoded.user_id;
         const device_id = decoded.device_id;
+        console.log(device_id);
         if (!user_id || !device_id) {
             return (0, helper_1.sendResponse)(res, 200, 3, [], "Invalid token data", []);
         }

@@ -132,7 +132,6 @@ class AuthModel {
         return result[0];
     }
     async removeUserDevicedec(user_id, device_id) {
-        console.log(user_id, device_id);
         const sql = `
     DELETE FROM user_devices 
     WHERE user_id = ? AND device_id = ?
