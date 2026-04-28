@@ -604,7 +604,7 @@ function setupFileUpload() {
   }
 }
 
-// ================= SUBMIT =================
+
 
 
 
@@ -613,13 +613,15 @@ function setupSubmit() {
   document
     .getElementById("submitBtn")
     .addEventListener("click", async () => {
+
+      console.log("submit")
       const name = document.getElementById("fullName").value.trim();
       const mobile = document.getElementById("mobile").value.trim();
       const email = document.getElementById("email").value.trim();
       const reason = document.getElementById("reason").value.trim();
       const agree = document.getElementById("agree").checked;
 
-      const user_id = localStorage.getItem("user_id"); // ✅ FIX
+     const user_id = getUserIdFromURL();
 
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
