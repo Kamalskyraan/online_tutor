@@ -44,6 +44,7 @@ class LeadsModel {
             search_subject,
         });
         const userId = await notifMdl.getUserIdFromRole({ tutor_id, student_id });
+        console.log(userId);
         await notifMdl.insertNOtifcations({
             sender_id: userId.student_user_id,
             receiver_id: userId.tutor_user_id,

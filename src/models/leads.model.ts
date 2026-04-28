@@ -69,6 +69,7 @@ export class LeadsModel {
       search_subject,
     });
     const userId = await notifMdl.getUserIdFromRole({ tutor_id, student_id });
+    console.log(userId);
 
     await notifMdl.insertNOtifcations({
       sender_id: userId.student_user_id,
@@ -79,9 +80,7 @@ export class LeadsModel {
       extra_data: notif.extra_data,
       sent_to: "tutor",
     });
-    
 
-    
     await sendPushNotification({
       user_id: String(userId?.tutor_user_id),
       payload: {
@@ -92,7 +91,6 @@ export class LeadsModel {
 
     if (!userId?.tutor_user_id) return;
     const user_id = userId.tutor_user_id;
-    
   }
 
   async fetchLeads(filters: any) {
