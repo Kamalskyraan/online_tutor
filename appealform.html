@@ -549,11 +549,11 @@
           style="width: 100px; margin-bottom: 15px"
         />
         <h3 style="margin: 0 0 10px; font-size: 18px">
-          You’ll hear from us shortly.
+         Request Submitted
         </h3>
         <p style="font-size: 14px; color: #555; margin: 0 0 20px">
-          Your appeal has been submitted successfully.<br />
-          Our team is reviewing your details and will contact you shortly.
+         Your appeal has been received. Our team will review it and contact you via email shortly.
+
         </p>
         <button
           id="model-close"
@@ -645,11 +645,11 @@ async function fetchData() {
 
     const checkData = await checkRes.json();
 
-    // ✅ already submitted → white screen
+
     if (checkData?.data?.already_submit === 1) {
       showFullScreenMessage(
-        "Already Submitted",
-        checkData.message || "You have already submitted an appeal."
+        "Appeal in Progress",
+        checkData.message || "Your request has been submitted and is currently under review."
       );
       return;
     }

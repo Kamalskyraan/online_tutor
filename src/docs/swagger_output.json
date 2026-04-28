@@ -1105,7 +1105,7 @@
           {
             "name": "body",
             "in": "body",
-            "required": true,
+            "required": false,
             "schema": {
               "type": "object",
               "properties": {
@@ -1116,6 +1116,10 @@
                 "reasons": {
                   "type": "string",
                   "example": "What this is ?"
+                },
+                "mobile": {
+                  "type": "string",
+                  "example": "9876543210"
                 }
               }
             }

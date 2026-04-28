@@ -288,21 +288,56 @@ export class ProfileModel {
 
     return result;
   }
-  async deleteAccount(user_id: string, reasons: string) {
-    const query = `
-    UPDATE users
-    SET 
-      is_deleted =  1,
-      delete_reasons= ?,
-      deleted_at = CURDATE()
-    WHERE user_id = ?
-  `;
+  async deleteAccount(
+  user_id?: string,
+  reasons?: string,
+  mobile?: string,
+) {
+  try {
+    let query = `
+      UPDATE users
+      SET 
+        is_deleted = 1,
+        delete_reasons = ?,
+        deleted_at = NOW()
+      WHERE
+    `;
 
-    const result: any = await executeQuery(query, [reasons, user_id]);
+    let params: any[] = [reasons];
+
+    if (user_id) {
+      query += ` user_id = ?`;
+      params.push(user_id);
+    }
+
+    else if (mobile) {
+      query += ` mobile = ?`;
+      params.push(mobile);
+    }
+
+    
+    else {
+      return {
+        success: false,
+        message: "user_id or mobile is required",
+      };
+    }
+
+    const result: any = await executeQuery(query, params);
 
     return {
       success: result?.affectedRows > 0,
-      message: "Account marked as deleted",
+      message:
+        result?.affectedRows > 0
+          ? "Account marked as deleted"
+          : "User not found",
+    };
+  } catch (err) {
+    console.log("deleteAccount error:", err);
+    return {
+      success: false,
+      message: "Something went wrong",
     };
   }
+}
 }

@@ -168,14 +168,14 @@ ProfileController.deleteAccountReasons = async (req, res) => {
 };
 ProfileController.removeAccount = async (req, res) => {
     try {
-        const { user_id, reasons } = req.body;
+        const { user_id, reasons, mobile } = req.body;
         if (!user_id) {
             return (0, helper_1.sendResponse)(res, 200, 0, [], "user_id is required", []);
         }
         if (!reasons) {
             return (0, helper_1.sendResponse)(res, 200, 0, [], "reason_id is required", []);
         }
-        const data = await profileMdl.deleteAccount(user_id, reasons);
+        const data = await profileMdl.deleteAccount(user_id, reasons, mobile);
         return (0, helper_1.sendResponse)(res, 200, 1, [], "Account Removed Successfully", []);
     }
     catch (err) {

@@ -249,11 +249,11 @@ router.post("/remove-account", (req, res) => {
     
     #swagger.parameters['body'] = {
       in: 'body',
-      required: true,
+      required: false,
       schema: {  
        user_id : "USER_eFzOtN1M",
-       reasons : "What this is ?"
-        
+       reasons : "What this is ?",
+      mobile : "9876543210"
       }
     }
 
