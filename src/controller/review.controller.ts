@@ -281,23 +281,24 @@ export class ReviewController {
       if (sender_id !== receiver_id) {
         let sender_user_id: any;
         let receiver_user_id: any;
+
         if (isTutor) {
           const userMap = await noteModel.getUserIdFromRole({
             tutor_id: sender_id,
-            student_id: receiver_id,
           });
 
           sender_user_id = userMap.tutor_user_id;
-          receiver_user_id = userMap.student_user_id;
         } else {
           const userMap = await noteModel.getUserIdFromRole({
             student_id: sender_id,
           });
 
           sender_user_id = userMap.student_user_id;
-          receiver_user_id = receiver_id;
         }
-
+        const receiverMap = await noteModel.getUserIdFromRole({
+          student_id: receiver_id,
+        });
+        receiver_user_id = receiverMap.student_user_id;
         const notif = NotificationTemplates.reviewLike({ review_id });
 
         if (result.action === "like") {
@@ -336,7 +337,6 @@ export class ReviewController {
         [],
       );
     } catch (err: any) {
-      console.log(err);
       sendResponse(res, 500, 0, [], "Internal Server Error");
     }
   }

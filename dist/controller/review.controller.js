@@ -171,18 +171,19 @@ class ReviewController {
                 if (isTutor) {
                     const userMap = await noteModel.getUserIdFromRole({
                         tutor_id: sender_id,
-                        student_id: receiver_id,
                     });
                     sender_user_id = userMap.tutor_user_id;
-                    receiver_user_id = userMap.student_user_id;
                 }
                 else {
                     const userMap = await noteModel.getUserIdFromRole({
                         student_id: sender_id,
                     });
                     sender_user_id = userMap.student_user_id;
-                    receiver_user_id = receiver_id;
                 }
+                const receiverMap = await noteModel.getUserIdFromRole({
+                    student_id: receiver_id,
+                });
+                receiver_user_id = receiverMap.student_user_id;
                 const notif = notification_template_1.NotificationTemplates.reviewLike({ review_id });
                 if (result.action === "like") {
                     await noteModel.insertNOtifcations({
@@ -213,7 +214,6 @@ class ReviewController {
             return (0, helper_1.sendResponse)(res, 200, 1, { like_count: result.total_likes, action: result.action }, result.message, []);
         }
         catch (err) {
-            console.log(err);
             (0, helper_1.sendResponse)(res, 500, 0, [], "Internal Server Error");
         }
     }
