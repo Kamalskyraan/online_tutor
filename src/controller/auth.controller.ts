@@ -646,7 +646,7 @@ export class AuthController {
     try {
       const { user_id } = req.body;
 
-      console.log(user_id)
+     
 
       if (!user_id) {
         return sendResponse(res, 200, 0, [], "User id required", []);
