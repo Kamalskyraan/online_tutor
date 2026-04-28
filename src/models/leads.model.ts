@@ -80,6 +80,8 @@ export class LeadsModel {
       sent_to: "tutor",
     });
     
+
+    console.log(userId?.tutor_user_id)
     await sendPushNotification({
       user_id: String(userId?.tutor_user_id),
       payload: {
