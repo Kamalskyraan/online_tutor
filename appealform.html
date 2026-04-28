@@ -859,8 +859,17 @@ document.getElementById("reason").addEventListener("input", (e) => {
 });
 
 document.getElementById("model-close").addEventListener("click", () => {
+  // close modal (web)
   document.getElementById("successModal").style.display = "none";
+
+
+  if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers["model-close"]) {
+    window.webkit.messageHandlers["model-close"].postMessage("close");
+  }
 });
+
+
+
 </script>
   
   
