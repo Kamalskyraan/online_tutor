@@ -335,12 +335,20 @@
   display: block;
 }
 
+
 .form-message {
-  margin-bottom: 10px;
-  font-size: 14px;
-  padding: 10px;
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  min-width: 280px;
+  max-width: 90%;
+  padding: 12px 16px;
   border-radius: 6px;
+  font-size: 14px;
+  z-index: 9999;
   display: none;
+  text-align: center;
 }
 
 .form-message.success {
@@ -570,17 +578,16 @@ function clearErrors() {
 
 function showMessage(message, type = "success") {
   const box = document.getElementById("formMessage");
-
-  if (!box) {
-    console.error("❌ formMessage element NOT FOUND in DOM");
-    return;
-  }
+  if (!box) return;
 
   box.innerText = message;
   box.className = "form-message " + type;
-  box.style.display = message ? "block" : "none";
-}
+  box.style.display = "block";
 
+  setTimeout(() => {
+    box.style.display = "none";
+  }, 3000);
+}
 async function fetchData() {
   try {
     const user_id = getUserIdFromURL();
