@@ -159,40 +159,6 @@ TutorController.addStudentLikeTutor = async (req, res) => {
         else {
             message = Number(status) === 1 ? "Tutor liked" : "Tutor disliked";
         }
-        const userMap = await noteModel.getUserIdFromRole({
-            tutor_id,
-            student_id,
-        });
-        const tutorUserId = userMap?.tutor_user_id;
-        const studentUserId = userMap?.student_user_id;
-        if (tutorUserId && studentUserId && tutorUserId !== studentUserId) {
-            const notif = notification_template_1.NotificationTemplates.mobileViewedByStudent(student_id);
-            if (Number(status) === 1 && result.action !== "removed") {
-                await noteModel.insertNOtifcations({
-                    sender_id: studentUserId,
-                    receiver_id: tutorUserId,
-                    title: notif.title,
-                    message: notif.message,
-                    type: notif.type,
-                    extra_data: notif.extra_data,
-                    sent_to: "tutor",
-                });
-                await (0, firebase_service_1.sendPushNotification)({
-                    user_id: String(tutorUserId),
-                    payload: {
-                        title: notif.title,
-                        message: notif.message,
-                    },
-                });
-            }
-            else {
-                await tutModel.removeLikeNotification({
-                    sender_id: studentUserId,
-                    receiver_id: tutorUserId,
-                    tutor_id,
-                });
-            }
-        }
         return (0, helper_1.sendResponse)(res, 200, 1, [], message, []);
     }
     catch (err) {

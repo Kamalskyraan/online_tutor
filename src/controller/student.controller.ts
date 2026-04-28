@@ -10,11 +10,13 @@ import { LeadsModel } from "../models/leads.model";
 import { NotificationModel } from "../models/notification.model";
 import { NotificationTemplates } from "../config/notification.template";
 import { sendPushNotification } from "../service/firebase.service";
+import { TutorModel } from "../models/tutor.model";
 
 export class StudentController {
   private static studentModel = new StudentModel();
   private static leadsMdl = new LeadsModel();
   private static noteModel = new NotificationModel();
+  private static tutModel = new TutorModel();
   static getStudentData = async (req: Request, res: Response) => {
     try {
       const { student_id } = req.body;
@@ -224,6 +226,34 @@ export class StudentController {
         student_id,
         tutor_id,
       );
+      const userMap = await this.noteModel.getUserIdFromRole({
+        tutor_id,
+        student_id,
+      });
+
+      const tutorUserId = userMap?.tutor_user_id;
+      const studentUserId = userMap?.student_user_id;
+
+      const notif = NotificationTemplates.mobileViewedByStudent(student_id);
+
+      await this.noteModel.insertNOtifcations({
+        sender_id: studentUserId,
+        receiver_id: tutorUserId,
+        title: notif.title,
+        message: notif.message,
+        type: notif.type,
+        extra_data: notif.extra_data,
+        sent_to: "tutor",
+      });
+
+      await sendPushNotification({
+        user_id: String(tutorUserId),
+        payload: {
+          title: notif.title,
+          message: notif.message,
+        },
+      });
+
       return sendResponse(
         res,
         200,

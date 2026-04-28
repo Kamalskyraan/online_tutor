@@ -8,6 +8,7 @@ const leads_model_1 = require("../models/leads.model");
 const notification_model_1 = require("../models/notification.model");
 const notification_template_1 = require("../config/notification.template");
 const firebase_service_1 = require("../service/firebase.service");
+const tutor_model_1 = require("../models/tutor.model");
 class StudentController {
 }
 exports.StudentController = StudentController;
@@ -15,6 +16,7 @@ _a = StudentController;
 StudentController.studentModel = new student_model_1.StudentModel();
 StudentController.leadsMdl = new leads_model_1.LeadsModel();
 StudentController.noteModel = new notification_model_1.NotificationModel();
+StudentController.tutModel = new tutor_model_1.TutorModel();
 StudentController.getStudentData = async (req, res) => {
     try {
         const { student_id } = req.body;
@@ -143,6 +145,29 @@ StudentController.updateMovileViewFromTutorById = async (req, res) => {
             return (0, helper_1.sendResponse)(res, 200, 0, [], "student_id & tutor_id required", []);
         }
         const result = await _a.studentModel.setViewMobileForTutorByid(student_id, tutor_id);
+        const userMap = await _a.noteModel.getUserIdFromRole({
+            tutor_id,
+            student_id,
+        });
+        const tutorUserId = userMap?.tutor_user_id;
+        const studentUserId = userMap?.student_user_id;
+        const notif = notification_template_1.NotificationTemplates.mobileViewedByStudent(student_id);
+        await _a.noteModel.insertNOtifcations({
+            sender_id: studentUserId,
+            receiver_id: tutorUserId,
+            title: notif.title,
+            message: notif.message,
+            type: notif.type,
+            extra_data: notif.extra_data,
+            sent_to: "tutor",
+        });
+        await (0, firebase_service_1.sendPushNotification)({
+            user_id: String(tutorUserId),
+            payload: {
+                title: notif.title,
+                message: notif.message,
+            },
+        });
         return (0, helper_1.sendResponse)(res, 200, 1, [], "Student Liked tutor Successfully", []);
     }
     catch (err) {
