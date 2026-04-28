@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { AuthController } from "../controller/auth.controller";
+import { blockCheckMiddleware } from "../config/middleware";
 
 const router = Router();
 
@@ -102,7 +103,7 @@ router.post(
   },
 );
 
-router.post("/login", (req, res) => {
+router.post("/login", blockCheckMiddleware, (req, res) => {
   /*
     #swagger.tags = ['1.Auth']
     #swagger.summary = 'Login'
@@ -223,6 +224,5 @@ router.post("/reactive-account", (req, res) => {
 });
 
 router.get("/appeal-form-info/:user_id", AuthController.appealFormInfo);
-
 
 export default router;

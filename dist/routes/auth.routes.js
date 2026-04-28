@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const auth_controller_1 = require("../controller/auth.controller");
+const middleware_1 = require("../config/middleware");
 const router = (0, express_1.Router)();
 router.post("/request-otp", (req, res) => {
     /*
@@ -95,7 +96,7 @@ router.post("/signup", (req, res) => {
   */
     return auth_controller_1.AuthController.signup(req, res);
 });
-router.post("/login", (req, res) => {
+router.post("/login", middleware_1.blockCheckMiddleware, (req, res) => {
     /*
       #swagger.tags = ['1.Auth']
       #swagger.summary = 'Login'
