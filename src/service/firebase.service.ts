@@ -5,7 +5,9 @@ import { apnProvider } from "./apnprovider";
 import dotenv from "dotenv";
 dotenv.config();
 admin.initializeApp({
-  //   credential: admin.credential.cert(require("./firebase-service.json")),
+  credential: admin.credential.cert(
+    require("./online-tutor-5655a-7da025c98c2d.json"),
+  ),
 });
 
 export const sendPushNotification = async ({
@@ -13,10 +15,10 @@ export const sendPushNotification = async ({
   payload,
 }: {
   user_id: string;
+  
   payload: { title: string; message: string };
 }) => {
   try {
-  
     const devices: any[] = await executeQuery(
       `SELECT device_token, device_type 
        FROM user_devices
@@ -46,7 +48,6 @@ export const sendPushNotification = async ({
         },
       });
     }
-
 
     if (iosTokens.length) {
       await sendAPNSNotification({
@@ -106,7 +107,6 @@ export const sendAPNSNotification = async ({ tokens, title, body }: any) => {
     notification.topic = process.env.IOS_BUNDLE_ID!;
 
     const result = await apnProvider.send(notification, tokens);
-
 
     console.log("Project ID:", admin.app().options.projectId);
 

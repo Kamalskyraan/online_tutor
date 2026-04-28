@@ -11,7 +11,7 @@ const apnprovider_1 = require("./apnprovider");
 const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
 firebase_admin_1.default.initializeApp({
-//   credential: admin.credential.cert(require("./firebase-service.json")),
+    credential: firebase_admin_1.default.credential.cert(require("./online-tutor-5655a-7da025c98c2d.json")),
 });
 const sendPushNotification = async ({ user_id, payload, }) => {
     try {
