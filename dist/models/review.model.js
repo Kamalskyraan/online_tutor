@@ -498,13 +498,16 @@ class ReviewModel {
         const query = `
     SELECT id, reason
     FROM report_reasons
-    WHERE status = 'active'
-    AND reason_for
+    WHERE status = 1
+      AND reason_for = ?
+
     UNION ALL
-    SELECT -1 AS id, 'Other Reasons' AS reason_text
+
+    SELECT -1 AS id, 'Other Reasons' AS reason
+
     ORDER BY 
       CASE WHEN id = -1 THEN 1 ELSE 0 END,
-    id ASC
+      id ASC
   `;
         const result = await (0, helper_1.executeQuery)(query, [report_for]);
         return result;
