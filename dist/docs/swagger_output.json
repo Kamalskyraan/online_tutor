@@ -1905,6 +1905,47 @@
                 }
             }
         },
+        "/api/source/chat-notify-sent": {
+            "post": {
+                "tags": [
+                    "7.Source"
+                ],
+                "summary": "Chat Report sent",
+                "description": "Get Chat Sent",
+                "parameters": [
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "sender_id": {
+                                    "type": "string",
+                                    "example": "user_123"
+                                },
+                                "reciver_id": {
+                                    "type": "string",
+                                    "example": "user_123"
+                                },
+                                "message": {
+                                    "type": "string",
+                                    "example": "any"
+                                }
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Chat notify send successfully"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
         "/api/tutor/add-update-demos": {
             "post": {
                 "tags": [

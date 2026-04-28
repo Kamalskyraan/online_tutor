@@ -327,12 +327,6 @@
         cursor: pointer;
         font-size: 14px;
       }
-      .error {
-  color: red;
-  font-size: 12px;
-  margin-top: 4px;
-  display: block;
-}
     </style>
   </head>
   <body>
@@ -371,12 +365,10 @@
 
       <div class="input-section">
        <div class="input-wrapper">
-  <!-- <img src="./user.png" alt="" /> -->
+  <img src="./user.png" alt="" />
   <input type="text" id="fullName" placeholder=" " required />
   <label for="fullName">Full Name</label>
-  
 </div>
-<small class="error" id="fullNameError"></small>
       </div>
 
       <div class="mobile-input">
@@ -386,16 +378,14 @@
     <label for="mobile">Mobile Number</label>
   </div>
 </div>
-<small class="error" id="mobileError"></small>
 
      
       <div class="input-section">
         <label for="email">Email Address</label>
         <div class="input-wrapper">
-          <!-- <img src="./Mail.png" alt="" /> -->
+          <img src="./Mail.png" alt="" />
           <input type="email" id="email" placeholder="" />
         </div>
-         <small class="error" id="emailError"></small>
       </div>
 
       
@@ -412,11 +402,8 @@
           ></textarea>
          
           <div class="char-limit">max 250 characters</div>
-           <small class="error" id="reasonError"></small>
         </div>
       </div>
-
-
 
      <div class="section attachments">
   <label>Supporting Evidence</label>
@@ -436,7 +423,7 @@
     class="file-box"
     onclick="document.getElementById('fileUpload').click()"
   >
-    <!-- <img src="./Upload.svg" alt="" /> -->
+    <img src="./Upload.svg" alt="" />
     <span>Click to upload</span>
   </div>
 
@@ -450,7 +437,6 @@
           >I understand that false or repeated appeals may lead to further
           restrictions.</label
         >
-        <small class="error" id="agreeError"></small>
       </div>
 
       <button type="button" id="submitBtn">Submit Appeal</button>
@@ -495,7 +481,6 @@
           Our team is reviewing your details and will contact you shortly.
         </p>
         <button
-
           id="model-close"
           style="
             padding: 10px 20px;
@@ -528,7 +513,7 @@ document.addEventListener("DOMContentLoaded", () => {
 function getUserIdFromURL() {
   const params = new URLSearchParams(window.location.search);
 
-
+  
   return params.get("user_id");
 } 
 
@@ -619,154 +604,103 @@ function setupFileUpload() {
   }
 }
 
-
-
-
-
-
-function setError(id, message) {
-  document.getElementById(id).innerText = message;
-}
-
-function clearErrors() {
-  document.querySelectorAll(".error").forEach(el => el.innerText = "");
-}
-
-let isSubmitting = false; // ✅ prevent double submit
-
+// ================= SUBMIT =================
 function setupSubmit() {
-  document.getElementById("submitBtn").addEventListener("click", async () => {
-    if (isSubmitting) return;
+  document
+    .getElementById("submitBtn")
+    .addEventListener("click", async () => {
+      const name = document.getElementById("fullName").value.trim();
+      const mobile = document.getElementById("mobile").value.trim();
+      const email = document.getElementById("email").value.trim();
+      const reason = document.getElementById("reason").value.trim();
+      const agree = document.getElementById("agree").checked;
 
-    clearErrors();
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-    const name = document.getElementById("fullName").value.trim();
-    const mobile = document.getElementById("mobile").value.trim();
-    const email = document.getElementById("email").value.trim();
-    const reason = document.getElementById("reason").value.trim();
-    const agree = document.getElementById("agree").checked;
-
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-    let isValid = true;
-
-    // ✅ Name
-    if (!name) {
-      setError("fullNameError", "Full name is required");
-      isValid = false;
-    }
-
-    // ✅ Mobile
-    if (!mobile) {
-      setError("mobileError", "Mobile number is required");
-      isValid = false;
-    } else if (!/^\d{10}$/.test(mobile)) {
-      setError("mobileError", "Enter valid 10-digit number");
-      isValid = false;
-    }
-
-    // ✅ Email FIXED
-    if (!email) {
-      setError("emailError", "Email is required");
-      isValid = false;
-    } else if (!emailRegex.test(email)) {
-      setError("emailError", "Invalid email");
-      isValid = false;
-    }
-
-    // ✅ Reason
-    if (!reason) {
-      setError("reasonError", "Reason is required");
-      isValid = false;
-    }
-
-    // ✅ Files required
-    if (!uploadedFiles || uploadedFiles.length === 0) {
-      setError("fileError", "Please upload at least one file");
-      isValid = false;
-    }
-
-    // ✅ Checkbox
-    if (!agree) {
-      setError("agreeError", "Please accept terms");
-      isValid = false;
-    }
-
-    if (!isValid) return;
-
-    try {
-      isSubmitting = true; // 🔒 lock
-
-      const imageIds = [];
-
-      // ✅ Upload files
-      for (const file of uploadedFiles) {
-        const formData = new FormData();
-        formData.append("file", file);
-
-        let category = file.type.includes("pdf") ? "pdf" : "image";
-        formData.append("category", category);
-
-        const res = await fetch(`https://tutoraan.com/server/api/cmn/upload`, {
-          method: "POST",
-          body: formData,
-        });
-
-        const data = await res.json();
-
-        if (data.success === 1) {
-          imageIds.push(data?.data?.id);
-        } else {
-          alert(data.message || "Upload failed");
-          isSubmitting = false;
-          return;
-        }
-      }
-
-      const payload = {
-        user_id,
-        name,
-        mobile,
-        email,
-        reason,
-        attachments: imageIds.join(","),
-      };
-
-      const appealRes = await fetch(
-        `https://tutoraan.com/server/api/add-appeal`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload),
-        }
-      );
-
-      const result = await appealRes.json();
-
-      // ✅ ALREADY SUBMITTED CASE 🔥
-      if (result.success === 0 && result.message === "Already submitted") {
-        alert("You have already submitted an appeal.");
-        isSubmitting = false;
+     
+      if (!name || !mobile || !reason) {
+        alert("Please fill all required fields.");
         return;
       }
 
-      // ✅ SUCCESS
-      if (result.success === 1) {
-        showSuccessModal();
-
-        uploadedFiles = [];
-        document.getElementById("fileList").innerHTML = "";
-      } else {
-        alert(result.message || "Submit failed.");
+      if (email && !emailRegex.test(email)) {
+        alert("Invalid email.");
+        return;
       }
 
-      isSubmitting = false;
-    } catch (err) {
-      console.error(err);
-      alert("Something went wrong.");
-      isSubmitting = false;
-    }
-  });
+      if (!agree) {
+        alert("Please accept terms.");
+        return;
+      }
+
+      try {
+        // ===== Upload files =====
+        const imageIds = [];
+
+        for (const file of uploadedFiles) {
+          const formData = new FormData();
+
+          formData.append("file", file); 
+
+          let category = "image";
+          if (file.type.includes("pdf")) category = "pdf";
+
+          formData.append("category", category); 
+          const res = await fetch(
+            `https://tutoraan.com/server/api/cmn/upload`,
+            {
+              method: "POST",
+              body: formData,
+            }
+          );
+
+          const data = await res.json();
+  
+
+          if (data.success === 1) { 
+            imageIds.push(data?.data?.id);
+          } else {
+            alert(data.message || "Upload failed");
+            return;
+          }
+        }
+
+        // ===== Submit appeal =====
+        const payload = {
+          user_id,
+          name,
+          mobile,
+          email,  
+          reason,
+          attachments: imageIds.join(","),
+        };
+
+        const appealRes = await fetch(
+          `https://tutoraan.com/server/api/add-appeal`,
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload),
+          }
+        );
+
+        const result = await appealRes.json();
+
+        if (result.success === 1) {
+          showSuccessModal();
+
+    
+          uploadedFiles = [];
+          document.getElementById("fileList").innerHTML = "";
+        } else {
+          alert("Submit failed.");
+        }
+
+      } catch (err) {
+
+        alert("Something went wrong.");
+      }
+    });
 }
 
 // ================= MODAL =================
