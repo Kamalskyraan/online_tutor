@@ -305,9 +305,7 @@ export class ProfileController {
   static removeAccount = async (req: Request, res: Response) => {
     try {
       const { user_id, reasons , mobile } = req.body;
-      if (!user_id) {
-        return sendResponse(res, 200, 0, [], "user_id is required", []);
-      }
+     
       if (!reasons) {
         return sendResponse(res, 200, 0, [], "reason_id is required", []);
       }

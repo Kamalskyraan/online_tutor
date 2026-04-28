@@ -43,14 +43,14 @@
         var apiUrl = `${apiBaseUrl}/auth/request-otp`;
 
         // ✅ validation
-        if (!/^[6-9]\d{9}$/.test(mobile)) {
-          Swal.fire(
-            "Invalid Mobile",
-            "Please enter a valid 10-digit mobile number",
-            "warning",
-          );
-          return;
-        }
+        // if (!/^[6-9]\d{9}$/.test(mobile)) {
+        //   Swal.fire(
+        //     "Invalid Mobile",
+        //     "Please enter a valid 10-digit mobile number",
+        //     "warning",
+        //   );
+        //   return;
+        // }
 
         $(".sendotp").show();
 
