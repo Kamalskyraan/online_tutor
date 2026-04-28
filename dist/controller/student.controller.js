@@ -70,6 +70,9 @@ StudentController.bookASession = async (req, res) => {
             tutor_id,
             student_id,
         });
+        if (!userId?.tutor_user_id) {
+            throw new Error("Tutor not found");
+        }
         const tutorUserId = userId.tutor_user_id;
         const studentUserId = userId.student_user_id;
         const notif = notification_template_1.NotificationTemplates.studentRequest({});

@@ -112,6 +112,10 @@ export class StudentController {
         tutor_id,
         student_id,
       });
+
+      if (!userId?.tutor_user_id) {
+        throw new Error("Tutor not found");
+      }
       const tutorUserId = userId.tutor_user_id;
       const studentUserId = userId.student_user_id;
       const notif = NotificationTemplates.studentRequest({});
@@ -126,7 +130,6 @@ export class StudentController {
         sent_to: "tutor",
       });
 
-      console.log(tutorUserId);
       await sendPushNotification({
         user_id: String(tutorUserId),
         payload: {
