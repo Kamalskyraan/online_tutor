@@ -19,6 +19,7 @@ export const sendPushNotification = async ({
   payload: { title: string; message: string };
 }) => {
   try {
+    console.log(user_id);
     const devices: any[] = await executeQuery(
       `SELECT device_token, device_type 
        FROM user_devices

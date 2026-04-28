@@ -125,6 +125,8 @@ export class StudentController {
         extra_data: notif.extra_data,
         sent_to: "tutor",
       });
+
+      console.log(tutorUserId);
       await sendPushNotification({
         user_id: String(tutorUserId),
         payload: {
