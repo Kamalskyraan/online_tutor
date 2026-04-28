@@ -87,7 +87,7 @@ class NotificationModel {
     ORDER BY n.id DESC
     LIMIT ? OFFSET ?
     `, [receiver_id, Number(limit), Number(offset)]);
-        const totalResult = await (0, helper_1.executeQuery)(`SELECT COUNT(*) as total FROM notifications WHERE receiver_id = ?`, [receiver_id]);
+        const totalResult = await (0, helper_1.executeQuery)(`SELECT COUNT(*) as total FROM notifications WHERE receiver_id = ? AND is_deleted = 0`, [receiver_id]);
         const total = totalResult[0]?.total || 0;
         const formattedData = await Promise.all(notifications.map(async (n) => {
             let profileImg = [];

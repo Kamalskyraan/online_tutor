@@ -299,8 +299,11 @@ export class ReviewController {
           student_id: receiver_id,
         });
         receiver_user_id = receiverMap.student_user_id;
-        const notif = NotificationTemplates.reviewLike({ review_id });
-
+        const notif = NotificationTemplates.reviewLike({
+          review_id,
+          student_id: isTutor ? "" : sender_id,
+          tutor_id: isTutor ? sender_id : "",
+        });
         if (result.action === "like") {
           await noteModel.insertNOtifcations({
             sender_id: sender_user_id,

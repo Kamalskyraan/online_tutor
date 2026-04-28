@@ -127,7 +127,7 @@ export class NotificationModel {
     );
 
     const totalResult: any = await executeQuery(
-      `SELECT COUNT(*) as total FROM notifications WHERE receiver_id = ?`,
+      `SELECT COUNT(*) as total FROM notifications WHERE receiver_id = ? AND is_deleted = 0`,
       [receiver_id],
     );
 

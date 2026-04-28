@@ -32,12 +32,16 @@ class NotificationTemplates {
             extra_data: { tutor_id },
         };
     }
-    static reviewLike({ review_id }) {
+    static reviewLike({ review_id, student_id = "", tutor_id = "" }) {
         return {
             title: "New Like",
             message: "Someone liked your review",
             type: "REVIEW_LIKE",
-            extra_data: { review_id },
+            extra_data: {
+                review_id,
+                student_id,
+                tutor_id,
+            },
         };
     }
     static studentRequest({ subject, student_name }) {
