@@ -168,6 +168,10 @@ AuthController.login = async (req, res) => {
         if (!user) {
             return (0, helper_1.sendResponse)(res, 200, 0, [], "User not found", []);
         }
+        const additionalCheck = await authModel.findAdditionalExisit(country_code, mobile);
+        if (additionalCheck) {
+            return (0, helper_1.sendResponse)(res, 200, 0, [], "someone add this number as additional", []);
+        }
         const isPasswordValid = await bcryptjs_1.default.compare(password, user.password);
         if (!isPasswordValid)
             return (0, helper_1.sendResponse)(res, 200, 0, [], "Invalid password", []);

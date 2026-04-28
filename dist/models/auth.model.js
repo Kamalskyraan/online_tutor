@@ -83,6 +83,14 @@ class AuthModel {
         const [rows] = await (0, helper_1.executeQuery)(query, params);
         return rows || null;
     }
+    async findAdditionalExisit(country_code, mobile) {
+        let query = "";
+        let params = [];
+        query = `SELECT * FROM users WHERE country_code = ?  AND  add_mobile = ? LIMIT 1`;
+        params = [country_code, mobile];
+        const [rows] = await (0, helper_1.executeQuery)(query, params);
+        return rows || null;
+    }
     async addUserDevice(device) {
         const { user_id, device_id, device_token, device_type } = device;
         const result = await (0, helper_1.executeQuery)(`INSERT INTO user_devices (user_id , device_id , device_token  , device_type) VALUES (?,?,?,?)`, [user_id, device_id, device_token, device_type]);

@@ -252,6 +252,11 @@ export class AuthController {
         return sendResponse(res, 200, 0, [], "User not found", []);
       }
 
+      const additionalCheck = await authModel.findAdditionalExisit(country_code , mobile)
+      if(additionalCheck){
+        return sendResponse(res , 200 , 0 , [] , "someone add this number as additional",[])
+      }
+
       const isPasswordValid = await bcrypt.compare(password, user.password);
       if (!isPasswordValid)
         return sendResponse(res, 200, 0, [], "Invalid password", []);

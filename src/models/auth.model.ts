@@ -119,6 +119,16 @@ export class AuthModel {
     return rows || null;
   }
 
+  async findAdditionalExisit(country_code: string, mobile: string) {
+    let query = "";
+    let params: any[] = [];
+
+    query = `SELECT * FROM users WHERE country_code = ?  AND  add_mobile = ? LIMIT 1`;
+    params = [country_code, mobile];
+    const [rows]: any = await executeQuery(query, params);
+    return rows || null;
+  }
+
   async addUserDevice(device: userDevice): Promise<number> {
     const { user_id, device_id, device_token, device_type } = device;
     const result: any = await executeQuery(
@@ -204,7 +214,6 @@ export class AuthModel {
   }
 
   async removeUserDevicedec(user_id: string, device_id: string) {
-   
     const sql = `
     DELETE FROM user_devices 
     WHERE user_id = ? AND device_id = ?
