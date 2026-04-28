@@ -312,6 +312,8 @@ export class SourceController {
           message: message,
         },
       });
+
+      return sendResponse(res , 200 , 1 ,[], "Chat Message sent successfully" , [])
     } catch (err: any) {
       return sendResponse(res, 500, 0, [], "Internal Server Error", [
         err.message || err,
