@@ -111,7 +111,7 @@ export class AuthModel {
     let query = "";
     let params: any[] = [];
 
-    query = `SELECT * FROM users WHERE country_code = ? AND mobile = ? OR add_mobile = ? LIMIT 1`;
+    query = `SELECT * FROM users WHERE country_code = ?  AND (mobile = ? OR add_mobile = ?) LIMIT 1`;
     params = [country_code, mobile, mobile];
 
     const [rows]: any = await executeQuery(query, params);

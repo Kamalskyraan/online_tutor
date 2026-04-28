@@ -186,7 +186,6 @@ class UserModel {
             query += ` WHERE ` + conditions.join(" AND ");
         }
         const result = await (0, helper_1.executeQuery)(query, values);
-        console.log(result);
         return (0, helper_1.convertNullToString)(result);
     }
     async createSubject(data) { }

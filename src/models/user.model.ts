@@ -312,7 +312,7 @@ export class UserModel {
     }
 
     const result = await executeQuery(query, values);
-    console.log(result);
+    
 
     return convertNullToString(result);
   }
