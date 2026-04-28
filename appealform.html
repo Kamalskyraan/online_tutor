@@ -626,11 +626,11 @@ function showMessage(message, type = "success") {
     box.style.display = "none";
   }, 3000);
 }
+
 async function fetchData() {
   try {
     const user_id = getUserIdFromURL();
 
-  
     const res = await fetch(
       `https://tutoraan.com/server/api/auth/appeal-form-info/${user_id}`
     );
@@ -644,6 +644,16 @@ async function fetchData() {
 
     const data = formInfos.data;
 
+    // 🔥 CHECK HERE
+    if (data?.already_submit === 1) {
+      showFullScreenMessage(
+        "Already Submitted",
+        "You have already submitted an appeal."
+      );
+      return; // 🚫 stop form rendering
+    }
+
+    // ✅ Normal flow
     const nameInput = document.getElementById("fullName");
     const mobileInput = document.getElementById("mobile");
 
@@ -660,7 +670,6 @@ async function fetchData() {
     console.error("Error loading data:", error);
   }
 }
-
 
 let uploadedFiles = [];
 
