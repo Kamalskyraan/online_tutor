@@ -81,7 +81,7 @@ export class LeadsModel {
     });
     
 
-    console.log(userId?.tutor_user_id)
+    
     await sendPushNotification({
       user_id: String(userId?.tutor_user_id),
       payload: {

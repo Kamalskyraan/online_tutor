@@ -1,6 +1,6 @@
 import admin from "firebase-admin";
 import { executeQuery } from "../utils/helper";
-import apn from "@parse/node-apn";
+import apn, { token } from "@parse/node-apn";
 import { apnProvider } from "./apnprovider";
 import dotenv from "dotenv";
 dotenv.config();
@@ -108,10 +108,7 @@ export const sendAPNSNotification = async ({ tokens, title, body }: any) => {
 
     const result = await apnProvider.send(notification, tokens);
 
-    console.log("Project ID:", admin.app().options.projectId);
-
-    // console.log("APNS sent:", result.sent.length);
-    // console.log("APNS failed:", result.failed.length);
+    console.log(tokens);
 
     result.failed.forEach((f: any) => {
       console.error("❌ Token:", f.device);

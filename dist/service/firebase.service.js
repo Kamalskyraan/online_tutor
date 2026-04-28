@@ -86,9 +86,7 @@ const sendAPNSNotification = async ({ tokens, title, body }) => {
         notification.alert = { title, body };
         notification.topic = process.env.IOS_BUNDLE_ID;
         const result = await apnprovider_1.apnProvider.send(notification, tokens);
-        console.log("Project ID:", firebase_admin_1.default.app().options.projectId);
-        // console.log("APNS sent:", result.sent.length);
-        // console.log("APNS failed:", result.failed.length);
+        console.log(tokens);
         result.failed.forEach((f) => {
             console.error("❌ Token:", f.device);
             console.error("❌ Error:", f.response?.reason || f.error);
