@@ -679,8 +679,71 @@ function setupSubmit() {
 
     if (!isValid) return;
 
-    // 👉 continue your API call here
-    console.log("Form valid ✅");
+    try {
+        const imageIds = [];
+
+        for (const file of uploadedFiles) {
+          const formData = new FormData();
+          formData.append("file", file);
+
+          let category = "image";
+          if (file.type.includes("pdf")) category = "pdf";
+
+          formData.append("category", category);
+
+          const res = await fetch(
+            `https://tutoraan.com/server/api/cmn/upload`,
+            {
+              method: "POST",
+              body: formData,
+            }
+          );
+
+          const data = await res.json();
+
+          if (data.success === 1) {
+            imageIds.push(data?.data?.id);
+          } else {
+            alert(data.message || "Upload failed");
+            return;
+          }
+        }
+
+        const payload = {
+          user_id,
+          name,
+          mobile,
+          email: email || null,
+          reason,
+          attachments: imageIds.length ? imageIds.join(",") : null, 
+        };
+
+        const appealRes = await fetch(
+          `https://tutoraan.com/server/api/add-appeal`,
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload),
+          }
+        );
+
+        const result = await appealRes.json();
+
+        if (result.success === 1) {
+          showSuccessModal();
+
+          uploadedFiles = [];
+          document.getElementById("fileList").innerHTML = "";
+        } else {
+          alert(result.message || "Submit failed.");
+        }
+      } catch (err) {
+        console.error(err);
+        alert("Something went wrong.");
+      }
+
+
+    
   });
 }
 
