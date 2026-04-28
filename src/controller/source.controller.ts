@@ -247,12 +247,17 @@ export class SourceController {
 
       const result = await sourceModel.reportUser(reporter_id, reported_id);
 
+      // 🔥 already reported case
+      if (result.success === 0) {
+        return sendResponse(res, 200, 0, result, "Already reported", []);
+      }
+
       return sendResponse(
         res,
         200,
         1,
         result,
-        result.is_reported === 1 ? "User reported" : "Report removed",
+        "User reported successfully",
         [],
       );
     } catch (err: any) {
@@ -261,7 +266,6 @@ export class SourceController {
       ]);
     }
   }
-
   static async getReportStatus(req: Request, res: Response) {
     try {
       const { reporter_id, reported_id } = req.body;
@@ -272,9 +276,8 @@ export class SourceController {
 
       const result = await sourceModel.getReportStatus(
         reporter_id,
-        reported_id
+        reported_id,
       );
-    
 
       return sendResponse(res, 200, 1, result, "Report status fetched", []);
     } catch (err: any) {

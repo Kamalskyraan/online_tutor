@@ -4,18 +4,18 @@ import apn from "@parse/node-apn";
 import { apnProvider } from "./apnprovider";
 import dotenv from "dotenv";
 dotenv.config();
-admin.initializeApp({
-  credential: admin.credential.cert(
-    require("./online-tutor-5655a-7da025c98c2d.json"),
-  ),
-});
+// admin.initializeApp({
+//   credential: admin.credential.cert(
+//     require("./online-tutor-5655a-7da025c98c2d.json"),
+//   ),
+// });
 
 export const sendPushNotification = async ({
   user_id,
   payload,
 }: {
   user_id: string;
-  
+
   payload: { title: string; message: string };
 }) => {
   try {

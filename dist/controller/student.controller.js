@@ -89,7 +89,7 @@ StudentController.bookASession = async (req, res) => {
                 message: notif.message,
             },
         });
-        return (0, helper_1.sendResponse)(res, 200, 1, data, "Booking request sent (Pending)", []);
+        return (0, helper_1.sendResponse)(res, 200, 1, [data], "Booking request sent (Pending)", []);
     }
     catch (err) {
         return (0, helper_1.sendResponse)(res, 500, 0, [], "Internal Server Error", [

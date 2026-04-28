@@ -136,7 +136,7 @@ export class StudentController {
         res,
         200,
         1,
-        data,
+        [data],
         "Booking request sent (Pending)",
         [],
       );

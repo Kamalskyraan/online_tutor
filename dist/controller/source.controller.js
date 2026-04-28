@@ -36,7 +36,11 @@ class SourceController {
                 return (0, helper_1.sendResponse)(res, 200, 0, [], "Missing fields", []);
             }
             const result = await sourceModel.reportUser(reporter_id, reported_id);
-            return (0, helper_1.sendResponse)(res, 200, 1, result, result.is_reported === 1 ? "User reported" : "Report removed", []);
+            // 🔥 already reported case
+            if (result.success === 0) {
+                return (0, helper_1.sendResponse)(res, 200, 0, result, "Already reported", []);
+            }
+            return (0, helper_1.sendResponse)(res, 200, 1, result, "User reported successfully", []);
         }
         catch (err) {
             return (0, helper_1.sendResponse)(res, 500, 0, [], "Internal Server Error", [

@@ -274,20 +274,23 @@ class SourceModel {
     FROM chat_reports 
     WHERE reporter_id = ? AND reported_id = ?
     `, [reporter_id, reported_id]);
-        if (!existing.length) {
-            await (0, helper_1.executeQuery)(`
-      INSERT INTO chat_reports (reporter_id, reported_id, is_reported)
-      VALUES (?, ?, 1)
-      `, [reporter_id, reported_id]);
-            return { is_reported: 1 };
+        // ✅ already reported → return success 0
+        if (existing.length && existing[0].is_reported === 1) {
+            return { is_reported: 1, success: 0 };
         }
-        const newStatus = existing[0].is_reported === 1 ? 0 : 1;
+        if (existing.length) {
+            await (0, helper_1.executeQuery)(`
+      UPDATE chat_reports 
+      SET is_reported = 1 
+      WHERE reporter_id = ? AND reported_id = ?
+      `, [reporter_id, reported_id]);
+            return { is_reported: 1, success: 1 };
+        }
         await (0, helper_1.executeQuery)(`
-    UPDATE chat_reports 
-    SET is_reported = ? 
-    WHERE reporter_id = ? AND reported_id = ?
-    `, [newStatus, reporter_id, reported_id]);
-        return { is_reported: newStatus };
+    INSERT INTO chat_reports (reporter_id, reported_id, is_reported)
+    VALUES (?, ?, 1)
+    `, [reporter_id, reported_id]);
+        return { is_reported: 1, success: 1 };
     }
     async getReportStatus(reporter_id, reported_id) {
         const res = await (0, helper_1.executeQuery)(`
