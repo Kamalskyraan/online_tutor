@@ -513,7 +513,7 @@ document.addEventListener("DOMContentLoaded", () => {
 function getUserIdFromURL() {
   const params = new URLSearchParams(window.location.search);
 
-  
+
   return params.get("user_id");
 } 
 
@@ -605,6 +605,10 @@ function setupFileUpload() {
 }
 
 // ================= SUBMIT =================
+
+
+
+
 function setupSubmit() {
   document
     .getElementById("submitBtn")
@@ -615,9 +619,15 @@ function setupSubmit() {
       const reason = document.getElementById("reason").value.trim();
       const agree = document.getElementById("agree").checked;
 
+      const user_id = localStorage.getItem("user_id"); // ✅ FIX
+
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-      // ✅ validation
+      if (!user_id) {
+        alert("User not logged in");
+        return;
+      }
+
       if (!name || !mobile || !reason) {
         alert("Please fill all required fields.");
         return;
@@ -634,18 +644,17 @@ function setupSubmit() {
       }
 
       try {
-        // ===== Upload files =====
         const imageIds = [];
 
         for (const file of uploadedFiles) {
           const formData = new FormData();
-
-          formData.append("file", file); 
+          formData.append("file", file);
 
           let category = "image";
           if (file.type.includes("pdf")) category = "pdf";
 
-          formData.append("category", category); 
+          formData.append("category", category);
+
           const res = await fetch(
             `https://tutoraan.com/server/api/cmn/upload`,
             {
@@ -655,9 +664,8 @@ function setupSubmit() {
           );
 
           const data = await res.json();
-  
 
-          if (data.success === 1) { 
+          if (data.success === 1) {
             imageIds.push(data?.data?.id);
           } else {
             alert(data.message || "Upload failed");
@@ -665,14 +673,13 @@ function setupSubmit() {
           }
         }
 
-        // ===== Submit appeal =====
         const payload = {
           user_id,
           name,
           mobile,
-          email,  
+          email: email || null,
           reason,
-          attachments: imageIds.join(","),
+          attachments: imageIds.length ? imageIds.join(",") : null, 
         };
 
         const appealRes = await fetch(
@@ -689,20 +696,17 @@ function setupSubmit() {
         if (result.success === 1) {
           showSuccessModal();
 
-    
           uploadedFiles = [];
           document.getElementById("fileList").innerHTML = "";
         } else {
-          alert("Submit failed.");
+          alert(result.message || "Submit failed.");
         }
-
       } catch (err) {
-
+        console.error(err);
         alert("Something went wrong.");
       }
     });
 }
-
 // ================= MODAL =================
 function showSuccessModal() {
   document.getElementById("successModal").style.display = "flex";

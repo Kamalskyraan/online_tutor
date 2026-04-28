@@ -178,8 +178,6 @@ export class AuthModel {
   async createJustification(data: any) {
     const { user_id, name, mobile, email, reason, attachments } = data;
 
-    console.log(data);
-
     const result: any = await executeQuery(
       `INSERT INTO user_justifications 
     (user_id, user_name, mobile, email, reason, evidence)
