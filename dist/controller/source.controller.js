@@ -5,7 +5,11 @@ exports.SourceController = void 0;
 const helper_1 = require("../utils/helper");
 const source_model_1 = require("../models/source.model");
 const validate_1 = require("../validators/validate");
+const notification_template_1 = require("../config/notification.template");
+const notification_model_1 = require("../models/notification.model");
+const firebase_service_1 = require("../service/firebase.service");
 const sourceModel = new source_model_1.SourceModel();
+const noteModel = new notification_model_1.NotificationModel();
 class SourceController {
     static async getLatLangFromArea(req, res) {
         try {
@@ -56,6 +60,27 @@ class SourceController {
             }
             const result = await sourceModel.getReportStatus(reporter_id, reported_id);
             return (0, helper_1.sendResponse)(res, 200, 1, result, "Report status fetched", []);
+        }
+        catch (err) {
+            return (0, helper_1.sendResponse)(res, 500, 0, [], "Internal Server Error", [
+                err.message || err,
+            ]);
+        }
+    }
+    static async sendChatNotify(req, res) {
+        try {
+            const { sender_id, reciver_id, message } = req.body;
+            if (!sender_id || !reciver_id) {
+                return (0, helper_1.sendResponse)(res, 200, 0, [], "Missing fields", []);
+            }
+            const notif = notification_template_1.NotificationTemplates.chatNotify(reciver_id);
+            await (0, firebase_service_1.sendPushNotification)({
+                user_id: String(reciver_id),
+                payload: {
+                    title: notif.title,
+                    message: message,
+                },
+            });
         }
         catch (err) {
             return (0, helper_1.sendResponse)(res, 500, 0, [], "Internal Server Error", [

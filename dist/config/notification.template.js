@@ -72,6 +72,13 @@ class NotificationTemplates {
             extra_data: { tutor_id },
         };
     }
+    static chatNotify(reciver_id) {
+        return {
+            title: "New Message Recieved",
+            type: "CHAT_MESSAGE_RECIEVED",
+            extra_data: {},
+        };
+    }
 }
 exports.NotificationTemplates = NotificationTemplates;
 //# sourceMappingURL=notification.template.js.map

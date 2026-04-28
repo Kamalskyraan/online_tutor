@@ -172,5 +172,33 @@ router.post("/get-report-status", (req, res) => {
     */
     return source_controller_1.SourceController.getReportStatus(req, res);
 });
+router.post("/chat-notify-sent", (req, res) => {
+    /*
+      #swagger.tags = ['7.Source']
+      #swagger.summary = 'Chat Report sent'
+      #swagger.description = 'Get Chat Sent'
+  
+      
+      #swagger.parameters['body'] = {
+        in: 'body',
+        required: true,
+        schema: {
+         sender_id : "user_123",
+         reciver_id : "user_123",
+         message : "any"
+        }
+      }
+  
+  
+      #swagger.responses[200] = {
+        description: "Chat notify send successfully"
+      }
+  
+      #swagger.responses[500] = {
+        description: "Internal Server Error"
+      }
+    */
+    source_controller_1.SourceController.sendChatNotify(req, res);
+});
 exports.default = router;
 //# sourceMappingURL=source.routes.js.map

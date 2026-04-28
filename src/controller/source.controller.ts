@@ -1,13 +1,22 @@
 import { Request, Response } from "express";
-import { executeQuery, sendResponse, validateRequest } from "../utils/helper";
+import {
+  convertNullToString,
+  executeQuery,
+  sendResponse,
+  validateRequest,
+} from "../utils/helper";
 import { SourceModel } from "../models/source.model";
 import {
   addUpdateLangSchema,
   educationSchema,
   educationStreamSchema,
 } from "../validators/validate";
+import { NotificationTemplates } from "../config/notification.template";
+import { NotificationModel } from "../models/notification.model";
+import { sendPushNotification } from "../service/firebase.service";
 
 const sourceModel = new SourceModel();
+const noteModel = new NotificationModel();
 export class SourceController {
   static getAdressDetailsFromPincode = async (req: Request, res: Response) => {
     try {
@@ -280,6 +289,29 @@ export class SourceController {
       );
 
       return sendResponse(res, 200, 1, result, "Report status fetched", []);
+    } catch (err: any) {
+      return sendResponse(res, 500, 0, [], "Internal Server Error", [
+        err.message || err,
+      ]);
+    }
+  }
+
+  static async sendChatNotify(req: Request, res: Response) {
+    try {
+      const { sender_id, reciver_id, message } = req.body;
+      if (!sender_id || !reciver_id) {
+        return sendResponse(res, 200, 0, [], "Missing fields", []);
+      }
+
+      const notif = NotificationTemplates.chatNotify(reciver_id);
+
+      await sendPushNotification({
+        user_id: String(reciver_id),
+        payload: {
+          title: notif.title,
+          message: message,
+        },
+      });
     } catch (err: any) {
       return sendResponse(res, 500, 0, [], "Internal Server Error", [
         err.message || err,

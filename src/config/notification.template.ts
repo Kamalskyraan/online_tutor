@@ -75,4 +75,13 @@ export class NotificationTemplates {
       extra_data: { tutor_id },
     };
   }
+
+  static chatNotify(reciver_id: string) {
+    return {
+      title: "New Message Recieved",
+
+      type: "CHAT_MESSAGE_RECIEVED",
+      extra_data: {},
+    };
+  }
 }
