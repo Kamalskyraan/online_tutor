@@ -704,6 +704,29 @@ export class TutorModel {
     return rows;
   }
 
+  async removeLikeNotification({
+    sender_id,
+    receiver_id,
+    tutor_id,
+  }: {
+    sender_id: string;
+    receiver_id: string;
+    tutor_id: string;
+  }) {
+    await executeQuery(
+      `
+    DELETE FROM notifications
+    WHERE sender_id = ?
+      AND receiver_id = ?
+      AND type = 'mobileViewedByStudent'
+      
+    `,
+      [sender_id, receiver_id, tutor_id],
+    );
+
+    return true;
+  }
+
   // Home data
 
   // async getTutorLeadsGraph(
@@ -917,209 +940,204 @@ export class TutorModel {
   //   };
   // }
 
-  
-async getTutorLeadsGraph(
-  tutor_id: string,
-  from_date?: string,
-  to_date?: string,
-) {
-  const finalToDate =
-    to_date || new Date().toISOString().slice(0, 19).replace("T", " ");
+  async getTutorLeadsGraph(
+    tutor_id: string,
+    from_date?: string,
+    to_date?: string,
+  ) {
+    const finalToDate =
+      to_date || new Date().toISOString().slice(0, 19).replace("T", " ");
 
-  let finalFromDate = from_date;
+    let finalFromDate = from_date;
 
-  if (!from_date && to_date) {
-    const minDateRes: any = await executeQuery(
-      `
+    if (!from_date && to_date) {
+      const minDateRes: any = await executeQuery(
+        `
       SELECT LEAST(
         (SELECT MIN(created_at) FROM tutor_leads WHERE tutor_id = ?),
         (SELECT MIN(requested_at) FROM tutor_student_rel WHERE tutor_id = ?)
       ) as first_date
       `,
-      [tutor_id, tutor_id],
-    );
+        [tutor_id, tutor_id],
+      );
 
-    finalFromDate = minDateRes[0]?.first_date || "2026-01-01 00:00:00";
-  }
+      finalFromDate = minDateRes[0]?.first_date || "2026-01-01 00:00:00";
+    }
 
-  if (!finalFromDate) finalFromDate = "2026-01-01 00:00:00";
+    if (!finalFromDate) finalFromDate = "2026-01-01 00:00:00";
 
-  // =========================================================
-  // ✅ FETCH DATA (FIXED requested_at)
-  // =========================================================
-  const [leadRows, requestRows]: any = await Promise.all([
-    executeQuery(
-      `SELECT created_at FROM tutor_leads 
+    // =========================================================
+    // ✅ FETCH DATA (FIXED requested_at)
+    // =========================================================
+    const [leadRows, requestRows]: any = await Promise.all([
+      executeQuery(
+        `SELECT created_at FROM tutor_leads 
        WHERE tutor_id=? AND lead_type='profile' 
        AND created_at BETWEEN ? AND ?`,
-      [tutor_id, finalFromDate, finalToDate],
-    ),
+        [tutor_id, finalFromDate, finalToDate],
+      ),
 
-    executeQuery(
-      `SELECT requested_at as created_at FROM tutor_student_rel 
+      executeQuery(
+        `SELECT requested_at as created_at FROM tutor_student_rel 
        WHERE tutor_id=? 
        AND requested_at BETWEEN ? AND ?`,
-      [tutor_id, finalFromDate, finalToDate],
-    ),
-  ]);
+        [tutor_id, finalFromDate, finalToDate],
+      ),
+    ]);
 
-  const leadsCount: any = await executeQuery(
-    `SELECT COUNT(*) as lead FROM tutor_leads 
+    const leadsCount: any = await executeQuery(
+      `SELECT COUNT(*) as lead FROM tutor_leads 
      WHERE tutor_id=? AND lead_type='profile' 
      AND created_at BETWEEN ? AND ?`,
-    [tutor_id, finalFromDate, finalToDate],
-  );
+      [tutor_id, finalFromDate, finalToDate],
+    );
 
-  const requestCount: any = await executeQuery(
-    `SELECT COUNT(*) as req FROM tutor_student_rel 
+    const requestCount: any = await executeQuery(
+      `SELECT COUNT(*) as req FROM tutor_student_rel 
      WHERE tutor_id=?  
      AND requested_at BETWEEN ? AND ?`,
-    [tutor_id, finalFromDate, finalToDate],
-  );
+      [tutor_id, finalFromDate, finalToDate],
+    );
 
-  const from = new Date(finalFromDate);
-  const to = new Date(finalToDate);
+    const from = new Date(finalFromDate);
+    const to = new Date(finalToDate);
 
-  const totalDays =
-    Math.ceil((to.getTime() - from.getTime()) / (1000 * 60 * 60 * 24)) + 1;
+    const totalDays =
+      Math.ceil((to.getTime() - from.getTime()) / (1000 * 60 * 60 * 24)) + 1;
 
-  let buckets: any[] = [];
+    let buckets: any[] = [];
 
-  // =========================================================
-  // ✅ CREATE BUCKETS
-  // =========================================================
-  if (totalDays <= 7) {
-    let current = new Date(from);
+    // =========================================================
+    // ✅ CREATE BUCKETS
+    // =========================================================
+    if (totalDays <= 7) {
+      let current = new Date(from);
 
-    while (current <= to) {
-      const start = new Date(current);
-      start.setHours(0, 0, 0, 0);
+      while (current <= to) {
+        const start = new Date(current);
+        start.setHours(0, 0, 0, 0);
 
-      const end = new Date(current);
-      end.setHours(23, 59, 59, 999);
+        const end = new Date(current);
+        end.setHours(23, 59, 59, 999);
 
-      buckets.push({
-        start,
-        end,
-        label: start.toLocaleDateString("en-IN", {
-          day: "2-digit",
+        buckets.push({
+          start,
+          end,
+          label: start.toLocaleDateString("en-IN", {
+            day: "2-digit",
+            month: "short",
+          }),
+          leads: 0,
+          requests: 0,
+          total: 0,
+        });
+
+        current.setDate(current.getDate() + 1);
+      }
+    } else {
+      let current = new Date(from);
+
+      while (current <= to) {
+        const start = new Date(current);
+        const end = new Date(current);
+        end.setDate(end.getDate() + 6);
+
+        if (end > to) end.setTime(to.getTime());
+
+        const label = `${start.getDate().toString().padStart(2, "0")} - ${end
+          .getDate()
+          .toString()
+          .padStart(2, "0")} ${end.toLocaleString("en-IN", {
           month: "short",
-        }),
-        leads: 0,
-        requests: 0,
-        total: 0,
-      });
+        })}`;
 
-      current.setDate(current.getDate() + 1);
-    }
-  } else {
-    let current = new Date(from);
+        buckets.push({
+          start,
+          end,
+          label,
+          leads: 0,
+          requests: 0,
+          total: 0,
+        });
 
-    while (current <= to) {
-      const start = new Date(current);
-      const end = new Date(current);
-      end.setDate(end.getDate() + 6);
-
-      if (end > to) end.setTime(to.getTime());
-
-      const label = `${start.getDate().toString().padStart(2, "0")} - ${end
-        .getDate()
-        .toString()
-        .padStart(2, "0")} ${end.toLocaleString("en-IN", {
-        month: "short",
-      })}`;
-
-      buckets.push({
-        start,
-        end,
-        label,
-        leads: 0,
-        requests: 0,
-        total: 0,
-      });
-
-      current.setDate(current.getDate() + 7);
-    }
-  }
-
-  // =========================================================
-  // ✅ FILL DATA
-  // =========================================================
-  for (const row of leadRows) {
-    const d = new Date(row.created_at);
-    for (const b of buckets) {
-      if (d >= b.start && d <= b.end) {
-        b.leads++;
-        break;
+        current.setDate(current.getDate() + 7);
       }
     }
-  }
 
-  for (const row of requestRows) {
-    const d = new Date(row.created_at);
-    for (const b of buckets) {
-      if (d >= b.start && d <= b.end) {
-        b.requests++;
-        break;
+    // =========================================================
+    // ✅ FILL DATA
+    // =========================================================
+    for (const row of leadRows) {
+      const d = new Date(row.created_at);
+      for (const b of buckets) {
+        if (d >= b.start && d <= b.end) {
+          b.leads++;
+          break;
+        }
       }
     }
+
+    for (const row of requestRows) {
+      const d = new Date(row.created_at);
+      for (const b of buckets) {
+        if (d >= b.start && d <= b.end) {
+          b.requests++;
+          break;
+        }
+      }
+    }
+
+    // =========================================================
+    // ✅ IMPORTANT FIX (NO DATA LOSS)
+    // =========================================================
+
+    // calculate total
+    buckets.forEach((b) => {
+      b.total = b.leads + b.requests;
+    });
+
+    // remove empty buckets
+    buckets = buckets.filter((b) => b.total > 0);
+
+    // sort by highest activity
+    buckets.sort((a, b) => b.total - a.total);
+
+    // take top 6 (you can change)
+    buckets = buckets.slice(0, 6);
+
+    // sort for graph display
+    buckets.sort((a, b) => a.start - b.start);
+
+    const x_axis = buckets.map((b) => b.label);
+    const leads_data = buckets.map((b) => b.leads);
+    const request_data = buckets.map((b) => b.requests);
+
+    const max = Math.max(...leads_data, ...request_data, 0);
+    const stepY = Math.ceil(max / 5) || 1;
+
+    const y_axis_scale = Array.from({ length: 6 }, (_, i) => i * stepY);
+    y_axis_scale[5] = max;
+
+    const startYear = Math.max(from.getFullYear(), 2026);
+    const endYear = to.getFullYear();
+
+    const all_time = Array.from({ length: endYear - startYear + 1 }, (_, i) =>
+      String(startYear + i),
+    );
+
+    return {
+      tutor_graph: {
+        x_axis,
+        leads: leads_data,
+        requests: request_data,
+        y_axis_scale,
+        all_time,
+        leads_count: leadsCount[0].lead,
+        request_count: requestCount[0].req,
+      },
+    };
   }
 
-  // =========================================================
-  // ✅ IMPORTANT FIX (NO DATA LOSS)
-  // =========================================================
-
-  // calculate total
-  buckets.forEach((b) => {
-    b.total = b.leads + b.requests;
-  });
-
-  // remove empty buckets
-  buckets = buckets.filter((b) => b.total > 0);
-
-  // sort by highest activity
-  buckets.sort((a, b) => b.total - a.total);
-
-  // take top 6 (you can change)
-  buckets = buckets.slice(0, 6);
-
-  // sort for graph display
-  buckets.sort((a, b) => a.start - b.start);
-
-  // =========================================================
-  // ✅ FINAL GRAPH
-  // =========================================================
-  const x_axis = buckets.map((b) => b.label);
-  const leads_data = buckets.map((b) => b.leads);
-  const request_data = buckets.map((b) => b.requests);
-
-  const max = Math.max(...leads_data, ...request_data, 0);
-  const stepY = Math.ceil(max / 5) || 1;
-
-  const y_axis_scale = Array.from({ length: 6 }, (_, i) => i * stepY);
-  y_axis_scale[5] = max;
-
-  const startYear = Math.max(from.getFullYear(), 2026);
-  const endYear = to.getFullYear();
-
-  const all_time = Array.from(
-    { length: endYear - startYear + 1 },
-    (_, i) => String(startYear + i),
-  );
-
-  return {
-    tutor_graph: {
-      x_axis,
-      leads: leads_data,
-      requests: request_data,
-      y_axis_scale,
-      all_time,
-      leads_count: leadsCount[0].lead,
-      request_count: requestCount[0].req,
-    },
-  };
-}
- 
   async fetchTutorRequestsFor(tutor_id?: string) {
     const result: any = await executeQuery(
       `

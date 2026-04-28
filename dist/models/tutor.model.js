@@ -505,6 +505,16 @@ class TutorModel {
         const [rows] = await (0, helper_1.executeQuery)(query, params);
         return rows;
     }
+    async removeLikeNotification({ sender_id, receiver_id, tutor_id, }) {
+        await (0, helper_1.executeQuery)(`
+    DELETE FROM notifications
+    WHERE sender_id = ?
+      AND receiver_id = ?
+      AND type = 'mobileViewedByStudent'
+      
+    `, [sender_id, receiver_id, tutor_id]);
+        return true;
+    }
     // Home data
     // async getTutorLeadsGraph(
     //   tutor_id: string,
@@ -802,9 +812,6 @@ class TutorModel {
         buckets = buckets.slice(0, 6);
         // sort for graph display
         buckets.sort((a, b) => a.start - b.start);
-        // =========================================================
-        // ✅ FINAL GRAPH
-        // =========================================================
         const x_axis = buckets.map((b) => b.label);
         const leads_data = buckets.map((b) => b.leads);
         const request_data = buckets.map((b) => b.requests);

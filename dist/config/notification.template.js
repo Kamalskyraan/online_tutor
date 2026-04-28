@@ -35,7 +35,7 @@ class NotificationTemplates {
     static reviewLike({ review_id }) {
         return {
             title: "New Like",
-            message: "liked your review",
+            message: "Someone liked your review",
             type: "REVIEW_LIKE",
             extra_data: { review_id },
         };
@@ -66,10 +66,18 @@ class NotificationTemplates {
     }
     static mobileViewed(tutor_id) {
         return {
-            title: "Profile Viewed",
+            title: "Mobile Number Viewed",
             message: "Your contact details were viewed by the tutor",
             type: "MOBILE_VIEWED",
             extra_data: { tutor_id },
+        };
+    }
+    static mobileViewedByStudent(student_id) {
+        return {
+            title: "Mobile Number Viewed",
+            message: "Your contact details were viewed by the student",
+            type: "MOBILE_VIEWED_BY_STUDENT",
+            extra_data: { student_id },
         };
     }
     static chatNotify(reciver_id) {

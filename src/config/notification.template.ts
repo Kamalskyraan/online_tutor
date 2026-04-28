@@ -36,7 +36,7 @@ export class NotificationTemplates {
   static reviewLike({ review_id }: any) {
     return {
       title: "New Like",
-      message: "liked your review",
+      message: "Someone liked your review",
       type: "REVIEW_LIKE",
       extra_data: { review_id },
     };
@@ -69,10 +69,18 @@ export class NotificationTemplates {
   }
   static mobileViewed(tutor_id: string) {
     return {
-      title: "Profile Viewed",
+      title: "Mobile Number Viewed",
       message: "Your contact details were viewed by the tutor",
       type: "MOBILE_VIEWED",
       extra_data: { tutor_id },
+    };
+  }
+  static mobileViewedByStudent(student_id: string) {
+    return {
+      title: "Mobile Number Viewed",
+      message: "Your contact details were viewed by the student",
+      type: "MOBILE_VIEWED_BY_STUDENT",
+      extra_data: { student_id },
     };
   }
 
