@@ -71,21 +71,25 @@ const getAllHelp = async (search, status, user_role, page = 1, limit = 10) => {
     };
 };
 exports.getAllHelp = getAllHelp;
-const createOrUpdateIssueCategory = async (id, name, status) => {
+const createOrUpdateIssueCategory = async (id, name, status, cat_for) => {
     if (id) {
         const query = `
       UPDATE issue_category
       SET name = ?, status = ?
-      WHERE id = ?
+      WHERE id = ? AND cat_for = ?
     `;
-        await (0, helper_1.executeQuery)(query, [name, status || "active", id]);
+        await (0, helper_1.executeQuery)(query, [name, status || "active", id, cat_for]);
         return { id, name, status: status || "active" };
     }
     const query = `
-    INSERT INTO issue_category (name, status)
-    VALUES (?, ?)
+    INSERT INTO issue_category (name, status , cat_for)
+    VALUES (?, ? , ?)
   `;
-    const result = await (0, helper_1.executeQuery)(query, [name, status || "active"]);
+    const result = await (0, helper_1.executeQuery)(query, [
+        name,
+        status || "active",
+        cat_for,
+    ]);
     return {
         id: result.insertId,
         name,
@@ -93,7 +97,7 @@ const createOrUpdateIssueCategory = async (id, name, status) => {
     };
 };
 exports.createOrUpdateIssueCategory = createOrUpdateIssueCategory;
-const fetchIssueCategories = async (status) => {
+const fetchIssueCategories = async (status, cat_for) => {
     let query = `
     SELECT id, name
     FROM issue_category
@@ -103,6 +107,10 @@ const fetchIssueCategories = async (status) => {
     if (status) {
         query += ` AND status = ?`;
         params.push(status);
+    }
+    if (cat_for) {
+        query += ` AND cat_for = ?`;
+        params.push(cat_for);
     }
     query += ` ORDER BY id DESC`;
     return await (0, helper_1.executeQuery)(query, params);

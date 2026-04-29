@@ -56,7 +56,8 @@ router.post("/add-update-issue-category", (req, res) => {
       schema: {
        id : 1,
        name : "Technical Problem",
-       status : "active"
+       status : "active",
+       cat_for : "tutor"
       }
     }
 
@@ -86,7 +87,8 @@ router.post("/get-issue-categories", (req, res) => {
       required: false,
       schema: {
        id : 1,
-       status : "active"
+       status : "active",
+       cat_for : "tutor"
       }
     }
 

@@ -91,13 +91,13 @@ export const getHelpSupport = async (req: Request, res: Response) => {
 
 export const addUpdateIssueCategories = async (req: Request, res: Response) => {
   try {
-    const { id, name, status } = req.body;
+    const { id, name, status, cat_for } = req.body;
 
     if (!name) {
       return sendResponse(res, 200, 0, [], "Name is required", []);
     }
 
-    const result = await createOrUpdateIssueCategory(id, name, status);
+    const result = await createOrUpdateIssueCategory(id, name, status, cat_for);
 
     return sendResponse(res, 200, 1, result, "add issue category", []);
   } catch (err: any) {
@@ -109,9 +109,9 @@ export const addUpdateIssueCategories = async (req: Request, res: Response) => {
 
 export const getIssueCategory = async (req: Request, res: Response) => {
   try {
-    const { status } = req.body;
+    const { status, cat_for } = req.body;
 
-    const data = await fetchIssueCategories(status);
+    const data = await fetchIssueCategories(status, cat_for);
 
     return sendResponse(res, 200, 1, data, "Fetched successfully", []);
   } catch (err: any) {

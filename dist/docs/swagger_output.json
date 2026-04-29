@@ -1534,6 +1534,10 @@
                                 "status": {
                                     "type": "string",
                                     "example": "active"
+                                },
+                                "cat_for": {
+                                    "type": "string",
+                                    "example": "tutor"
                                 }
                             }
                         }
@@ -1571,6 +1575,10 @@
                                 "status": {
                                     "type": "string",
                                     "example": "active"
+                                },
+                                "cat_for": {
+                                    "type": "string",
+                                    "example": "tutor"
                                 }
                             }
                         }

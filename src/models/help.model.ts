@@ -89,25 +89,30 @@ export const createOrUpdateIssueCategory = async (
   id?: number,
   name?: string,
   status?: string,
+  cat_for?: string,
 ) => {
   if (id) {
     const query = `
       UPDATE issue_category
       SET name = ?, status = ?
-      WHERE id = ?
+      WHERE id = ? AND cat_for = ?
     `;
 
-    await executeQuery(query, [name, status || "active", id]);
+    await executeQuery(query, [name, status || "active", id, cat_for]);
 
     return { id, name, status: status || "active" };
   }
 
   const query = `
-    INSERT INTO issue_category (name, status)
-    VALUES (?, ?)
+    INSERT INTO issue_category (name, status , cat_for)
+    VALUES (?, ? , ?)
   `;
 
-  const result: any = await executeQuery(query, [name, status || "active"]);
+  const result: any = await executeQuery(query, [
+    name,
+    status || "active",
+    cat_for,
+  ]);
 
   return {
     id: result.insertId,
@@ -116,7 +121,7 @@ export const createOrUpdateIssueCategory = async (
   };
 };
 
-export const fetchIssueCategories = async (status?: string) => {
+export const fetchIssueCategories = async (status?: string , cat_for? :string) => {
   let query = `
     SELECT id, name
     FROM issue_category
@@ -128,6 +133,10 @@ export const fetchIssueCategories = async (status?: string) => {
   if (status) {
     query += ` AND status = ?`;
     params.push(status);
+  }
+  if (cat_for) {
+    query += ` AND cat_for = ?`;
+    params.push(cat_for);
   }
 
   query += ` ORDER BY id DESC`;

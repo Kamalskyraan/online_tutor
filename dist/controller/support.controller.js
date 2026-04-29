@@ -47,11 +47,11 @@ const getHelpSupport = async (req, res) => {
 exports.getHelpSupport = getHelpSupport;
 const addUpdateIssueCategories = async (req, res) => {
     try {
-        const { id, name, status } = req.body;
+        const { id, name, status, cat_for } = req.body;
         if (!name) {
             return (0, helper_1.sendResponse)(res, 200, 0, [], "Name is required", []);
         }
-        const result = await (0, help_model_1.createOrUpdateIssueCategory)(id, name, status);
+        const result = await (0, help_model_1.createOrUpdateIssueCategory)(id, name, status, cat_for);
         return (0, helper_1.sendResponse)(res, 200, 1, result, "add issue category", []);
     }
     catch (err) {
@@ -63,8 +63,8 @@ const addUpdateIssueCategories = async (req, res) => {
 exports.addUpdateIssueCategories = addUpdateIssueCategories;
 const getIssueCategory = async (req, res) => {
     try {
-        const { status } = req.body;
-        const data = await (0, help_model_1.fetchIssueCategories)(status);
+        const { status, cat_for } = req.body;
+        const data = await (0, help_model_1.fetchIssueCategories)(status, cat_for);
         return (0, helper_1.sendResponse)(res, 200, 1, data, "Fetched successfully", []);
     }
     catch (err) {
