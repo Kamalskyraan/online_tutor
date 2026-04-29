@@ -109,7 +109,7 @@ router.post(
 router.post(
   "/login",
   blockCheckMiddleware,
-  deletedCheckMiddleware,
+  // deletedCheckMiddleware,
   (req, res) => {
     /*
     #swagger.tags = ['1.Auth']

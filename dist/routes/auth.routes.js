@@ -96,7 +96,9 @@ router.post("/signup", (req, res) => {
   */
     return auth_controller_1.AuthController.signup(req, res);
 });
-router.post("/login", middleware_1.blockCheckMiddleware, middleware_1.deletedCheckMiddleware, (req, res) => {
+router.post("/login", middleware_1.blockCheckMiddleware, 
+// deletedCheckMiddleware,
+(req, res) => {
     /*
     #swagger.tags = ['1.Auth']
     #swagger.summary = 'Login'
