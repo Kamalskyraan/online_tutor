@@ -60,7 +60,7 @@ export const generateOTP = (): string => {
   const otp =
     process.env.NODE_ENV === "development"
       ? "1234"
-      : Math.floor(Math.random() * 9000).toString();
+      : Math.floor(1000 + Math.random() * 9000).toString();
   return otp;
 };
 

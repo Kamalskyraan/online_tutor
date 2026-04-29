@@ -185,7 +185,7 @@ AuthController.login = async (req, res) => {
     UPDATE users 
     SET 
       is_deleted = 0,
-      deleted_reason = NULL,
+      delete_reasons = NULL,
       deleted_at = NULL
     WHERE user_id = ?
     `, [user.user_id]);
