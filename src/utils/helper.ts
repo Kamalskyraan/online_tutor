@@ -65,7 +65,7 @@ export const generateOTP = (): string => {
 };
 
 export const getOTPExpiry = (): Date => {
-  const minutes = process.env.NODE_ENV === "development" ? 0.5 : 0.3;
+  const minutes = process.env.NODE_ENV === "development" ? 0.5 : 3;
   return new Date(Date.now() + minutes * 60 * 1000);
 };
 
