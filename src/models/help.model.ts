@@ -121,7 +121,10 @@ export const createOrUpdateIssueCategory = async (
   };
 };
 
-export const fetchIssueCategories = async (status?: string , cat_for? :string) => {
+export const fetchIssueCategories = async (
+  status?: string,
+  cat_for?: string,
+) => {
   let query = `
     SELECT id, name
     FROM issue_category
@@ -134,6 +137,7 @@ export const fetchIssueCategories = async (status?: string , cat_for? :string) =
     query += ` AND status = ?`;
     params.push(status);
   }
+
   if (cat_for) {
     query += ` AND cat_for = ?`;
     params.push(cat_for);
@@ -141,9 +145,16 @@ export const fetchIssueCategories = async (status?: string , cat_for? :string) =
 
   query += ` ORDER BY id DESC`;
 
-  return await executeQuery(query, params);
-};
+  const result: any = await executeQuery(query, params);
 
+ 
+  result.push({
+    id: -1,
+    name: "Other Issues",
+  });
+
+  return result;
+};
 export const createHelpRequest = async (data: any) => {
   const { user_name, mobile, email, issue_reason, subject, descp } = data;
 

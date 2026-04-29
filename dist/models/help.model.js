@@ -113,7 +113,12 @@ const fetchIssueCategories = async (status, cat_for) => {
         params.push(cat_for);
     }
     query += ` ORDER BY id DESC`;
-    return await (0, helper_1.executeQuery)(query, params);
+    const result = await (0, helper_1.executeQuery)(query, params);
+    result.push({
+        id: -1,
+        name: "Other Issues",
+    });
+    return result;
 };
 exports.fetchIssueCategories = fetchIssueCategories;
 const createHelpRequest = async (data) => {
