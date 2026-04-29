@@ -5,7 +5,7 @@ import { executeQuery } from "../utils/helper";
 export const startDeleteCron = () => {
 
 
-  cron.schedule("* * * * *", async () => {
+  cron.schedule("0 2 * * *", async () => {
     try {
       await executeQuery(`
         UPDATE users
