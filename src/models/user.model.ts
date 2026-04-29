@@ -290,7 +290,7 @@ export class UserModel {
     SELECT id, user_name, user_id, user_role, country_code, mobile,
            add_mobile as additional_mobile, primary_num, email, is_show_num,
            profile_img, gender, dob, country, state, area, pincode,
-           self_about, address, lat, lng, is_form_filled
+           self_about, address, lat, lng, is_form_filled , is_deleted , deleted_at
     FROM users
   `;
 
