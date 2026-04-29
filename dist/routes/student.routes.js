@@ -4,7 +4,7 @@ const express_1 = require("express");
 const student_controller_1 = require("../controller/student.controller");
 const middleware_1 = require("../config/middleware");
 const router = (0, express_1.Router)();
-router.post("/nearby-tutors", middleware_1.authMiddleware, middleware_1.blockCheckMiddleware, (req, res) => {
+router.post("/nearby-tutors", middleware_1.authMiddleware, middleware_1.blockCheckMiddleware, middleware_1.deletedCheckMiddleware, (req, res) => {
     /*
     #swagger.tags = ['9.Student']
     #swagger.summary = 'Get Near By Tutor's Data'
@@ -70,7 +70,7 @@ router.post("/get-student-data", (req, res) => {
     */
     student_controller_1.StudentController.getStudentData(req, res);
 });
-router.post("/book-session", middleware_1.authMiddleware, middleware_1.blockCheckMiddleware, (req, res) => {
+router.post("/book-session", middleware_1.authMiddleware, middleware_1.blockCheckMiddleware, middleware_1.deletedCheckMiddleware, (req, res) => {
     /*
     #swagger.tags = ['9.Student']
     #swagger.summary = 'Book a tutor's Subject session'
@@ -260,30 +260,30 @@ router.post("/student-suggestion", (req, res) => {
     */
     student_controller_1.StudentController.studentConsumedSubjects(req, res);
 });
-router.post("/student-favs", middleware_1.authMiddleware, (req, res) => {
+router.post("/student-favs", middleware_1.authMiddleware, middleware_1.deletedCheckMiddleware, (req, res) => {
     /*
-      #swagger.tags = ['9.Student']
-      #swagger.summary = 'Get Favourites of student'
-      #swagger.description = 'Get Favourites of student'
-  
-      
-      #swagger.parameters['body'] = {
-        in: 'body',
-        required: false,
-        schema: {
-          student_id : "STUDENT_4Gy3VZ_N",
-          page : 1
-      }
-  
-  }
-      #swagger.responses[200] = {
-        description: "Fetched Favourites Successfully"
-      }
-  
-      #swagger.responses[500] = {
-        description: "Internal Server Error"
-      }
-    */
+    #swagger.tags = ['9.Student']
+    #swagger.summary = 'Get Favourites of student'
+    #swagger.description = 'Get Favourites of student'
+
+    
+    #swagger.parameters['body'] = {
+      in: 'body',
+      required: false,
+      schema: {
+        student_id : "STUDENT_4Gy3VZ_N",
+        page : 1
+    }
+
+}
+    #swagger.responses[200] = {
+      description: "Fetched Favourites Successfully"
+    }
+
+    #swagger.responses[500] = {
+      description: "Internal Server Error"
+    }
+  */
     student_controller_1.StudentController.getMyFavourites(req, res);
 });
 router.post("/report-tutor-profile", (req, res) => {

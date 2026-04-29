@@ -105,3 +105,35 @@ export const blockCheckMiddleware = async (
     return sendResponse(res, 500, 0, [], "Internal Server Error", []);
   }
 };
+
+export const deletedCheckMiddleware = async (
+  req: AuthRequest,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const user_id = req.user?.user_id;
+
+    if (!user_id) return next();
+
+    const result: any = await executeQuery(
+      `SELECT is_deleted FROM users WHERE user_id = ?`,
+      [user_id],
+    );
+
+    if (result[0]?.is_deleted === 1) {
+      return sendResponse(
+        res,
+        200,
+        4,
+        [],
+        "Your account has been deleted. Please contact support.",
+        [],
+      );
+    }
+
+    next();
+  } catch (err) {
+    return sendResponse(res, 500, 0, [], "Internal Server Error", []);
+  }
+};

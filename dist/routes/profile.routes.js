@@ -4,33 +4,33 @@ const express_1 = require("express");
 const profile_controller_1 = require("../controller/profile.controller");
 const middleware_1 = require("../config/middleware");
 const router = (0, express_1.Router)();
-router.post("/get-profiledata", middleware_1.authMiddleware, middleware_1.blockCheckMiddleware, (req, res) => {
+router.post("/get-profiledata", middleware_1.authMiddleware, middleware_1.blockCheckMiddleware, middleware_1.deletedCheckMiddleware, (req, res) => {
     /*
-      #swagger.tags = ['3.Profile']
-      #swagger.summary = 'get user data'
-      #swagger.description = 'fetch user's data'
-  
-      
-      #swagger.parameters['body'] = {
-        in: 'body',
-        required: true,
-        schema: {
-          user_id : "USER_7wbjv2wt"
-        }
+    #swagger.tags = ['3.Profile']
+    #swagger.summary = 'get user data'
+    #swagger.description = 'fetch user's data'
+
+    
+    #swagger.parameters['body'] = {
+      in: 'body',
+      required: true,
+      schema: {
+        user_id : "USER_7wbjv2wt"
       }
-  
-  
-      #swagger.responses[200] = {
-        description: "fetch user data successfully"
-      }
-  
-      #swagger.responses[500] = {
-        description: "Internal Server Error"
-      }
-    */
+    }
+
+
+    #swagger.responses[200] = {
+      description: "fetch user data successfully"
+    }
+
+    #swagger.responses[500] = {
+      description: "Internal Server Error"
+    }
+  */
     return profile_controller_1.ProfileController.getUserData(req, res);
 });
-router.post("/add-update-userdata", middleware_1.authMiddleware, middleware_1.blockCheckMiddleware, (req, res) => {
+router.post("/add-update-userdata", middleware_1.authMiddleware, middleware_1.blockCheckMiddleware, middleware_1.deletedCheckMiddleware, (req, res) => {
     /*
     #swagger.tags = ['3.Profile']
     #swagger.summary = 'add Update user data'

@@ -1,6 +1,9 @@
 import { Router } from "express";
 import { AuthController } from "../controller/auth.controller";
-import { blockCheckMiddleware } from "../config/middleware";
+import {
+  blockCheckMiddleware,
+  deletedCheckMiddleware,
+} from "../config/middleware";
 
 const router = Router();
 
@@ -103,8 +106,12 @@ router.post(
   },
 );
 
-router.post("/login", blockCheckMiddleware, (req, res) => {
-  /*
+router.post(
+  "/login",
+  blockCheckMiddleware,
+  deletedCheckMiddleware,
+  (req, res) => {
+    /*
     #swagger.tags = ['1.Auth']
     #swagger.summary = 'Login'
     #swagger.description = 'Login with mobile number and password'
@@ -132,8 +139,9 @@ router.post("/login", blockCheckMiddleware, (req, res) => {
       description: "Internal Server Error"
     }
   */
-  return AuthController.login(req, res);
-});
+    return AuthController.login(req, res);
+  },
+);
 
 router.post("/reset-password", (req, res) => {
   /*

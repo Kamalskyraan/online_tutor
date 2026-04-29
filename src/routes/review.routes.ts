@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { ReviewController } from "../controller/review.controller";
-import { authMiddleware, blockCheckMiddleware } from "../config/middleware";
+import { authMiddleware, blockCheckMiddleware, deletedCheckMiddleware } from "../config/middleware";
 
 const router = Router();
 
@@ -8,6 +8,7 @@ router.post(
   "/add-update-review",
   authMiddleware,
   blockCheckMiddleware,
+  deletedCheckMiddleware,
   (req, res) => {
     /*
     #swagger.tags = ['10.review']
@@ -43,6 +44,7 @@ router.post(
   "/get-reviews",
   authMiddleware,
   blockCheckMiddleware,
+  deletedCheckMiddleware,
   (req, res) => {
     /*
     #swagger.tags = ['10.review']

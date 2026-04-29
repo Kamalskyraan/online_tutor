@@ -96,35 +96,35 @@ router.post("/signup", (req, res) => {
   */
     return auth_controller_1.AuthController.signup(req, res);
 });
-router.post("/login", middleware_1.blockCheckMiddleware, (req, res) => {
+router.post("/login", middleware_1.blockCheckMiddleware, middleware_1.deletedCheckMiddleware, (req, res) => {
     /*
-      #swagger.tags = ['1.Auth']
-      #swagger.summary = 'Login'
-      #swagger.description = 'Login with mobile number and password'
-  
-      
-      #swagger.parameters['body'] = {
-        in: 'body',
-        required: true,
-        schema: {
-          mobile: '9876543210',
-          country_code : '+91',
-          password : '12345678',
-          device_id : 'abc_123',
-          device_type : 'ios',
-          device_token : 'xyz123'
-        }
+    #swagger.tags = ['1.Auth']
+    #swagger.summary = 'Login'
+    #swagger.description = 'Login with mobile number and password'
+
+    
+    #swagger.parameters['body'] = {
+      in: 'body',
+      required: true,
+      schema: {
+        mobile: '9876543210',
+        country_code : '+91',
+        password : '12345678',
+        device_id : 'abc_123',
+        device_type : 'ios',
+        device_token : 'xyz123'
       }
-  
-  
-      #swagger.responses[200] = {
-        description: "Login successfull"
-      }
-  
-      #swagger.responses[500] = {
-        description: "Internal Server Error"
-      }
-    */
+    }
+
+
+    #swagger.responses[200] = {
+      description: "Login successfull"
+    }
+
+    #swagger.responses[500] = {
+      description: "Internal Server Error"
+    }
+  */
     return auth_controller_1.AuthController.login(req, res);
 });
 router.post("/reset-password", (req, res) => {

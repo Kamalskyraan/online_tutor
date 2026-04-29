@@ -1,11 +1,20 @@
 import { Router } from "express";
 import { ProfileController } from "../controller/profile.controller";
-import { authMiddleware, blockCheckMiddleware } from "../config/middleware";
+import {
+  authMiddleware,
+  blockCheckMiddleware,
+  deletedCheckMiddleware,
+} from "../config/middleware";
 
 const router = Router();
 
-router.post("/get-profiledata", authMiddleware,blockCheckMiddleware, (req, res) => {
-  /*
+router.post(
+  "/get-profiledata",
+  authMiddleware,
+  blockCheckMiddleware,
+  deletedCheckMiddleware,
+  (req, res) => {
+    /*
     #swagger.tags = ['3.Profile']
     #swagger.summary = 'get user data'
     #swagger.description = 'fetch user's data'
@@ -28,13 +37,15 @@ router.post("/get-profiledata", authMiddleware,blockCheckMiddleware, (req, res) 
       description: "Internal Server Error"
     }
   */
-  return ProfileController.getUserData(req, res);
-});
+    return ProfileController.getUserData(req, res);
+  },
+);
 
 router.post(
   "/add-update-userdata",
   authMiddleware,
   blockCheckMiddleware,
+  deletedCheckMiddleware,
   (req, res) => {
     /*
     #swagger.tags = ['3.Profile']
@@ -87,7 +98,6 @@ router.post(
     ProfileController.addUpdateUserData(req, res);
   },
 );
-
 
 router.post("/change-primary", ProfileController.changePrimary);
 router.post(

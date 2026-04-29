@@ -4,7 +4,7 @@ const express_1 = require("express");
 const review_controller_1 = require("../controller/review.controller");
 const middleware_1 = require("../config/middleware");
 const router = (0, express_1.Router)();
-router.post("/add-update-review", middleware_1.authMiddleware, middleware_1.blockCheckMiddleware, (req, res) => {
+router.post("/add-update-review", middleware_1.authMiddleware, middleware_1.blockCheckMiddleware, middleware_1.deletedCheckMiddleware, (req, res) => {
     /*
     #swagger.tags = ['10.review']
     #swagger.summary = 'Add Update Review'
@@ -34,7 +34,7 @@ router.post("/add-update-review", middleware_1.authMiddleware, middleware_1.bloc
   */
     review_controller_1.ReviewController.addUpdateReview(req, res);
 });
-router.post("/get-reviews", middleware_1.authMiddleware, middleware_1.blockCheckMiddleware, (req, res) => {
+router.post("/get-reviews", middleware_1.authMiddleware, middleware_1.blockCheckMiddleware, middleware_1.deletedCheckMiddleware, (req, res) => {
     /*
     #swagger.tags = ['10.review']
     #swagger.summary = 'Add Update Review'

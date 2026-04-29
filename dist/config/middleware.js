@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.blockCheckMiddleware = exports.authMiddleware = void 0;
+exports.deletedCheckMiddleware = exports.blockCheckMiddleware = exports.authMiddleware = void 0;
 const helper_1 = require("../utils/helper");
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const dotenv_1 = __importDefault(require("dotenv"));
@@ -62,4 +62,20 @@ const blockCheckMiddleware = async (req, res, next) => {
     }
 };
 exports.blockCheckMiddleware = blockCheckMiddleware;
+const deletedCheckMiddleware = async (req, res, next) => {
+    try {
+        const user_id = req.user?.user_id;
+        if (!user_id)
+            return next();
+        const result = await (0, helper_1.executeQuery)(`SELECT is_deleted FROM users WHERE user_id = ?`, [user_id]);
+        if (result[0]?.is_deleted === 1) {
+            return (0, helper_1.sendResponse)(res, 200, 4, [], "Your account has been deleted. Please contact support.", []);
+        }
+        next();
+    }
+    catch (err) {
+        return (0, helper_1.sendResponse)(res, 500, 0, [], "Internal Server Error", []);
+    }
+};
+exports.deletedCheckMiddleware = deletedCheckMiddleware;
 //# sourceMappingURL=middleware.js.map

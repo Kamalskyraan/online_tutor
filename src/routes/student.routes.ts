@@ -1,6 +1,10 @@
 import { Router } from "express";
 import { StudentController } from "../controller/student.controller";
-import { authMiddleware, blockCheckMiddleware } from "../config/middleware";
+import {
+  authMiddleware,
+  blockCheckMiddleware,
+  deletedCheckMiddleware,
+} from "../config/middleware";
 
 const router = Router();
 
@@ -8,6 +12,7 @@ router.post(
   "/nearby-tutors",
   authMiddleware,
   blockCheckMiddleware,
+  deletedCheckMiddleware,
   (req, res) => {
     /*
     #swagger.tags = ['9.Student']
@@ -81,6 +86,7 @@ router.post(
   "/book-session",
   authMiddleware,
   blockCheckMiddleware,
+  deletedCheckMiddleware,
   (req, res) => {
     /*
     #swagger.tags = ['9.Student']
@@ -284,8 +290,12 @@ router.post("/student-suggestion", (req, res) => {
 
   StudentController.studentConsumedSubjects(req, res);
 });
-router.post("/student-favs", authMiddleware, (req, res) => {
-  /*
+router.post(
+  "/student-favs",
+  authMiddleware,
+  deletedCheckMiddleware,
+  (req, res) => {
+    /*
     #swagger.tags = ['9.Student']
     #swagger.summary = 'Get Favourites of student'
     #swagger.description = 'Get Favourites of student'
@@ -309,8 +319,9 @@ router.post("/student-favs", authMiddleware, (req, res) => {
     }
   */
 
-  StudentController.getMyFavourites(req, res);
-});
+    StudentController.getMyFavourites(req, res);
+  },
+);
 
 router.post("/report-tutor-profile", (req, res) => {
   /*
