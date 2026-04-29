@@ -714,7 +714,7 @@ export class ReviewModel {
     );
     const totalReports = countRes[0].total;
 
-    if (totalReports >= 5) {
+    if (totalReports >= 10) {
       const studentData: any = await executeQuery(
         `SELECT user_id FROM student WHERE student_id = ?`,
         [report_to],

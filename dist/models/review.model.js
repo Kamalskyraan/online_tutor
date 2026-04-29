@@ -548,7 +548,7 @@ class ReviewModel {
      FROM review_reports 
      WHERE report_to = ?`, [report_to]);
         const totalReports = countRes[0].total;
-        if (totalReports >= 5) {
+        if (totalReports >= 10) {
             const studentData = await (0, helper_1.executeQuery)(`SELECT user_id FROM student WHERE student_id = ?`, [report_to]);
             if (studentData.length === 0) {
                 return {
