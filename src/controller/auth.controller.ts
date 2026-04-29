@@ -284,22 +284,22 @@ export class AuthController {
         );
       }
 
-      if (user.is_deleted === 1) {
-        await executeQuery(
-          `
-    UPDATE users 
-    SET 
-      is_deleted = 0,
-      delete_reasons = NULL,
-      deleted_at = NULL
-    WHERE user_id = ?
-    `,
-          [user.user_id],
-        );
+    //   if (user.is_deleted === 1) {
+    //     await executeQuery(
+    //       `
+    // UPDATE users 
+    // SET 
+    //   is_deleted = 0,
+    //   delete_reasons = NULL,
+    //   deleted_at = NULL
+    // WHERE user_id = ?
+    // `,
+    //       [user.user_id],
+    //     );
 
-        user.is_deleted = 0;
-        user.deleted_at = null;
-      }
+    //     user.is_deleted = 0;
+    //     user.deleted_at = null;
+    //   }
 
       await authModel.clearExistUserDevice(user.user_id);
       await authModel.addUserDevice({

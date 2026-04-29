@@ -180,18 +180,21 @@ AuthController.login = async (req, res) => {
         if (user.is_deleted === 2) {
             return (0, helper_1.sendResponse)(res, 200, 0, [], "Account permanently deleted. Contact support.", []);
         }
-        if (user.is_deleted === 1) {
-            await (0, helper_1.executeQuery)(`
-    UPDATE users 
-    SET 
-      is_deleted = 0,
-      delete_reasons = NULL,
-      deleted_at = NULL
-    WHERE user_id = ?
-    `, [user.user_id]);
-            user.is_deleted = 0;
-            user.deleted_at = null;
-        }
+        //   if (user.is_deleted === 1) {
+        //     await executeQuery(
+        //       `
+        // UPDATE users 
+        // SET 
+        //   is_deleted = 0,
+        //   delete_reasons = NULL,
+        //   deleted_at = NULL
+        // WHERE user_id = ?
+        // `,
+        //       [user.user_id],
+        //     );
+        //     user.is_deleted = 0;
+        //     user.deleted_at = null;
+        //   }
         await authModel.clearExistUserDevice(user.user_id);
         await authModel.addUserDevice({
             user_id: user.user_id,
