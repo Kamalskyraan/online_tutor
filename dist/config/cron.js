@@ -7,7 +7,7 @@ exports.startDeleteCron = void 0;
 const node_cron_1 = __importDefault(require("node-cron"));
 const helper_1 = require("../utils/helper");
 const startDeleteCron = () => {
-    node_cron_1.default.schedule("0 2 * * *", async () => {
+    node_cron_1.default.schedule("* * * * *", async () => {
         try {
             await (0, helper_1.executeQuery)(`
         UPDATE users

@@ -228,6 +228,7 @@ export class TutorModel {
     SELECT 
       u.user_id,
       u.user_name,
+      u.country_code,
       u.lat,
       u.lng,
       u.state,
