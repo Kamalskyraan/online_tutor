@@ -26,6 +26,7 @@ import { sendMail } from "../service/mail.service";
 import { UserModel } from "../models/user.model";
 import { TutorModel } from "../models/tutor.model";
 import { AuthRequest } from "../config/middleware";
+import { sendSmsOTP } from "../service/sms.service";
 
 //
 const authModel = new AuthModel();
@@ -59,9 +60,10 @@ export class AuthController {
         expires_at,
       });
 
-      // if (process.env.NODE_ENV === "production") {
-      //   await sendSmsOTP(mobile, otp);
-      // }
+      if (process.env.NODE_ENV === "production") {
+        const phone = mobile;
+        await sendSmsOTP(phone, otp);
+      }
       if (email) {
         await sendMail(email, otp);
       }
@@ -252,9 +254,19 @@ export class AuthController {
         return sendResponse(res, 200, 0, [], "User not found", []);
       }
 
-      const additionalCheck = await authModel.findAdditionalExisit(country_code , mobile)
-      if(additionalCheck){
-        return sendResponse(res , 200 , 0 , [] , "someone add this number as additional",[])
+      const additionalCheck = await authModel.findAdditionalExisit(
+        country_code,
+        mobile,
+      );
+      if (additionalCheck) {
+        return sendResponse(
+          res,
+          200,
+          0,
+          [],
+          "someone add this number as additional",
+          [],
+        );
       }
 
       const isPasswordValid = await bcrypt.compare(password, user.password);
@@ -540,7 +552,7 @@ export class AuthController {
 
       await authModel.removeUserDevicedec(user_id, device_id);
 
-       res.clearCookie("token", {
+      res.clearCookie("token", {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
       });

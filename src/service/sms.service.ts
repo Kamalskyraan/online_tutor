@@ -1,13 +1,20 @@
 import dotenv from "dotenv";
 dotenv.config();
 
-const fast2sms_key = process.env.fast2sms_key;
-const SENDER_ID = process.env.FAST2SMS_SENDER_ID;
-const TEMPLATE_ID = process.env.FAST2SMS_TEMPLATE_ID;
-const time_min = process.env.FAST2SMS_TIME_MIN;
-const flash = process.env.FAST2SMS_FLASH;
+// const fast2sms_key = process.env.fast2sms_key;
+// const SENDER_ID = process.env.FAST2SMS_SENDER_ID;
+// const TEMPLATE_ID = process.env.FAST2SMS_TEMPLATE_ID;
+// const time_min = process.env.FAST2SMS_TIME_MIN;
+// const flash = process.env.FAST2SMS_FLASH;
 
-export const sendSmsOTP = async (phone, otp) => {
+const fast2sms_key =
+  "c8NjV0nhpT7DsA6LuFReCKgPadIxSJYkE1zqbQGMyfXoi35WUv8NxIbpt5fvTj23Lhc9dG0uiDmR1lSV";
+const SENDER_ID = "SKRAAN";
+const TEMPLATE_ID = 195270;
+const time_min = 3;
+const flash = 0;
+
+export const sendSmsOTP = async (phone: string, otp: string) => {
   const payload = {
     route: "dlt",
     sender_id: SENDER_ID,

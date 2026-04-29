@@ -13,6 +13,7 @@ const validate_1 = require("../validators/validate");
 const mail_service_1 = require("../service/mail.service");
 const user_model_1 = require("../models/user.model");
 const tutor_model_1 = require("../models/tutor.model");
+const sms_service_1 = require("../service/sms.service");
 //
 const authModel = new auth_model_1.AuthModel();
 const userMdl = new user_model_1.UserModel();
@@ -44,9 +45,10 @@ AuthController.RequestOtp = async (req, res) => {
             otp,
             expires_at,
         });
-        // if (process.env.NODE_ENV === "production") {
-        //   await sendSmsOTP(mobile, otp);
-        // }
+        if (process.env.NODE_ENV === "production") {
+            const phone = mobile;
+            await (0, sms_service_1.sendSmsOTP)(phone, otp);
+        }
         if (email) {
             await (0, mail_service_1.sendMail)(email, otp);
         }
