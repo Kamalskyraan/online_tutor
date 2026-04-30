@@ -2,31 +2,31 @@ import nodemailer from "nodemailer";
 import dotenv from "dotenv";
 dotenv.config();
 
-const configOptions = {
-  host: "mail.tutoraan.com",
-  port: 465,
-  secure: true,
-  auth: {
-    user: "contact@tutoraan.com",
-    pass:"9Q3VvX{*npV-Sz@C",
-  },
-  pool: true,
-  maxConnections: 3,
-  maxMessages: 20,
-};
-
 // const configOptions = {
-//   host: process.env.MAIL_HOST,
-//   port: 587,
-//   secure: false,
+//   host: "mail.tutoraan.com",
+//   port: 465,
+//   secure: true,
 //   auth: {
-//     user: process.env.SENDER_MAIL,
-//     pass: process.env.PASSWORD,
+//     user: "contact@tutoraan.com",
+//     pass:"9Q3VvX{*npV-Sz@C",
 //   },
 //   pool: true,
 //   maxConnections: 3,
 //   maxMessages: 20,
 // };
+
+const configOptions = {
+  host: "mail.skyraantech.com",
+  port: 465,
+  secure: true,
+  auth: {
+    user: "support@skyraantech.com",
+    pass: "xnfgp6HO=*Dx^U~t",
+  },
+  pool: true,
+  maxConnections: 3,
+  maxMessages: 20,
+};
 const transporter = nodemailer.createTransport(configOptions);
 
 export const sendMail = async (
