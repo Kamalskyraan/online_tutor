@@ -14,15 +14,18 @@ const eduMdl = new education_model_1.EduModel();
 const notifMdl = new notification_model_1.NotificationModel();
 class LeadsModel {
     async insertLead(data) {
-        const { tutor_id, student_id = null, lead_type, search_subject = null, } = data;
-        let search_address = null;
-        if (student_id) {
-            const studentRes = await (0, helper_1.executeQuery)(`SELECT u.district
-       FROM student s
-       LEFT JOIN users u ON u.user_id = s.user_id
-       WHERE s.student_id = ?`, [student_id]);
-            search_address = studentRes?.[0]?.district || null;
-        }
+        const { tutor_id, student_id = null, lead_type, search_subject = null, search_address = null, } = data;
+        // let search_address: string | null = null;
+        // if (student_id) {
+        //   const studentRes: any = await executeQuery(
+        //     `SELECT u.district
+        //    FROM student s
+        //    LEFT JOIN users u ON u.user_id = s.user_id
+        //    WHERE s.student_id = ?`,
+        //     [student_id],
+        //   );
+        //   search_address = studentRes?.[0]?.district || null;
+        // }
         const existing = await (0, helper_1.executeQuery)(`
     SELECT id 
     FROM tutor_leads
@@ -44,7 +47,6 @@ class LeadsModel {
             search_subject,
         });
         const userId = await notifMdl.getUserIdFromRole({ tutor_id, student_id });
-        console.log(userId);
         await notifMdl.insertNOtifcations({
             sender_id: userId.student_user_id,
             receiver_id: userId.tutor_user_id,

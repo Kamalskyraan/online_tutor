@@ -48,6 +48,7 @@ StudentController.getNearbyTutors = async (req, res) => {
                             student_id: body.student_id,
                             lead_type: "search",
                             search_subject: body.search_subject,
+                            search_address: body.search_address,
                         });
                     }
                 }

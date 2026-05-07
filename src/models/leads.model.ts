@@ -17,27 +17,29 @@ export class LeadsModel {
     student_id?: string;
     lead_type: "search" | "profile";
     search_subject?: string;
+    search_address?: string;
   }) {
     const {
       tutor_id,
       student_id = null,
       lead_type,
       search_subject = null,
+      search_address = null,
     } = data;
 
-    let search_address: string | null = null;
+    // let search_address: string | null = null;
 
-    if (student_id) {
-      const studentRes: any = await executeQuery(
-        `SELECT u.district
-       FROM student s
-       LEFT JOIN users u ON u.user_id = s.user_id
-       WHERE s.student_id = ?`,
-        [student_id],
-      );
+    // if (student_id) {
+    //   const studentRes: any = await executeQuery(
+    //     `SELECT u.district
+    //    FROM student s
+    //    LEFT JOIN users u ON u.user_id = s.user_id
+    //    WHERE s.student_id = ?`,
+    //     [student_id],
+    //   );
 
-      search_address = studentRes?.[0]?.district || null;
-    }
+    //   search_address = studentRes?.[0]?.district || null;
+    // }
 
     const existing: any = await executeQuery(
       `
@@ -69,7 +71,7 @@ export class LeadsModel {
       search_subject,
     });
     const userId = await notifMdl.getUserIdFromRole({ tutor_id, student_id });
-    console.log(userId);
+    
 
     await notifMdl.insertNOtifcations({
       sender_id: userId.student_user_id,

@@ -5,7 +5,7 @@
     "description": "Api Docs",
     "version": "1.0.0"
   },
-  "host": "online-tutor.skyraantech.com/server",
+  "host": "tutoraan.com/server",
   "basePath": "/",
   "schemes": [
     "https"
