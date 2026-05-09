@@ -373,7 +373,7 @@ export class StudentController {
 
       let isBlocked = false;
 
-      if (totalReports >= 1) {
+      if (totalReports >= 10) {
         const user_id = await this.studentModel.getTutorUserId(tutor_id);
 
         if (user_id) {
