@@ -231,7 +231,7 @@ StudentController.reportTutorProfile = async (req, res) => {
         await _a.studentModel.insertReport(tutor_id, student_id, reason_id, other_reason);
         const totalReports = await _a.studentModel.getReportCount(tutor_id);
         let isBlocked = false;
-        if (totalReports >= 1) {
+        if (Number(totalReports) >= 10) {
             const user_id = await _a.studentModel.getTutorUserId(tutor_id);
             if (user_id) {
                 await _a.studentModel.blockUser(user_id);
