@@ -73,7 +73,7 @@ export class StudentController {
                 student_id: body.student_id,
                 lead_type: "search",
                 search_subject: body.search_subject,
-                search_address : body.search_address,
+                search_address: body.search_address,
               });
             }
           }
@@ -373,7 +373,7 @@ export class StudentController {
 
       let isBlocked = false;
 
-      if (totalReports >= 10) {
+      if (Number(totalReports) >= 10) {
         const user_id = await this.studentModel.getTutorUserId(tutor_id);
 
         if (user_id) {
