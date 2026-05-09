@@ -50,7 +50,7 @@ export class AuthController {
         }
       }
 
-      const testNumbers = ["9900559942", "9791882887"];
+      const testNumbers = ["9900559942", "9791882887" , "7448866664" , "7200577677"];
 
       let otp = generateOTP();
       if (testNumbers.includes(mobile)) {

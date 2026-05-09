@@ -36,7 +36,7 @@ AuthController.RequestOtp = async (req, res) => {
                 return (0, helper_1.sendResponse)(res, 200, 0, [], "User not found", []);
             }
         }
-        const testNumbers = ["9900559942", "9791882887"];
+        const testNumbers = ["9900559942", "9791882887", "7448866664", "7200577677"];
         let otp = (0, helper_1.generateOTP)();
         if (testNumbers.includes(mobile)) {
             otp = "1234";
