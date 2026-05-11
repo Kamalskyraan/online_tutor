@@ -6,7 +6,7 @@ import dotenv from "dotenv";
 dotenv.config();
 admin.initializeApp({
   credential: admin.credential.cert(
-    require("./online-tutor-5655a-7da025c98c2d.json"),
+    require("./online-tutor-5655a-17d29e0bfde4.json"),
   ),
 });
 
