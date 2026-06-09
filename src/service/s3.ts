@@ -1,6 +1,7 @@
 import { S3Client } from "@aws-sdk/client-s3";
 
 export const s3 = new S3Client({
+  // ot name change
   region: process.env.AWS_REGION!,
   credentials: {
     accessKeyId: process.env.IO_ACCESS_KEY_ID!,
