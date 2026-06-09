@@ -37,6 +37,7 @@ router.post("/request-otp", (req, res) => {
   return AuthController.RequestOtp(req, res);
 });
 
+
 router.post("/verify-otp", (req, res) => {
   /*
     #swagger.tags = ['1.Auth']

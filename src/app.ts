@@ -22,6 +22,8 @@ app.use("/api", router);
 app.use("/uploads", express.static("uploads"));
 
 app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerFile));
+
+
 const data = JSON.parse(fs.readFileSync("./public/country.json", "utf8"));
 
 connectDB();
