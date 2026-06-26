@@ -17,4 +17,5 @@ const doc = {
 const outputFile = "./src/docs/swagger_output.json";
 const endpointsFiles = ["../app.ts"];
 (0, swagger_autogen_1.default)()(outputFile, endpointsFiles, doc);
+// 
 //# sourceMappingURL=swagger.js.map
