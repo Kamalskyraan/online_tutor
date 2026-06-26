@@ -26,6 +26,8 @@ app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerFile));
 
 const data = JSON.parse(fs.readFileSync("./public/country.json", "utf8"));
 
+
+// 
 connectDB();
 startDeleteCron();
 app.listen(PORT, () => {
