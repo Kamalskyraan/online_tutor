@@ -113,7 +113,9 @@ export const signupSchema = Joi.object({
   device_token: Joi.string().optional().allow("").messages({
     "string.base": "Device token must be a text",
   }),
-  email: Joi.string().optional(),
+  email: Joi.string().required().messages({
+    "any.required": "Email is required",
+  }),
 });
 
 export const loginSchema = Joi.object({

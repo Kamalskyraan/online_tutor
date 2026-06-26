@@ -63,6 +63,9 @@ router.post("/upload", uploadLoc.single("file"), (req, res) => {
 */
   CommonController.uploadFileLoc(req, res);
 });
+
+
+
 router.post("/get-uploads", (req, res) => {
   /*
     #swagger.tags = ['11.Common']

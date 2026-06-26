@@ -50,7 +50,12 @@ export class AuthController {
         }
       }
 
-      const testNumbers = ["9900559942", "9791882887" , "7448866664" , "7200577677"];
+      const testNumbers = [
+        "9900559942",
+        "9791882887",
+        "7448866664",
+        "7200577677",
+      ];
 
       let otp = generateOTP();
       if (testNumbers.includes(mobile)) {
@@ -143,6 +148,7 @@ export class AuthController {
         device_token,
       } = await validateRequest(req.body, signupSchema);
       const existingUser = await authModel.findUser(country_code, mobile);
+
       if (existingUser) {
         return sendResponse(res, 200, 0, [], "User already exists", []);
       }

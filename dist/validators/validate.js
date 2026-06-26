@@ -103,7 +103,9 @@ exports.signupSchema = joi_1.default.object({
     device_token: joi_1.default.string().optional().allow("").messages({
         "string.base": "Device token must be a text",
     }),
-    email: joi_1.default.string().optional(),
+    email: joi_1.default.string().required().messages({
+        "any.required": "Email is required",
+    }),
 });
 exports.loginSchema = joi_1.default.object({
     country_code: joi_1.default.string().required().messages({
