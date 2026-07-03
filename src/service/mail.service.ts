@@ -27,28 +27,28 @@ dotenv.config();
 //   maxConnections: 3,
 //   maxMessages: 20,
 // };
-const configOptions = {
-  host: "smtp.gmail.com",
-  port: 587,
-  secure: false,
-  auth: {
-    user: "skyraankamalesh@gmail.com",
-    pass: "vadwxkxqtgbghljn",
-  },
-  pool: true,
-};
 // const configOptions = {
-//   host: "mail.tutoraan.com",
-//   port: 465,
-//   secure: true,
+//   host: "smtp.gmail.com",
+//   port: 587,
+//   secure: false,
 //   auth: {
-//     user: "contact@tutoraan.com",
-//     pass: "9Q3VvX{*npV-Sz@C",
+//     user: "skyraankamalesh@gmail.com",
+//     pass: "vadwxkxqtgbghljn",
 //   },
 //   pool: true,
-//   maxConnections: 3,
-//   maxMessages: 20,
 // };
+const configOptions = {
+  host: "mail.tutoraan.com",
+  port: 465,
+  secure: true,
+  auth: {
+    user: "contact@tutoraan.com",
+    pass: "9Q3VvX{*npV-Sz@C",
+  },
+  pool: true,
+  maxConnections: 3,
+  maxMessages: 20,
+};
 
 const transporter = nodemailer.createTransport(configOptions);
 
