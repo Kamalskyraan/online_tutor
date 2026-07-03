@@ -130,7 +130,7 @@ const createHelpRequest = async (data) => {
   `;
     const result = await (0, helper_1.executeQuery)(query, [
         user_name,
-        mobile,
+        mobile || null,
         email || null,
         issue_reason,
         subject,

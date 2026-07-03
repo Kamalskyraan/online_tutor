@@ -45,11 +45,13 @@ export class ProfileController {
         res,
         200,
         1,
-        [{
-          role: result.role,
-          ...stringData,
-          streams,
-        }],
+        [
+          {
+            role: result.role,
+            ...stringData,
+            streams,
+          },
+        ],
         "User Profile Data Fetched successfully",
         [],
       );
@@ -304,12 +306,17 @@ export class ProfileController {
 
   static removeAccount = async (req: Request, res: Response) => {
     try {
-      const { user_id, reasons , mobile } = req.body;
-     
+      const { user_id, reasons, mobile, email } = req.body;
+
       if (!reasons) {
         return sendResponse(res, 200, 0, [], "reason_id is required", []);
       }
-      const data = await profileMdl.deleteAccount(user_id, reasons , mobile);
+      const data = await profileMdl.deleteAccount(
+        user_id,
+        reasons,
+        mobile,
+        email,
+      );
 
       return sendResponse(res, 200, 1, [], "Account Removed Successfully", []);
     } catch (err: any) {

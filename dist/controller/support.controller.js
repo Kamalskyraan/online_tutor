@@ -77,7 +77,7 @@ exports.getIssueCategory = getIssueCategory;
 const helpRequest = async (req, res) => {
     try {
         const { user_name, mobile, email, issue_reason, subject, descp } = req.body;
-        if (!user_name || !mobile || !issue_reason || !subject) {
+        if (!user_name || !issue_reason || !subject) {
             return (0, helper_1.sendResponse)(res, 200, 0, [], "Missing required fields");
         }
         const result = await (0, help_model_1.createHelpRequest)({

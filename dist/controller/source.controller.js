@@ -94,13 +94,13 @@ exports.SourceController = SourceController;
 _a = SourceController;
 SourceController.getAdressDetailsFromPincode = async (req, res) => {
     try {
-        const { pincode, icountry } = req.body;
+        const { pincode, icountry = "india" } = req.body;
         if (!pincode) {
             return (0, helper_1.sendResponse)(res, 200, 0, [], "Pincode is required");
         }
-        if (!icountry) {
-            return (0, helper_1.sendResponse)(res, 200, 0, [], "Country is required");
-        }
+        // if (!icountry) {
+        //   return sendResponse(res, 200, 0, [], "Country is required");
+        // }
         const data = await sourceModel.getLatLngFromPincode(pincode, icountry);
         if (!data) {
             return (0, helper_1.sendResponse)(res, 200, 0, [], "Pincode not found");

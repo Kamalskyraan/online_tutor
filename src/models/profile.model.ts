@@ -289,12 +289,13 @@ export class ProfileModel {
     return result;
   }
   async deleteAccount(
-  user_id?: string,
-  reasons?: string,
-  mobile?: string,
-) {
-  try {
-    let query = `
+    user_id?: string,
+    reasons?: string,
+    mobile?: string,
+    email?: string,
+  ) {
+    try {
+      let query = `
       UPDATE users
       SET 
         is_deleted = 1,
@@ -303,41 +304,39 @@ export class ProfileModel {
       WHERE
     `;
 
-    let params: any[] = [reasons];
+      let params: any[] = [reasons];
 
-    if (user_id) {
-      query += ` user_id = ?`;
-      params.push(user_id);
-    }
+      if (user_id) {
+        query += ` user_id = ?`;
+        params.push(user_id);
+      } else if (mobile) {
+        query += ` mobile = ?`;
+        params.push(mobile);
+      } else if (email) {
+        query += ` email = ?`;
+        params.push(email);
+      } else {
+        return {
+          success: false,
+          message: "user_id or mobile is required",
+        };
+      }
 
-    else if (mobile) {
-      query += ` mobile = ?`;
-      params.push(mobile);
-    }
+      const result: any = await executeQuery(query, params);
 
-    
-    else {
+      return {
+        success: result?.affectedRows > 0,
+        message:
+          result?.affectedRows > 0
+            ? "Account marked as deleted"
+            : "User not found",
+      };
+    } catch (err) {
+      console.log("deleteAccount error:", err);
       return {
         success: false,
-        message: "user_id or mobile is required",
+        message: "Something went wrong",
       };
     }
-
-    const result: any = await executeQuery(query, params);
-
-    return {
-      success: result?.affectedRows > 0,
-      message:
-        result?.affectedRows > 0
-          ? "Account marked as deleted"
-          : "User not found",
-    };
-  } catch (err) {
-    console.log("deleteAccount error:", err);
-    return {
-      success: false,
-      message: "Something went wrong",
-    };
   }
-}
 }

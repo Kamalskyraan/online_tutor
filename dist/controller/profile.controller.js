@@ -39,11 +39,13 @@ ProfileController.getUserData = async (req, res) => {
             streams = await eduModl.fetchStreamsForAll(streamId.toString());
         }
         const stringData = await cmnModel.convertNullObjectToString(data);
-        return (0, helper_1.sendResponse)(res, 200, 1, [{
+        return (0, helper_1.sendResponse)(res, 200, 1, [
+            {
                 role: result.role,
                 ...stringData,
                 streams,
-            }], "User Profile Data Fetched successfully", []);
+            },
+        ], "User Profile Data Fetched successfully", []);
     }
     catch (err) {
         return (0, helper_1.sendResponse)(res, 500, 0, [], "something went wrong", err.errors || err.message || err);
@@ -168,11 +170,11 @@ ProfileController.deleteAccountReasons = async (req, res) => {
 };
 ProfileController.removeAccount = async (req, res) => {
     try {
-        const { user_id, reasons, mobile } = req.body;
+        const { user_id, reasons, mobile, email } = req.body;
         if (!reasons) {
             return (0, helper_1.sendResponse)(res, 200, 0, [], "reason_id is required", []);
         }
-        const data = await profileMdl.deleteAccount(user_id, reasons, mobile);
+        const data = await profileMdl.deleteAccount(user_id, reasons, mobile, email);
         return (0, helper_1.sendResponse)(res, 200, 1, [], "Account Removed Successfully", []);
     }
     catch (err) {

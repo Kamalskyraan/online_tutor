@@ -220,7 +220,7 @@ class ProfileModel {
         }
         return result;
     }
-    async deleteAccount(user_id, reasons, mobile) {
+    async deleteAccount(user_id, reasons, mobile, email) {
         try {
             let query = `
       UPDATE users
@@ -238,6 +238,10 @@ class ProfileModel {
             else if (mobile) {
                 query += ` mobile = ?`;
                 params.push(mobile);
+            }
+            else if (email) {
+                query += ` email = ?`;
+                params.push(email);
             }
             else {
                 return {

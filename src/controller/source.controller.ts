@@ -20,13 +20,13 @@ const noteModel = new NotificationModel();
 export class SourceController {
   static getAdressDetailsFromPincode = async (req: Request, res: Response) => {
     try {
-      const { pincode, icountry } = req.body;
+      const { pincode, icountry = "india" } = req.body;
       if (!pincode) {
         return sendResponse(res, 200, 0, [], "Pincode is required");
       }
-      if (!icountry) {
-        return sendResponse(res, 200, 0, [], "Country is required");
-      }
+      // if (!icountry) {
+      //   return sendResponse(res, 200, 0, [], "Country is required");
+      // }
 
       const data = await sourceModel.getLatLngFromPincode(pincode, icountry);
       if (!data) {
@@ -313,7 +313,14 @@ export class SourceController {
         },
       });
 
-      return sendResponse(res , 200 , 1 ,[], "Chat Message sent successfully" , [])
+      return sendResponse(
+        res,
+        200,
+        1,
+        [],
+        "Chat Message sent successfully",
+        [],
+      );
     } catch (err: any) {
       return sendResponse(res, 500, 0, [], "Internal Server Error", [
         err.message || err,
