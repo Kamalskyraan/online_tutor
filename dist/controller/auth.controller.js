@@ -103,7 +103,7 @@ AuthController.VerifyOtp = async (req, res) => {
 };
 AuthController.signup = async (req, res) => {
     try {
-        const { user_name, cntry, country_code, mobile, otp, email, password, device_id, device_type, device_token, } = await (0, helper_1.validateRequest)(req.body, validate_1.signupSchema);
+        const { user_name, country_code, mobile, otp, email, password, device_id, device_type, device_token, is_mail_verify, is_mob_verify, } = await (0, helper_1.validateRequest)(req.body, validate_1.signupSchema);
         const existingUser = await authModel.findUser(email);
         if (existingUser) {
             return (0, helper_1.sendResponse)(res, 200, 0, [], "User already exists", []);
@@ -124,16 +124,17 @@ AuthController.signup = async (req, res) => {
         await (0, auth_model_1.markOTPUsed)(otpRecord.id);
         const password_hash = await bcryptjs_1.default.hash(password, 10);
         const user_id = await (0, helper_1.generateUserId)();
-        const countryy = country_code
-            ? await (0, helper_1.fetchCountryName)(country_code)
-            : cntry;
+        if (country_code) {
+            const countryy = await (0, helper_1.fetchCountryName)(country_code);
+        }
         const userId = await authModel.createUser({
             user_name,
             user_id,
             country_code,
             mobile,
             password_hash,
-            countryy,
+            is_mail_verify,
+            is_mob_verify,
             email,
         });
         await authModel.addUserDevice({

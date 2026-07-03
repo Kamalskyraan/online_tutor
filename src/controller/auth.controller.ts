@@ -143,7 +143,7 @@ export class AuthController {
     try {
       const {
         user_name,
-        cntry,
+
         country_code,
         mobile,
         otp,
@@ -152,6 +152,8 @@ export class AuthController {
         device_id,
         device_type,
         device_token,
+        is_mail_verify,
+        is_mob_verify,
       } = await validateRequest(req.body, signupSchema);
       const existingUser = await authModel.findUser(email);
 
@@ -179,9 +181,9 @@ export class AuthController {
       const password_hash = await bcrypt.hash(password, 10);
       const user_id = await generateUserId();
 
-      const countryy = country_code
-        ? await fetchCountryName(country_code)
-        : cntry;
+      if (country_code) {
+        const countryy = await fetchCountryName(country_code);
+      }
 
       const userId = await authModel.createUser({
         user_name,
@@ -189,7 +191,8 @@ export class AuthController {
         country_code,
         mobile,
         password_hash,
-        countryy,
+        is_mail_verify,
+        is_mob_verify,
         email,
       });
       await authModel.addUserDevice({

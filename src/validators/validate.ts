@@ -114,9 +114,9 @@ export const signupSchema = Joi.object({
     "any.required": "Email is required",
     "string.email": "Please enter a valid email address",
   }),
-  cntry: Joi.string().required().messages({
-    "any.required": "country is required",
-  }),
+
+  is_mob_verify: Joi.string().optional(),
+  is_mail_verify: Joi.string().optional(),
 });
 
 //  .pattern(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/)
@@ -150,7 +150,6 @@ export const loginSchema = Joi.object({
 });
 
 export const resetPasswordSchema = Joi.object({
- 
   email: Joi.string().required().messages({
     "any.required": "Email is required",
   }),

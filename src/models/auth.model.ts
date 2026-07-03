@@ -90,9 +90,11 @@ export class AuthModel {
       password_hash,
       countryy,
       email,
+      is_mob_verify,
+      is_mail_verify,
     } = user;
     const result: any = await executeQuery(
-      `INSERT INTO users (user_name , user_id , country_code , mobile , password  , primary_num , country , email) VALUES (?,?,?,?,? , ? , ? , ?)`,
+      `INSERT INTO users (user_name , user_id , country_code , mobile , password  , primary_num , country , email ,is_mail_verify , is_mob_verify) VALUES (?,?,?,?,? , ? , ? , ? , ? , ?)`,
       [
         user_name,
         user_id,
@@ -102,6 +104,8 @@ export class AuthModel {
         mobile,
         countryy,
         email,
+        is_mail_verify,
+        is_mob_verify,
       ],
     );
     return result.insertId;

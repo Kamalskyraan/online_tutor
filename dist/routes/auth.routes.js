@@ -81,7 +81,9 @@ router.post("/signup", (req, res) => {
         device_id : 'abc_123',
         device_type : 'ios',
         device_token : 'xyz123',
-        email : 'abc@gmail.com'
+        email : 'abc@gmail.com',
+        is_mob_verify: 1,
+        is_mail_verify : 1
       }
     }
 

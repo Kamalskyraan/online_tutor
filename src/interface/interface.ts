@@ -37,8 +37,10 @@ export interface users {
   country_code: string;
   mobile: string;
   password_hash: string;
-  countryy: string;
+  countryy?: string;
   email: string;
+  is_mob_verify?: number;
+  is_mail_verify?: number;
 }
 
 export interface userDevice {
