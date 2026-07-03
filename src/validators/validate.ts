@@ -115,8 +115,8 @@ export const signupSchema = Joi.object({
     "string.email": "Please enter a valid email address",
   }),
 
-  is_mob_verify: Joi.string().optional(),
-  is_mail_verify: Joi.string().optional(),
+  is_mob_verify: Joi.number().optional(),
+  is_mail_verify: Joi.number().optional(),
 });
 
 //  .pattern(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/)
