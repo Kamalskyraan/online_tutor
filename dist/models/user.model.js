@@ -164,7 +164,7 @@ class UserModel {
     }
     //
     async fetchUserData(data) {
-        const { user_id, mobile } = data;
+        const { user_id, mobile, email } = data;
         let query = `
     SELECT id, user_name, user_id, user_role, country_code, mobile,
            add_mobile as additional_mobile, primary_num, email, is_show_num,
@@ -181,6 +181,10 @@ class UserModel {
         if (mobile) {
             conditions.push(`mobile = ?`);
             values.push(mobile);
+        }
+        if (email) {
+            conditions.push(`email = ?`);
+            values.push(email);
         }
         if (conditions.length) {
             query += ` WHERE ` + conditions.join(" AND ");

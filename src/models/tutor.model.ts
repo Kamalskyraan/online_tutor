@@ -204,22 +204,53 @@ export class TutorModel {
     };
   }
 
-  async fetchFirstSub(mobile: string) {
-    const res: any = await executeQuery(
-      `
-    SELECT 
-      u.user_id, 
-      t.tutor_id,
-      ts.*
-    FROM users u
-    LEFT JOIN tutor t ON t.user_id = u.user_id
-    LEFT JOIN tutor_subjects ts ON ts.tutor_id = t.tutor_id
-    WHERE u.mobile = ?
-    LIMIT 1
-    `,
-      [mobile],
-    );
+  // async fetchFirstSub(mobile: string, email: string) {
+  //   const res: any = await executeQuery(
+  //     `
+  //   SELECT
+  //     u.user_id,
+  //     t.tutor_id,
+  //     ts.*
+  //   FROM users u
+  //   LEFT JOIN tutor t ON t.user_id = u.user_id
+  //   LEFT JOIN tutor_subjects ts ON ts.tutor_id = t.tutor_id
+  //   WHERE u.mobile = ?
+  //   LIMIT 1
+  //   `,
+  //     [mobile],
+  //   );
 
+  //   return res;
+  // }
+
+  async fetchFirstSub(mobile?: string, email?: string) {
+    console.log(email , "email")
+    let query = `
+      SELECT 
+        u.user_id, 
+        t.tutor_id,
+        ts.*
+      FROM users u
+      LEFT JOIN tutor t ON t.user_id = u.user_id
+      LEFT JOIN tutor_subjects ts ON ts.tutor_id = t.tutor_id
+      WHERE 1=1
+    `;
+
+    const params: any[] = [];
+
+    if (mobile) {
+      query += ` AND u.mobile = ?`;
+      params.push(mobile);
+    } else if (email) {
+      query += ` AND u.email = ?`;
+      params.push(email);
+    } else {
+      throw new Error("Either mobile or email is required");
+    }
+
+    query += ` LIMIT 1`;
+
+    const res: any = await executeQuery(query, params);
     return res;
   }
 

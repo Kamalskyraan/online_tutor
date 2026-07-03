@@ -107,12 +107,23 @@ export class AuthModel {
     return result.insertId;
   }
 
-  async findUser(country_code: string, mobile?: string) {
+  async findUserByMobile(country_code: string, mobile?: string) {
     let query = "";
     let params: any[] = [];
 
     query = `SELECT * FROM users WHERE country_code = ?  AND (mobile = ? OR add_mobile = ?) LIMIT 1`;
     params = [country_code, mobile, mobile];
+
+    const [rows]: any = await executeQuery(query, params);
+
+    return rows || null;
+  }
+  async findUser(email: string) {
+    let query = "";
+    let params: any[] = [];
+
+    query = `SELECT * FROM users WHERE email = ? LIMIT 1`;
+    params = [email];
 
     const [rows]: any = await executeQuery(query, params);
 
@@ -137,14 +148,39 @@ export class AuthModel {
     );
     return result.insertId;
   }
+
+  // async updatePassword(
+  //   country_code?: string,
+  //   mobile?: string,
+  //   hashedPassword?: string,
+  //   email?: string,
+  // ): Promise<void> {
+  //   const sql = `UPDATE users SET password = ? WHERE mobile = ? AND country_code = ?`;
+  //   await executeQuery(sql, [hashedPassword, mobile, country_code]);
+  // }
+
   async updatePassword(
-    country_code: string,
-    mobile: string,
     hashedPassword: string,
+    mobile?: string,
+    country_code?: string,
+    email?: string,
   ): Promise<void> {
-    const sql = `UPDATE users SET password = ? WHERE mobile = ? AND country_code = ?`;
-    await executeQuery(sql, [hashedPassword, mobile, country_code]);
+    let sql = `UPDATE users SET password = ?`;
+    const params: any[] = [hashedPassword];
+
+    if (email) {
+      sql += ` WHERE email = ?`;
+      params.push(email);
+    } else if (mobile && country_code) {
+      sql += ` WHERE mobile = ? AND country_code = ?`;
+      params.push(mobile, country_code);
+    } else {
+      throw new Error("Either email or (mobile + country_code) is required");
+    }
+
+    await executeQuery(sql, params);
   }
+
   async removeUserDevice(
     user_id: string,
     device_id: string,

@@ -37,7 +37,6 @@ router.post("/request-otp", (req, res) => {
   return AuthController.RequestOtp(req, res);
 });
 
-
 router.post("/verify-otp", (req, res) => {
   /*
     #swagger.tags = ['1.Auth']
@@ -122,8 +121,7 @@ router.post(
       in: 'body',
       required: true,
       schema: {
-        mobile: '9876543210',
-        country_code : '+91',
+        email : "skyraankamalesh@gmail.com",
         password : '12345678',
         device_id : 'abc_123',
         device_type : 'ios',

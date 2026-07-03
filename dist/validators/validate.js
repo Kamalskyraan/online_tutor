@@ -75,16 +75,13 @@ exports.signupSchema = joi_1.default.object({
         "string.max": "User name must be less than 50 characters",
         "any.required": "User name is required",
     }),
-    country_code: joi_1.default.string().required().messages({
-        "any.required": "Country Code is required",
-        "string.empty": "Country code is required",
-    }),
+    country_code: joi_1.default.string().optional(),
     mobile: joi_1.default.string()
         .pattern(/^[0-9]{7,15}$/)
-        .required()
+        .optional()
+        .allow("")
         .messages({
-        "any.required": "Mobile number is required",
-        "string.empty": "Mobile Number is required",
+        "string.pattern.base": "Mobile number must be 7-15 digits only",
     }),
     password: joi_1.default.string().min(8).max(32).required().messages({
         "string.empty": "Password is required",
@@ -103,23 +100,21 @@ exports.signupSchema = joi_1.default.object({
     device_token: joi_1.default.string().optional().allow("").messages({
         "string.base": "Device token must be a text",
     }),
+    email: joi_1.default.string().email().required().messages({
+        "any.required": "Email is required",
+        "string.email": "Please enter a valid email address",
+    }),
+    cntry: joi_1.default.string().required().messages({
+        "any.required": "country is required",
+    }),
+});
+//  .pattern(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/)
+exports.loginSchema = joi_1.default.object({
+    country_code: joi_1.default.string().optional(),
     email: joi_1.default.string().required().messages({
         "any.required": "Email is required",
     }),
-});
-exports.loginSchema = joi_1.default.object({
-    country_code: joi_1.default.string().required().messages({
-        "string.empty": "Country code is required",
-        "any.required": "Country code is required",
-    }),
-    mobile: joi_1.default.string()
-        .pattern(/^[0-9]{7,15}$/)
-        .required()
-        .messages({
-        "string.empty": "Mobile number is required",
-        "string.pattern.base": "Mobile number must be 7 to 15 digits",
-        "any.required": "Mobile number is required",
-    }),
+    mobile: joi_1.default.string().optional(),
     password: joi_1.default.string().min(8).max(32).required().messages({
         "string.empty": "Password is required",
         "string.min": "Password must be at least 8 characters",
@@ -139,11 +134,8 @@ exports.loginSchema = joi_1.default.object({
     }),
 });
 exports.resetPasswordSchema = joi_1.default.object({
-    country_code: joi_1.default.string().messages({
-        "string.empty": "Country Code is required",
-    }),
-    mobile: joi_1.default.string().messages({
-        "any.required": "Mobile is required",
+    email: joi_1.default.string().required().messages({
+        "any.required": "Email is required",
     }),
     new_password: joi_1.default.string().min(8).max(32).required().messages({
         "string.empty": "New password is required",

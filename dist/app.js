@@ -21,7 +21,7 @@ app.use("/api", routes_1.default);
 app.use("/uploads", express_1.default.static("uploads"));
 app.use("/docs", swagger_ui_express_1.default.serve, swagger_ui_express_1.default.setup(swagger_output_json_1.default));
 const data = JSON.parse(fs_1.default.readFileSync("./public/country.json", "utf8"));
-// 
+//
 (0, db_1.connectDB)();
 (0, cron_1.startDeleteCron)();
 app.listen(PORT, () => {

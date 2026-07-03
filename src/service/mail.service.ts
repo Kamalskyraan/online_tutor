@@ -15,17 +15,27 @@ dotenv.config();
 //   maxMessages: 20,
 // };
 
+// const configOptions = {
+//   host: "mail.skyraantech.com",
+//   port: 465,
+//   secure: true,
+//   auth: {
+//     user: "support@skyraantech.com",
+//     pass: "xnfgp6HO=*Dx^U~t",
+//   },
+//   pool: true,
+//   maxConnections: 3,
+//   maxMessages: 20,
+// };
 const configOptions = {
-  host: "mail.skyraantech.com",
-  port: 465,
-  secure: true,
+  host: "smtp.gmail.com",
+  port: 587,
+  secure: false,
   auth: {
-    user: "support@skyraantech.com",
-    pass: "xnfgp6HO=*Dx^U~t",
+    user: "skyraankamalesh@gmail.com",
+    pass: "vadwxkxqtgbghljn",
   },
   pool: true,
-  maxConnections: 3,
-  maxMessages: 20,
 };
 // const configOptions = {
 //   host: "mail.tutoraan.com",
@@ -39,8 +49,6 @@ const configOptions = {
 //   maxConnections: 3,
 //   maxMessages: 20,
 // };
-
-
 
 const transporter = nodemailer.createTransport(configOptions);
 

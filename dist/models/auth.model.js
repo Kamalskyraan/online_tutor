@@ -75,11 +75,19 @@ class AuthModel {
         ]);
         return result.insertId;
     }
-    async findUser(country_code, mobile) {
+    async findUserByMobile(country_code, mobile) {
         let query = "";
         let params = [];
         query = `SELECT * FROM users WHERE country_code = ?  AND (mobile = ? OR add_mobile = ?) LIMIT 1`;
         params = [country_code, mobile, mobile];
+        const [rows] = await (0, helper_1.executeQuery)(query, params);
+        return rows || null;
+    }
+    async findUser(email) {
+        let query = "";
+        let params = [];
+        query = `SELECT * FROM users WHERE email = ? LIMIT 1`;
+        params = [email];
         const [rows] = await (0, helper_1.executeQuery)(query, params);
         return rows || null;
     }
@@ -96,9 +104,30 @@ class AuthModel {
         const result = await (0, helper_1.executeQuery)(`INSERT INTO user_devices (user_id , device_id , device_token  , device_type) VALUES (?,?,?,?)`, [user_id, device_id, device_token, device_type]);
         return result.insertId;
     }
-    async updatePassword(country_code, mobile, hashedPassword) {
-        const sql = `UPDATE users SET password = ? WHERE mobile = ? AND country_code = ?`;
-        await (0, helper_1.executeQuery)(sql, [hashedPassword, mobile, country_code]);
+    // async updatePassword(
+    //   country_code?: string,
+    //   mobile?: string,
+    //   hashedPassword?: string,
+    //   email?: string,
+    // ): Promise<void> {
+    //   const sql = `UPDATE users SET password = ? WHERE mobile = ? AND country_code = ?`;
+    //   await executeQuery(sql, [hashedPassword, mobile, country_code]);
+    // }
+    async updatePassword(hashedPassword, mobile, country_code, email) {
+        let sql = `UPDATE users SET password = ?`;
+        const params = [hashedPassword];
+        if (email) {
+            sql += ` WHERE email = ?`;
+            params.push(email);
+        }
+        else if (mobile && country_code) {
+            sql += ` WHERE mobile = ? AND country_code = ?`;
+            params.push(mobile, country_code);
+        }
+        else {
+            throw new Error("Either email or (mobile + country_code) is required");
+        }
+        await (0, helper_1.executeQuery)(sql, params);
     }
     async removeUserDevice(user_id, device_id, device_token, device_type) {
         const sql = `DELETE FROM user_devices WHERE user_id = ? AND device_id = ? AND device_type = ? AND device_token = ?`;

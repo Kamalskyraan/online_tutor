@@ -4,6 +4,8 @@ import apn, { token } from "@parse/node-apn";
 import { apnProvider } from "./apnprovider";
 import dotenv from "dotenv";
 dotenv.config();
+
+
 admin.initializeApp({
   credential: admin.credential.cert(
     require("./online-tutor-5655a-17d29e0bfde4.json"),

@@ -37,28 +37,33 @@ export class AuthController {
     try {
       const { country_code, mobile, email, type } = req.body;
 
-      const user = await authModel.findUser(country_code, mobile);
+      let emailUser = null;
+      let mobileUser = null;
+
+      if (email) {
+        emailUser = await authModel.findUser(email);
+      }
+
+      if (mobile && country_code) {
+        mobileUser = await authModel.findUserByMobile(country_code, mobile);
+      }
+
       if (type === "1") {
-        if (user) {
+        if (emailUser || mobileUser) {
           return sendResponse(res, 200, 0, [], "User already exists", []);
         }
       }
 
+      // Login
       if (type === "2") {
-        if (!user) {
+        if (!emailUser && !mobileUser) {
           return sendResponse(res, 200, 0, [], "User not found", []);
         }
       }
-
-      const testNumbers = [
-        "9900559942",
-        "9791882887",
-        "7448866664",
-        "7200577677",
-      ];
+      const testEmail = ["skyraankamalesh@gmail.com"];
 
       let otp = generateOTP();
-      if (testNumbers.includes(mobile)) {
+      if (testEmail.includes(email)) {
         otp = "1234";
       }
       const expires_at = getOTPExpiry();
@@ -138,6 +143,7 @@ export class AuthController {
     try {
       const {
         user_name,
+        cntry,
         country_code,
         mobile,
         otp,
@@ -147,15 +153,14 @@ export class AuthController {
         device_type,
         device_token,
       } = await validateRequest(req.body, signupSchema);
-      const existingUser = await authModel.findUser(country_code, mobile);
+      const existingUser = await authModel.findUser(email);
 
       if (existingUser) {
         return sendResponse(res, 200, 0, [], "User already exists", []);
       }
 
       const otpRecord = await getValiOTP({
-        country_code,
-        mobile,
+        email,
         otp,
       });
 
@@ -173,7 +178,11 @@ export class AuthController {
 
       const password_hash = await bcrypt.hash(password, 10);
       const user_id = await generateUserId();
-      const countryy = await fetchCountryName(country_code);
+
+      const countryy = country_code
+        ? await fetchCountryName(country_code)
+        : cntry;
+
       const userId = await authModel.createUser({
         user_name,
         user_id,
@@ -193,7 +202,7 @@ export class AuthController {
         expiresIn: "90d",
       });
 
-      const users = await userMdl.fetchUserData(mobile);
+      const users = await userMdl.fetchUserData(email);
       const country = users[0].country;
       const personal_form = users[0].is_form_filled;
       const user_role = users[0].user_role;
@@ -232,6 +241,7 @@ export class AuthController {
             sub_form,
             user_role,
             mobile,
+            email,
           },
         ],
         "Signup successful",
@@ -252,6 +262,7 @@ export class AuthController {
   static login = async (req: Request, res: Response) => {
     try {
       const {
+        email,
         country_code,
         mobile,
         password,
@@ -259,7 +270,7 @@ export class AuthController {
         device_type,
         device_token,
       } = await validateRequest(req.body, loginSchema);
-      const user = await authModel.findUser(country_code, mobile);
+      const user = await authModel.findUser(email);
 
       if (!user) {
         return sendResponse(res, 200, 0, [], "User not found", []);
@@ -295,23 +306,6 @@ export class AuthController {
         );
       }
 
-      //   if (user.is_deleted === 1) {
-      //     await executeQuery(
-      //       `
-      // UPDATE users
-      // SET
-      //   is_deleted = 0,
-      //   delete_reasons = NULL,
-      //   deleted_at = NULL
-      // WHERE user_id = ?
-      // `,
-      //       [user.user_id],
-      //     );
-
-      //     user.is_deleted = 0;
-      //     user.deleted_at = null;
-      //   }
-
       await authModel.clearExistUserDevice(user.user_id);
       await authModel.addUserDevice({
         user_id: user.user_id,
@@ -324,7 +318,7 @@ export class AuthController {
         process.env.JWT_SECRET!,
         { expiresIn: "90d" },
       );
-      const users = await userMdl.fetchUserData({ mobile });
+      const users = await userMdl.fetchUserData({ email });
 
       const user_role = users[0]?.user_role
         ? convertNullToString(users[0]?.user_role)
@@ -340,7 +334,7 @@ export class AuthController {
       const tutor_id = await userMdl.geTutorByUserId(user?.user_id);
       const student_id = await userMdl.getStudentByUserId(user?.user_id);
 
-      const FirstSub = await tutMdl.fetchFirstSub(mobile);
+      const FirstSub = await tutMdl.fetchFirstSub(mobile, email);
 
       if (device_type === "web") {
         res.cookie("token", token, {
@@ -405,6 +399,7 @@ export class AuthController {
         [],
       );
     } catch (err: any) {
+      console.log(err);
       return sendResponse(res, 500, 0, [], "Internal Server Error", [
         err.errors || err.message || err,
       ]);
@@ -413,8 +408,15 @@ export class AuthController {
 
   static resetPassword = async (req: Request, res: Response) => {
     try {
-      const { mobile, country_code, new_password, confirm_password, user_id } =
-        await validateRequest(req.body, resetPasswordSchema);
+      const {
+        email,
+        mobile,
+        country_code,
+        new_password,
+        confirm_password,
+        user_id,
+      } = await validateRequest(req.body, resetPasswordSchema);
+
       if (new_password !== confirm_password) {
         return sendResponse(res, 200, 0, [], "Passwords do not match", []);
       }
@@ -444,6 +446,19 @@ export class AuthController {
           [],
         );
       }
+
+      if (email) {
+        await authModel.updatePassword(email, hashedPassword);
+
+        return sendResponse(
+          res,
+          200,
+          1,
+          [],
+          "Password updated successfully (via email)",
+          [],
+        );
+      }
       return sendResponse(
         res,
         200,
@@ -464,32 +479,6 @@ export class AuthController {
     }
   };
 
-  // static logout = async (req: Request, res: Response) => {
-  //   try {
-  //     const { user_id } = req.body;
-
-  //     if (!user_id) {
-  //       return sendResponse(res, 200, 0, [], "User Id is required", []);
-  //     }
-
-  //     await authModel.clearExistUserDevice(user_id);
-
-  //     res.clearCookie("token", {
-  //       httpOnly: true,
-  //       secure: process.env.NODE_ENV === "production",
-  //     });
-  //     return sendResponse(res, 200, 1, [], "Logout successful", []);
-  //   } catch (err: any) {
-  //     return sendResponse(
-  //       res,
-  //       err.status || 500,
-  //       0,
-  //       [],
-  //       "Something went wrong",
-  //       [err.errors || err.message || err],
-  //     );
-  //   }
-  // };
   static reactivateAccount = async (req: Request, res: Response) => {
     try {
       const { user_id } = req.body;

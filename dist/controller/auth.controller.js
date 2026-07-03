@@ -25,25 +25,28 @@ _a = AuthController;
 AuthController.RequestOtp = async (req, res) => {
     try {
         const { country_code, mobile, email, type } = req.body;
-        const user = await authModel.findUser(country_code, mobile);
+        let emailUser = null;
+        let mobileUser = null;
+        if (email) {
+            emailUser = await authModel.findUser(email);
+        }
+        if (mobile && country_code) {
+            mobileUser = await authModel.findUserByMobile(country_code, mobile);
+        }
         if (type === "1") {
-            if (user) {
+            if (emailUser || mobileUser) {
                 return (0, helper_1.sendResponse)(res, 200, 0, [], "User already exists", []);
             }
         }
+        // Login
         if (type === "2") {
-            if (!user) {
+            if (!emailUser && !mobileUser) {
                 return (0, helper_1.sendResponse)(res, 200, 0, [], "User not found", []);
             }
         }
-        const testNumbers = [
-            "9900559942",
-            "9791882887",
-            "7448866664",
-            "7200577677",
-        ];
+        const testEmail = ["skyraankamalesh@gmail.com"];
         let otp = (0, helper_1.generateOTP)();
-        if (testNumbers.includes(mobile)) {
+        if (testEmail.includes(email)) {
             otp = "1234";
         }
         const expires_at = (0, helper_1.getOTPExpiry)();
@@ -100,14 +103,13 @@ AuthController.VerifyOtp = async (req, res) => {
 };
 AuthController.signup = async (req, res) => {
     try {
-        const { user_name, country_code, mobile, otp, email, password, device_id, device_type, device_token, } = await (0, helper_1.validateRequest)(req.body, validate_1.signupSchema);
-        const existingUser = await authModel.findUser(country_code, mobile);
+        const { user_name, cntry, country_code, mobile, otp, email, password, device_id, device_type, device_token, } = await (0, helper_1.validateRequest)(req.body, validate_1.signupSchema);
+        const existingUser = await authModel.findUser(email);
         if (existingUser) {
             return (0, helper_1.sendResponse)(res, 200, 0, [], "User already exists", []);
         }
         const otpRecord = await (0, auth_model_1.getValiOTP)({
-            country_code,
-            mobile,
+            email,
             otp,
         });
         if (otpRecord.message === "invalid") {
@@ -122,7 +124,9 @@ AuthController.signup = async (req, res) => {
         await (0, auth_model_1.markOTPUsed)(otpRecord.id);
         const password_hash = await bcryptjs_1.default.hash(password, 10);
         const user_id = await (0, helper_1.generateUserId)();
-        const countryy = await (0, helper_1.fetchCountryName)(country_code);
+        const countryy = country_code
+            ? await (0, helper_1.fetchCountryName)(country_code)
+            : cntry;
         const userId = await authModel.createUser({
             user_name,
             user_id,
@@ -141,7 +145,7 @@ AuthController.signup = async (req, res) => {
         const token = jsonwebtoken_1.default.sign({ user_id, device_id }, process.env.JWT_SECRET, {
             expiresIn: "90d",
         });
-        const users = await userMdl.fetchUserData(mobile);
+        const users = await userMdl.fetchUserData(email);
         const country = users[0].country;
         const personal_form = users[0].is_form_filled;
         const user_role = users[0].user_role;
@@ -165,6 +169,7 @@ AuthController.signup = async (req, res) => {
                 sub_form,
                 user_role,
                 mobile,
+                email,
             },
         ], "Signup successful", []);
     }
@@ -174,8 +179,8 @@ AuthController.signup = async (req, res) => {
 };
 AuthController.login = async (req, res) => {
     try {
-        const { country_code, mobile, password, device_id, device_type, device_token, } = await (0, helper_1.validateRequest)(req.body, validate_1.loginSchema);
-        const user = await authModel.findUser(country_code, mobile);
+        const { email, country_code, mobile, password, device_id, device_type, device_token, } = await (0, helper_1.validateRequest)(req.body, validate_1.loginSchema);
+        const user = await authModel.findUser(email);
         if (!user) {
             return (0, helper_1.sendResponse)(res, 200, 0, [], "User not found", []);
         }
@@ -189,21 +194,6 @@ AuthController.login = async (req, res) => {
         if (user.is_deleted === 2) {
             return (0, helper_1.sendResponse)(res, 200, 0, [], "Account permanently deleted. Contact support.", []);
         }
-        //   if (user.is_deleted === 1) {
-        //     await executeQuery(
-        //       `
-        // UPDATE users
-        // SET
-        //   is_deleted = 0,
-        //   delete_reasons = NULL,
-        //   deleted_at = NULL
-        // WHERE user_id = ?
-        // `,
-        //       [user.user_id],
-        //     );
-        //     user.is_deleted = 0;
-        //     user.deleted_at = null;
-        //   }
         await authModel.clearExistUserDevice(user.user_id);
         await authModel.addUserDevice({
             user_id: user.user_id,
@@ -212,7 +202,7 @@ AuthController.login = async (req, res) => {
             device_type: device_type,
         });
         const token = jsonwebtoken_1.default.sign({ user_id: user.user_id, device_id }, process.env.JWT_SECRET, { expiresIn: "90d" });
-        const users = await userMdl.fetchUserData({ mobile });
+        const users = await userMdl.fetchUserData({ email });
         const user_role = users[0]?.user_role
             ? (0, helper_1.convertNullToString)(users[0]?.user_role)
             : "";
@@ -222,7 +212,7 @@ AuthController.login = async (req, res) => {
         const sub_form = subForm?.sub_form;
         const tutor_id = await userMdl.geTutorByUserId(user?.user_id);
         const student_id = await userMdl.getStudentByUserId(user?.user_id);
-        const FirstSub = await tutMdl.fetchFirstSub(mobile);
+        const FirstSub = await tutMdl.fetchFirstSub(mobile, email);
         if (device_type === "web") {
             res.cookie("token", token, {
                 httpOnly: true,
@@ -263,6 +253,7 @@ AuthController.login = async (req, res) => {
         ], "Login successful", []);
     }
     catch (err) {
+        console.log(err);
         return (0, helper_1.sendResponse)(res, 500, 0, [], "Internal Server Error", [
             err.errors || err.message || err,
         ]);
@@ -270,7 +261,7 @@ AuthController.login = async (req, res) => {
 };
 AuthController.resetPassword = async (req, res) => {
     try {
-        const { mobile, country_code, new_password, confirm_password, user_id } = await (0, helper_1.validateRequest)(req.body, validate_1.resetPasswordSchema);
+        const { email, mobile, country_code, new_password, confirm_password, user_id, } = await (0, helper_1.validateRequest)(req.body, validate_1.resetPasswordSchema);
         if (new_password !== confirm_password) {
             return (0, helper_1.sendResponse)(res, 200, 0, [], "Passwords do not match", []);
         }
@@ -283,35 +274,16 @@ AuthController.resetPassword = async (req, res) => {
             await authModel.updatePassword(country_code, mobile, hashedPassword);
             return (0, helper_1.sendResponse)(res, 200, 1, [], "Password updated successfully (via mobile)", []);
         }
+        if (email) {
+            await authModel.updatePassword(email, hashedPassword);
+            return (0, helper_1.sendResponse)(res, 200, 1, [], "Password updated successfully (via email)", []);
+        }
         return (0, helper_1.sendResponse)(res, 200, 0, [], "user_id or mobile + country_code is required", []);
     }
     catch (err) {
         return (0, helper_1.sendResponse)(res, err.status || 500, 0, [], "Something went wrong", [err.errors || err.message || err]);
     }
 };
-// static logout = async (req: Request, res: Response) => {
-//   try {
-//     const { user_id } = req.body;
-//     if (!user_id) {
-//       return sendResponse(res, 200, 0, [], "User Id is required", []);
-//     }
-//     await authModel.clearExistUserDevice(user_id);
-//     res.clearCookie("token", {
-//       httpOnly: true,
-//       secure: process.env.NODE_ENV === "production",
-//     });
-//     return sendResponse(res, 200, 1, [], "Logout successful", []);
-//   } catch (err: any) {
-//     return sendResponse(
-//       res,
-//       err.status || 500,
-//       0,
-//       [],
-//       "Something went wrong",
-//       [err.errors || err.message || err],
-//     );
-//   }
-// };
 AuthController.reactivateAccount = async (req, res) => {
     try {
         const { user_id } = req.body;

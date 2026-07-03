@@ -7,8 +7,8 @@ export interface Help {
 }
 
 export interface RequestOtps {
-  country_code: string;
-  mobile: string;
+  country_code?: string;
+  mobile?: string;
   otp?: string;
   email?: string;
   add_mobile?: string;
@@ -226,6 +226,7 @@ export interface UpdateUserProfilePayload {
 export interface userDetailsRequest {
   user_id?: string;
   mobile?: string;
+  email?: string;
 }
 
 //student

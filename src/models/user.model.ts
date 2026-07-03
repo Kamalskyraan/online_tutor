@@ -284,7 +284,7 @@ export class UserModel {
   }
   //
   async fetchUserData(data: userDetailsRequest): Promise<any> {
-    const { user_id, mobile } = data;
+    const { user_id, mobile, email } = data;
 
     let query = `
     SELECT id, user_name, user_id, user_role, country_code, mobile,
@@ -306,13 +306,16 @@ export class UserModel {
       conditions.push(`mobile = ?`);
       values.push(mobile);
     }
+    if (email) {
+      conditions.push(`email = ?`);
+      values.push(email);
+    }
 
     if (conditions.length) {
       query += ` WHERE ` + conditions.join(" AND ");
     }
 
     const result = await executeQuery(query, values);
-    
 
     return convertNullToString(result);
   }

@@ -5,10 +5,10 @@
         "description": "Api Docs",
         "version": "1.0.0"
     },
-    "host": "tutoraan.com/server",
+    "host": "localhost:5012",
     "basePath": "/",
     "schemes": [
-        "https"
+        "http"
     ],
     "paths": {
         "/api/upload": {
@@ -264,13 +264,9 @@
                         "schema": {
                             "type": "object",
                             "properties": {
-                                "mobile": {
+                                "email": {
                                     "type": "string",
-                                    "example": "9876543210"
-                                },
-                                "country_code": {
-                                    "type": "string",
-                                    "example": "+91"
+                                    "example": "skyraankamalesh@gmail.com"
                                 },
                                 "password": {
                                     "type": "string",

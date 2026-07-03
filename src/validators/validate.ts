@@ -80,17 +80,14 @@ export const signupSchema = Joi.object({
     "any.required": "User name is required",
   }),
 
-  country_code: Joi.string().required().messages({
-    "any.required": "Country Code is required",
-    "string.empty": "Country code is required",
-  }),
+  country_code: Joi.string().optional(),
 
   mobile: Joi.string()
     .pattern(/^[0-9]{7,15}$/)
-    .required()
+    .optional()
+    .allow("")
     .messages({
-      "any.required": "Mobile number is required",
-      "string.empty": "Mobile Number is required",
+      "string.pattern.base": "Mobile number must be 7-15 digits only",
     }),
 
   password: Joi.string().min(8).max(32).required().messages({
@@ -113,25 +110,23 @@ export const signupSchema = Joi.object({
   device_token: Joi.string().optional().allow("").messages({
     "string.base": "Device token must be a text",
   }),
-  email: Joi.string().required().messages({
+  email: Joi.string().email().required().messages({
     "any.required": "Email is required",
+    "string.email": "Please enter a valid email address",
+  }),
+  cntry: Joi.string().required().messages({
+    "any.required": "country is required",
   }),
 });
 
-export const loginSchema = Joi.object({
-  country_code: Joi.string().required().messages({
-    "string.empty": "Country code is required",
-    "any.required": "Country code is required",
-  }),
+//  .pattern(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/)
 
-  mobile: Joi.string()
-    .pattern(/^[0-9]{7,15}$/)
-    .required()
-    .messages({
-      "string.empty": "Mobile number is required",
-      "string.pattern.base": "Mobile number must be 7 to 15 digits",
-      "any.required": "Mobile number is required",
-    }),
+export const loginSchema = Joi.object({
+  country_code: Joi.string().optional(),
+  email: Joi.string().required().messages({
+    "any.required": "Email is required",
+  }),
+  mobile: Joi.string().optional(),
 
   password: Joi.string().min(8).max(32).required().messages({
     "string.empty": "Password is required",
@@ -155,13 +150,10 @@ export const loginSchema = Joi.object({
 });
 
 export const resetPasswordSchema = Joi.object({
-  country_code: Joi.string().messages({
-    "string.empty": "Country Code is required",
+ 
+  email: Joi.string().required().messages({
+    "any.required": "Email is required",
   }),
-  mobile: Joi.string().messages({
-    "any.required": "Mobile is required",
-  }),
-
   new_password: Joi.string().min(8).max(32).required().messages({
     "string.empty": "New password is required",
     "string.min": "New password must be at least 8 characters",
