@@ -3,7 +3,7 @@ import dotenv from "dotenv";
 dotenv.config();
 const doc = {
   info: {
-    title: "Online Tutor",
+    title: "Tutoraan",
     description: "Api Docs",
   },
   host: process.env.SWAGGER_HOST || "localhost:5001",

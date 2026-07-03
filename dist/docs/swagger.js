@@ -8,7 +8,7 @@ const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
 const doc = {
     info: {
-        title: "Online Tutor",
+        title: "Tutoraan",
         description: "Api Docs",
     },
     host: process.env.SWAGGER_HOST || "localhost:5001",
