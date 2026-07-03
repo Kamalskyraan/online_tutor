@@ -143,10 +143,9 @@ export class AuthController {
     try {
       const {
         user_name,
-
         country_code,
         mobile,
-        otp,
+
         email,
         password,
         device_id,
@@ -161,22 +160,22 @@ export class AuthController {
         return sendResponse(res, 200, 0, [], "User already exists", []);
       }
 
-      const otpRecord = await getValiOTP({
-        email,
-        otp,
-      });
+      // const otpRecord = await getValiOTP({
+      //   email,
+      //   otp,
+      // });
 
-      if (otpRecord.message === "invalid") {
-        return sendResponse(res, 200, 0, [], "Invalid OTP", []);
-      }
-      if (otpRecord.message === "expired") {
-        return sendResponse(res, 200, 0, [], "OTP expired", []);
-      }
-      if (otpRecord.message === "used") {
-        return sendResponse(res, 200, 0, [], "OTP already used", []);
-      }
+      // if (otpRecord.message === "invalid") {
+      //   return sendResponse(res, 200, 0, [], "Invalid OTP", []);
+      // }
+      // if (otpRecord.message === "expired") {
+      //   return sendResponse(res, 200, 0, [], "OTP expired", []);
+      // }
+      // if (otpRecord.message === "used") {
+      //   return sendResponse(res, 200, 0, [], "OTP already used", []);
+      // }
 
-      await markOTPUsed(otpRecord.id);
+      // await markOTPUsed(otpRecord.id);
 
       const password_hash = await bcrypt.hash(password, 10);
       const user_id = await generateUserId();

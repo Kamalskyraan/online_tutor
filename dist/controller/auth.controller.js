@@ -103,25 +103,25 @@ AuthController.VerifyOtp = async (req, res) => {
 };
 AuthController.signup = async (req, res) => {
     try {
-        const { user_name, country_code, mobile, otp, email, password, device_id, device_type, device_token, is_mail_verify, is_mob_verify, } = await (0, helper_1.validateRequest)(req.body, validate_1.signupSchema);
+        const { user_name, country_code, mobile, email, password, device_id, device_type, device_token, is_mail_verify, is_mob_verify, } = await (0, helper_1.validateRequest)(req.body, validate_1.signupSchema);
         const existingUser = await authModel.findUser(email);
         if (existingUser) {
             return (0, helper_1.sendResponse)(res, 200, 0, [], "User already exists", []);
         }
-        const otpRecord = await (0, auth_model_1.getValiOTP)({
-            email,
-            otp,
-        });
-        if (otpRecord.message === "invalid") {
-            return (0, helper_1.sendResponse)(res, 200, 0, [], "Invalid OTP", []);
-        }
-        if (otpRecord.message === "expired") {
-            return (0, helper_1.sendResponse)(res, 200, 0, [], "OTP expired", []);
-        }
-        if (otpRecord.message === "used") {
-            return (0, helper_1.sendResponse)(res, 200, 0, [], "OTP already used", []);
-        }
-        await (0, auth_model_1.markOTPUsed)(otpRecord.id);
+        // const otpRecord = await getValiOTP({
+        //   email,
+        //   otp,
+        // });
+        // if (otpRecord.message === "invalid") {
+        //   return sendResponse(res, 200, 0, [], "Invalid OTP", []);
+        // }
+        // if (otpRecord.message === "expired") {
+        //   return sendResponse(res, 200, 0, [], "OTP expired", []);
+        // }
+        // if (otpRecord.message === "used") {
+        //   return sendResponse(res, 200, 0, [], "OTP already used", []);
+        // }
+        // await markOTPUsed(otpRecord.id);
         const password_hash = await bcryptjs_1.default.hash(password, 10);
         const user_id = await (0, helper_1.generateUserId)();
         if (country_code) {

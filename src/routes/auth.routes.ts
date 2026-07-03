@@ -83,7 +83,6 @@ router.post(
       schema: {
         mobile: '9876543210',
         country_code : '+91',
-        otp : '12345678',
         user_name : "kamalesh",
         password : '12345678',
         device_id : 'abc_123',

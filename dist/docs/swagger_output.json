@@ -207,10 +207,6 @@
                                     "type": "string",
                                     "example": "+91"
                                 },
-                                "otp": {
-                                    "type": "string",
-                                    "example": "12345678"
-                                },
                                 "user_name": {
                                     "type": "string",
                                     "example": "kamalesh"
