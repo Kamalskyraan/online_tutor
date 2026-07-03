@@ -104,8 +104,8 @@ exports.signupSchema = joi_1.default.object({
         "any.required": "Email is required",
         "string.email": "Please enter a valid email address",
     }),
-    is_mob_verify: joi_1.default.string().optional(),
-    is_mail_verify: joi_1.default.string().optional(),
+    is_mob_verify: joi_1.default.number().optional(),
+    is_mail_verify: joi_1.default.number().optional(),
 });
 //  .pattern(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/)
 exports.loginSchema = joi_1.default.object({
