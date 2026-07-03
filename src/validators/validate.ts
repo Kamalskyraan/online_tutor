@@ -150,9 +150,7 @@ export const loginSchema = Joi.object({
 });
 
 export const resetPasswordSchema = Joi.object({
-  email: Joi.string().required().messages({
-    "any.required": "Email is required",
-  }),
+  email: Joi.string().optional(),
   new_password: Joi.string().min(8).max(32).required().messages({
     "string.empty": "New password is required",
     "string.min": "New password must be at least 8 characters",

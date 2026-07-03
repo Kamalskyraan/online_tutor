@@ -133,9 +133,7 @@ exports.loginSchema = joi_1.default.object({
     }),
 });
 exports.resetPasswordSchema = joi_1.default.object({
-    email: joi_1.default.string().required().messages({
-        "any.required": "Email is required",
-    }),
+    email: joi_1.default.string().optional(),
     new_password: joi_1.default.string().min(8).max(32).required().messages({
         "string.empty": "New password is required",
         "string.min": "New password must be at least 8 characters",
