@@ -147,7 +147,6 @@ export const fetchIssueCategories = async (
 
   const result: any = await executeQuery(query, params);
 
- 
   result.push({
     id: -1,
     name: "Other Issues",
@@ -166,7 +165,7 @@ export const createHelpRequest = async (data: any) => {
 
   const result: any = await executeQuery(query, [
     user_name,
-    mobile,
+    mobile || null,
     email || null,
     issue_reason,
     subject,

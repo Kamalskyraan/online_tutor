@@ -125,7 +125,7 @@ export const helpRequest = async (req: Request, res: Response) => {
   try {
     const { user_name, mobile, email, issue_reason, subject, descp } = req.body;
 
-    if (!user_name || !mobile || !issue_reason || !subject) {
+    if (!user_name || !issue_reason || !subject) {
       return sendResponse(res, 200, 0, [], "Missing required fields");
     }
 
