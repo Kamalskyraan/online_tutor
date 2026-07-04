@@ -233,7 +233,7 @@ export interface userDetailsRequest {
 
 //student
 
-//
+// 
 export interface Location {
   lat: string;
   lng: string;
