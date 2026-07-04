@@ -115,7 +115,7 @@ class AuthModel {
     //   const sql = `UPDATE users SET password = ? WHERE mobile = ? AND country_code = ?`;
     //   await executeQuery(sql, [hashedPassword, mobile, country_code]);
     // }
-    async updatePassword(hashedPassword, mobile, country_code, email) {
+    async updatePassword(hashedPassword, email, mobile, country_code) {
         let sql = `UPDATE users SET password = ?`;
         const params = [hashedPassword];
         if (email) {

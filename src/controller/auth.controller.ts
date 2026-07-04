@@ -426,7 +426,6 @@ export class AuthController {
 
       if (user_id) {
         await authModel.updatePasswordByUserId(user_id, hashedPassword);
-
         return sendResponse(
           res,
           200,
@@ -436,9 +435,14 @@ export class AuthController {
           [],
         );
       }
-      if (mobile && country_code) {
-        await authModel.updatePassword(country_code, mobile, hashedPassword);
 
+      if (mobile && country_code) {
+        await authModel.updatePassword(
+          hashedPassword,
+          undefined,
+          mobile,
+          country_code,
+        );
         return sendResponse(
           res,
           200,
@@ -450,8 +454,7 @@ export class AuthController {
       }
 
       if (email) {
-        await authModel.updatePassword(email, hashedPassword);
-
+        await authModel.updatePassword(hashedPassword, email);
         return sendResponse(
           res,
           200,
@@ -461,6 +464,7 @@ export class AuthController {
           [],
         );
       }
+
       return sendResponse(
         res,
         200,

@@ -163,27 +163,27 @@ export class AuthModel {
   //   await executeQuery(sql, [hashedPassword, mobile, country_code]);
   // }
 
-  async updatePassword(
-    hashedPassword: string,
-    mobile?: string,
-    country_code?: string,
-    email?: string,
-  ): Promise<void> {
-    let sql = `UPDATE users SET password = ?`;
-    const params: any[] = [hashedPassword];
+async updatePassword(
+  hashedPassword: string,
+  email?: string,
+  mobile?: string,
+  country_code?: string,
+): Promise<void> {
+  let sql = `UPDATE users SET password = ?`;
+  const params: any[] = [hashedPassword];
 
-    if (email) {
-      sql += ` WHERE email = ?`;
-      params.push(email);
-    } else if (mobile && country_code) {
-      sql += ` WHERE mobile = ? AND country_code = ?`;
-      params.push(mobile, country_code);
-    } else {
-      throw new Error("Either email or (mobile + country_code) is required");
-    }
-
-    await executeQuery(sql, params);
+  if (email) {
+    sql += ` WHERE email = ?`;
+    params.push(email);
+  } else if (mobile && country_code) {
+    sql += ` WHERE mobile = ? AND country_code = ?`;
+    params.push(mobile, country_code);
+  } else {
+    throw new Error("Either email or (mobile + country_code) is required");
   }
+
+  await executeQuery(sql, params);
+}
 
   async removeUserDevice(
     user_id: string,

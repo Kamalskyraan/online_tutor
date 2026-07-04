@@ -272,11 +272,11 @@ AuthController.resetPassword = async (req, res) => {
             return (0, helper_1.sendResponse)(res, 200, 1, [], "Password updated successfully (via user_id)", []);
         }
         if (mobile && country_code) {
-            await authModel.updatePassword(country_code, mobile, hashedPassword);
+            await authModel.updatePassword(hashedPassword, undefined, mobile, country_code);
             return (0, helper_1.sendResponse)(res, 200, 1, [], "Password updated successfully (via mobile)", []);
         }
         if (email) {
-            await authModel.updatePassword(email, hashedPassword);
+            await authModel.updatePassword(hashedPassword, email);
             return (0, helper_1.sendResponse)(res, 200, 1, [], "Password updated successfully (via email)", []);
         }
         return (0, helper_1.sendResponse)(res, 200, 0, [], "user_id or mobile + country_code is required", []);
