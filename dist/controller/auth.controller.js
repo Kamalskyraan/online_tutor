@@ -241,6 +241,9 @@ AuthController.login = async (req, res) => {
             {
                 user_id: user.user_id,
                 token,
+                mobile: users[0].mobile,
+                country_code: users[0].country_code,
+                email: users[0].email,
                 country,
                 personal_form,
                 sub_form,
