@@ -25,12 +25,6 @@ _a = AuthController;
 AuthController.RequestOtp = async (req, res) => {
     try {
         const { country_code, mobile, email, type } = req.body;
-        if (email) {
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            if (!emailRegex.test(email)) {
-                return (0, helper_1.sendResponse)(res, 200, 0, [], "Invalid email format. Please enter a valid email address", []);
-            }
-        }
         let emailUser = null;
         let mobileUser = null;
         if (email) {
