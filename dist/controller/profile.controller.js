@@ -157,6 +157,28 @@ ProfileController.changeRegisterNumber = async (req, res) => {
         ]);
     }
 };
+ProfileController.changeRegisterEmail = async (req, res) => {
+    try {
+        const { user_id, email } = req.body;
+        if (!user_id) {
+            return (0, helper_1.sendResponse)(res, 200, 0, [], "User ID is required", []);
+        }
+        if (!email) {
+            return (0, helper_1.sendResponse)(res, 200, 0, [], "Mobile number is required", []);
+        }
+        const result = await profileMdl.updateRegisterEMail(user_id, email);
+        if (!result || result.affectedRows === 0) {
+            return (0, helper_1.sendResponse)(res, 200, 0, [], "User not found or not updated", []);
+        }
+        return (0, helper_1.sendResponse)(res, 200, 1, [], "Register Number Updated Successfully", []);
+    }
+    catch (err) {
+        console.log(err);
+        return (0, helper_1.sendResponse)(res, 500, 0, [], "Internal Server Error", [
+            err.errors || err.message || err,
+        ]);
+    }
+};
 ProfileController.deleteAccountReasons = async (req, res) => {
     try {
         const { id } = req.body;

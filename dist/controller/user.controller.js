@@ -177,9 +177,13 @@ userController.updateStudent = async (req, res) => {
 };
 userController.userDetails = async (req, res) => {
     try {
-        const { user_id, mobile } = req.body;
+        const { user_id, mobile, email } = req.body;
         await (0, helper_1.validateRequest)(req.body, validate_1.getUserDetailsSchema);
-        const userData = await userModel.fetchUserData({ user_id, mobile });
+        const userData = await userModel.fetchUserData({
+            user_id,
+            mobile,
+            email,
+        });
         return (0, helper_1.sendResponse)(res, 200, 1, userData, "User Data Fetched successfully", []);
     }
     catch (err) {

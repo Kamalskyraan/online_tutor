@@ -284,6 +284,46 @@ export class ProfileController {
       ]);
     }
   };
+  static changeRegisterEmail = async (req: Request, res: Response) => {
+    try {
+      const { user_id, email } = req.body;
+
+      if (!user_id) {
+        return sendResponse(res, 200, 0, [], "User ID is required", []);
+      }
+
+      if (!email) {
+        return sendResponse(res, 200, 0, [], "Mobile number is required", []);
+      }
+
+      const result: any = await profileMdl.updateRegisterEMail(user_id, email);
+
+      if (!result || result.affectedRows === 0) {
+        return sendResponse(
+          res,
+          200,
+          0,
+          [],
+          "User not found or not updated",
+          [],
+        );
+      }
+
+      return sendResponse(
+        res,
+        200,
+        1,
+        [],
+        "Register Number Updated Successfully",
+        [],
+      );
+    } catch (err: any) {
+      console.log(err);
+      return sendResponse(res, 500, 0, [], "Internal Server Error", [
+        err.errors || err.message || err,
+      ]);
+    }
+  };
 
   static deleteAccountReasons = async (req: Request, res: Response) => {
     try {

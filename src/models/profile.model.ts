@@ -14,6 +14,7 @@ export class ProfileModel {
         `SELECT 
         u.user_id, u.user_name, u.profile_img, u.gender,
         u.num_changed_at ,
+        u.email_changed_at,
         u.country_code, u.mobile, u.email,
         u.district, u.state, u.pincode,u.is_show_num , u.lat , u.lng , 
         u.is_mob_verify , u.is_addmob_verify , u.is_mail_verify,
@@ -37,6 +38,7 @@ export class ProfileModel {
         u.user_id, u.user_name, u.profile_img, u.gender,
         u.dob,
         u.num_changed_at,
+        u.email_changed_at,
         u.country_code, u.mobile, u.email,
         u.district, u.state, u.pincode,
         u.add_mobile, u.primary_num,
@@ -266,6 +268,24 @@ export class ProfileModel {
       changedRows: result?.changedRows || 0,
     };
   }
+
+  async updateRegisterEMail(user_id: string, email: string) {
+    const result: any = await executeQuery(
+      `UPDATE users 
+     SET 
+       email = ?
+       is_email_verify = 1,
+       email_changed_at = CURDATE() 
+     WHERE user_id = ?`,
+      [email, email, user_id],
+    );
+
+    return {
+      affectedRows: result?.affectedRows || 0,
+      changedRows: result?.changedRows || 0,
+    };
+  }
+
   async fetchReasons(id?: number) {
     let query = `SELECT id, reason FROM delete_reasons`;
     let params: any[] = [];

@@ -1061,6 +1061,43 @@
                 }
             }
         },
+        "/api/profile/change-register-email": {
+            "post": {
+                "tags": [
+                    "3.Profile"
+                ],
+                "summary": "update Register Email",
+                "description": "Update Register Email",
+                "parameters": [
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "user_id": {
+                                    "type": "string",
+                                    "example": "USER_7wbjv2wt"
+                                },
+                                "email": {
+                                    "type": "string",
+                                    "example": "abc@gmail.com"
+                                }
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Register Email updated successfully"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
         "/api/profile/get-delete-reasons": {
             "post": {
                 "tags": [

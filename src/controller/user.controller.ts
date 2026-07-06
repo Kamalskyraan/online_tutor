@@ -233,9 +233,14 @@ export class userController {
 
   static userDetails = async (req: Request, res: Response) => {
     try {
-      const { user_id, mobile } = req.body;
+      const { user_id, mobile, email } = req.body;
       await validateRequest(req.body, getUserDetailsSchema);
-      const userData = await userModel.fetchUserData({ user_id, mobile });
+      
+      const userData = await userModel.fetchUserData({
+        user_id,
+        mobile,
+        email,
+      });
 
       return sendResponse(
         res,

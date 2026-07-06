@@ -263,6 +263,7 @@ export const getUserDetailsSchema = Joi.object({
     .messages({
       "string.pattern.base": "Mobile number must be between 7 and 15 digits",
     }),
+  email: Joi.string().optional(),
 });
 // subject
 

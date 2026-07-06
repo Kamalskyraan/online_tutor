@@ -232,6 +232,7 @@ exports.getUserDetailsSchema = joi_1.default.object({
         .messages({
         "string.pattern.base": "Mobile number must be between 7 and 15 digits",
     }),
+    email: joi_1.default.string().optional(),
 });
 // subject
 exports.subjectSchema = joi_1.default.object({

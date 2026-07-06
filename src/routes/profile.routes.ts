@@ -220,6 +220,35 @@ router.post("/change-register-num", (req, res) => {
 
   ProfileController.changeRegisterNumber(req, res);
 });
+router.post("/change-register-email", (req, res) => {
+  /*
+    #swagger.tags = ['3.Profile']
+    #swagger.summary = 'update Register Email'
+    #swagger.description = 'Update Register Email'
+
+    
+    #swagger.parameters['body'] = {
+      in: 'body',
+      required: true,
+      schema: {  
+        user_id : "USER_7wbjv2wt",
+        email : "abc@gmail.com"
+        
+      }
+    }
+
+
+    #swagger.responses[200] = {
+      description: "Register Email updated successfully"
+    }
+
+    #swagger.responses[500] = {
+      description: "Internal Server Error"
+    }
+  */
+
+  ProfileController.changeRegisterEmail(req, res);
+});
 
 router.post("/get-delete-reasons", (req, res) => {
   /*
