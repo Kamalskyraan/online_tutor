@@ -206,11 +206,11 @@ class ProfileModel {
         };
     }
     async updateRegisterEMail(user_id, email) {
-        const result = await (0, helper_1.executeQuery)(`UPDATE users 
-     SET 
-       email = ?
+        const result = await (0, helper_1.executeQuery)(`UPDATE users
+     SET
+       email = ?,
        is_mail_verify = 1,
-       email_changed_at = CURDATE() 
+       email_changed_at = CURDATE()
      WHERE user_id = ?`, [email, user_id]);
         return {
             affectedRows: result?.affectedRows || 0,

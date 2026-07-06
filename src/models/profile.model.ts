@@ -271,13 +271,13 @@ export class ProfileModel {
 
   async updateRegisterEMail(user_id: string, email: string) {
     const result: any = await executeQuery(
-      `UPDATE users 
-     SET 
-       email = ?
+      `UPDATE users
+     SET
+       email = ?,
        is_mail_verify = 1,
-       email_changed_at = CURDATE() 
+       email_changed_at = CURDATE()
      WHERE user_id = ?`,
-      [email,  user_id],
+      [email, user_id],
     );
 
     return {
