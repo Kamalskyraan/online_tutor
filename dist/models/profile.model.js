@@ -211,7 +211,7 @@ class ProfileModel {
        email = ?
        is_mail_verify = 1,
        email_changed_at = CURDATE() 
-     WHERE user_id = ?`, [email, email, user_id]);
+     WHERE user_id = ?`, [email, user_id]);
         return {
             affectedRows: result?.affectedRows || 0,
             changedRows: result?.changedRows || 0,
