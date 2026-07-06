@@ -274,7 +274,7 @@ export class ProfileModel {
       `UPDATE users 
      SET 
        email = ?
-       is_email_verify = 1,
+       is_mail_verify = 1,
        email_changed_at = CURDATE() 
      WHERE user_id = ?`,
       [email, email, user_id],
