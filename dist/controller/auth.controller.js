@@ -44,7 +44,13 @@ AuthController.RequestOtp = async (req, res) => {
                 return (0, helper_1.sendResponse)(res, 200, 0, [], "User not found", []);
             }
         }
-        const testEmail = ["skyraankamalesh@gmail.com"];
+        const testEmail = [
+            "skyraankamalesh@gmail.com",
+            "sriprakash@skyraan.com",
+            "kavin@skyraan.com",
+            "mohamedasfak@skyraan.com",
+            "venkatgiri@skyraan.com",
+        ];
         let otp = (0, helper_1.generateOTP)();
         if (testEmail.includes(email)) {
             otp = "1234";

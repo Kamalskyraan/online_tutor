@@ -314,7 +314,7 @@ export class ProfileController {
         200,
         1,
         [],
-        "Register Number Updated Successfully",
+        "Register Mail Updated Successfully",
         [],
       );
     } catch (err: any) {

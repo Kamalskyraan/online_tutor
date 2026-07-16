@@ -170,7 +170,7 @@ ProfileController.changeRegisterEmail = async (req, res) => {
         if (!result || result.affectedRows === 0) {
             return (0, helper_1.sendResponse)(res, 200, 0, [], "User not found or not updated", []);
         }
-        return (0, helper_1.sendResponse)(res, 200, 1, [], "Register Number Updated Successfully", []);
+        return (0, helper_1.sendResponse)(res, 200, 1, [], "Register Mail Updated Successfully", []);
     }
     catch (err) {
         console.log(err);

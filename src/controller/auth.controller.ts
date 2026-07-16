@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+
 import {
   AuthModel,
   createOTP,
@@ -60,7 +61,13 @@ export class AuthController {
           return sendResponse(res, 200, 0, [], "User not found", []);
         }
       }
-      const testEmail = ["skyraankamalesh@gmail.com"];
+      const testEmail = [
+        "skyraankamalesh@gmail.com",
+        "sriprakash@skyraan.com",
+        "kavin@skyraan.com",
+        "mohamedasfak@skyraan.com",
+        "venkatgiri@skyraan.com",
+      ];
 
       let otp = generateOTP();
       if (testEmail.includes(email)) {
